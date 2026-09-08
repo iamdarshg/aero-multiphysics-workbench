@@ -1,0 +1,6 @@
+# Deliberately lean manifest; no image has been built or published by this repository.
+FROM node:24-alpine
+WORKDIR /workbench
+COPY packages/solver-contracts ./packages/solver-contracts
+COPY mcp/engineering ./mcp/engineering
+ENTRYPOINT ["node", "mcp/engineering/server.ts"]

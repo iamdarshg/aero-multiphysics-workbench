@@ -1,0 +1,21 @@
+name: platform
+on:
+  pull_request:
+    paths: ["packages/solver-contracts/**", "solvers/**", "mcp/**", "infra/**", "scripts/**", "docs/**", "benchmarks/platform/**", "tests/platform/**", ".github/workflows/platform.yml"]
+  push:
+    branches: [main, feature/platform-integrations]
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: node --check packages/solver-contracts/src/index.ts
+      - run: node --test tests/platform/platform.test.ts
+  native-solver-benchmarks:
+    if: ${{ false }} # Requires separately provisioned, explicitly authorized native solver runner.
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1
