@@ -1,0 +1,13 @@
+services:
+  engineering-mcp:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.platform
+    profiles: ["explicit-mcp"]
+    environment:
+      AERO_ALLOW_DESTRUCTIVE: "0"
+      AERO_ALLOW_REMOTE_COMPUTE: "0"
+      AERO_REMOTE_COST_CEILING_USD: "0"
+    stdin_open: true
+    tty: true
+    mem_limit: 250m
