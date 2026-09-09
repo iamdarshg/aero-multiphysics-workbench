@@ -69,6 +69,12 @@ export const getDemoProfile = (id: DemoId): DemoProfile => profiles[id];
 export const updateCouplingStrength = (_current: number, proposed: number): number =>
   Math.max(0, Math.min(1, Number.isFinite(proposed) ? proposed : 0));
 
+export const qualityGateEvidence = {
+  energy: 'Analytical · screening/sample only',
+  resonance: 'Analytical · screening/sample only',
+  native: 'Declarative capability state',
+} as const;
+
 const viewModes: Record<ViewMode, { label: string; field: string; available: boolean; detail: string }> = {
   flow: { label: 'Flow', field: 'Pressure coefficient', available: true, detail: 'Analytical surface-pressure estimate' },
   structure: { label: 'Structure', field: 'Displacement envelope', available: true, detail: 'Analytical beam-response estimate' },

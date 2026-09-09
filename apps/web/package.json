@@ -11,22 +11,22 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@react-three/fiber": "latest",
-    "next": "latest",
-    "plotly.js-dist-min": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "three": "latest",
-    "vtk.js": "latest"
+    "@react-three/fiber": "9.7.0",
+    "next": "16.3.4",
+    "plotly.js-dist-min": "4.0.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.185.1",
+    "vtk.js": "36.12.1"
   },
   "devDependencies": {
-    "@eslint/js": "latest",
-    "eslint": "latest",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.10.0",
     "typescript": "5.9.3",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript-eslint": "latest",
-    "vitest": "latest"
+    "@types/node": "26.5.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.0"
   }
 }

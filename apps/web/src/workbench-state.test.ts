@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getDemoProfile, getDockPanel, getViewModeStatus, updateCouplingStrength } from './workbench-state';
+import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, updateCouplingStrength } from './workbench-state';
 
 describe('workbench demo profiles', () => {
   it('uses serious engineering coupling by default for the EDF profile', () => {
@@ -27,5 +27,11 @@ describe('workbench demo profiles', () => {
     expect(getDockPanel('energy').fidelity).toBe('analytical');
     expect(getDockPanel('energy').validity).toBe('sample state only');
     expect(getDockPanel('logs').source).toBe('Capability registry');
+  });
+
+  it('keeps quality-gate evidence labels explicit', () => {
+    expect(qualityGateEvidence.energy).toBe('Analytical · screening/sample only');
+    expect(qualityGateEvidence.resonance).toBe('Analytical · screening/sample only');
+    expect(qualityGateEvidence.native).toBe('Declarative capability state');
   });
 });
