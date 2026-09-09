@@ -1,6 +1,7 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { readdir, readFile } from "node:fs/promises";
-import { isAbsolute, relative, resolve } from "node:path";
+import { posix, resolve, win32 } from "node:path";
+import { isTrustedNativeCommand, type NativeSolverCommand } from "./commands.ts";
 import type { JobRequest, LocalProcessResult, ScheduledJob } from "./contracts.ts";
 
 /** The project budget is deliberately below the one-gigabyte host contract. */
@@ -14,7 +15,6 @@ export interface SchedulerPolicy {
 
 export interface LocalRunPolicy {
   readonly allowedExecutables: ReadonlySet<string>;
-  readonly allowedArguments?: (args: readonly string[]) => boolean;
   readonly pollIntervalMs?: number;
   readonly timeoutMs?: number;
   readonly signal?: AbortSignal;
@@ -22,18 +22,22 @@ export interface LocalRunPolicy {
   readonly allowedWorkingDirectory?: string;
   /** Test seam and platform-specific override. It must include descendants. */
   readonly readRssMiB?: (pid: number) => Promise<number>;
+  readonly readPids?: (pid: number) => Promise<readonly number[]>;
 }
 
 const delay = (milliseconds: number): Promise<void> => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds));
 
-const readCommandOutput = (command: string, args: readonly string[]): Promise<string> => new Promise((resolveOutput, reject) => {
+const readCommandOutput = (command: string, args: readonly string[], timeoutMs = 1_000): Promise<string> => new Promise((resolveOutput, reject) => {
   const child = spawn(command, [...args], { shell: false, windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
   let stdout = "";
   let stderr = "";
+  let settled = false;
+  const finish = (callback: () => void): void => { if (settled) return; settled = true; clearTimeout(timer); callback(); };
+  const timer = setTimeout(() => { try { child.kill("SIGKILL"); } catch { /* already exited */ } finish(() => reject(new Error("RSS_PROBE_TIMEOUT"))); }, timeoutMs);
   child.stdout?.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
   child.stderr?.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
-  child.once("error", reject);
-  child.once("close", (code) => code === 0 ? resolveOutput(stdout) : reject(new Error(stderr.trim() || `RSS probe exited ${code}`)));
+  child.once("error", (error) => finish(() => reject(error)));
+  child.once("close", (code) => finish(() => code === 0 ? resolveOutput(stdout) : reject(new Error(stderr.trim() || `RSS probe exited ${code}`))));
 });
 
 const linuxProcessTable = async (): Promise<Map<number, { parent: number; rssMiB: number }>> => {
@@ -77,6 +81,42 @@ const sumProcessTree = (rootPid: number, table: ReadonlyMap<number, { parent: nu
   return total;
 };
 
+const treePids = (rootPid: number, table: ReadonlyMap<number, { parent: number; rssMiB: number }>): readonly number[] => {
+  const children = new Map<number, number[]>();
+  for (const [pid, row] of table) children.set(row.parent, [...(children.get(row.parent) ?? []), pid]);
+  const seen = new Set<number>();
+  const pending = [rootPid];
+  while (pending.length > 0) {
+    const pid = pending.pop() as number;
+    if (seen.has(pid)) continue;
+    seen.add(pid);
+    pending.push(...(children.get(pid) ?? []));
+  }
+  return [...seen];
+};
+
+export const readProcessTreePids = async (rootPid: number): Promise<readonly number[]> => {
+  if (!Number.isInteger(rootPid) || rootPid <= 0) throw new Error("INVALID_PROCESS_ID");
+  if (process.platform === "linux") return treePids(rootPid, await linuxProcessTable());
+  if (process.platform === "win32") {
+    const systemRoot = process.env.SystemRoot ?? "C:\\Windows";
+    const powershell = `${systemRoot}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+    const script = `$root=${rootPid};$p=Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId;` +
+      "$ids=@($root);do{$added=$false;foreach($x in $p){if($ids -contains [int]$x.ParentProcessId -and $ids -notcontains [int]$x.ProcessId){$ids+=[int]$x.ProcessId;$added=$true}}}while($added);$ids -join ','";
+    const output = await readCommandOutput(powershell, ["-NoProfile", "-NonInteractive", "-Command", script]);
+    const ids = output.trim().split(",").map(Number).filter((pid) => Number.isInteger(pid) && pid > 0);
+    if (!ids.includes(rootPid)) throw new Error("RSS_ROOT_NOT_REPORTED");
+    return ids;
+  }
+  const rows = await readCommandOutput("ps", ["-axo", "pid=,ppid=,rss="]);
+  const table = new Map<number, { parent: number; rssMiB: number }>();
+  for (const line of rows.split(/\r?\n/)) {
+    const match = /^\s*(\d+)\s+(\d+)\s+(\d+)\s*$/.exec(line);
+    if (match) table.set(Number(match[1]), { parent: Number(match[2]), rssMiB: Number(match[3]) / 1024 });
+  }
+  return treePids(rootPid, table);
+};
+
 /** Reads aggregate RSS for the root and every descendant without a shell. */
 export const readProcessTreeRssMiB = async (rootPid: number): Promise<number> => {
   if (!Number.isInteger(rootPid) || rootPid <= 0) throw new Error("INVALID_PROCESS_ID");
@@ -112,9 +152,13 @@ const executableMatches = (actual: string, allowed: string): boolean => process.
 
 const hasUnsafeArgument = (arg: string): boolean => arg.includes("\u0000") || /[\r\n]/.test(arg) || /^(?:-Command|-EncodedCommand)$/i.test(arg);
 
-const pathIsContained = (root: string, candidate: string): boolean => {
-  const remainder = relative(resolve(root), resolve(candidate));
-  return remainder === "" || (remainder !== ".." && !remainder.startsWith(`..${candidate.includes("\\") ? "\\" : "/"}`) && !isAbsolute(remainder));
+/** Platform-normalized containment check; separator changes cannot bypass it. */
+export const isPathContained = (root: string, candidate: string): boolean => {
+  const windowsPath = process.platform === "win32" || /^[A-Za-z]:[\\/]/.test(root) || /^[A-Za-z]:[\\/]/.test(candidate);
+  const api = windowsPath ? win32 : posix;
+  const normalizeSeparators = (value: string): string => windowsPath ? value.replaceAll("/", "\\") : value.replaceAll("\\", "/");
+  const remainder = api.relative(api.resolve(normalizeSeparators(root)), api.resolve(normalizeSeparators(candidate)));
+  return remainder === "" || (!remainder.startsWith("..") && !api.isAbsolute(remainder));
 };
 
 const waitForExit = (child: ChildProcess): Promise<number | null> => new Promise((resolveExit, reject) => {
@@ -122,13 +166,36 @@ const waitForExit = (child: ChildProcess): Promise<number | null> => new Promise
   child.once("exit", (code) => resolveExit(code));
 });
 
-const terminateTree = async (child: ChildProcess): Promise<void> => {
-  if (!child.pid || child.exitCode !== null) return;
+const waitForExitBounded = async (exit: Promise<number | null>): Promise<number | null> =>
+  Promise.race([exit, delay(1_000).then(() => null)]);
+
+const terminateTree = async (child: ChildProcess, observedPids: ReadonlySet<number> = new Set()): Promise<void> => {
+  if (!child.pid) return;
   if (process.platform === "win32") {
-    try { await readCommandOutput("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"]); } catch { /* process may have exited */ }
+    for (const pid of new Set([child.pid, ...observedPids])) {
+      try { await readCommandOutput("taskkill.exe", ["/PID", String(pid), "/T", "/F"], 1_000); } catch { /* process may have exited */ }
+    }
     return;
   }
-  try { process.kill(-child.pid, "SIGKILL"); } catch { try { child.kill("SIGKILL"); } catch { /* process may have exited */ } }
+  try { process.kill(-child.pid, "SIGKILL"); } catch { /* process group may have exited */ }
+  for (const pid of observedPids) {
+    try { process.kill(pid, "SIGKILL"); } catch { /* process may have exited */ }
+  }
+};
+
+const verifyTreeGone = async (observedPids: ReadonlySet<number>): Promise<boolean> => {
+  const deadline = Date.now() + 500;
+  while (Date.now() < deadline) {
+    let alive = false;
+    for (const pid of observedPids) {
+      try { process.kill(pid, 0); alive = true; } catch { /* gone */ }
+    }
+    if (!alive) return true;
+    await delay(20);
+  }
+  return [...observedPids].every((pid) => {
+    try { process.kill(pid, 0); return false; } catch { return true; }
+  });
 };
 
 /** Reservation scheduler plus a fail-closed local process supervisor. */
@@ -170,67 +237,75 @@ export class LocalScheduler {
     return job;
   }
 
-  async runLocal(request: JobRequest, command: readonly string[], policy: LocalRunPolicy): Promise<LocalProcessResult> {
-    const [executable, ...args] = command;
-    if (!executable || ![...policy.allowedExecutables].some((allowed) => executableMatches(executable, allowed))) throw new Error("COMMAND_NOT_ALLOWLISTED");
-    if (args.some(hasUnsafeArgument) || policy.allowedArguments?.(args) === false) throw new Error("ARGUMENTS_NOT_ALLOWLISTED");
+  async runLocal(request: JobRequest, command: NativeSolverCommand, policy: LocalRunPolicy): Promise<LocalProcessResult> {
+    if (!isTrustedNativeCommand(command) || ![...policy.allowedExecutables].some((allowed) => executableMatches(command.executable, allowed))) throw new Error("COMMAND_NOT_ALLOWLISTED");
+    const executable = command.executable;
+    const args = [...command.args];
+    if (args.some(hasUnsafeArgument)) throw new Error("ARGUMENTS_NOT_ALLOWLISTED");
     if (request.remote) throw new Error("LOCAL_RUN_CANNOT_BE_REMOTE");
     const cwd = policy.workingDirectory ? resolve(policy.workingDirectory) : undefined;
-    if (cwd && policy.allowedWorkingDirectory && !pathIsContained(policy.allowedWorkingDirectory, cwd)) throw new Error("WORKING_DIRECTORY_OUTSIDE_ALLOWLIST");
+    if (cwd && policy.allowedWorkingDirectory && !isPathContained(policy.allowedWorkingDirectory, cwd)) throw new Error("WORKING_DIRECTORY_OUTSIDE_ALLOWLIST");
     if (cwd && !policy.allowedWorkingDirectory) throw new Error("WORKING_DIRECTORY_ROOT_REQUIRED");
     if (policy.timeoutMs !== undefined && (!Number.isFinite(policy.timeoutMs) || policy.timeoutMs <= 0)) throw new Error("INVALID_PROCESS_TIMEOUT");
 
     this.submit(request);
     let child: ChildProcess | undefined;
+    const observedPids = new Set<number>();
     let peakRssMiB = 0;
     let exit: Promise<number | null> | undefined;
     try {
       child = spawn(executable, args, { shell: false, windowsHide: true, detached: process.platform !== "win32", cwd, stdio: "ignore" });
       if (!child.pid) return { state: "failed", exitCode: null, peakRssMiB, reason: "PROCESS_START_FAILED" };
+      observedPids.add(child.pid);
       exit = waitForExit(child);
       const readRss = policy.readRssMiB ?? readProcessTreeRssMiB;
+      const readPids = policy.readPids ?? readProcessTreePids;
       const interval = Math.max(1, policy.pollIntervalMs ?? 100);
       const started = Date.now();
       let sampled = false;
       while (child.exitCode === null && !child.killed) {
         if (policy.signal?.aborted) {
-          await terminateTree(child);
-          await exit;
+          await terminateTree(child, observedPids);
+          await waitForExitBounded(exit);
           return { state: "failed", exitCode: child.exitCode, peakRssMiB, reason: "PROCESS_CANCELLED" };
         }
         if (policy.timeoutMs !== undefined && Date.now() - started >= policy.timeoutMs) {
-          await terminateTree(child);
-          await exit;
+          await terminateTree(child, observedPids);
+          await waitForExitBounded(exit);
           return { state: "failed", exitCode: child.exitCode, peakRssMiB, reason: "PROCESS_TIMEOUT" };
         }
         try {
+          for (const pid of await readPids(child.pid)) observedPids.add(pid);
           const rssMiB = await readRss(child.pid);
           if (!Number.isFinite(rssMiB) || rssMiB < 0) throw new Error("INVALID_RSS_SAMPLE");
           sampled = true;
           peakRssMiB = Math.max(peakRssMiB, rssMiB);
           if (rssMiB > this.aggregateRssMiB || rssMiB > request.requestedMemoryMiB) {
-            await terminateTree(child);
-            await exit;
+            await terminateTree(child, observedPids);
+            await waitForExitBounded(exit);
             return { state: "failed", exitCode: child.exitCode, peakRssMiB, reason: "PROCESS_RSS_LIMIT_EXCEEDED" };
           }
         } catch {
           if (child.exitCode !== null) break;
-          await terminateTree(child);
-          await exit;
+          await terminateTree(child, observedPids);
+          await waitForExitBounded(exit);
           return { state: "failed", exitCode: child.exitCode, peakRssMiB, reason: "RSS_MONITOR_UNAVAILABLE" };
         }
         await delay(interval);
       }
-      const exitCode = child.exitCode ?? await exit;
+      const exitCode = child.exitCode ?? await waitForExitBounded(exit);
       if (!sampled) return { state: "failed", exitCode, peakRssMiB, reason: "RSS_MONITOR_UNAVAILABLE" };
       return exitCode === 0 ? { state: "completed", exitCode, peakRssMiB } : { state: "failed", exitCode, peakRssMiB, reason: "PROCESS_EXIT_NONZERO" };
     } catch (error) {
-      if (child) await terminateTree(child);
+      if (child) await terminateTree(child, observedPids);
       if (exit) await exit.catch(() => undefined);
       if (error instanceof Error && error.message === "INVALID_PROCESS_TIMEOUT") throw error;
       return { state: "failed", exitCode: child?.exitCode ?? null, peakRssMiB, reason: "PROCESS_START_FAILED" };
     } finally {
-      if (child) await terminateTree(child);
+      if (child) {
+        await terminateTree(child, observedPids);
+        if (!(await verifyTreeGone(observedPids))) throw new Error("PROCESS_TREE_CLEANUP_UNVERIFIED");
+      }
       this.jobs.delete(request.id);
     }
   }

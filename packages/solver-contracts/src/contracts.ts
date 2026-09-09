@@ -5,13 +5,15 @@ export type SolverId =
 
 export type ResultKind = "fields" | "scalars" | "geometry" | "mesh" | "coupling" | "report";
 export type CapabilityState = "ready" | "unavailable";
+import type { NativeSolverCommand, SolverLaunchInput } from "./commands.ts";
 
 export interface SolverManifest {
   readonly id: SolverId;
   readonly displayName: string;
   readonly category: "solver" | "coupling" | "geometry";
-  readonly versionProbe: { readonly command: readonly string[] };
+  readonly versionProbe: { readonly executable: string; readonly args: readonly ["--version"] };
   readonly allowedExecutables: readonly string[];
+  readonly buildCommand: (input: SolverLaunchInput) => NativeSolverCommand;
   readonly resultKinds: readonly ResultKind[];
   readonly execution: { readonly trustModel: "native-only"; readonly checkpoint: boolean };
 }
@@ -32,8 +34,7 @@ export interface CapabilityReport {
 export interface LaunchRequest {
   readonly solverId: SolverId;
   readonly designId: string;
-  /** A complete command is retained for compatibility, but is validated against the manifest. */
-  readonly command: readonly string[];
+  readonly launch: SolverLaunchInput;
   readonly requestedMemoryMiB: number;
   readonly checkpointFrom?: string;
 }

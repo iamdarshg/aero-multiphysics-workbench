@@ -33,6 +33,7 @@ test("engineering server completes an MCP stdio handshake and exposes only allow
     assert.equal(inspect.isError, undefined);
     assert.deepEqual(inspect.structuredContent, {
       operation: "design.inspect",
+      skeleton: true,
       source: "metadata-only",
       found: false,
     });

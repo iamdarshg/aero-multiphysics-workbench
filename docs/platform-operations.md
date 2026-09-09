@@ -21,13 +21,13 @@ The demo command deliberately exits without a numerical result until an explicit
 
 ## Resource and remote policy
 
-`LocalScheduler` enforces an aggregate local process-tree RSS budget of 896 MiB. Every admitted local process is launched without a shell in its own process group; the supervisor samples the root and descendants and terminates the whole tree when the reservation or aggregate ceiling is exceeded. If process-tree measurement is unavailable, the run is terminated and fails closed. The supplied local compose profile caps the optional MCP container at 250 MiB.
+`LocalScheduler` enforces an 896 MiB aggregate project reservation budget and samples each admitted worker's root-plus-descendant RSS. Every admitted local process is launched without a shell in its own process group; the supervisor terminates the whole observed tree when the reservation or project reservation ceiling is exceeded. If process-tree measurement is unavailable, the run is terminated and fails closed. This telemetry plus admission control is not an OS-wide ceiling over unrelated host processes; a kernel/job-object host-wide ceiling remains a Task 4 gate. The supplied local compose profile caps the optional MCP container at 250 MiB.
 
 Remote work is rejected unless both the user-owned MCP session sets `AERO_ALLOW_REMOTE_COMPUTE=1` and its cost ceiling fits the session’s `AERO_REMOTE_COST_CEILING_USD`. Destructive `design.delete` separately requires `AERO_ALLOW_DESTRUCTIVE=1`. These environment values must be set by the interactive operator; no file stores a credential or approval.
 
 ## Provenance and results
 
-`SolverGateway.launch` creates a provenance event only after a capability is READY. Its `RunRecord` labels source as `native-solver`; it does not create a result. Native worker implementations must retain solver version, input digest, case directory/output digest, checkpoint lineage, start/end times, scheduler admission, and an explicit result source/fidelity before publishing data.
+`SolverGateway.launch` creates a queued provenance event only after a capability is READY. Its `RunRecord` labels the intended source as `native-solver`; it does not execute a solver or create a result. Result publication is currently disabled fail-closed: a future native worker must retain a completed run receipt, exact 64-hex SHA-256, approved artifact root, parser receipt, solver version, input digest, checkpoint lineage, start/end times, scheduler admission, and an explicit result source/fidelity before publishing data.
 
 ## Containers and cloud
 

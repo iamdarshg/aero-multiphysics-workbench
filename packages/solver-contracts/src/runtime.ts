@@ -11,17 +11,26 @@ const normalizedExecutable = (command: string): string => process.platform === "
 
 const unsafeArgument = (arg: string): boolean => arg.includes("\u0000") || /[\r\n]/.test(arg) || /^(?:-Command|-EncodedCommand)$/i.test(arg);
 
-/** Builds a native argv from the manifest-selected executable, never shell text. */
-export const buildSolverCommand = (solverId: SolverId, args: readonly string[] = []): readonly string[] => {
+/** Builds an opaque native command through the immutable manifest policy. */
+export const buildSolverCommand = (solverId: SolverId, input: { readonly caseDirectory: string }) => {
   const manifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === solverId);
   if (!manifest || manifest.allowedExecutables.length === 0) throw new Error(`SOLVER_MANIFEST_UNAVAILABLE: ${solverId}`);
-  if (args.some(unsafeArgument)) throw new Error(`ARGUMENTS_NOT_ALLOWLISTED: ${solverId}`);
-  return [manifest.allowedExecutables[0], ...args];
+  const command = manifest.buildCommand(input);
+  if (normalizedExecutable(command.executable) !== normalizedExecutable(manifest.allowedExecutables[0] as string) || command.args.some(unsafeArgument)) {
+    throw new Error(`ARGUMENTS_NOT_ALLOWLISTED: ${solverId}`);
+  }
+  return command;
 };
 
-/** Executes a fixed manifest argv without a shell; it never installs or starts a solver. */
+/** Executes only the immutable registry's fixed version probe; it never installs or starts a solver. */
 export const commandProbe: Probe = async (manifest) => new Promise((resolve) => {
-  const [command, ...args] = manifest.versionProbe.command;
+  const trustedManifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === manifest.id);
+  if (trustedManifest !== manifest) {
+    resolve({ available: false, detail: "manifest is not from the trusted registry" });
+    return;
+  }
+  const command = manifest.versionProbe.executable;
+  const args = manifest.versionProbe.args;
   if (!command) return resolve({ available: false, detail: "empty version probe" });
   let stdout = "";
   let settled = false;
@@ -77,21 +86,18 @@ export class SolverGateway {
       this.provenance.append({ id: randomUUID(), at: new Date().toISOString(), type: "launch-rejected", detail: `CAPABILITY_UNAVAILABLE:${request.solverId}:${capability?.detail ?? "not checked"}` });
       throw new Error(`CAPABILITY_UNAVAILABLE: ${request.solverId}`);
     }
-    if (request.command.length === 0 || request.requestedMemoryMiB <= 0 || !Number.isFinite(request.requestedMemoryMiB)) throw new Error("INVALID_LAUNCH_REQUEST");
+    if (!request.launch || request.requestedMemoryMiB <= 0 || !Number.isFinite(request.requestedMemoryMiB)) throw new Error("INVALID_LAUNCH_REQUEST");
     const manifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === request.solverId);
-    const executable = normalizedExecutable(request.command[0] ?? "");
-    const allowed = manifest?.allowedExecutables.some((candidate) => normalizedExecutable(candidate) === executable && !candidate.includes("/") && !candidate.includes("\\")) ?? false;
-    if (!allowed) throw new Error(`COMMAND_NOT_ALLOWLISTED: ${request.solverId}`);
-    if (request.command.slice(1).some(unsafeArgument)) throw new Error(`ARGUMENTS_NOT_ALLOWLISTED: ${request.solverId}`);
+    if (!manifest) throw new Error(`SOLVER_MANIFEST_UNAVAILABLE: ${request.solverId}`);
+    buildSolverCommand(request.solverId, request.launch);
     const provenanceId = randomUUID();
     this.provenance.append({ id: provenanceId, at: new Date().toISOString(), type: "launch-accepted", detail: `${request.solverId}:${request.designId}` });
     return { runId: randomUUID(), solverId: request.solverId, designId: request.designId, state: "accepted", source: "native-solver", checkpointFrom: request.checkpointFrom, provenanceId };
   }
 
-  recordResult(run: RunRecord, result: { artifactUri: string; digestSha256: string }): ResultRecord {
-    if (run.state !== "accepted" || !result.artifactUri || !/^[a-f0-9]{6,}$/i.test(result.digestSha256)) throw new Error("INVALID_NATIVE_RESULT");
-    const provenanceId = randomUUID();
-    this.provenance.append({ id: provenanceId, at: new Date().toISOString(), type: "result-recorded", detail: `${run.runId}:${result.artifactUri}` });
-    return { resultId: randomUUID(), runId: run.runId, solverId: run.solverId, source: "native-solver", artifactUri: result.artifactUri, digestSha256: result.digestSha256, checkpointFrom: run.checkpointFrom, provenanceId };
+  recordResult(_run: RunRecord, _result: { artifactUri: string; digestSha256: string }): ResultRecord {
+    // Native completion receipts, parser receipts, artifact-root checks, and
+    // solver/input lineage are not wired yet. Never publish a fabricated result.
+    throw new Error("NATIVE_RESULT_PUBLICATION_UNVERIFIED");
   }
 }

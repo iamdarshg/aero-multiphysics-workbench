@@ -26,14 +26,14 @@ export class McpEngineeringServer {
     const ownerId = this.permissions.ownerId ?? "local-operator";
     if (operation === "design.delete") {
       if (!this.permissions.destructive) throw new Error("DESTRUCTIVE_OPERATION_NOT_AUTHORIZED");
-      return { authorized: true, deleted: false, designId: String(input.designId ?? ""), reason: "NO_DESIGN_STORE_CONFIGURED" };
+      return { operation, skeleton: true, queued: false, authorized: true, deleted: false, designId: String(input.designId ?? ""), reason: "NO_DESIGN_STORE_CONFIGURED" };
     }
     if (operation === "design.variant.create") {
       if (!this.permissions.mutations) throw new Error("MUTATION_NOT_AUTHORIZED");
       const designId = String(input.designId ?? "");
       const variantId = String(input.variantId ?? "");
       if (!designId || !variantId) throw new Error("INVALID_VARIANT_REQUEST");
-      return { created: false, designId, variantId, reason: "NO_DESIGN_STORE_CONFIGURED" };
+      return { operation, skeleton: true, queued: false, created: false, designId, variantId, reason: "NO_DESIGN_STORE_CONFIGURED" };
     }
     if (operation === "simulation.launch") {
       const id = String(input.id ?? "");
@@ -42,13 +42,13 @@ export class McpEngineeringServer {
       const remote = input.remote === true;
       if (remote && !this.permissions.remoteCompute) throw new Error("REMOTE_COMPUTE_NOT_AUTHORIZED");
       if (remote && costCeilingUsd > (this.permissions.remoteCostCeilingUsd ?? 0)) throw new Error("REMOTE_COST_BUDGET_EXCEEDED");
-      return this.scheduler.submit({ id, requestedMemoryMiB, remote, costCeilingUsd, ownerId });
+      return { ...(this.scheduler.submit({ id, requestedMemoryMiB, remote, costCeilingUsd, ownerId })), skeleton: true, solverExecuted: false };
     }
     if (operation === "job.cancel") {
-      return this.scheduler.cancel(String(input.id ?? ""), ownerId);
+      return { ...(this.scheduler.cancel(String(input.id ?? ""), ownerId)), skeleton: true, nativeProcessCancelled: false };
     }
-    if (operation === "design.inspect" || operation === "result.inspect") return { operation, source: "metadata-only", found: false };
-    if (operation === "provenance.list") return { source: "metadata-only", events: [] };
+    if (operation === "design.inspect" || operation === "result.inspect") return { operation, skeleton: true, source: "metadata-only", found: false };
+    if (operation === "provenance.list") return { operation, skeleton: true, source: "metadata-only", events: [] };
     throw new Error("UNKNOWN_MCP_OPERATION");
   }
 }

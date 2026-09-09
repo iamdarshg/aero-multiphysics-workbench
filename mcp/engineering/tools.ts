@@ -21,27 +21,27 @@ const invoke = async (operation: McpOperation, operationServer: McpEngineeringSe
 /** Register only typed, bounded operations; there is deliberately no shell/path tool. */
 export const registerEngineeringTools = (server: McpServer, operationServer: McpEngineeringServer): void => {
   server.registerTool("design.inspect", {
-    description: "Inspect design metadata without reading arbitrary paths.",
+    description: "Skeleton metadata inspection only; no design store is connected and no arbitrary paths are read.",
     inputSchema: z.object({ designId: z.string().min(1).max(128) }),
   }, (input) => invoke("design.inspect", operationServer, input));
 
   server.registerTool("design.variant.create", {
-    description: "Request a variant through the governed design store.",
+    description: "Skeleton variant request only; queued metadata response until a governed design store is connected.",
     inputSchema: z.object({ designId: z.string().min(1).max(128), variantId: z.string().min(1).max(128) }),
   }, (input) => invoke("design.variant.create", operationServer, input));
 
   server.registerTool("result.inspect", {
-    description: "Inspect result metadata without reading arbitrary artifact paths.",
+    description: "Skeleton result metadata inspection only; no result store or native artifact reader is connected.",
     inputSchema: z.object({ resultId: z.string().min(1).max(128) }),
   }, (input) => invoke("result.inspect", operationServer, input));
 
   server.registerTool("provenance.list", {
-    description: "Retrieve provenance metadata for the current owner.",
+    description: "Skeleton provenance listing only; returns queued/empty metadata until a provenance store is connected.",
     inputSchema: z.object({ designId: z.string().min(1).max(128).optional() }),
   }, (input) => invoke("provenance.list", operationServer, input));
 
   server.registerTool("simulation.launch", {
-    description: "Request a bounded simulation reservation. Does not execute a solver.",
+    description: "Queued reservation skeleton only; does not execute a solver or claim Task 4/5 completion.",
     inputSchema: z.object({
       id: z.string().min(1).max(128),
       requestedMemoryMiB: z.number().positive().max(896),
@@ -51,13 +51,12 @@ export const registerEngineeringTools = (server: McpServer, operationServer: Mcp
   }, (input) => invoke("simulation.launch", operationServer, input));
 
   server.registerTool("job.cancel", {
-    description: "Cancel a queued job owned by the current operator.",
+    description: "Cancel a queued reservation only; no running native process is connected to this operation.",
     inputSchema: z.object({ id: z.string().min(1).max(128) }),
   }, (input) => invoke("job.cancel", operationServer, input));
 
   server.registerTool("design.delete", {
-    description: "Delete a design only when the interactive operator explicitly enabled destructive access.",
+    description: "Skeleton destructive request only; no design store is connected, so deletion remains a fail-closed no-op.",
     inputSchema: z.object({ designId: z.string().min(1).max(128) }),
   }, (input) => invoke("design.delete", operationServer, input));
 };
-
