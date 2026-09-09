@@ -1,0 +1,1086 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "baseline-requirements-evidence-v2",
+  "generatedAt": "2026-09-09T17:34:49.862Z",
+  "command": "pnpm test && pnpm typecheck && pnpm lint",
+  "exitCode": 0,
+  "repositoryEvidence": "Current isolated worktree baseline before subsequent task integration.",
+  "observations": [
+    {
+      "id": "section:0",
+      "status": "PARTIAL",
+      "basis": [
+        "README.md",
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:1",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:2",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md",
+        "packages/core/aeroworkbench_core/types.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:3",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:4",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/coupling.py",
+        "tests/core/test_contract_hardening.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:5",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/convergence.py",
+        "tests/core/test_domain.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:6",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/resonance.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:7",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/edf.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:8",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:9",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:10",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/thermal.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:11",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/motor.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:12",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/esc.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:13",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/battery.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:14",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:15",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/envelope.py",
+        "tests/core/test_domain.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:16",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:17",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:18",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:19",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/design.py",
+        "tests/core/test_domain.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:20",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:21",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/dag.py",
+        "tests/core/test_envelope_variants_storage.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:22",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:23",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:24",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/design.py",
+        "tests/core/test_envelope_variants_storage.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:25",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/result_contract.py",
+        "tests/core/test_envelope_variants_storage.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:26",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:27",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:28",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:29",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:30",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:31",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:32",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:33",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:34",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:35",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:36",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:37",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:38",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/models/gas_turbine.py",
+        "tests/core/test_analytical_models.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:39",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:40",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:41",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:42",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:43",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:44",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:45",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/types.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:46",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:47",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:48",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:49",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:50",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:51",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:52",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:53",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:54",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/convergence.py",
+        "tests/core/test_domain.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:55",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:56",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:57",
+      "status": "PARTIAL",
+      "basis": [
+        "packages/core/aeroworkbench_core/storage.py",
+        "tests/core/test_envelope_variants_storage.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:58",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:59",
+      "status": "PARTIAL",
+      "basis": [
+        "services/api/aeroworkbench_api/main.py",
+        "tests/core/test_api.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:60",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:61",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:62",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:63",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:64",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:65",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:66",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:67",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:68",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:69",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:70",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:71",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:72",
+      "status": "PARTIAL",
+      "basis": [
+        "tests/core/test_api.py"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:73",
+      "status": "PARTIAL",
+      "basis": [
+        "AGENTS.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:74",
+      "status": "PARTIAL",
+      "basis": [
+        "AGENTS.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:75",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:76",
+      "status": "PARTIAL",
+      "basis": [
+        ".gitignore"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:77",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:78",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:79",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:80",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:81",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "section:82",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:83",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:84",
+      "status": "PARTIAL",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "Current evidence covers only the listed analytical, contract, or architectural subset; required complete validation is not established."
+    },
+    {
+      "id": "section:85",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "No native, UI, deployment, or end-to-end receipt exists in the current repository for this requirement; the audit keeps it blocked."
+    },
+    {
+      "id": "stopping:1",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:2",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:3",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:4",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:5",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:6",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:7",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:8",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:9",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:10",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:11",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:12",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:13",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:14",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:15",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:16",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:17",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:18",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:19",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:20",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:21",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:22",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:23",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:24",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:25",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:26",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:27",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:28",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:29",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:30",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:31",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:32",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:33",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:34",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:35",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:36",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:37",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:38",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:39",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:40",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:41",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:42",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:43",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    },
+    {
+      "id": "stopping:44",
+      "status": "BLOCKED",
+      "basis": [
+        "docs/architecture.md"
+      ],
+      "observation": "The stopping condition is not satisfied by the current baseline and has no complete validation receipt."
+    }
+  ],
+  "unavailableCapabilities": [
+    "OpenFOAM",
+    "Code_Aster",
+    "preCICE",
+    "ROSS",
+    "PyBaMM",
+    "Elmer",
+    "Cantera",
+    "pyCycle",
+    "CadQuery",
+    "Gmsh",
+    "OpenVSP",
+    "FreeCAD",
+    "Next.js frontend",
+    "engineering MCP server",
+    "GCP deployment"
+  ]
+}
