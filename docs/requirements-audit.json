@@ -25,12 +25,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:0; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:0"
         }
       ],
       "lastVerifiedAt": null
@@ -51,12 +48,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:1; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:1"
         }
       ],
       "lastVerifiedAt": null
@@ -77,12 +71,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:2; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:2"
         }
       ],
       "lastVerifiedAt": null
@@ -103,12 +94,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:3; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:3"
         }
       ],
       "lastVerifiedAt": null
@@ -129,12 +117,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:4; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:4"
         }
       ],
       "lastVerifiedAt": null
@@ -155,12 +140,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:5; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:5"
         }
       ],
       "lastVerifiedAt": null
@@ -181,12 +163,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:6; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:6"
         }
       ],
       "lastVerifiedAt": null
@@ -207,12 +186,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:7; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:7"
         }
       ],
       "lastVerifiedAt": null
@@ -233,12 +209,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:8; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:8"
         }
       ],
       "lastVerifiedAt": null
@@ -259,12 +232,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:9; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:9"
         }
       ],
       "lastVerifiedAt": null
@@ -285,12 +255,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:10; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:10"
         }
       ],
       "lastVerifiedAt": null
@@ -311,12 +278,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:11; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:11"
         }
       ],
       "lastVerifiedAt": null
@@ -337,12 +301,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:12; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:12"
         }
       ],
       "lastVerifiedAt": null
@@ -363,12 +324,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:13; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:13"
         }
       ],
       "lastVerifiedAt": null
@@ -389,12 +347,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:14; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:14"
         }
       ],
       "lastVerifiedAt": null
@@ -415,12 +370,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:15; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:15"
         }
       ],
       "lastVerifiedAt": null
@@ -441,12 +393,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:16; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:16"
         }
       ],
       "lastVerifiedAt": null
@@ -467,12 +416,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:17; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:17"
         }
       ],
       "lastVerifiedAt": null
@@ -493,12 +439,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:18; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:18"
         }
       ],
       "lastVerifiedAt": null
@@ -519,12 +462,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:19; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:19"
         }
       ],
       "lastVerifiedAt": null
@@ -545,12 +485,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:20; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:20"
         }
       ],
       "lastVerifiedAt": null
@@ -571,12 +508,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:21; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:21"
         }
       ],
       "lastVerifiedAt": null
@@ -597,12 +531,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:22; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:22"
         }
       ],
       "lastVerifiedAt": null
@@ -623,12 +554,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:23; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:23"
         }
       ],
       "lastVerifiedAt": null
@@ -649,12 +577,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:24; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:24"
         }
       ],
       "lastVerifiedAt": null
@@ -675,12 +600,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:25; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:25"
         }
       ],
       "lastVerifiedAt": null
@@ -701,12 +623,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:26; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:26"
         }
       ],
       "lastVerifiedAt": null
@@ -727,12 +646,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:27; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:27"
         }
       ],
       "lastVerifiedAt": null
@@ -753,12 +669,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:28; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:28"
         }
       ],
       "lastVerifiedAt": null
@@ -779,12 +692,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:29; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:29"
         }
       ],
       "lastVerifiedAt": null
@@ -805,12 +715,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:30; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:30"
         }
       ],
       "lastVerifiedAt": null
@@ -831,12 +738,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:31; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:31"
         }
       ],
       "lastVerifiedAt": null
@@ -857,12 +761,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:32; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:32"
         }
       ],
       "lastVerifiedAt": null
@@ -883,12 +784,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:33; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:33"
         }
       ],
       "lastVerifiedAt": null
@@ -909,12 +807,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:34; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:34"
         }
       ],
       "lastVerifiedAt": null
@@ -935,12 +830,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:35; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:35"
         }
       ],
       "lastVerifiedAt": null
@@ -961,12 +853,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:36; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:36"
         }
       ],
       "lastVerifiedAt": null
@@ -987,12 +876,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:37; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:37"
         }
       ],
       "lastVerifiedAt": null
@@ -1013,12 +899,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:38; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:38"
         }
       ],
       "lastVerifiedAt": null
@@ -1039,12 +922,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:39; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:39"
         }
       ],
       "lastVerifiedAt": null
@@ -1065,12 +945,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:40; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:40"
         }
       ],
       "lastVerifiedAt": null
@@ -1091,12 +968,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:41; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:41"
         }
       ],
       "lastVerifiedAt": null
@@ -1117,12 +991,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:42; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:42"
         }
       ],
       "lastVerifiedAt": null
@@ -1143,12 +1014,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:43; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:43"
         }
       ],
       "lastVerifiedAt": null
@@ -1169,12 +1037,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:44; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:44"
         }
       ],
       "lastVerifiedAt": null
@@ -1195,12 +1060,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:45; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:45"
         }
       ],
       "lastVerifiedAt": null
@@ -1221,12 +1083,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:46; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:46"
         }
       ],
       "lastVerifiedAt": null
@@ -1247,12 +1106,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:47; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:47"
         }
       ],
       "lastVerifiedAt": null
@@ -1273,12 +1129,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:48; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:48"
         }
       ],
       "lastVerifiedAt": null
@@ -1299,12 +1152,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:49; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:49"
         }
       ],
       "lastVerifiedAt": null
@@ -1325,12 +1175,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:50; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:50"
         }
       ],
       "lastVerifiedAt": null
@@ -1351,12 +1198,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:51; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:51"
         }
       ],
       "lastVerifiedAt": null
@@ -1377,12 +1221,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:52; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:52"
         }
       ],
       "lastVerifiedAt": null
@@ -1403,12 +1244,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:53; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:53"
         }
       ],
       "lastVerifiedAt": null
@@ -1429,12 +1267,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:54; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:54"
         }
       ],
       "lastVerifiedAt": null
@@ -1455,12 +1290,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:55; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:55"
         }
       ],
       "lastVerifiedAt": null
@@ -1481,12 +1313,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:56; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:56"
         }
       ],
       "lastVerifiedAt": null
@@ -1507,12 +1336,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:57; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:57"
         }
       ],
       "lastVerifiedAt": null
@@ -1533,12 +1359,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:58; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:58"
         }
       ],
       "lastVerifiedAt": null
@@ -1559,12 +1382,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:59; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:59"
         }
       ],
       "lastVerifiedAt": null
@@ -1585,12 +1405,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:60; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:60"
         }
       ],
       "lastVerifiedAt": null
@@ -1611,12 +1428,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:61; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:61"
         }
       ],
       "lastVerifiedAt": null
@@ -1637,12 +1451,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:62; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:62"
         }
       ],
       "lastVerifiedAt": null
@@ -1663,12 +1474,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:63; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:63"
         }
       ],
       "lastVerifiedAt": null
@@ -1689,12 +1497,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:64; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:64"
         }
       ],
       "lastVerifiedAt": null
@@ -1715,12 +1520,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:65; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:65"
         }
       ],
       "lastVerifiedAt": null
@@ -1741,12 +1543,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:66; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:66"
         }
       ],
       "lastVerifiedAt": null
@@ -1767,12 +1566,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:67; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:67"
         }
       ],
       "lastVerifiedAt": null
@@ -1793,12 +1589,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:68; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:68"
         }
       ],
       "lastVerifiedAt": null
@@ -1819,12 +1612,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:69; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:69"
         }
       ],
       "lastVerifiedAt": null
@@ -1845,12 +1635,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:70; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:70"
         }
       ],
       "lastVerifiedAt": null
@@ -1871,12 +1658,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:71; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:71"
         }
       ],
       "lastVerifiedAt": null
@@ -1897,12 +1681,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:72; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:72"
         }
       ],
       "lastVerifiedAt": null
@@ -1923,12 +1704,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:73; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:73"
         }
       ],
       "lastVerifiedAt": null
@@ -1949,12 +1727,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:74; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:74"
         }
       ],
       "lastVerifiedAt": null
@@ -1975,12 +1750,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:75; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:75"
         }
       ],
       "lastVerifiedAt": null
@@ -2001,12 +1773,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:76; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:76"
         }
       ],
       "lastVerifiedAt": null
@@ -2027,12 +1796,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:77; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:77"
         }
       ],
       "lastVerifiedAt": null
@@ -2053,12 +1819,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:78; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:78"
         }
       ],
       "lastVerifiedAt": null
@@ -2079,12 +1842,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:79; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:79"
         }
       ],
       "lastVerifiedAt": null
@@ -2105,12 +1865,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:80; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:80"
         }
       ],
       "lastVerifiedAt": null
@@ -2131,12 +1888,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:81; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:81"
         }
       ],
       "lastVerifiedAt": null
@@ -2157,12 +1911,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:82; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:82"
         }
       ],
       "lastVerifiedAt": null
@@ -2183,12 +1934,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:83; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:83"
         }
       ],
       "lastVerifiedAt": null
@@ -2209,12 +1957,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:84; status PARTIAL is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:84"
         }
       ],
       "lastVerifiedAt": null
@@ -2235,12 +1980,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for section:85; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:85"
         }
       ],
       "lastVerifiedAt": null
@@ -2263,12 +2005,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:1; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:1"
         }
       ],
       "lastVerifiedAt": null
@@ -2289,12 +2028,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:2; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:2"
         }
       ],
       "lastVerifiedAt": null
@@ -2315,12 +2051,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:3; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:3"
         }
       ],
       "lastVerifiedAt": null
@@ -2341,12 +2074,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:4; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:4"
         }
       ],
       "lastVerifiedAt": null
@@ -2367,12 +2097,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:5; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:5"
         }
       ],
       "lastVerifiedAt": null
@@ -2393,12 +2120,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:6; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:6"
         }
       ],
       "lastVerifiedAt": null
@@ -2419,12 +2143,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:7; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:7"
         }
       ],
       "lastVerifiedAt": null
@@ -2445,12 +2166,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:8; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:8"
         }
       ],
       "lastVerifiedAt": null
@@ -2471,12 +2189,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:9; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:9"
         }
       ],
       "lastVerifiedAt": null
@@ -2497,12 +2212,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:10; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:10"
         }
       ],
       "lastVerifiedAt": null
@@ -2523,12 +2235,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:11; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:11"
         }
       ],
       "lastVerifiedAt": null
@@ -2549,12 +2258,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:12; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:12"
         }
       ],
       "lastVerifiedAt": null
@@ -2575,12 +2281,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:13; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:13"
         }
       ],
       "lastVerifiedAt": null
@@ -2601,12 +2304,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:14; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:14"
         }
       ],
       "lastVerifiedAt": null
@@ -2627,12 +2327,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:15; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:15"
         }
       ],
       "lastVerifiedAt": null
@@ -2653,12 +2350,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:16; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:16"
         }
       ],
       "lastVerifiedAt": null
@@ -2679,12 +2373,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:17; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:17"
         }
       ],
       "lastVerifiedAt": null
@@ -2705,12 +2396,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:18; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:18"
         }
       ],
       "lastVerifiedAt": null
@@ -2731,12 +2419,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:19; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:19"
         }
       ],
       "lastVerifiedAt": null
@@ -2757,12 +2442,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:20; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:20"
         }
       ],
       "lastVerifiedAt": null
@@ -2783,12 +2465,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:21; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:21"
         }
       ],
       "lastVerifiedAt": null
@@ -2809,12 +2488,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:22; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:22"
         }
       ],
       "lastVerifiedAt": null
@@ -2835,12 +2511,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:23; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:23"
         }
       ],
       "lastVerifiedAt": null
@@ -2861,12 +2534,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:24; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:24"
         }
       ],
       "lastVerifiedAt": null
@@ -2887,12 +2557,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:25; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:25"
         }
       ],
       "lastVerifiedAt": null
@@ -2913,12 +2580,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:26; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:26"
         }
       ],
       "lastVerifiedAt": null
@@ -2939,12 +2603,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:27; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:27"
         }
       ],
       "lastVerifiedAt": null
@@ -2965,12 +2626,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:28; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:28"
         }
       ],
       "lastVerifiedAt": null
@@ -2991,12 +2649,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:29; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:29"
         }
       ],
       "lastVerifiedAt": null
@@ -3017,12 +2672,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:30; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:30"
         }
       ],
       "lastVerifiedAt": null
@@ -3043,12 +2695,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:31; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:31"
         }
       ],
       "lastVerifiedAt": null
@@ -3069,12 +2718,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:32; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:32"
         }
       ],
       "lastVerifiedAt": null
@@ -3095,12 +2741,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:33; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:33"
         }
       ],
       "lastVerifiedAt": null
@@ -3121,12 +2764,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:34; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:34"
         }
       ],
       "lastVerifiedAt": null
@@ -3147,12 +2787,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:35; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:35"
         }
       ],
       "lastVerifiedAt": null
@@ -3173,12 +2810,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:36; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:36"
         }
       ],
       "lastVerifiedAt": null
@@ -3199,12 +2833,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:37; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:37"
         }
       ],
       "lastVerifiedAt": null
@@ -3225,12 +2856,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:38; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:38"
         }
       ],
       "lastVerifiedAt": null
@@ -3251,12 +2879,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:39; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:39"
         }
       ],
       "lastVerifiedAt": null
@@ -3277,12 +2902,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:40; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:40"
         }
       ],
       "lastVerifiedAt": null
@@ -3303,12 +2925,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:41; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:41"
         }
       ],
       "lastVerifiedAt": null
@@ -3329,12 +2948,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:42; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:42"
         }
       ],
       "lastVerifiedAt": null
@@ -3355,12 +2971,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:43; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:43"
         }
       ],
       "lastVerifiedAt": null
@@ -3381,12 +2994,9 @@
           "kind": "receipt",
           "path": "docs/evidence/requirements-baseline.json",
           "detail": "Baseline receipt observation for stopping:44; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "1ff4d5a98c1a6a05ba24341b7254169b2fc11dbdbec8a941490944672413052d",
-          "verified": true,
-          "supportsPass": false,
-          "command": "pnpm test && pnpm typecheck && pnpm lint",
-          "exitCode": 0,
-          "receiptId": "baseline-requirements-evidence-v2"
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:44"
         }
       ],
       "lastVerifiedAt": null

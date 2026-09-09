@@ -8,8 +8,7 @@ export interface EvidenceRef {
   path: string;
   detail: string;
   sha256: string;
-  verified?: boolean;
-  supportsPass?: boolean;
+  observationId?: RequirementId;
   command?: string;
   exitCode?: number;
   receiptId?: string;

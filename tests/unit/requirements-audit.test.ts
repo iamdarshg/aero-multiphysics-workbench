@@ -74,7 +74,30 @@ describe("requirements audit contract", () => {
     }
     const summary = summarizeAudit(fabricated, { repoRoot });
     assert.equal(summary.mandatoryComplete, false);
-    assert.ok(summary.errors.some((error: string) => error.includes("verified evidence explicitly supporting completion")));
+    assert.ok(summary.errors.some((error: string) => error.includes("receipt observation status does not match PASS")));
+    assert.ok(summary.errors.some((error: string) => error.includes("matching trusted receipt observation")));
+  });
+
+  it("cannot promote mutable evidence flags or a fabricated command to PASS", () => {
+    const fabricated = structuredClone(audit);
+    const entry = fabricated.sections[0];
+    entry.status = "PASS";
+    entry.lastVerifiedAt = "2020-01-01T00:00:00.000Z";
+    entry.evidence[0].verified = true;
+    entry.evidence[0].supportsPass = true;
+    entry.evidence[0].command = "echo definitely-complete";
+    entry.evidence[0].exitCode = 0;
+    const errors = validateAuditDocument(fabricated, { repoRoot });
+    assert.ok(errors.some((error: string) => error.includes("must not contain mutable verified/supportsPass assertions")));
+    assert.ok(errors.some((error: string) => error.includes("command and exitCode must be derived from the receipt")));
+    assert.ok(errors.some((error: string) => error.includes("receipt observation status does not match PASS")));
+  });
+
+  it("binds every evidence reference to its own receipt observation", () => {
+    const mutated = structuredClone(audit);
+    mutated.sections[0].evidence[0].observationId = "section:1";
+    const errors = validateAuditDocument(mutated, { repoRoot });
+    assert.ok(errors.some((error: string) => error.includes("observationId must equal section:0")));
   });
 
   it("rejects a changed authoritative brief digest", () => {

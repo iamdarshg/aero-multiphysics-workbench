@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, posix } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 export const REQUIRED_SECTION_IDS = Array.from({ length: 86 }, (_, id) => `section:${id}`);
 export const REQUIRED_STOPPING_IDS = Array.from({ length: 44 }, (_, index) => `stopping:${index + 1}`);
@@ -18,6 +19,8 @@ const STOPPING_TITLES = Object.freeze(["the repository exists and is clean","the
 const STOPPING_LINES = Object.freeze([2796,2797,2798,2799,2800,2801,2802,2803,2804,2805,2806,2807,2808,2809,2810,2811,2812,2813,2814,2815,2816,2817,2818,2819,2820,2821,2822,2823,2824,2825,2826,2827,2828,2829,2830,2831,2832,2833,2834,2835,2836,2837,2838,2839]);
 const UTC_ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 const SHA256 = /^[a-f0-9]{64}$/i;
+const GIT_SHA1 = /^[a-f0-9]{40}$/i;
+const TRUSTED_RECEIPT_COMMANDS = new Set(["pnpm test && pnpm typecheck && pnpm lint"]);
 const STATUS_SEMANTICS = "PASS requires linked, existing, digest-checked, verified evidence; PARTIAL means a verified subset exists; FAIL means an attempted check failed; BLOCKED means required capability or prerequisite is unavailable.";
 
 export function expectedRequirement(id) {
@@ -61,6 +64,15 @@ function normalizedRepoPath(rawPath, repoRoot, label, errors) {
     return null;
   }
   if (!existsSync(absolute)) errors.push(`${label} evidence path does not exist: ${normalized}`);
+  else {
+    const realRepoRoot = realpathSync(repoRoot);
+    const realEvidencePath = realpathSync(absolute);
+    const realRelativePath = relative(realRepoRoot, realEvidencePath).replaceAll("\\", "/");
+    if (realRelativePath === ".." || realRelativePath.startsWith("../") || isAbsolute(realRelativePath)) {
+      errors.push(`${label} real path escapes the repository`);
+      return null;
+    }
+  }
   return { normalized, absolute };
 }
 
@@ -73,27 +85,87 @@ function validateTimestamp(value, label, errors, required = false) {
   if (Date.parse(value) > Date.now() + 60_000) errors.push(`${label} cannot be in the future`);
 }
 
-function validateEvidence(ref, id, repoRoot, errors) {
+function sha256Text(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function readReceipt(pathInfo, repoRoot, label, errors, receiptCache) {
+  if (receiptCache.has(pathInfo.absolute)) return receiptCache.get(pathInfo.absolute);
+  let receipt;
+  try {
+    receipt = JSON.parse(readFileSync(pathInfo.absolute, "utf8"));
+  } catch (error) {
+    errors.push(`${label} is not valid receipt JSON: ${error instanceof Error ? error.message : String(error)}`);
+    receiptCache.set(pathInfo.absolute, null);
+    return null;
+  }
+  if (receipt.schemaVersion !== 2) errors.push(`${label} receipt schemaVersion must be 2`);
+  if (typeof receipt.receiptId !== "string" || receipt.receiptId.trim() === "") errors.push(`${label} receiptId is missing`);
+  validateTimestamp(receipt.generatedAt, `${label} generatedAt`, errors, true);
+  if (!TRUSTED_RECEIPT_COMMANDS.has(receipt.command)) errors.push(`${label} receipt command is not trusted`);
+  if (!Number.isInteger(receipt.exitCode)) errors.push(`${label} receipt exitCode must be an integer`);
+  if (typeof receipt.stdout !== "string" || !SHA256.test(receipt.stdoutSha256 ?? "") || sha256Text(receipt.stdout ?? "") !== String(receipt.stdoutSha256).toLowerCase()) {
+    errors.push(`${label} receipt stdout digest does not match`);
+  }
+  if (typeof receipt.stderr !== "string" || !SHA256.test(receipt.stderrSha256 ?? "") || sha256Text(receipt.stderr ?? "") !== String(receipt.stderrSha256).toLowerCase()) {
+    errors.push(`${label} receipt stderr digest does not match`);
+  }
+  if (!GIT_SHA1.test(receipt.repositoryCommit ?? "") || !GIT_SHA1.test(receipt.sourceTreeSha256 ?? "")) {
+    errors.push(`${label} receipt requires full repositoryCommit and sourceTreeSha256 git object ids`);
+  } else {
+    try {
+      const commit = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{commit}`], { cwd: repoRoot, encoding: "utf8" }).trim();
+      const tree = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{tree}`], { cwd: repoRoot, encoding: "utf8" }).trim();
+      execFileSync("git", ["merge-base", "--is-ancestor", commit, "HEAD"], { cwd: repoRoot, stdio: "ignore" });
+      if (commit.toLowerCase() !== receipt.repositoryCommit.toLowerCase()) errors.push(`${label} repositoryCommit is not canonical`);
+      if (tree.toLowerCase() !== receipt.sourceTreeSha256.toLowerCase()) errors.push(`${label} source tree does not match repositoryCommit`);
+    } catch {
+      errors.push(`${label} repositoryCommit is unavailable or not an ancestor of HEAD`);
+    }
+  }
+  if (!Array.isArray(receipt.observations)) errors.push(`${label} receipt observations must be an array`);
+  receiptCache.set(pathInfo.absolute, receipt);
+  return receipt;
+}
+
+function validateEvidence(ref, id, status, repoRoot, errors, receiptCache) {
   const label = `${id} evidence`;
   if (!ref || typeof ref !== "object") {
     errors.push(`${label} must be an object`);
-    return;
+    return false;
   }
   if (!ALLOWED_EVIDENCE_KINDS.has(ref.kind)) errors.push(`${label} has invalid kind ${String(ref.kind)}`);
   const pathInfo = normalizedRepoPath(ref.path, repoRoot, label, errors);
-  if (!pathInfo) return;
+  if (!pathInfo) return false;
   if (typeof ref.detail !== "string" || ref.detail.trim() === "") errors.push(`${label} detail must be non-empty`);
   if (typeof ref.sha256 !== "string" || !SHA256.test(ref.sha256)) {
     errors.push(`${label} requires a SHA-256 digest`);
   } else if (existsSync(pathInfo.absolute) && sha256File(pathInfo.absolute).toLowerCase() !== ref.sha256.toLowerCase()) {
     errors.push(`${label} SHA-256 does not match the referenced file`);
   }
-  if (ref.kind === "command" || ref.kind === "test" || ref.kind === "receipt") {
+  if (ref.kind === "command" || ref.kind === "test") {
     if (typeof ref.command !== "string" || ref.command.trim() === "") errors.push(`${label} requires an immutable command receipt`);
     if (!Number.isInteger(ref.exitCode)) errors.push(`${label} requires an integer exitCode`);
   }
-  if (ref.kind === "receipt" && (typeof ref.receiptId !== "string" || ref.receiptId.trim() === "")) errors.push(`${label} requires receiptId`);
-  if (ref.kind !== "file" && ref.verified !== true) errors.push(`${label} must be explicitly verified for non-file evidence`);
+  if ("verified" in ref || "supportsPass" in ref) errors.push(`${label} must not contain mutable verified/supportsPass assertions`);
+  if (ref.kind !== "receipt") return false;
+  if (typeof ref.receiptId !== "string" || ref.receiptId.trim() === "") errors.push(`${label} requires receiptId`);
+  if (ref.observationId !== id) errors.push(`${label} observationId must equal ${id}`);
+  const receipt = readReceipt(pathInfo, repoRoot, label, errors, receiptCache);
+  if (!receipt) return false;
+  if (ref.receiptId !== receipt.receiptId) errors.push(`${label} receiptId does not match the receipt`);
+  if ("command" in ref || "exitCode" in ref) errors.push(`${label} command and exitCode must be derived from the receipt`);
+  const observations = receipt.observations?.filter((observation) => observation?.id === ref.observationId) ?? [];
+  if (observations.length !== 1) {
+    errors.push(`${label} receipt must contain exactly one matching observation`);
+    return false;
+  }
+  const observation = observations[0];
+  if (observation.status !== status) errors.push(`${label} receipt observation status does not match ${status}`);
+  if (!Array.isArray(observation.basis) || observation.basis.length === 0 || typeof observation.observation !== "string" || observation.observation.trim() === "") {
+    errors.push(`${label} receipt observation requires non-empty basis and explanation`);
+  }
+  return observation.status === "PASS" && receipt.exitCode === 0 && TRUSTED_RECEIPT_COMMANDS.has(receipt.command);
 }
 
 function validateSource(document, errors) {
@@ -118,6 +190,7 @@ function validateEntries(entries, prefix, document, repoRoot, errors) {
   }
   const expected = new Set(expectedIds(prefix));
   const seen = new Set();
+  const receiptCache = new Map();
   for (const entry of entries) {
     if (!entry || typeof entry !== "object") {
       errors.push(`${prefix} contains a non-object entry`);
@@ -137,13 +210,14 @@ function validateEntries(entries, prefix, document, repoRoot, errors) {
     if (typeof entry.statusExplanation !== "string" || entry.statusExplanation.trim() === "") errors.push(`${id} requires a truthful statusExplanation`);
     const ref = entry.sourceRef;
     if (!ref || ref.briefId !== SOURCE_BINDING.briefId || ref.section !== canonical.section || ref.lineStart !== canonical.lineStart || ref.lineEnd !== canonical.lineEnd) errors.push(`${id} sourceRef does not match the authoritative brief span`);
+    let receiptSupportsPass = false;
     if (!Array.isArray(entry.evidence) || entry.evidence.length === 0) errors.push(`${id} must contain non-empty evidence`);
-    else for (const evidence of entry.evidence) validateEvidence(evidence, id, repoRoot, errors);
+    else for (const evidence of entry.evidence) receiptSupportsPass = validateEvidence(evidence, id, entry.status, repoRoot, errors, receiptCache) || receiptSupportsPass;
     if (!("lastVerifiedAt" in entry)) errors.push(`${id} lastVerifiedAt must be explicit (ISO string or null)`);
     if (entry.lastVerifiedAt !== null && entry.lastVerifiedAt !== undefined) validateTimestamp(entry.lastVerifiedAt, `${id} lastVerifiedAt`, errors);
     if (entry.status === "PASS") {
       validateTimestamp(entry.lastVerifiedAt, `${id} lastVerifiedAt`, errors, true);
-      if (!entry.evidence?.some((evidence) => evidence?.kind !== "file" && evidence?.verified === true && evidence?.supportsPass === true)) errors.push(`${id} PASS requires verified evidence explicitly supporting completion`);
+      if (!receiptSupportsPass) errors.push(`${id} PASS requires a matching trusted receipt observation with a successful exit`);
     }
   }
   for (const id of expected) if (!seen.has(id)) errors.push(`${prefix} is missing ${id}`);

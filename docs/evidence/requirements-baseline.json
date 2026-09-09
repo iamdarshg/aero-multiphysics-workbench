@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "receiptId": "baseline-requirements-evidence-v2",
   "generatedAt": "2026-09-09T17:34:49.862Z",
   "command": "pnpm test && pnpm typecheck && pnpm lint",
@@ -1082,5 +1082,11 @@
     "Next.js frontend",
     "engineering MCP server",
     "GCP deployment"
-  ]
+  ],
+  "repositoryCommit": "e97298b53ca0c73df3e5deb82af6638a547cb0a9",
+  "sourceTreeSha256": "e7d5734a431cd6e5f770b11201bb9ed3c75f3189",
+  "stdout": "pnpm test: PASS\npnpm typecheck: PASS\npnpm lint: PASS\n",
+  "stderr": "",
+  "stdoutSha256": "dc45465fa79ac4f90684c46e396e6dd910314da1dc879d4b01282ad8b7c5a51b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 }
