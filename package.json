@@ -5,6 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "scripts": {
+    "audit:requirements": "node scripts/audit-requirements.mjs",
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test && node --test tests/smoke/workspace.test.mjs",

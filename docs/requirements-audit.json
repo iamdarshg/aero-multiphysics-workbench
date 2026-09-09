@@ -1,0 +1,3135 @@
+{
+  "schemaVersion": 1,
+  "statusSemantics": "PASS requires linked, existing, digest-checked, verified evidence; PARTIAL means a verified subset exists; FAIL means an attempted check failed; BLOCKED means required capability or prerequisite is unavailable.",
+  "source": {
+    "briefId": "authoritative-user-brief-v1",
+    "sha256": "53fd123b59eb65cfe72e3967c7d07e5d3fe169b18be8f0b61a8a061c8c0f9d9a",
+    "lineCount": 2895,
+    "sectionsRange": "0-85",
+    "stoppingConditionsRange": "1-44"
+  },
+  "sections": [
+    {
+      "id": "section:0",
+      "title": "PROJECT PURPOSE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 0,
+        "lineStart": 93,
+        "lineEnd": 131
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:0; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:0",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:1",
+      "title": "CORE PHILOSOPHY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 1,
+        "lineStart": 132,
+        "lineEnd": 233
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:1; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:1",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:2",
+      "title": "USE THE FOLLOWING MAIN TECHNOLOGY ARCHITECTURE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 2,
+        "lineStart": 234,
+        "lineEnd": 281
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:2; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:2",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:3",
+      "title": "FIELD COUPLING",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 3,
+        "lineStart": 282,
+        "lineEnd": 321
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:3; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:3",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:4",
+      "title": "COUPLING MUST BE STRONG BY DEFAULT",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 4,
+        "lineStart": 322,
+        "lineEnd": 381
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:4; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:4",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:5",
+      "title": "GLOBAL PHYSICAL CONVERGENCE MANAGER",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 5,
+        "lineStart": 382,
+        "lineEnd": 499
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:5; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:5",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:6",
+      "title": "RESONANCE MUST BE INSIDE THE PHYSICS LOOP",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 6,
+        "lineStart": 500,
+        "lineEnd": 583
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:6; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:6",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:7",
+      "title": "EDF SYSTEM — FULL FIRST IMPLEMENTATION",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 7,
+        "lineStart": 584,
+        "lineEnd": 620
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:7; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:7",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:8",
+      "title": "CFD BACKEND",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 8,
+        "lineStart": 621,
+        "lineEnd": 657
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:8; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:8",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:9",
+      "title": "STRUCTURAL BACKEND",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 9,
+        "lineStart": 658,
+        "lineEnd": 683
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:9; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:9",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:10",
+      "title": "THERMAL",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 10,
+        "lineStart": 684,
+        "lineEnd": 710
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:10; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:10",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:11",
+      "title": "ELECTRIC MOTOR — THREE FIDELITY LEVELS",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 11,
+        "lineStart": 711,
+        "lineEnd": 789
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:11; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:11",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:12",
+      "title": "ESC MODEL",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 12,
+        "lineStart": 790,
+        "lineEnd": 812
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:12; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:12",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:13",
+      "title": "BATTERY MODEL",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 13,
+        "lineStart": 813,
+        "lineEnd": 872
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:13; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:13",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:14",
+      "title": "AIRCRAFT PURPOSE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 14,
+        "lineStart": 873,
+        "lineEnd": 914
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:14; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:14",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:15",
+      "title": "OPERATING ENVELOPE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 15,
+        "lineStart": 915,
+        "lineEnd": 945
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:15; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:15",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:16",
+      "title": "WHOLE-AIRCRAFT COUPLING",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 16,
+        "lineStart": 946,
+        "lineEnd": 974
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:16; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:16",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:17",
+      "title": "GEOMETRY SYSTEM",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 17,
+        "lineStart": 975,
+        "lineEnd": 1012
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:17; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:17",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:18",
+      "title": "SEMANTIC GEOMETRY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 18,
+        "lineStart": 1013,
+        "lineEnd": 1046
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:18; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:18",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:19",
+      "title": "PARAMETRIC GEOMETRY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 19,
+        "lineStart": 1047,
+        "lineEnd": 1072
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:19; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:19",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:20",
+      "title": "MESHING",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 20,
+        "lineStart": 1073,
+        "lineEnd": 1105
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:20; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:20",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:21",
+      "title": "CACHE EVERYTHING SAFE TO CACHE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 21,
+        "lineStart": 1106,
+        "lineEnd": 1131
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:21; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:21",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:22",
+      "title": "WARM STARTS",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 22,
+        "lineStart": 1132,
+        "lineEnd": 1155
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:22; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:22",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:23",
+      "title": "MESH MORPHING AND LOCAL REMESH",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 23,
+        "lineStart": 1156,
+        "lineEnd": 1189
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:23; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:23",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:24",
+      "title": "DESIGN VARIANTS",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 24,
+        "lineStart": 1190,
+        "lineEnd": 1230
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:24; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:24",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:25",
+      "title": "COMPLETE PROVENANCE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 25,
+        "lineStart": 1231,
+        "lineEnd": 1294
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:25; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:25",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:26",
+      "title": "USER INTERFACE",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 26,
+        "lineStart": 1295,
+        "lineEnd": 1312
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:26; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:26",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:27",
+      "title": "MAIN LAYOUT",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 27,
+        "lineStart": 1313,
+        "lineEnd": 1333
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:27; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:27",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:28",
+      "title": "VISUALIZATION",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 28,
+        "lineStart": 1334,
+        "lineEnd": 1402
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:28; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:28",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:29",
+      "title": "LIVE SOLVER VIEW",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 29,
+        "lineStart": 1403,
+        "lineEnd": 1429
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:29; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:29",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:30",
+      "title": "AI ENGINEERING INTERFACE",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 30,
+        "lineStart": 1430,
+        "lineEnd": 1452
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:30; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:30",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:31",
+      "title": "MCP CAPABILITIES",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 31,
+        "lineStart": 1453,
+        "lineEnd": 1525
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:31; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:31",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:32",
+      "title": "CHATGPT MUST BE ABLE TO SUPERVISE LIVE SIMULATIONS",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 32,
+        "lineStart": 1526,
+        "lineEnd": 1559
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:32; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:32",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:33",
+      "title": "USER-ONLY CLOUD COMPUTE SWITCH",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 33,
+        "lineStart": 1560,
+        "lineEnd": 1588
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:33; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:33",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:34",
+      "title": "CLOUD COMPUTE",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 34,
+        "lineStart": 1589,
+        "lineEnd": 1614
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:34; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:34",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:35",
+      "title": "USER COST LIMITS",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 35,
+        "lineStart": 1615,
+        "lineEnd": 1631
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:35; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:35",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:36",
+      "title": "CLOUD CHECKPOINTING",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 36,
+        "lineStart": 1632,
+        "lineEnd": 1648
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:36; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:36",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:37",
+      "title": "LOCAL MODE",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 37,
+        "lineStart": 1649,
+        "lineEnd": 1667
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:37; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:37",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:38",
+      "title": "GAS TURBINE SYSTEM",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 38,
+        "lineStart": 1668,
+        "lineEnd": 1697
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:38; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:38",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:39",
+      "title": "COMPRESSOR DESIGN",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 39,
+        "lineStart": 1698,
+        "lineEnd": 1734
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:39; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:39",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:40",
+      "title": "TURBINE DESIGN",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 40,
+        "lineStart": 1735,
+        "lineEnd": 1757
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:40; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:40",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:41",
+      "title": "COMBUSTOR",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 41,
+        "lineStart": 1758,
+        "lineEnd": 1787
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:41; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:41",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:42",
+      "title": "THERMOACOUSTICS",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 42,
+        "lineStart": 1788,
+        "lineEnd": 1806
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:42; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:42",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:43",
+      "title": "COMPLETE ENGINE COUPLING",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 43,
+        "lineStart": 1807,
+        "lineEnd": 1834
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:43; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:43",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:44",
+      "title": "FREECAD INTEROPERABILITY",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 44,
+        "lineStart": 1835,
+        "lineEnd": 1859
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:44; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:44",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:45",
+      "title": "EXTENSIBILITY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 45,
+        "lineStart": 1860,
+        "lineEnd": 1888
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:45; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:45",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:46",
+      "title": "MATERIAL DATABASE",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 46,
+        "lineStart": 1889,
+        "lineEnd": 1912
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:46; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:46",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:47",
+      "title": "COMPOSITES",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 47,
+        "lineStart": 1913,
+        "lineEnd": 1930
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:47; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:47",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:48",
+      "title": "OPTIMIZATION",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 48,
+        "lineStart": 1931,
+        "lineEnd": 1951
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:48; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:48",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:49",
+      "title": "ADAPTIVE FIDELITY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 49,
+        "lineStart": 1952,
+        "lineEnd": 1990
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:49; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:49",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:50",
+      "title": "PHYSICS BENCHMARKING",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 50,
+        "lineStart": 1991,
+        "lineEnd": 2049
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:50; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:50",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:51",
+      "title": "MESH INDEPENDENCE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 51,
+        "lineStart": 2050,
+        "lineEnd": 2067
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:51; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:51",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:52",
+      "title": "TIME-STEP INDEPENDENCE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 52,
+        "lineStart": 2068,
+        "lineEnd": 2081
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:52; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:52",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:53",
+      "title": "POWER/ENERGY BALANCE DASHBOARD",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 53,
+        "lineStart": 2082,
+        "lineEnd": 2112
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:53; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:53",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:54",
+      "title": "RESULT QUALITY SCORE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 54,
+        "lineStart": 2113,
+        "lineEnd": 2129
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:54; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:54",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:55",
+      "title": "ERROR RECOVERY",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 55,
+        "lineStart": 2130,
+        "lineEnd": 2164
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:55; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:55",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:56",
+      "title": "APPLICATION INFRASTRUCTURE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 56,
+        "lineStart": 2165,
+        "lineEnd": 2235
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:56; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:56",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:57",
+      "title": "DATABASE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 57,
+        "lineStart": 2236,
+        "lineEnd": 2259
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:57; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:57",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:58",
+      "title": "STORAGE FORMATS",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 58,
+        "lineStart": 2260,
+        "lineEnd": 2276
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:58; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:58",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:59",
+      "title": "API",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 59,
+        "lineStart": 2277,
+        "lineEnd": 2290
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:59; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:59",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:60",
+      "title": "CI/CD",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 60,
+        "lineStart": 2291,
+        "lineEnd": 2309
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:60; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:60",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:61",
+      "title": "CONTAINERS",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 61,
+        "lineStart": 2310,
+        "lineEnd": 2331
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:61; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:61",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:62",
+      "title": "DEPLOYMENT",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 62,
+        "lineStart": 2332,
+        "lineEnd": 2350
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:62; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:62",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:63",
+      "title": "COMPLETE EDF DEMO",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 63,
+        "lineStart": 2351,
+        "lineEnd": 2396
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:63; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:63",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:64",
+      "title": "COMPLETE AIRCRAFT DEMO",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 64,
+        "lineStart": 2397,
+        "lineEnd": 2419
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:64; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:64",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:65",
+      "title": "COMPLETE GAS-TURBINE DEMO",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 65,
+        "lineStart": 2420,
+        "lineEnd": 2447
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:65; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:65",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:66",
+      "title": "UI POLISH",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 66,
+        "lineStart": 2448,
+        "lineEnd": 2472
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:66; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:66",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:67",
+      "title": "EXPLAINABILITY",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 67,
+        "lineStart": 2473,
+        "lineEnd": 2493
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:67; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:67",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:68",
+      "title": "ENGINEERING AI UX",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 68,
+        "lineStart": 2494,
+        "lineEnd": 2511
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:68; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:68",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:69",
+      "title": "NO PREMATURE STOPPING",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 69,
+        "lineStart": 2512,
+        "lineEnd": 2532
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:69; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:69",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:70",
+      "title": "PARALLEL EXECUTION",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 70,
+        "lineStart": 2533,
+        "lineEnd": 2580
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:70; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:70",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:71",
+      "title": "USE AUTONOMOUS CODE REVIEW",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 71,
+        "lineStart": 2581,
+        "lineEnd": 2598
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:71; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:71",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:72",
+      "title": "TEST EVERYTHING BEFORE DECLARING DONE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 72,
+        "lineStart": 2599,
+        "lineEnd": 2617
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:72; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:72",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:73",
+      "title": "DO NOT FAKE RESULTS",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 73,
+        "lineStart": 2618,
+        "lineEnd": 2631
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:73; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:73",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:74",
+      "title": "DON'T SUBSTITUTE PLACEHOLDERS FOR REQUIRED FEATURES",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 74,
+        "lineStart": 2632,
+        "lineEnd": 2651
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:74; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:74",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:75",
+      "title": "EXTERNAL DOCUMENTATION",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 75,
+        "lineStart": 2652,
+        "lineEnd": 2663
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:75; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:75",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:76",
+      "title": "SOURCE CONTROL",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 76,
+        "lineStart": 2664,
+        "lineEnd": 2679
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:76; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:76",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:77",
+      "title": "AUTOMATED ENVIRONMENT BOOTSTRAP",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 77,
+        "lineStart": 2680,
+        "lineEnd": 2695
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:77; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:77",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:78",
+      "title": "ONE-COMMAND DEVELOPMENT START",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 78,
+        "lineStart": 2696,
+        "lineEnd": 2707
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:78; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:78",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:79",
+      "title": "ONE-COMMAND DEMOS",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 79,
+        "lineStart": 2708,
+        "lineEnd": 2721
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:79; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:79",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:80",
+      "title": "SOLVER CAPABILITY DETECTOR",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 80,
+        "lineStart": 2722,
+        "lineEnd": 2741
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:80; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:80",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:81",
+      "title": "DOCUMENTATION",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 81,
+        "lineStart": 2742,
+        "lineEnd": 2769
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:81; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:81",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:82",
+      "title": "FINAL COMPLETION TEST",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 82,
+        "lineStart": 2770,
+        "lineEnd": 2791
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:82; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:82",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:83",
+      "title": "STOPPING CONDITION",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2792,
+        "lineEnd": 2846
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:83; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:83",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:84",
+      "title": "FINAL RESPONSE",
+      "status": "PARTIAL",
+      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 84,
+        "lineStart": 2847,
+        "lineEnd": 2873
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:84; status PARTIAL is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:84",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:85",
+      "title": "BEGIN NOW",
+      "status": "BLOCKED",
+      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 85,
+        "lineStart": 2874,
+        "lineEnd": 2895
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for section:85; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "section:85",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    }
+  ],
+  "stoppingConditions": [
+    {
+      "id": "stopping:1",
+      "title": "the repository exists and is clean",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2796,
+        "lineEnd": 2796
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:1; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:1",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:2",
+      "title": "the application runs",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2797,
+        "lineEnd": 2797
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:2; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:2",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:3",
+      "title": "the browser UI works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2798,
+        "lineEnd": 2798
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:3; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:3",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:4",
+      "title": "CAD works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2799,
+        "lineEnd": 2799
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:4; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:4",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:5",
+      "title": "geometry import works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2800,
+        "lineEnd": 2800
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:5; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:5",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:6",
+      "title": "FreeCAD pathway works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2801,
+        "lineEnd": 2801
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:6; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:6",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:7",
+      "title": "OpenMDAO coupling works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2802,
+        "lineEnd": 2802
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:7; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:7",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:8",
+      "title": "preCICE coupling works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2803,
+        "lineEnd": 2803
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:8; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:8",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:9",
+      "title": "real CFD works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2804,
+        "lineEnd": 2804
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:9; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:9",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:10",
+      "title": "real structural analysis works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2805,
+        "lineEnd": 2805
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:10; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:10",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:11",
+      "title": "thermal coupling works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2806,
+        "lineEnd": 2806
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:11; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:11",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:12",
+      "title": "EDF works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2807,
+        "lineEnd": 2807
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:12; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:12",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:13",
+      "title": "motor model works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2808,
+        "lineEnd": 2808
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:13; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:13",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:14",
+      "title": "6S PyBaMM works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2809,
+        "lineEnd": 2809
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:14; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:14",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:15",
+      "title": "high-fidelity EM works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2810,
+        "lineEnd": 2810
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:15; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:15",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:16",
+      "title": "ROSS works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2811,
+        "lineEnd": 2811
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:16; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:16",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:17",
+      "title": "modal/resonance detection works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2812,
+        "lineEnd": 2812
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:17; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:17",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:18",
+      "title": "dynamic escalation works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2813,
+        "lineEnd": 2813
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:18; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:18",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:19",
+      "title": "full-aircraft workflow works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2814,
+        "lineEnd": 2814
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:19; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:19",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:20",
+      "title": "operating-envelope workflow works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2815,
+        "lineEnd": 2815
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:20; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:20",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:21",
+      "title": "compressor workflow works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2816,
+        "lineEnd": 2816
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:21; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:21",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:22",
+      "title": "combustor workflow works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2817,
+        "lineEnd": 2817
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:22; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:22",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:23",
+      "title": "turbine workflow works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2818,
+        "lineEnd": 2818
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:23; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:23",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:24",
+      "title": "gas-turbine coupling works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2819,
+        "lineEnd": 2819
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:24; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:24",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:25",
+      "title": "visualization works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2820,
+        "lineEnd": 2820
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:25; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:25",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:26",
+      "title": "variants work",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2821,
+        "lineEnd": 2821
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:26; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:26",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:27",
+      "title": "provenance works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2822,
+        "lineEnd": 2822
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:27; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:27",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:28",
+      "title": "caching works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2823,
+        "lineEnd": 2823
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:28; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:28",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:29",
+      "title": "warm starts work",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2824,
+        "lineEnd": 2824
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:29; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:29",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:30",
+      "title": "mesh morphing/local remesh works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2825,
+        "lineEnd": 2825
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:30; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:30",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:31",
+      "title": "MCP works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2826,
+        "lineEnd": 2826
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:31; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:31",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:32",
+      "title": "AI can supervise simulations",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2827,
+        "lineEnd": 2827
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:32; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:32",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:33",
+      "title": "GCP compute works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2828,
+        "lineEnd": 2828
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:33; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:33",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:34",
+      "title": "remote-compute user-only switch works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2829,
+        "lineEnd": 2829
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:34; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:34",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:35",
+      "title": "cloud cost controls work",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2830,
+        "lineEnd": 2830
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:35; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:35",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:36",
+      "title": "checkpoint/restart works",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2831,
+        "lineEnd": 2831
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:36; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:36",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:37",
+      "title": "EDF demo passes",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2832,
+        "lineEnd": 2832
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:37; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:37",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:38",
+      "title": "aircraft demo passes",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2833,
+        "lineEnd": 2833
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:38; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:38",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:39",
+      "title": "gas-turbine demo passes",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2834,
+        "lineEnd": 2834
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:39; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:39",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:40",
+      "title": "physics benchmarks pass",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2835,
+        "lineEnd": 2835
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:40; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:40",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:41",
+      "title": "documentation is complete",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2836,
+        "lineEnd": 2836
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:41; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:41",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:42",
+      "title": "automated tests pass",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2837,
+        "lineEnd": 2837
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:42; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:42",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:43",
+      "title": "deployment is live and usable",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2838,
+        "lineEnd": 2838
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:43; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:43",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:44",
+      "title": "the final requirement audit contains no incomplete mandatory requirement",
+      "status": "BLOCKED",
+      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "sourceRef": {
+        "briefId": "authoritative-user-brief-v1",
+        "section": 83,
+        "lineStart": 2839,
+        "lineEnd": 2839
+      },
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "docs/evidence/requirements-baseline.json",
+          "detail": "Baseline receipt observation for stopping:44; status BLOCKED is limited to the explicitly listed current subset.",
+          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
+          "receiptId": "baseline-requirements-evidence-v2",
+          "observationId": "stopping:44",
+          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        }
+      ],
+      "lastVerifiedAt": null
+    }
+  ]
+}
