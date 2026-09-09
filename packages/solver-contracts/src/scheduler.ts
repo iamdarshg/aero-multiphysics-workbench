@@ -23,6 +23,8 @@ export interface LocalRunPolicy {
   /** Test seam and platform-specific override. It must include descendants. */
   readonly readRssMiB?: (pid: number) => Promise<number>;
   readonly readPids?: (pid: number) => Promise<readonly number[]>;
+  /** Test-only runner seam; production authorization still requires a trusted manifest command. */
+  readonly runProcess?: (executable: string, args: readonly string[], options: { readonly shell: false; readonly windowsHide: boolean; readonly detached: boolean; readonly cwd?: string; readonly stdio: "ignore" }) => ChildProcess;
 }
 
 const delay = (milliseconds: number): Promise<void> => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds));
@@ -82,6 +84,7 @@ const sumProcessTree = (rootPid: number, table: ReadonlyMap<number, { parent: nu
 };
 
 const treePids = (rootPid: number, table: ReadonlyMap<number, { parent: number; rssMiB: number }>): readonly number[] => {
+  if (!table.has(rootPid)) throw new Error("RSS_ROOT_NOT_REPORTED");
   const children = new Map<number, number[]>();
   for (const [pid, row] of table) children.set(row.parent, [...(children.get(row.parent) ?? []), pid]);
   const seen = new Set<number>();
@@ -253,13 +256,14 @@ export class LocalScheduler {
     const observedPids = new Set<number>();
     let peakRssMiB = 0;
     let exit: Promise<number | null> | undefined;
+    const readPids = policy.readPids ?? readProcessTreePids;
     try {
-      child = spawn(executable, args, { shell: false, windowsHide: true, detached: process.platform !== "win32", cwd, stdio: "ignore" });
+      const spawnOptions = { shell: false as const, windowsHide: true, detached: process.platform !== "win32", cwd, stdio: "ignore" as const };
+      child = policy.runProcess ? policy.runProcess(executable, args, spawnOptions) : spawn(executable, args, spawnOptions);
       if (!child.pid) return { state: "failed", exitCode: null, peakRssMiB, reason: "PROCESS_START_FAILED" };
       observedPids.add(child.pid);
       exit = waitForExit(child);
       const readRss = policy.readRssMiB ?? readProcessTreeRssMiB;
-      const readPids = policy.readPids ?? readProcessTreePids;
       const interval = Math.max(1, policy.pollIntervalMs ?? 100);
       const started = Date.now();
       let sampled = false;
@@ -303,7 +307,16 @@ export class LocalScheduler {
       return { state: "failed", exitCode: child?.exitCode ?? null, peakRssMiB, reason: "PROCESS_START_FAILED" };
     } finally {
       if (child) {
+        let finalRefreshFailed = false;
+        try {
+          for (const pid of await readPids(child.pid)) observedPids.add(pid);
+        } catch {
+          finalRefreshFailed = true;
+        }
         await terminateTree(child, observedPids);
+        if (finalRefreshFailed && process.platform === "linux" && observedPids.size > 1) {
+          throw new Error("PROCESS_TREE_REFRESH_UNAVAILABLE");
+        }
         if (!(await verifyTreeGone(observedPids))) throw new Error("PROCESS_TREE_CLEANUP_UNVERIFIED");
       }
       this.jobs.delete(request.id);

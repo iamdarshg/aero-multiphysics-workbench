@@ -5,7 +5,7 @@ const native = (id: SolverManifest["id"], displayName: string, category: SolverM
   id, displayName, category, versionProbe: Object.freeze({ executable: command, args: ["--version"] as const }), resultKinds: Object.freeze([...resultKinds]),
   allowedExecutables: Object.freeze([...allowedExecutables]),
   buildCommand: (input: SolverLaunchInput) => {
-    if (!input || typeof input.caseDirectory !== "string" || input.caseDirectory.length === 0 || input.caseDirectory.includes("\u0000") || /[\r\n]/.test(input.caseDirectory)) {
+    if (!input || typeof input.caseDirectory !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(input.caseDirectory) || input.caseDirectory === "." || input.caseDirectory === "..") {
       throw new Error(`INVALID_SOLVER_LAUNCH_INPUT: ${id}`);
     }
     return createTrustedNativeCommand(id, allowedExecutables[0] as string, ["-case", input.caseDirectory]);

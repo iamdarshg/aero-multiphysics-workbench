@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -15,7 +16,10 @@ import {
   buildSolverCommand,
   isPathContained,
 } from "../../packages/solver-contracts/src/index.ts";
-import { createTrustedNativeCommand } from "../../packages/solver-contracts/src/commands.ts";
+
+const manifestTestCommand = buildSolverCommand("openfoam", { caseDirectory: "case" });
+const nodeRunner = (script: string) => (_executable: string, _args: readonly string[], options: Parameters<typeof spawn>[2]) =>
+  spawn(process.execPath, ["-e", script], options);
 
 test("the manifest registry describes every requested solver and geometry adapter", () => {
   assert.deepEqual(
@@ -80,12 +84,13 @@ test("scheduler kills a local process when measured RSS exceeds its reservation"
   const scheduler = new LocalScheduler();
   const result = await scheduler.runLocal(
     { id: "bounded", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-    createTrustedNativeCommand("openfoam", process.execPath, ["-e", "setInterval(() => {}, 1000)"]),
+    manifestTestCommand,
     {
-      allowedExecutables: new Set([process.execPath]),
+      allowedExecutables: new Set(["simpleFoam"]),
       pollIntervalMs: 1,
       readPids: async (pid) => [pid],
       readRssMiB: async () => 65,
+      runProcess: nodeRunner("setInterval(() => {}, 1000)"),
     },
   );
   assert.equal(result.state, "failed");
@@ -98,7 +103,7 @@ test("scheduler refuses to spawn commands outside the explicit executable allowl
   await assert.rejects(
     scheduler.runLocal(
       { id: "blocked", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-      createTrustedNativeCommand("openfoam", process.execPath, ["--version"]),
+      manifestTestCommand,
       { allowedExecutables: new Set(["definitely-not-node"]) },
     ),
     /COMMAND_NOT_ALLOWLISTED/,
@@ -177,7 +182,9 @@ test("solver command builders select only manifest executables and reject shell 
   const command = buildSolverCommand("openfoam", { caseDirectory: "case" });
   assert.equal(command.executable, "simpleFoam");
   assert.deepEqual(command.args, ["-case", "case"]);
-  assert.throws(() => buildSolverCommand("openfoam", { caseDirectory: "case\u0000" }), /INVALID_SOLVER_LAUNCH_INPUT/);
+  for (const caseDirectory of ["case\u0000", "../outside", "case/subdir", "C:\\cases\\case-a", "/absolute/case", "C:/absolute/case"]) {
+    assert.throws(() => buildSolverCommand("openfoam", { caseDirectory }), /INVALID_SOLVER_LAUNCH_INPUT/);
+  }
 });
 
 test("path containment normalizes both separator styles before comparing", () => {
@@ -195,8 +202,8 @@ test("scheduler fails closed when a process-tree RSS monitor is unavailable", as
   const scheduler = new LocalScheduler();
   const result = await scheduler.runLocal(
     { id: "unmeasured", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-    createTrustedNativeCommand("openfoam", process.execPath, ["-e", "setTimeout(() => {}, 200)"]),
-    { allowedExecutables: new Set([process.execPath]), pollIntervalMs: 1, readPids: async (pid) => [pid], readRssMiB: async () => { throw new Error("no monitor"); } },
+    manifestTestCommand,
+    { allowedExecutables: new Set(["simpleFoam"]), pollIntervalMs: 1, readPids: async (pid) => [pid], readRssMiB: async () => { throw new Error("no monitor"); }, runProcess: nodeRunner("setTimeout(() => {}, 200)") },
   );
   assert.equal(result.reason, "RSS_MONITOR_UNAVAILABLE");
 });
@@ -206,8 +213,8 @@ test("scheduler rejects an uncontained working directory before spawning", async
   await assert.rejects(
     scheduler.runLocal(
       { id: "outside", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-      createTrustedNativeCommand("openfoam", process.execPath, ["--version"]),
-      { allowedExecutables: new Set([process.execPath]), workingDirectory: process.cwd(), allowedWorkingDirectory: `${process.cwd()}\\case-root` },
+      manifestTestCommand,
+      { allowedExecutables: new Set(["simpleFoam"]), workingDirectory: process.cwd(), allowedWorkingDirectory: `${process.cwd()}\\case-root` },
     ),
     /WORKING_DIRECTORY_OUTSIDE_ALLOWLIST/,
   );
@@ -217,8 +224,8 @@ test("scheduler terminates a timed-out process tree", async () => {
   const scheduler = new LocalScheduler();
   const result = await scheduler.runLocal(
     { id: "timed", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-    createTrustedNativeCommand("openfoam", process.execPath, ["-e", "setInterval(() => {}, 1000)"]),
-    { allowedExecutables: new Set([process.execPath]), pollIntervalMs: 1, timeoutMs: 20, readPids: async (pid) => [pid], readRssMiB: async () => 1 },
+    manifestTestCommand,
+    { allowedExecutables: new Set(["simpleFoam"]), pollIntervalMs: 1, timeoutMs: 20, readPids: async (pid) => [pid], readRssMiB: async () => 1, runProcess: nodeRunner("setInterval(() => {}, 1000)") },
   );
   assert.equal(result.reason, "PROCESS_TIMEOUT");
 });
@@ -230,9 +237,9 @@ test("scheduler cleans a descendant after the root exits", async () => {
   let descendantPid: number | undefined;
   const result = await scheduler.runLocal(
     { id: "descendant-cleanup", requestedMemoryMiB: 64, remote: false, costCeilingUsd: 0 },
-    createTrustedNativeCommand("openfoam", process.execPath, ["-e", script, pidFile]),
+    manifestTestCommand,
     {
-      allowedExecutables: new Set([process.execPath]),
+      allowedExecutables: new Set(["simpleFoam"]),
       pollIntervalMs: 5,
       readPids: async (pid) => {
         try {
@@ -241,6 +248,8 @@ test("scheduler cleans a descendant after the root exits", async () => {
         } catch { return [pid]; }
       },
       readRssMiB: async () => 1,
+      allowedExecutables: new Set(["simpleFoam"]),
+      runProcess: (_executable, _args, options) => spawn(process.execPath, ["-e", script, pidFile], options),
     },
   );
   assert.equal(result.state, "completed");

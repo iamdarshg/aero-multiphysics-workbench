@@ -23,7 +23,7 @@ The demo command deliberately exits without a numerical result until an explicit
 
 `LocalScheduler` enforces an 896 MiB aggregate project reservation budget and samples each admitted worker's root-plus-descendant RSS. Every admitted local process is launched without a shell in its own process group; the supervisor terminates the whole observed tree when the reservation or project reservation ceiling is exceeded. If process-tree measurement is unavailable, the run is terminated and fails closed. This telemetry plus admission control is not an OS-wide ceiling over unrelated host processes; a kernel/job-object host-wide ceiling remains a Task 4 gate. The supplied local compose profile caps the optional MCP container at 250 MiB.
 
-Remote work is rejected unless both the user-owned MCP session sets `AERO_ALLOW_REMOTE_COMPUTE=1` and its cost ceiling fits the session’s `AERO_REMOTE_COST_CEILING_USD`. Destructive `design.delete` separately requires `AERO_ALLOW_DESTRUCTIVE=1`. These environment values must be set by the interactive operator; no file stores a credential or approval.
+Remote work is rejected unless both the user-owned MCP session sets `AERO_ALLOW_REMOTE_COMPUTE=1` and its cost ceiling fits the session’s `AERO_REMOTE_COST_CEILING_USD`. Destructive `design.delete` separately requires `AERO_ALLOW_DESTRUCTIVE=1`. These environment values must be set by the interactive operator; no file stores a credential or approval. Active MCP cancellation, design/result/provenance stores, and connected launch workers remain Task 5 work; the current facade only cancels queued reservations and returns skeleton metadata.
 
 ## Provenance and results
 
