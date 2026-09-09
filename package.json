@@ -8,9 +8,9 @@
     "audit:requirements": "node scripts/audit-requirements.mjs",
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test && node --test tests/smoke/workspace.test.mjs",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint",
+    "test": "pnpm -r test && node --test tests/smoke/workspace.test.mjs && uv run --directory services/api pytest -q",
+    "typecheck": "pnpm -r typecheck && uv run --directory services/api mypy ../../packages/core aeroworkbench_api",
+    "lint": "pnpm -r lint && uv run --directory services/api ruff check ../../packages/core aeroworkbench_api ../../tests/core",
     "verify:workspace": "powershell -NoProfile -File scripts/verify-workspace.ps1"
   },
   "dependencies": {
