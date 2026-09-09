@@ -1,0 +1,11 @@
+{
+  "name": "@aero/schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../../tests/unit/requirements-audit.test.ts",
+    "typecheck": "node --experimental-strip-types --check src/audit.ts",
+    "lint": "node --experimental-strip-types --check src/audit.ts"
+  }
+}

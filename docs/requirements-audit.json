@@ -1,0 +1,1702 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "brief": "C:/Users/Darsh Gupta/.codex/attachments/188f9971-d698-4a5f-a8a7-a6ef9365c485/pasted-text.txt",
+    "sectionsRange": "0-85",
+    "stoppingConditionsRange": "1-44"
+  },
+  "sections": [
+    {
+      "id": "section:0",
+      "title": "PROJECT PURPOSE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:1",
+      "title": "CORE PHILOSOPHY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:2",
+      "title": "USE THE FOLLOWING MAIN TECHNOLOGY ARCHITECTURE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:3",
+      "title": "FIELD COUPLING",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:4",
+      "title": "COUPLING MUST BE STRONG BY DEFAULT",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:5",
+      "title": "GLOBAL PHYSICAL CONVERGENCE MANAGER",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:6",
+      "title": "RESONANCE MUST BE INSIDE THE PHYSICS LOOP",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:7",
+      "title": "EDF SYSTEM — FULL FIRST IMPLEMENTATION",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:8",
+      "title": "CFD BACKEND",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:9",
+      "title": "STRUCTURAL BACKEND",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:10",
+      "title": "THERMAL",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:11",
+      "title": "ELECTRIC MOTOR — THREE FIDELITY LEVELS",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:12",
+      "title": "ESC MODEL",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:13",
+      "title": "BATTERY MODEL",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:14",
+      "title": "AIRCRAFT PURPOSE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:15",
+      "title": "OPERATING ENVELOPE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:16",
+      "title": "WHOLE-AIRCRAFT COUPLING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:17",
+      "title": "GEOMETRY SYSTEM",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:18",
+      "title": "SEMANTIC GEOMETRY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:19",
+      "title": "PARAMETRIC GEOMETRY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:20",
+      "title": "MESHING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:21",
+      "title": "CACHE EVERYTHING SAFE TO CACHE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:22",
+      "title": "WARM STARTS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:23",
+      "title": "MESH MORPHING AND LOCAL REMESH",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:24",
+      "title": "DESIGN VARIANTS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:25",
+      "title": "COMPLETE PROVENANCE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:26",
+      "title": "USER INTERFACE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:27",
+      "title": "MAIN LAYOUT",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:28",
+      "title": "VISUALIZATION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:29",
+      "title": "LIVE SOLVER VIEW",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:30",
+      "title": "AI ENGINEERING INTERFACE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:31",
+      "title": "MCP CAPABILITIES",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:32",
+      "title": "CHATGPT MUST BE ABLE TO SUPERVISE LIVE SIMULATIONS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:33",
+      "title": "USER-ONLY CLOUD COMPUTE SWITCH",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:34",
+      "title": "CLOUD COMPUTE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:35",
+      "title": "USER COST LIMITS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:36",
+      "title": "CLOUD CHECKPOINTING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:37",
+      "title": "LOCAL MODE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:38",
+      "title": "GAS TURBINE SYSTEM",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:39",
+      "title": "COMPRESSOR DESIGN",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:40",
+      "title": "TURBINE DESIGN",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:41",
+      "title": "COMBUSTOR",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:42",
+      "title": "THERMOACOUSTICS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:43",
+      "title": "COMPLETE ENGINE COUPLING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:44",
+      "title": "FREECAD INTEROPERABILITY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:45",
+      "title": "EXTENSIBILITY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:46",
+      "title": "MATERIAL DATABASE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:47",
+      "title": "COMPOSITES",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:48",
+      "title": "OPTIMIZATION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:49",
+      "title": "ADAPTIVE FIDELITY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:50",
+      "title": "PHYSICS BENCHMARKING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:51",
+      "title": "MESH INDEPENDENCE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:52",
+      "title": "TIME-STEP INDEPENDENCE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:53",
+      "title": "POWER/ENERGY BALANCE DASHBOARD",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:54",
+      "title": "RESULT QUALITY SCORE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:55",
+      "title": "ERROR RECOVERY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:56",
+      "title": "APPLICATION INFRASTRUCTURE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:57",
+      "title": "DATABASE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:58",
+      "title": "STORAGE FORMATS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:59",
+      "title": "API",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:60",
+      "title": "CI/CD",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:61",
+      "title": "CONTAINERS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:62",
+      "title": "DEPLOYMENT",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:63",
+      "title": "COMPLETE EDF DEMO",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:64",
+      "title": "COMPLETE AIRCRAFT DEMO",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:65",
+      "title": "COMPLETE GAS-TURBINE DEMO",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:66",
+      "title": "UI POLISH",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:67",
+      "title": "EXPLAINABILITY",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:68",
+      "title": "ENGINEERING AI UX",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:69",
+      "title": "NO PREMATURE STOPPING",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:70",
+      "title": "PARALLEL EXECUTION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:71",
+      "title": "USE AUTONOMOUS CODE REVIEW",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:72",
+      "title": "TEST EVERYTHING BEFORE DECLARING DONE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:73",
+      "title": "DO NOT FAKE RESULTS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:74",
+      "title": "DON'T SUBSTITUTE PLACEHOLDERS FOR REQUIRED FEATURES",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:75",
+      "title": "EXTERNAL DOCUMENTATION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:76",
+      "title": "SOURCE CONTROL",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:77",
+      "title": "AUTOMATED ENVIRONMENT BOOTSTRAP",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:78",
+      "title": "ONE-COMMAND DEVELOPMENT START",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:79",
+      "title": "ONE-COMMAND DEMOS",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:80",
+      "title": "SOLVER CAPABILITY DETECTOR",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:81",
+      "title": "DOCUMENTATION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:82",
+      "title": "FINAL COMPLETION TEST",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:83",
+      "title": "STOPPING CONDITION",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:84",
+      "title": "FINAL RESPONSE",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "section:85",
+      "title": "BEGIN NOW",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "Current repository contains architecture and/or analytical baseline evidence, but the brief requires additional implementation and validation before this item can pass."
+        }
+      ],
+      "lastVerifiedAt": null
+    }
+  ],
+  "stoppingConditions": [
+    {
+      "id": "stopping:1",
+      "title": "the repository exists and is clean",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:2",
+      "title": "the application runs",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:3",
+      "title": "the browser UI works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:4",
+      "title": "CAD works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:5",
+      "title": "geometry import works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:6",
+      "title": "FreeCAD pathway works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:7",
+      "title": "OpenMDAO coupling works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:8",
+      "title": "preCICE coupling works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:9",
+      "title": "real CFD works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:10",
+      "title": "real structural analysis works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:11",
+      "title": "thermal coupling works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:12",
+      "title": "EDF works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:13",
+      "title": "motor model works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:14",
+      "title": "6S PyBaMM works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:15",
+      "title": "high-fidelity EM works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:16",
+      "title": "ROSS works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:17",
+      "title": "modal/resonance detection works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:18",
+      "title": "dynamic escalation works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:19",
+      "title": "full-aircraft workflow works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:20",
+      "title": "operating-envelope workflow works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:21",
+      "title": "compressor workflow works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:22",
+      "title": "combustor workflow works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:23",
+      "title": "turbine workflow works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:24",
+      "title": "gas-turbine coupling works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:25",
+      "title": "visualization works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:26",
+      "title": "variants work",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:27",
+      "title": "provenance works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:28",
+      "title": "caching works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:29",
+      "title": "warm starts work",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:30",
+      "title": "mesh morphing/local remesh works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:31",
+      "title": "MCP works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:32",
+      "title": "AI can supervise simulations",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:33",
+      "title": "GCP compute works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:34",
+      "title": "remote-compute user-only switch works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:35",
+      "title": "cloud cost controls work",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:36",
+      "title": "checkpoint/restart works",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:37",
+      "title": "EDF demo passes",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:38",
+      "title": "aircraft demo passes",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:39",
+      "title": "gas-turbine demo passes",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:40",
+      "title": "physics benchmarks pass",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:41",
+      "title": "documentation is complete",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:42",
+      "title": "automated tests pass",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:43",
+      "title": "deployment is live and usable",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    },
+    {
+      "id": "stopping:44",
+      "title": "the final requirement audit contains no incomplete mandatory requirement",
+      "status": "BLOCKED",
+      "evidence": [
+        {
+          "kind": "file",
+          "path": "AGENTS.md",
+          "detail": "Current repository has no native capability or end-to-end receipt for this mandatory item; it remains blocked rather than being represented by a substitute."
+        }
+      ],
+      "lastVerifiedAt": null
+    }
+  ]
+}
