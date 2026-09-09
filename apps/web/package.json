@@ -1,0 +1,32 @@
+{
+  "name": "@aero/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit --pretty false",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@react-three/fiber": "latest",
+    "next": "latest",
+    "plotly.js-dist-min": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "three": "latest",
+    "vtk.js": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "eslint": "latest",
+    "typescript": "5.9.3",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript-eslint": "latest",
+    "vitest": "latest"
+  }
+}
