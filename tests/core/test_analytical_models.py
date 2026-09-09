@@ -87,6 +87,14 @@ def test_six_s_pack_voltage_and_heat_are_dimensionally_consistent() -> None:
         result.output_power_w + result.heat_generation_w
     )
     assert result.cell_count == 6
+    assert (
+        "SOC is recorded but does not alter open-circuit voltage or resistance"
+        in result.provenance.assumptions
+    )
+    assert (
+        "temperature is recorded but does not alter battery parameters"
+        in result.provenance.assumptions
+    )
 
 
 def test_lumped_thermal_model_matches_first_order_rc_solution() -> None:
@@ -157,7 +165,7 @@ def test_shaft_bending_frequency_matches_simply_supported_beam_benchmark() -> No
     )
 
 
-def test_brayton_cycle_benchmark_closes_first_law_and_matches_specific_work() -> None:
+def test_brayton_cycle_reports_net_shaft_bookkeeping_and_specific_work() -> None:
     result = evaluate_gas_turbine(
         GasTurbineInput(
             mass_flow_kg_s=1.0,
@@ -181,6 +189,6 @@ def test_brayton_cycle_benchmark_closes_first_law_and_matches_specific_work() ->
     assert result.net_shaft_power_w == pytest.approx(
         result.turbine_power_w - result.compressor_power_w
     )
-    assert result.energy_closure_fraction < 1e-12
+    assert result.bookkeeping_residual_fraction < 1e-12
     assert result.provenance.source is ResultSource.ANALYTICAL
     assert "not pyCycle" in result.limitations[0]

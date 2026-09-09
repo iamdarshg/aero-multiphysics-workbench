@@ -39,7 +39,7 @@ class GasTurbineResult(AnalyticalModel):
     turbine_power_w: float
     net_shaft_power_w: float
     fuel_flow_kg_s: float
-    energy_closure_fraction: float
+    bookkeeping_residual_fraction: float
     provenance: Provenance
     limitations: tuple[str, ...]
 
@@ -75,7 +75,7 @@ def evaluate_gas_turbine(inputs: GasTurbineInput) -> GasTurbineResult:
         turbine_power_w=turbine,
         net_shaft_power_w=net,
         fuel_flow_kg_s=fuel,
-        energy_closure_fraction=closure,
+        bookkeeping_residual_fraction=closure,
         provenance=analytical_provenance(
             "ideal-brayton-cycle", inputs.model_dump(), "constant specific heat and gamma"
         ),

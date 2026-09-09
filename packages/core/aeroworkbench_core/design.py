@@ -58,6 +58,15 @@ class PhysicalDesignState(BaseModel):
         created_at: datetime,
         scalar_results: dict[str, Quantity] | None = None,
     ) -> PhysicalDesignState:
+        unknown = set(changes) - set(self.parameters)
+        if unknown:
+            raise ValueError(f"Unknown parameter: {min(unknown)}")
+        for key, value in changes.items():
+            if value.dimension != self.parameters[key].dimension:
+                raise ValueError(
+                    f"Parameter '{key}' dimension cannot change from "
+                    f"{self.parameters[key].dimension} to {value.dimension}"
+                )
         updated = {**self.parameters, **changes}
         changed = {
             key: FieldChange(before=self.parameters[key], after=value)

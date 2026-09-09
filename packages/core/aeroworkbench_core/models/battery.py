@@ -39,6 +39,10 @@ def evaluate_six_s_battery(inputs: SixSBatteryInput) -> SixSBatteryResult:
         output_power_w=output,
         chemical_power_w=output + heat,
         provenance=analytical_provenance(
-            "six-s-thevenin-pack", inputs.model_dump(), "fixed six-series-cell topology"
+            "six-s-thevenin-pack",
+            inputs.model_dump(),
+            "fixed six-series-cell topology",
+            "SOC is recorded but does not alter open-circuit voltage or resistance",
+            "temperature is recorded but does not alter battery parameters",
         ),
     )

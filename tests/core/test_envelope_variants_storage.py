@@ -12,7 +12,7 @@ from aeroworkbench_core.envelope import (
     EnvelopeStatus,
     evaluate_operating_envelope,
 )
-from aeroworkbench_core.storage import SQLiteMetadataStore
+from aeroworkbench_core.storage import ImmutableRevisionError, SQLiteMetadataStore
 from aeroworkbench_core.types import Quantity
 
 
@@ -102,3 +102,54 @@ def test_sqlite_metadata_store_roundtrips_designs_and_job_events(tmp_path: Path)
     assert job is not None
     assert job.status == "completed"
     store.close()
+
+
+def test_sqlite_design_revisions_are_immutable_and_append_a_provenance_event(
+    tmp_path: Path,
+) -> None:
+    store = SQLiteMetadataStore(tmp_path / "metadata.sqlite3")
+    design = PhysicalDesignState(
+        design_id="edf",
+        variant_id="base",
+        parameters={"diameter": Quantity(value=70, unit="mm")},
+        geometry_hash="a" * 64,
+        material_hash="b" * 64,
+    )
+
+    store.save_design(design)
+
+    with pytest.raises(ImmutableRevisionError, match="immutable"):
+        store.save_design(design)
+
+    events = store.list_design_events("edf", "base")
+    assert len(events) == 1
+    assert events[0].event_type == "created"
+    assert events[0].content_hash == design.content_hash
+    store.close()
+
+
+def test_variant_rejects_unknown_parameters_and_dimension_changes() -> None:
+    baseline = PhysicalDesignState(
+        design_id="edf",
+        variant_id="base",
+        parameters={"diameter": Quantity(value=70, unit="mm")},
+        geometry_hash="a" * 64,
+        material_hash="b" * 64,
+    )
+
+    with pytest.raises(ValueError, match="Unknown parameter"):
+        baseline.create_variant(
+            variant_id="unknown",
+            changes={"voltage": Quantity(value=22.2, unit="V")},
+            author="engineer",
+            reason="invalid",
+            created_at=datetime(2026, 9, 9, tzinfo=UTC),
+        )
+    with pytest.raises(ValueError, match="dimension"):
+        baseline.create_variant(
+            variant_id="wrong-dimension",
+            changes={"diameter": Quantity(value=22.2, unit="V")},
+            author="engineer",
+            reason="invalid",
+            created_at=datetime(2026, 9, 9, tzinfo=UTC),
+        )
