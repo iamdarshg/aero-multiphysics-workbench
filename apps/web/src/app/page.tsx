@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../components/icon';
-import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, type DemoId, type DockTab, type ViewMode, updateCouplingStrength } from '../workbench-state';
+import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, shouldRestoreProvenanceFocus, type DemoId, type DockTab, type ViewMode, updateCouplingStrength } from '../workbench-state';
 
 const EngineeringViewport = dynamic(() => import('../components/engineering-viewport'), { ssr: false, loading: () => <div className="viewport-loading">Preparing code-native geometry…</div> });
 const AnalysisCharts = dynamic(() => import('../components/analysis-charts'), { ssr: false, loading: () => <div className="chart-loading">Loading chart renderer…</div> });
@@ -41,6 +41,7 @@ export default function WorkbenchPage() {
   const provenanceButtonRef = useRef<HTMLButtonElement>(null);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const provenanceWasOpen = useRef(false);
   const [history, setHistory] = useState<number[]>([0.9]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const dockTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -101,7 +102,14 @@ export default function WorkbenchPage() {
   }, [provenanceOpen]);
 
   useEffect(() => {
-    if (!provenanceOpen) provenanceButtonRef.current?.focus();
+    if (provenanceOpen) {
+      provenanceWasOpen.current = true;
+      return;
+    }
+    if (shouldRestoreProvenanceFocus(provenanceOpen, provenanceWasOpen.current)) {
+      provenanceWasOpen.current = false;
+      requestAnimationFrame(() => provenanceButtonRef.current?.focus());
+    }
   }, [provenanceOpen]);
 
   const selectDemo = (nextId: DemoId) => {

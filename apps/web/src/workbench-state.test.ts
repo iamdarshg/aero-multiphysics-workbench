@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, updateCouplingStrength } from './workbench-state';
+import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, shouldRestoreProvenanceFocus, updateCouplingStrength } from './workbench-state';
 
 describe('workbench demo profiles', () => {
   it('uses serious engineering coupling by default for the EDF profile', () => {
@@ -33,5 +33,11 @@ describe('workbench demo profiles', () => {
     expect(qualityGateEvidence.energy).toBe('Analytical · screening/sample only');
     expect(qualityGateEvidence.resonance).toBe('Analytical · screening/sample only');
     expect(qualityGateEvidence.native).toBe('Declarative capability state');
+  });
+
+  it('does not steal initial focus for a closed provenance dialog', () => {
+    expect(shouldRestoreProvenanceFocus(false, false)).toBe(false);
+    expect(shouldRestoreProvenanceFocus(true, false)).toBe(false);
+    expect(shouldRestoreProvenanceFocus(false, true)).toBe(true);
   });
 });

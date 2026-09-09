@@ -75,6 +75,9 @@ export const qualityGateEvidence = {
   native: 'Declarative capability state',
 } as const;
 
+export const shouldRestoreProvenanceFocus = (provenanceOpen: boolean, wasOpen: boolean): boolean =>
+  !provenanceOpen && wasOpen;
+
 const viewModes: Record<ViewMode, { label: string; field: string; available: boolean; detail: string }> = {
   flow: { label: 'Flow', field: 'Pressure coefficient', available: true, detail: 'Analytical surface-pressure estimate' },
   structure: { label: 'Structure', field: 'Displacement envelope', available: true, detail: 'Analytical beam-response estimate' },

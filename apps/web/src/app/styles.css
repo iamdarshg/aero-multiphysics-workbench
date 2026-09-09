@@ -49,3 +49,12 @@ body { font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Seg
 .chart-action { padding:6px 8px; border:1px solid var(--line); background:var(--panel-2); color:var(--blue); border-radius:4px; cursor:pointer; font-size:10px; }
 .chart-status { display:grid; place-items:center; gap:8px; color:var(--muted); font-size:10px; text-align:center; }
 .chart-error { color:var(--danger); }
+
+/* Plotly writes inline dimensions; contain its DOM inside the chart grid cell at every breakpoint. */
+.dock-content { min-width:0; overflow:hidden; }
+.chart-card { min-width:0; overflow:hidden; grid-template-columns:minmax(0,118px) minmax(0,1fr); }
+.chart-meta { min-width:0; overflow:hidden; }
+.chart-meta small,.chart-meta em { overflow-wrap:anywhere; }
+.chart-shell { width:100%; max-width:100%; min-width:0; overflow:hidden; }
+.analysis-chart,.analysis-chart.js-plotly-plot,.analysis-chart .plotly,.analysis-chart .plot-container,.analysis-chart .svg-container { display:block; width:100% !important; max-width:100% !important; min-width:0 !important; overflow:hidden; }
+@media (max-width:720px) { .chart-card { grid-template-columns:minmax(0,105px) minmax(0,1fr); } }
