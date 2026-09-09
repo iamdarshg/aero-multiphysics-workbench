@@ -18,4 +18,7 @@ artifacts/
 *.db
 playwright-report/
 test-results/
+.next/
+*.tsbuildinfo
+install-web*.log
 
