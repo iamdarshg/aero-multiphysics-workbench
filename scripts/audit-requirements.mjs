@@ -114,8 +114,8 @@ function readReceipt(pathInfo, repoRoot, label, errors, receiptCache) {
     errors.push(`${label} receipt requires full repositoryCommit and sourceTreeSha256 git object ids`);
   } else {
     try {
-      const commit = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{commit}`], { cwd: repoRoot, encoding: "utf8" }).trim();
-      const tree = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{tree}`], { cwd: repoRoot, encoding: "utf8" }).trim();
+      const commit = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{commit}`], { cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+      const tree = execFileSync("git", ["rev-parse", `${receipt.repositoryCommit}^{tree}`], { cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
       execFileSync("git", ["merge-base", "--is-ancestor", commit, "HEAD"], { cwd: repoRoot, stdio: "ignore" });
       if (commit.toLowerCase() !== receipt.repositoryCommit.toLowerCase()) errors.push(`${label} repositoryCommit is not canonical`);
       if (tree.toLowerCase() !== receipt.sourceTreeSha256.toLowerCase()) errors.push(`${label} source tree does not match repositoryCommit`);
@@ -150,6 +150,27 @@ function validateEvidence(ref, id, status, repoRoot, errors, receiptCache) {
   if ("verified" in ref || "supportsPass" in ref) errors.push(`${label} must not contain mutable verified/supportsPass assertions`);
   if (ref.kind !== "receipt") return false;
   if (typeof ref.receiptId !== "string" || ref.receiptId.trim() === "") errors.push(`${label} requires receiptId`);
+  if (!GIT_SHA1.test(ref.receiptCommit ?? "")) {
+    errors.push(`${label} requires a full receiptCommit git object id`);
+  } else {
+    const commitCacheKey = `commit:${ref.receiptCommit}:${pathInfo.normalized}:${ref.sha256}`;
+    if (!receiptCache.has(commitCacheKey)) {
+      let commitError = null;
+      try {
+        const commit = execFileSync("git", ["rev-parse", `${ref.receiptCommit}^{commit}`], { cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+        execFileSync("git", ["merge-base", "--is-ancestor", commit, "HEAD"], { cwd: repoRoot, stdio: "ignore" });
+        const committedReceipt = execFileSync("git", ["show", `${commit}:${pathInfo.normalized}`], { cwd: repoRoot, stdio: ["ignore", "pipe", "ignore"] });
+        const committedDigest = createHash("sha256").update(committedReceipt).digest("hex");
+        if (commit.toLowerCase() !== ref.receiptCommit.toLowerCase()) commitError = "receiptCommit is not canonical";
+        else if (committedDigest !== ref.sha256.toLowerCase()) commitError = "receipt digest does not match the committed receipt";
+      } catch {
+        commitError = "receiptCommit is unavailable, not an ancestor, or does not contain the receipt";
+      }
+      receiptCache.set(commitCacheKey, commitError);
+    }
+    const commitError = receiptCache.get(commitCacheKey);
+    if (commitError) errors.push(`${label} ${commitError}`);
+  }
   if (ref.observationId !== id) errors.push(`${label} observationId must equal ${id}`);
   const receipt = readReceipt(pathInfo, repoRoot, label, errors, receiptCache);
   if (!receipt) return false;

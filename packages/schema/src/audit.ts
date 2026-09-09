@@ -12,6 +12,7 @@ export interface EvidenceRef {
   command?: string;
   exitCode?: number;
   receiptId?: string;
+  receiptCommit?: string;
 }
 
 export interface SourceRef {

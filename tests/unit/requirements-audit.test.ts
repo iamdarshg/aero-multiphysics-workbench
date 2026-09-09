@@ -100,6 +100,13 @@ describe("requirements audit contract", () => {
     assert.ok(errors.some((error: string) => error.includes("observationId must equal section:0")));
   });
 
+  it("rejects an evidence receipt that is not pinned to its committed bytes", () => {
+    const mutated = structuredClone(audit);
+    mutated.sections[0].evidence[0].receiptCommit = "0".repeat(40);
+    const errors = validateAuditDocument(mutated, { repoRoot });
+    assert.ok(errors.some((error: string) => error.includes("receiptCommit is unavailable")));
+  });
+
   it("rejects a changed authoritative brief digest", () => {
     const mutated = structuredClone(audit);
     mutated.source.sha256 = "0".repeat(64);
