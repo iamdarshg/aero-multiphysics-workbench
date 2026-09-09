@@ -5,6 +5,20 @@ import type { Capability, CapabilityReport, LaunchRequest, ProvenanceEvent, Resu
 
 export type Probe = (manifest: SolverManifest) => Promise<Capability>;
 
+const normalizedExecutable = (command: string): string => process.platform === "win32"
+  ? command.toLowerCase().replace(/\.exe$/, "")
+  : command;
+
+const unsafeArgument = (arg: string): boolean => arg.includes("\u0000") || /[\r\n]/.test(arg) || /^(?:-Command|-EncodedCommand)$/i.test(arg);
+
+/** Builds a native argv from the manifest-selected executable, never shell text. */
+export const buildSolverCommand = (solverId: SolverId, args: readonly string[] = []): readonly string[] => {
+  const manifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === solverId);
+  if (!manifest || manifest.allowedExecutables.length === 0) throw new Error(`SOLVER_MANIFEST_UNAVAILABLE: ${solverId}`);
+  if (args.some(unsafeArgument)) throw new Error(`ARGUMENTS_NOT_ALLOWLISTED: ${solverId}`);
+  return [manifest.allowedExecutables[0], ...args];
+};
+
 /** Executes a fixed manifest argv without a shell; it never installs or starts a solver. */
 export const commandProbe: Probe = async (manifest) => new Promise((resolve) => {
   const [command, ...args] = manifest.versionProbe.command;
@@ -63,7 +77,12 @@ export class SolverGateway {
       this.provenance.append({ id: randomUUID(), at: new Date().toISOString(), type: "launch-rejected", detail: `CAPABILITY_UNAVAILABLE:${request.solverId}:${capability?.detail ?? "not checked"}` });
       throw new Error(`CAPABILITY_UNAVAILABLE: ${request.solverId}`);
     }
-    if (request.command.length === 0 || request.requestedMemoryMiB <= 0) throw new Error("INVALID_LAUNCH_REQUEST");
+    if (request.command.length === 0 || request.requestedMemoryMiB <= 0 || !Number.isFinite(request.requestedMemoryMiB)) throw new Error("INVALID_LAUNCH_REQUEST");
+    const manifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === request.solverId);
+    const executable = normalizedExecutable(request.command[0] ?? "");
+    const allowed = manifest?.allowedExecutables.some((candidate) => normalizedExecutable(candidate) === executable && !candidate.includes("/") && !candidate.includes("\\")) ?? false;
+    if (!allowed) throw new Error(`COMMAND_NOT_ALLOWLISTED: ${request.solverId}`);
+    if (request.command.slice(1).some(unsafeArgument)) throw new Error(`ARGUMENTS_NOT_ALLOWLISTED: ${request.solverId}`);
     const provenanceId = randomUUID();
     this.provenance.append({ id: provenanceId, at: new Date().toISOString(), type: "launch-accepted", detail: `${request.solverId}:${request.designId}` });
     return { runId: randomUUID(), solverId: request.solverId, designId: request.designId, state: "accepted", source: "native-solver", checkpointFrom: request.checkpointFrom, provenanceId };

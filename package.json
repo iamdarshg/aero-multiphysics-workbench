@@ -2,13 +2,21 @@
   "name": "aero-multiphysics-workbench",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.15.1",
   "scripts": {
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "node --test tests/smoke/workspace.test.mjs tests/platform/*.test.ts",
     "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "verify:workspace": "powershell -NoProfile -File scripts/verify-workspace.ps1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.0.0"
   }
 }
-

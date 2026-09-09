@@ -21,7 +21,7 @@ The demo command deliberately exits without a numerical result until an explicit
 
 ## Resource and remote policy
 
-`LocalScheduler` reserves aggregate local RSS and rejects a total above 1024 MiB. The supplied local compose profile caps the optional MCP container at 250 MiB. Reservations are conservative admission controls; host process RSS remains an operational measurement that must be captured around a real native run.
+`LocalScheduler` enforces an aggregate local process-tree RSS budget of 896 MiB. Every admitted local process is launched without a shell in its own process group; the supervisor samples the root and descendants and terminates the whole tree when the reservation or aggregate ceiling is exceeded. If process-tree measurement is unavailable, the run is terminated and fails closed. The supplied local compose profile caps the optional MCP container at 250 MiB.
 
 Remote work is rejected unless both the user-owned MCP session sets `AERO_ALLOW_REMOTE_COMPUTE=1` and its cost ceiling fits the session’s `AERO_REMOTE_COST_CEILING_USD`. Destructive `design.delete` separately requires `AERO_ALLOW_DESTRUCTIVE=1`. These environment values must be set by the interactive operator; no file stores a credential or approval.
 

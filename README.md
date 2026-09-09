@@ -6,7 +6,7 @@ The project is under active construction. Numerical results are required to iden
 
 ## Resource contract
 
-Local development and validation are designed to stay below **1 GB resident memory (RSS)** in aggregate. Heavy native solvers are capability-detected and run explicitly, one at a time, or on user-enabled remote workers.
+Local development and validation enforce an **896 MiB aggregate process-tree RSS budget**, leaving headroom below the one-gigabyte host contract. Heavy native solvers are capability-detected and run explicitly, one at a time, or on user-enabled remote workers.
 
 ## License
 

@@ -11,6 +11,7 @@ export interface SolverManifest {
   readonly displayName: string;
   readonly category: "solver" | "coupling" | "geometry";
   readonly versionProbe: { readonly command: readonly string[] };
+  readonly allowedExecutables: readonly string[];
   readonly resultKinds: readonly ResultKind[];
   readonly execution: { readonly trustModel: "native-only"; readonly checkpoint: boolean };
 }
@@ -31,6 +32,7 @@ export interface CapabilityReport {
 export interface LaunchRequest {
   readonly solverId: SolverId;
   readonly designId: string;
+  /** A complete command is retained for compatibility, but is validated against the manifest. */
   readonly command: readonly string[];
   readonly requestedMemoryMiB: number;
   readonly checkpointFrom?: string;
@@ -69,8 +71,22 @@ export interface JobRequest {
   readonly requestedMemoryMiB: number;
   readonly remote: boolean;
   readonly costCeilingUsd: number;
+  readonly ownerId?: string;
 }
 
 export interface ScheduledJob extends JobRequest {
   readonly state: "queued";
+}
+
+export interface LocalProcessResult {
+  readonly state: "completed" | "failed";
+  readonly exitCode: number | null;
+  readonly peakRssMiB: number;
+  readonly reason?:
+    | "PROCESS_RSS_LIMIT_EXCEEDED"
+    | "RSS_MONITOR_UNAVAILABLE"
+    | "PROCESS_EXIT_NONZERO"
+    | "PROCESS_TIMEOUT"
+    | "PROCESS_CANCELLED"
+    | "PROCESS_START_FAILED";
 }
