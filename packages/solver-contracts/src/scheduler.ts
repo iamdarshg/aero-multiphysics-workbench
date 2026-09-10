@@ -179,8 +179,18 @@ const terminateTree = async (child: ChildProcess, observedPids: ReadonlySet<numb
     // released promptly; taskkill then covers the complete descendant tree.
     try { child.kill(); } catch { /* process may have exited */ }
     let confirmed = true;
-    for (const pid of new Set([child.pid, ...observedPids])) {
-      try { await readCommandOutput("taskkill.exe", ["/PID", String(pid), "/T", "/F"], 1_000); } catch { confirmed = false; }
+    const pids = new Set(observedPids);
+    // A root that already emitted its exit event cannot be targeted again;
+    // skip that PID so a benign taskkill "not found" does not mask descendant
+    // cleanup evidence.
+    if (child.exitCode === null) pids.add(child.pid);
+    else pids.delete(child.pid);
+    for (const pid of pids) {
+      try {
+        await readCommandOutput("taskkill.exe", ["/PID", String(pid), "/T", "/F"], 1_000);
+      } catch {
+        try { process.kill(pid); confirmed = true; } catch { confirmed = false; }
+      }
     }
     return confirmed;
   }
