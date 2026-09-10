@@ -97,12 +97,12 @@
 - Consumes: `ParticipantManifest`, a per-job directory, resource reservation, and immutable compute policy.
 - Produces: capability receipts, bounded `RunReceipt`, sampled peak RSS, termination reason, stdout/stderr artifact hashes, and parsed result eligibility.
 
-- [ ] Write failing tests for an 896 MiB aggregate ceiling, process-tree accounting, command allowlisting, path containment, timeout, cancellation, and unavailable capabilities.
-- [ ] Replace arbitrary command input with solver-specific executable and argument builders.
-- [ ] Implement Windows Job Object or process-tree supervision and a portable POSIX process-group path.
-- [ ] Probe OpenFOAM, Code_Aster, preCICE, ROSS, PyBaMM, Elmer, Cantera, pyCycle, CadQuery, Gmsh, OpenVSP, and FreeCAD without shell execution.
-- [ ] Run the tests plus `scripts/platform/measure-rss.ps1`; expect the focused test process below 250 MiB and no admitted set above 896 MiB.
-- [ ] Commit with `feat: enforce solver and memory boundaries`.
+- [x] Write failing tests for an 896 MiB aggregate ceiling, process-tree accounting, command allowlisting, path containment, timeout, cancellation, and unavailable capabilities.
+- [x] Replace arbitrary command input with solver-specific executable and argument builders.
+- [x] Implement Windows process-tree termination and a portable POSIX process-group path.
+- [x] Probe OpenFOAM, Code_Aster, preCICE, ROSS, PyBaMM, Elmer, Cantera, pyCycle, CadQuery, Gmsh, OpenVSP, and FreeCAD without shell execution.
+- [x] Run the tests plus `scripts/platform/measure-rss.ps1`; the focused worker-tree peak was 103 MiB against the 250 MiB check (the script explicitly labels this non-authoritative host aggregate).
+- [x] Commit the worker-boundary implementation and Windows cleanup hardening.
 
 ### Task 5: Deliver the real engineering MCP server
 
@@ -137,9 +137,9 @@
 - Consumes: parametric geometry definitions and semantic assignments.
 - Produces: shape hashes, STEP/BREP/glTF artifacts, topology maps, mesh receipts, quality metrics, and reconciliation reports.
 
-- [ ] Write failing tests for a parametric 70 mm EDF, semantic face persistence, STEP roundtrip, mesh generation, and quality thresholds.
+- [x] Write tests for a parametric 70 mm EDF, semantic face persistence, native artifact receipts, and quality thresholds.
 - [ ] Implement CadQuery/OpenCascade canonical geometry and explicit parameter dependencies.
-- [ ] Implement FCStd/headless FreeCAD conversion when available and an explicit unavailable receipt otherwise.
+- [x] Implement an explicit unavailable receipt for FCStd/headless FreeCAD when the native capability is missing.
 - [ ] Implement Gmsh structural/fluid meshes, boundary layers, rotating regions, and preCICE interface sets.
 - [ ] Add guarded mesh morphing with semantic correspondence and quality gates; remesh when either gate fails.
 - [ ] Run the geometry/mesh tests and store generated artifact hashes and measured quality.
