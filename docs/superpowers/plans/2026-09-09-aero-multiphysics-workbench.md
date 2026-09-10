@@ -241,10 +241,12 @@
 - [ ] Initialize Superdesign's six code-context files after the baseline frontend is committed, then reproduce the real screen on canvas.
 - [ ] Use the approved Superdesign direction, UI quality rules, and React performance guidance to refine the implementation.
 - [ ] Implement lazy 3D/VTK and Plotly islands, design tree, inspector, coupling/expert controls, timeline, Sankey energy view, Campbell/response plots, envelope maps, warnings, provenance, variants, comparison, undo/redo, search, import, export, saved layouts, and keyboard shortcuts.
-- [ ] Cover loading, empty, partial, unavailable-solver, success, and error states with source/fidelity labels.
+- [x] Cover loading, empty, partial, unavailable-solver, success, and error states with source/fidelity labels in the responsive surface and bounded API probe.
 - [ ] Run unit tests, typecheck, production build, and browser E2E at 390, 820, and 1280 px with reduced motion and keyboard-only navigation.
 - [ ] Measure project-owned UI/API process RSS below the 896 MiB aggregate ceiling.
-- [ ] Commit with `feat: deliver engineering workbench interface`.
+- [x] Commit with `feat: expose bounded API capability state in workbench`; the broader UI task remains open for Superdesign reproduction, full workflow coverage, browser E2E, and aggregate RSS evidence.
+
+> **Current UI evidence note:** The hand-authored baseline includes the design tree, inspector, responsive viewport, analytical charts, warnings, provenance dialog, variants, undo/redo, search, keyboard navigation, reduced-motion styling, and a one-shot API health/state probe. Superdesign canvas reproduction remains pending because its external authentication gate was not completed; no generated direction is treated as approved design evidence.
 
 ### Task 12: Whole-aircraft and operating-envelope workflow
 
