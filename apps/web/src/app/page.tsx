@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../components/icon';
+import { checkingApiStatus, probeApi, type ApiStatus } from '../lib/api';
 import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, shouldRestoreProvenanceFocus, type DemoId, type DockTab, type ViewMode, updateCouplingStrength } from '../workbench-state';
 
 const EngineeringViewport = dynamic(() => import('../components/engineering-viewport'), { ssr: false, loading: () => <div className="viewport-loading">Preparing code-native geometry…</div> });
@@ -38,6 +39,7 @@ export default function WorkbenchPage() {
   const [activeDockTab, setActiveDockTab] = useState<DockTab>('convergence');
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [provenanceOpen, setProvenanceOpen] = useState(false);
+  const [apiStatus, setApiStatus] = useState<ApiStatus>(checkingApiStatus);
   const provenanceButtonRef = useRef<HTMLButtonElement>(null);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
@@ -74,6 +76,11 @@ export default function WorkbenchPage() {
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   }, [dark]);
+  useEffect(() => {
+    let active = true;
+    void probeApi().then((status) => { if (active) setApiStatus(status); });
+    return () => { active = false; };
+  }, []);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') { event.preventDefault(); if (event.shiftKey) redo(); else undo(); }
@@ -143,7 +150,7 @@ export default function WorkbenchPage() {
       </div>
     </header>
     <section className="coupling-bar">
-      <div><span className="muted-label">COMPUTE TARGET</span><strong>Local · API disconnected · native solver gate closed</strong></div>
+      <div><span className="muted-label">COMPUTE TARGET</span><strong>Local · {apiStatus.label} · native solver gate closed</strong></div>
       <div className="coupling-control"><div><span className="muted-label">COUPLING STRENGTH</span><strong>{coupling.toFixed(2)} <small>serious engineering</small></strong></div><input aria-label="Coupling strength" type="range" min="0" max="1" step="0.05" value={coupling} onChange={(e) => changeCoupling(Number(e.target.value))} /><span className="coupling-range">0.00 — 1.00</span></div>
       <button className="expert-toggle" onClick={() => setExpertOpen((value) => !value)}>{expertOpen ? 'Hide' : 'Expert'} overrides</button>
       <div className="status" role="status" aria-live="polite"><i /> ANALYTICAL SAMPLE · NATIVE SOLVERS NOT RUN</div>
@@ -176,7 +183,7 @@ export default function WorkbenchPage() {
       <div className="dock-tabs" role="tablist" aria-label="Analysis panels">{dockTabs.map((tab, index) => <button key={tab.id} ref={(element) => { dockTabRefs.current[index] = element; }} id={`dock-tab-${tab.id}`} role="tab" aria-controls="analysis-panel" aria-selected={activeDockTab === tab.id} tabIndex={activeDockTab === tab.id ? 0 : -1} className={activeDockTab === tab.id ? 'active' : ''} onClick={() => setActiveDockTab(tab.id)} onKeyDown={(event) => handleDockTabKeyDown(event, index)}>{tab.label} {tab.count ? <span>{tab.count}</span> : null}</button>)}</div>
       <div id="analysis-panel" className="dock-content" role="tabpanel" aria-labelledby={`dock-tab-${activeDockTab}`} tabIndex={0}><div className="chart-card"><div className="chart-meta"><span className="muted-label">{dockPanel.eyebrow}</span><strong>{dockPanel.value}</strong><small>{dockPanel.detail}</small><em>{dockPanel.source} · {dockPanel.fidelity} · {dockPanel.validity}</em></div>{activeDockTab === 'convergence' ? <AnalysisCharts /> : <div className="dock-illustration" aria-hidden="true"><span /><span /><span /><span /><span /></div>}</div><div className="job-card"><span className="muted-label">JOB PROGRESS</span><strong>Analytical state prepared</strong><div className="progress" role="progressbar" aria-label="Analytical sample preparation" aria-valuemin={0} aria-valuemax={100} aria-valuenow={profile.progress}><i style={{ width: `${profile.progress}%` }} /></div><small>{profile.progress}% · no solver process launched</small><button disabled>Request native solve</button></div><div className="warning-card"><div><span className="warning-icon"><Icon name="warning" /></span><b>Mesh suitability needs review</b></div><p>Sample geometry has a duct leading-edge curvature warning. A native mesher is unavailable, so no repair or run can be requested.</p><div><button onClick={() => { setActiveNode('Inlet flow domain'); setInspectorOpen(true); }}>Inspect context</button><button className="link-button" onClick={() => setProvenanceOpen(true)}>View provenance</button></div></div></div>
     </section>
-      <footer><span>Keyboard: Ctrl/Cmd + K search · Ctrl/Cmd + Z undo · Ctrl/Cmd + Shift + Z redo · Arrow keys move analysis tabs</span><span>API disconnected · sample-only state; numerical results are never presented as native solver output.</span></footer>
+      <footer><span>Keyboard: Ctrl/Cmd + K search · Ctrl/Cmd + Z undo · Ctrl/Cmd + Shift + Z redo · Arrow keys move analysis tabs</span><span role="status" aria-live="polite" title={apiStatus.detail}>{apiStatus.label}; sample-only state; numerical results are never presented as native solver output.</span></footer>
     {provenanceOpen && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setProvenanceOpen(false); }}><section ref={dialogRef} className="provenance-dialog" role="dialog" aria-modal="true" aria-labelledby="provenance-title" aria-describedby="provenance-description"><div className="dialog-heading"><div><span className="muted-label">STATE RECEIPT</span><h2 id="provenance-title">Analytical sample provenance</h2></div><button ref={dialogCloseRef} className="icon-button" aria-label="Close provenance (Escape)" onClick={() => setProvenanceOpen(false)}><Icon name="close" /></button></div><dl><div><dt>Design</dt><dd>{profile.title}</dd></div><div><dt>Active component</dt><dd>{activeNode}</dd></div><div><dt>Evidence class</dt><dd>Analytical demonstration state</dd></div><div><dt>Source</dt><dd>{profile.evidence.source}</dd></div><div><dt>Fidelity</dt><dd>{profile.evidence.fidelity}</dd></div><div><dt>Validity</dt><dd>{profile.evidence.validity}</dd></div><div><dt>Native execution</dt><dd className="danger-text">{profile.evidence.nativeExecution}</dd></div></dl><div className="capability-list">{capabilities.map(([name, status]) => <div key={name}><span>{name}</span><b className={status === 'Unavailable' ? 'danger-text' : ''}>{status}</b></div>)}</div><p id="provenance-description">This receipt describes local UI sample data only. It is not evidence of a CFD, FEA, thermal, or coupled native solver run.</p><button className="dialog-done" onClick={() => setProvenanceOpen(false)}>Return to workbench</button></section></div>}
   </main>;
 }
