@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "trustModel": "native-only",
+    "shell": false,
+    "remoteDefault": false,
+    "rssBudgetMiB": 896
+  },
+  "solvers": [
+    {"id": "openfoam", "displayName": "OpenFOAM", "category": "solver", "executables": ["simpleFoam", "pimpleFoam", "rhoSimpleFoam", "rhoPimpleFoam"], "versionArgs": ["--version"], "resultKinds": ["fields", "scalars"], "checkpoint": true},
+    {"id": "code-aster", "displayName": "Code_Aster", "category": "solver", "executables": ["as_run"], "versionArgs": ["--version"], "resultKinds": ["fields", "scalars"], "checkpoint": true},
+    {"id": "precice", "displayName": "preCICE", "category": "coupling", "executables": ["precice-config-visualizer"], "versionArgs": ["--version"], "resultKinds": ["coupling", "report"], "checkpoint": true},
+    {"id": "ross", "displayName": "ROSS", "category": "solver", "executables": ["ross"], "versionArgs": ["--version"], "resultKinds": ["scalars", "report"], "checkpoint": true},
+    {"id": "pybamm", "displayName": "PyBaMM", "category": "solver", "executables": ["pybamm"], "versionArgs": ["--version"], "resultKinds": ["scalars", "report"], "checkpoint": true},
+    {"id": "elmer", "displayName": "Elmer", "category": "solver", "executables": ["ElmerSolver"], "versionArgs": ["--version"], "resultKinds": ["fields", "scalars"], "checkpoint": true},
+    {"id": "cantera", "displayName": "Cantera", "category": "solver", "executables": ["cantera"], "versionArgs": ["--version"], "resultKinds": ["scalars", "report"], "checkpoint": true},
+    {"id": "pycycle", "displayName": "pyCycle", "category": "solver", "executables": ["pycycle"], "versionArgs": ["--version"], "resultKinds": ["scalars", "report"], "checkpoint": true},
+    {"id": "cadquery", "displayName": "CadQuery", "category": "geometry", "executables": ["cadquery"], "versionArgs": ["--version"], "resultKinds": ["geometry"], "checkpoint": true},
+    {"id": "gmsh", "displayName": "Gmsh", "category": "geometry", "executables": ["gmsh"], "versionArgs": ["--version"], "resultKinds": ["mesh", "geometry"], "checkpoint": true},
+    {"id": "openvsp", "displayName": "OpenVSP", "category": "geometry", "executables": ["vsp"], "versionArgs": ["--version"], "resultKinds": ["geometry", "mesh"], "checkpoint": true},
+    {"id": "freecad", "displayName": "FreeCAD", "category": "geometry", "executables": ["FreeCADCmd"], "versionArgs": ["--version"], "resultKinds": ["geometry", "mesh"], "checkpoint": true}
+  ]
+}
