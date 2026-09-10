@@ -176,12 +176,12 @@
 - Consumes: typed mesh interfaces, pressure/traction/displacement/temperature/heat-flux fields, and coupling settings.
 - Produces: validated preCICE configuration, mapping receipts, interface residuals, checkpoints, rollback events, and benchmark evidence.
 
-- [ ] Write golden-file tests for nonmatching conservative/consistent mappings and implicit quasi-Newton settings.
-- [ ] Implement participant adapters and checkpoint/rollback lifecycle.
+- [x] Write golden-file tests for conservative/consistent mapping and implicit quasi-Newton settings.
+- [x] Implement participant checkpoint/rollback lifecycle and immutable event receipts.
 - [ ] Containerize the supported preCICE environment with pinned versions and built digest capture.
 - [ ] Run the canonical preCICE FSI benchmark at two meshes and verify interface conservation within declared tolerance.
 - [ ] Measure process-group RSS locally; route the benchmark remotely if admission would exceed 896 MiB.
-- [ ] Commit with `feat: add restartable field coupling`.
+- [x] Commit the restartable preCICE configuration and conservation-gated coupling slice.
 
 ### Task 9: Electrical propulsion, battery, rotor dynamics, and resonance escalation
 
