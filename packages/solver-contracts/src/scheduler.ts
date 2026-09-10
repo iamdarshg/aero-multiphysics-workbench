@@ -172,18 +172,24 @@ const waitForExit = (child: ChildProcess): Promise<number | null> => new Promise
 const waitForExitBounded = async (exit: Promise<number | null>): Promise<number | null> =>
   Promise.race([exit, delay(1_000).then(() => null)]);
 
-const terminateTree = async (child: ChildProcess, observedPids: ReadonlySet<number> = new Set()): Promise<void> => {
-  if (!child.pid) return;
+const terminateTree = async (child: ChildProcess, observedPids: ReadonlySet<number> = new Set()): Promise<boolean> => {
+  if (!child.pid) return false;
   if (process.platform === "win32") {
+    // Ask Node to close the root handle first so the caller's exit promise is
+    // released promptly; taskkill then covers the complete descendant tree.
+    try { child.kill(); } catch { /* process may have exited */ }
+    let confirmed = true;
     for (const pid of new Set([child.pid, ...observedPids])) {
-      try { await readCommandOutput("taskkill.exe", ["/PID", String(pid), "/T", "/F"], 1_000); } catch { /* process may have exited */ }
+      try { await readCommandOutput("taskkill.exe", ["/PID", String(pid), "/T", "/F"], 1_000); } catch { confirmed = false; }
     }
-    return;
+    return confirmed;
   }
-  try { process.kill(-child.pid, "SIGKILL"); } catch { /* process group may have exited */ }
+  let confirmed = true;
+  try { process.kill(-child.pid, "SIGKILL"); } catch { confirmed = false; }
   for (const pid of observedPids) {
-    try { process.kill(pid, "SIGKILL"); } catch { /* process may have exited */ }
+    try { process.kill(pid, "SIGKILL"); } catch { confirmed = false; }
   }
+  return confirmed;
 };
 
 const verifyTreeGone = async (observedPids: ReadonlySet<number>): Promise<boolean> => {
@@ -313,11 +319,13 @@ export class LocalScheduler {
         } catch {
           finalRefreshFailed = true;
         }
-        await terminateTree(child, observedPids);
+        const terminationConfirmed = await terminateTree(child, observedPids);
         if (finalRefreshFailed && process.platform === "linux" && observedPids.size > 1) {
           throw new Error("PROCESS_TREE_REFRESH_UNAVAILABLE");
         }
-        if (!(await verifyTreeGone(observedPids))) throw new Error("PROCESS_TREE_CLEANUP_UNVERIFIED");
+        if (!(terminationConfirmed && process.platform === "win32") && !(await verifyTreeGone(observedPids))) {
+          throw new Error("PROCESS_TREE_CLEANUP_UNVERIFIED");
+        }
       }
       this.jobs.delete(request.id);
     }
