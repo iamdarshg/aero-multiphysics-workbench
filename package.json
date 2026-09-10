@@ -8,9 +8,9 @@
     "audit:requirements": "node scripts/audit-requirements.mjs",
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test && node --test tests/smoke/workspace.test.mjs && uv run --directory services/api pytest -q",
-    "typecheck": "pnpm -r typecheck && uv run --directory services/api mypy ../../packages/core aeroworkbench_api",
-    "lint": "pnpm -r lint && uv run --directory services/api ruff check ../../packages/core aeroworkbench_api ../../tests/core",
+    "test": "pnpm --filter @aero/web test && pnpm --filter @aero/schema test && pnpm --filter @aero/solver-contracts test && node --test tests/smoke/workspace.test.mjs && uv run --directory services/api pytest -q",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.packages.json && uv run --directory services/api mypy ../../packages/core aeroworkbench_api ../../tests/integration/test_sqlite_roundtrip.py",
+    "lint": "pnpm -r lint && uv run --directory services/api ruff check ../../packages/core aeroworkbench_api ../../tests/core ../../tests/integration",
     "verify:workspace": "powershell -NoProfile -File scripts/verify-workspace.ps1"
   },
   "dependencies": {
@@ -18,6 +18,8 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "2.0.0"
+    "@modelcontextprotocol/client": "2.0.0",
+    "@types/node": "26.5.0",
+    "typescript": "5.9.3"
   }
 }

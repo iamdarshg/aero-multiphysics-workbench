@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node"]
+  },
+  "include": [
+    "packages/cache/src/**/*.ts",
+    "packages/provenance/src/**/*.ts",
+    "packages/schema/src/**/*.ts",
+    "packages/units/src/**/*.ts",
+    "tests/unit/design-state.test.ts"
+  ]
+}

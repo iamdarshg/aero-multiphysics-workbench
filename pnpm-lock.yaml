@@ -18,6 +18,12 @@ importers:
       '@modelcontextprotocol/client':
         specifier: 2.0.0
         version: 2.0.0
+      '@types/node':
+        specifier: 26.5.0
+        version: 26.5.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
   apps/web:
     dependencies:
@@ -68,9 +74,15 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(@types/node@26.5.0)(vite@8.2.2(@types/node@26.5.0))
 
+  packages/cache: {}
+
+  packages/provenance: {}
+
   packages/schema: {}
 
   packages/solver-contracts: {}
+
+  packages/units: {}
 
 packages:
 
