@@ -143,7 +143,7 @@
 - [ ] Implement Gmsh structural/fluid meshes, boundary layers, rotating regions, and preCICE interface sets.
 - [ ] Add guarded mesh morphing with semantic correspondence and quality gates; remesh when either gate fails.
 - [ ] Run the geometry/mesh tests and store generated artifact hashes and measured quality.
-- [ ] Commit with `feat: add semantic CAD and mesh pipeline`.
+- [x] Commit the deterministic geometry, semantic, mesh, and capability-boundary slice.
 
 ### Task 7: OpenMDAO scalar coordination, coupling strength, convergence, and adaptive fidelity
 
@@ -157,12 +157,12 @@
 - Consumes: participant scalar ports, coupling strength, expert overrides, quality history, and constraints.
 - Produces: converged scalar state, physical closure report, fidelity decision, DOE/optimization trace, and checkpoint.
 
-- [ ] Write failing cyclic motor-thermal-EDF tests and verify individual residual convergence cannot override an energy-closure failure.
-- [ ] Implement the 0.0-1.0 coupling-strength expansion with default 0.90 and visible expert parameters.
+- [x] Write cyclic motor-thermal-EDF tests and verify individual residual convergence cannot override an energy-closure failure.
+- [x] Implement the 0.0-1.0 coupling-strength expansion with default 0.90 and visible expert parameters.
 - [ ] Implement mass, energy, force, geometry, thermal, electrical, and dynamic convergence measures.
 - [ ] Implement DOE, gradient/derivative-free, multiobjective, and adaptive-fidelity selection through OpenMDAO drivers.
 - [ ] Run analytical benchmark loops and require energy closure, deterministic checkpoints, and identical warm-start results.
-- [ ] Commit with `feat: add multidisciplinary convergence core`.
+- [x] Commit the dependency-light multidisciplinary scalar convergence core.
 
 ### Task 8: preCICE field coupling and restartable FSI/CHT
 
