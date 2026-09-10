@@ -33,7 +33,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["../../packages/core", "."]
+mypy_path = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../solvers", "."]
 
 [tool.uv]
 package = false

@@ -1,0 +1,1 @@
+"""preCICE native adapter package."""
