@@ -35,12 +35,12 @@
 - Consumes: existing `feature/frontend-workbench`, `feature/core-physics-api`, and `feature/platform-integrations` branches.
 - Produces: one buildable main branch with `pnpm test`, `pnpm typecheck`, and Python test entrypoints.
 
-- [ ] Review and commit each recovered branch without generated logs, caches, virtual environments, or TypeScript build-info files.
-- [ ] Run each branch's focused tests and record peak process RSS.
-- [ ] Merge branches serially, resolving root-manifest conflicts by preserving every workspace package and script.
-- [ ] Add `tests/smoke/workspace.test.mjs` that asserts every declared workspace package has a manifest and test command.
-- [ ] Run `pnpm install --frozen-lockfile`, `pnpm test`, and the API's `uv run pytest`; expect all focused suites to pass.
-- [ ] Commit with `chore: integrate initial workbench slices`.
+- [x] Review and commit each recovered branch without generated logs, caches, virtual environments, or TypeScript build-info files.
+- [x] Run each branch's focused tests and record peak process RSS.
+- [x] Merge branches serially, resolving root-manifest conflicts by preserving every workspace package and script.
+- [x] Add `tests/smoke/workspace.test.mjs` that asserts every declared workspace package has a manifest and test command.
+- [x] Run `pnpm install --frozen-lockfile`, `pnpm test`, and the API's `uv run pytest`; expect all focused suites to pass.
+- [x] Commit with `chore: integrate initial workbench slices`.
 
 ### Task 2: Create the authoritative requirement and evidence ledger
 
@@ -54,12 +54,12 @@
 - Consumes: the 85 numbered sections and 44 final stopping conditions.
 - Produces: `RequirementEvidence { id, title, status, evidence, lastVerifiedAt }` and a failing audit command when mandatory evidence is incomplete.
 
-- [ ] Write a failing test requiring unique entries for sections `0` through `85` and stopping conditions `1` through `44`.
-- [ ] Verify the test fails when an ID or evidence field is absent.
-- [ ] Implement the typed schema and seed the ledger with honest `PASS`, `PARTIAL`, `FAIL`, or `BLOCKED` states from current evidence.
-- [ ] Implement `pnpm audit:requirements` so only evidence-linked `PASS` entries satisfy the final gate.
-- [ ] Run the audit; expect a nonzero exit while mandatory work is incomplete and a machine-readable summary.
-- [ ] Commit with `feat: add evidence-backed requirement audit`.
+- [x] Write a failing test requiring unique entries for sections `0` through `85` and stopping conditions `1` through `44`.
+- [x] Verify the test fails when an ID or evidence field is absent.
+- [x] Implement the typed schema and seed the ledger with honest `PASS`, `PARTIAL`, `FAIL`, or `BLOCKED` states from current evidence.
+- [x] Implement `pnpm audit:requirements` so only evidence-linked `PASS` entries satisfy the final gate.
+- [x] Run the audit; expect a nonzero exit while mandatory work is incomplete and a machine-readable summary.
+- [x] Commit with `feat: add evidence-backed requirement audit`.
 
 ### Task 3: Canonical design state, units, variants, DAG, cache, and provenance
 
@@ -76,12 +76,12 @@
 - Consumes: normalized dimensional inputs and immutable user/compute policy.
 - Produces: `DesignRevision`, `VariantRevision`, `ContentKey`, `ProvenanceEvent`, and repository interfaces.
 
-- [ ] Write failing tests for unit normalization, deterministic hashes, parent-child variants, cache invalidation, and append-only provenance.
-- [ ] Verify equal normalized inputs hash equally and a semantic/material/solver change invalidates descendants.
-- [ ] Implement focused packages and SQLite repositories with migrations.
-- [ ] Add artifact references for Parquet, VTK, glTF, STEP/BREP, and HDF5/Zarr without placing large fields in SQLite.
-- [ ] Run unit and database roundtrip tests; expect deterministic hashes across processes.
-- [ ] Commit with `feat: add canonical design graph and provenance`.
+- [x] Write failing tests for unit normalization, deterministic hashes, parent-child variants, cache invalidation, and append-only provenance.
+- [x] Verify equal normalized inputs hash equally and a semantic/material/solver change invalidates descendants.
+- [x] Implement focused packages and SQLite repositories with migrations.
+- [x] Add artifact references for Parquet, VTK, glTF, STEP/BREP, and HDF5/Zarr without placing large fields in SQLite.
+- [x] Run unit and database roundtrip tests; expect deterministic hashes across processes.
+- [x] Commit with `feat: add canonical design graph and provenance`.
 
 ### Task 4: Harden the scheduler, process supervisor, solver gateway, and capability detector
 
