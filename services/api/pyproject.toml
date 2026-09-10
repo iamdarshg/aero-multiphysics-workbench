@@ -18,8 +18,8 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["../../packages/core", "."]
-testpaths = ["../../tests/core", "../../tests/integration"]
+pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../solvers", "."]
+testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics"]
 addopts = "-ra"
 
 [tool.ruff]
