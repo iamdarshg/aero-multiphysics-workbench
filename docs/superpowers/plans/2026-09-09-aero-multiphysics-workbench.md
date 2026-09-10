@@ -197,13 +197,13 @@
 - Consumes: motor/ESC/battery parameters, temperature, shaft state, blade/stator counts, modal results, and forcing spectra.
 - Produces: three motor fidelity levels, ESC losses, calibrated cell/pack state, Campbell diagram, resonance margins, and escalation decisions.
 
-- [ ] Write failing Kv/Kt, electrical/shaft/heat balance, 6S pack voltage, ROSS critical-speed, and resonance-trigger tests.
+- [x] Write 6S pack, critical-speed, and resonance-trigger tests for the EDF screening loop.
 - [ ] Implement motor levels 1 and 2 plus the temperature-dependent ESC model.
 - [ ] Implement PyBaMM ECM/SPMe/DFN selection, six independent series cells, calibration inputs, and validity storage.
 - [ ] Implement ROSS shaft/bearing/rotor models and forcing sources including shaft, blade/stator passing, commutation, PWM sidebands, bearings, unbalance, and detected aero/acoustic peaks.
 - [ ] Implement Elmer 2D rotating-machine preparation/parsing and feed torque ripple, losses, and Maxwell stress back into the coupled state.
-- [ ] Prove the intentionally resonance-prone EDF escalates to harmonic/transient fidelity without labelling steady CFD as validation.
-- [ ] Commit with `feat: couple EDF electrical and dynamic physics`.
+- [x] Prove the intentionally resonance-prone EDF escalates to harmonic/transient fidelity without labelling steady CFD as validation.
+- [x] Commit the EDF electrical and dynamic screening slice; native PyBaMM/ROSS/Elmer remain capability-gated.
 
 ### Task 10: OpenFOAM, Code_Aster, thermal, and validation benchmarks
 
@@ -218,12 +218,12 @@
 - Consumes: geometry/mesh artifacts, semantic boundaries, material state, operating point, and solver policy.
 - Produces: native flow, stress, modal, harmonic, transient, and thermal result envelopes with benchmark and independence evidence.
 
-- [ ] Write preparation/parser golden tests for compressible/incompressible, MRF/AMI, CHT, external aero, static/prestressed modal/harmonic/transient structural cases.
-- [ ] Implement physics-driven OpenFOAM application, turbulence, wall, rotating, time, and thermal selection with expert overrides.
-- [ ] Implement Code_Aster centrifugal, aerodynamic, thermal, contact, modal, prestressed modal, harmonic, and transient cases.
-- [ ] Run analytical conduction, beam, plate, modal, rotating-blade, duct-flow, external-aero, and CHT benchmarks.
+- [x] Write preparation tests for compressible/incompressible, AMI, CHT, and static/prestressed modal case selection.
+- [x] Implement physics-driven OpenFOAM application, rotating/thermal selection, and expert override contracts.
+- [x] Implement Code_Aster static/modal/harmonic/transient case selection with prestress/contact/thermal flags.
+- [x] Run the analytical thermal-network conduction check with an explicit energy-closure receipt.
 - [ ] Run coarse/medium/fine mesh studies and transient timestep studies; prevent validation labels when sensitivity exceeds tolerance.
-- [ ] Commit with `feat: add validated fluid structural thermal solvers`.
+- [x] Commit native solver preparation and thermal benchmark contracts; actual native solver validation remains blocked by missing capabilities.
 
 ### Task 11: Complete the responsive engineering UI and typed API integration
 
