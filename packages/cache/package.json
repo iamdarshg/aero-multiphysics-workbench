@@ -1,0 +1,11 @@
+{
+  "name": "@aero/cache",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../../tests/unit/design-state.test.ts",
+    "typecheck": "node --experimental-strip-types --check src/content-addressed.ts",
+    "lint": "node --experimental-strip-types --check src/content-addressed.ts"
+  }
+}

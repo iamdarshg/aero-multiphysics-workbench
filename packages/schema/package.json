@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test ../../tests/unit/requirements-audit.test.ts",
-    "typecheck": "node --experimental-strip-types --check src/audit.ts",
-    "lint": "node --experimental-strip-types --check src/audit.ts"
+    "test": "node --test ../../tests/unit/*.test.ts",
+    "typecheck": "node --experimental-strip-types --check src/audit.ts && node --experimental-strip-types --check src/design.ts",
+    "lint": "node --experimental-strip-types --check src/audit.ts && node --experimental-strip-types --check src/design.ts"
   }
 }
