@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "policy": "native results require a verified completion receipt; analytical checks are labelled screening",
+  "benchmarks": [
+    {"id": "thermal-conduction-1d", "domain": "thermal", "requiredCapability": "native-or-screening", "validation": "energy-closure"},
+    {"id": "cantilever-modal", "domain": "structural", "requiredCapability": "code-aster", "validation": "mesh-and-timestep-independence"},
+    {"id": "edf-duct-flow", "domain": "fluid", "requiredCapability": "openfoam", "validation": "mesh-independence"},
+    {"id": "edf-cht", "domain": "coupled", "requiredCapability": "precice", "validation": "interface-conservation"}
+  ]
+}
