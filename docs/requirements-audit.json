@@ -2942,11 +2942,11 @@
         {
           "kind": "file",
           "path": "services/api/pyproject.toml",
-          "detail": "PARTIAL: Python suite (88 tests) plus web/schema/contract suites pass this turn; full e2e, cloud, and native tiers not run.",
-          "sha256": "33a3fdb3ec09fc147a9eac36ce3faf50204f7c1636835aa6189d43d3f82edd45"
+          "detail": "PARTIAL: Python suite (99 tests incl. generic CAD/material/mesh substrate) plus schema/contract suites pass; full e2e, cloud, and native-solver tiers not run.",
+          "sha256": "2dc28e7cb975e5f892e8c5d56e920a3e0a71b71bdf0f69c7a32321a58d0d521e"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-14T19:25:03Z"
     },
     {
       "id": "stopping:43",

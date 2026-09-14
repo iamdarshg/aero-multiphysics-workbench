@@ -7,6 +7,8 @@ dependencies = [
   "fastapi>=0.116,<1",
   "pydantic>=2.11,<3",
   "uvicorn>=0.35,<1",
+  "cadquery>=2.4,<3",
+  "gmsh>=4.12,<5",
 ]
 
 [dependency-groups]
@@ -18,7 +20,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
+pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
 testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics"]
 addopts = "-ra -p no:cacheprovider"
 
@@ -33,7 +35,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
+mypy_path = ["../../typings", "../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
 
 [tool.uv]
 package = false

@@ -1,0 +1,144 @@
+{
+  "milestone": 1,
+  "nRotating": 2,
+  "cad": {
+    "kernel": {
+      "cadquery": "2.8.0",
+      "ocp": "7.9.3.1"
+    },
+    "shapeHash": "19afc36e85c431dabd743b3eac59764357fc9a8f982886b4392865f479883a8b",
+    "parameterHash": "c67942b48775c673dffa2561845fb0234b0af01dc6f0bd9da00c02954b32099a",
+    "modelDigest": "2c6c1599eee8de1199d7881f7a74504f72fa901e4cd9dfd609a7af7d5c1e13bb",
+    "components": [
+      {
+        "name": "duct",
+        "volumeMm3": 27935.04,
+        "faces": 6
+      },
+      {
+        "name": "fluid_inlet",
+        "volumeMm3": 27159.07,
+        "faces": 6
+      },
+      {
+        "name": "fluid_outlet",
+        "volumeMm3": 27159.07,
+        "faces": 6
+      },
+      {
+        "name": "rotor_zone_0",
+        "volumeMm3": 20891.59,
+        "faces": 6
+      },
+      {
+        "name": "rotor_zone_1",
+        "volumeMm3": 20891.59,
+        "faces": 6
+      },
+      {
+        "name": "solid_0",
+        "volumeMm3": 9409.7,
+        "faces": 4
+      },
+      {
+        "name": "solid_1",
+        "volumeMm3": 6403.82,
+        "faces": 4
+      },
+      {
+        "name": "stator_zone_0",
+        "volumeMm3": 12534.95,
+        "faces": 6
+      }
+    ],
+    "artifactCount": 19
+  },
+  "topology": {
+    "entities": 9,
+    "rotatingRegions": 2
+  },
+  "materials": {
+    "inventory": [
+      "aluminium-6061-t6",
+      "carbon-epoxy-ud-ply",
+      "copper-etp",
+      "ndfeb-n42",
+      "steel-structural"
+    ],
+    "assignmentDigest": "16a1a4f2e626ae6ec6d1fc762fd0677a147f403c60c0ddb08ca8aae57eeafe4e",
+    "laminate": "evidence-quad@r1",
+    "homogenizedExPa": 72861606109.69682,
+    "homogenizedEyPa": 72861606109.69684
+  },
+  "fluidMesh": {
+    "state": "completed",
+    "elements": 276968,
+    "nodes": 26938,
+    "minSicn": 0.2618837768392716,
+    "inverted": 0,
+    "minSizeMm": 1.1777538407518084,
+    "maxSizeMm": 4.396122350159058,
+    "aspectRatioMax": null,
+    "meshHash": "452d1c6bc8756065c002c3152f02ba9c6b4662884437ff8e07f780596cdcaf18",
+    "topologyFingerprint": "d1197e7b9f076df172aaf10d677bd178f54790f183e10544f9fad05455fcc695",
+    "physicalGroups": {
+      "interface:interface_rot-rotor_zone_0__stat-fluid_inlet": "rot-rotor_zone_0<->stat-fluid_inlet:1faces",
+      "interface:interface_rot-rotor_zone_0__stat-stator_zone_0": "rot-rotor_zone_0<->stat-stator_zone_0:1faces",
+      "interface:interface_rot-rotor_zone_1__stat-fluid_outlet": "rot-rotor_zone_1<->stat-fluid_outlet:1faces",
+      "interface:interface_rot-rotor_zone_1__stat-stator_zone_0": "rot-rotor_zone_1<->stat-stator_zone_0:1faces",
+      "patch:inlet": "inlet:1 surfaces in selector",
+      "patch:outlet": "outlet:1 surfaces in selector",
+      "patch:walls": "wall:26 surfaces in selector",
+      "zone:rot-rotor_zone_0": "rotating:fluid:1vol",
+      "zone:rot-rotor_zone_1": "rotating:fluid:1vol",
+      "zone:stat-fluid_inlet": "stationary:fluid:1vol",
+      "zone:stat-fluid_outlet": "stationary:fluid:1vol",
+      "zone:stat-stator_zone_0": "stationary:fluid:1vol"
+    },
+    "interfaces": [
+      {
+        "name": "interface_rot-rotor_zone_0__stat-fluid_inlet",
+        "a": "rot-rotor_zone_0",
+        "b": "stat-fluid_inlet",
+        "faces": 1
+      },
+      {
+        "name": "interface_rot-rotor_zone_0__stat-stator_zone_0",
+        "a": "rot-rotor_zone_0",
+        "b": "stat-stator_zone_0",
+        "faces": 1
+      },
+      {
+        "name": "interface_rot-rotor_zone_1__stat-fluid_outlet",
+        "a": "rot-rotor_zone_1",
+        "b": "stat-fluid_outlet",
+        "faces": 1
+      },
+      {
+        "name": "interface_rot-rotor_zone_1__stat-stator_zone_0",
+        "a": "rot-rotor_zone_1",
+        "b": "stat-stator_zone_0",
+        "faces": 1
+      }
+    ]
+  },
+  "morph": {
+    "state": "morphed",
+    "maxDisplacementMm": 0.18741664813990933,
+    "meshHash": "c657e072089d69ec89da44e6bd710729410eb4032f15d31a37e8c64ddba12aea"
+  },
+  "interchange": {
+    "fcstd": {
+      "state": "completed",
+      "code": "FCSTD_OK",
+      "sha256": "15142cfddf65f96cbe719c33057fdd22bd030155a669bc007912be4850fc1f62"
+    },
+    "roundtrip": {
+      "state": "completed",
+      "facesBefore": 6,
+      "facesAfter": 6,
+      "detail": "roundtrip preserved 6 faces via ocp-fallback"
+    }
+  },
+  "elapsedS": 8.9
+}
