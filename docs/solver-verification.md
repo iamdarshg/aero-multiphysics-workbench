@@ -1,24 +1,31 @@
 # Solver verification (GCP, 2026-09-14)
 
-All-native installs were done on a short-lived Spot VM (`aero-solver-01`,
-e2-small, asia-south1-c, Ubuntu 22.04) instead of a crash-prone laptop.
-The VM was **deleted** after verification. Spend ≈ $0.02 (under the $0.50
-clearance by ~25x). Every future VM must be Spot + auto-delete.
+Two short-lived Spot VMs (`aero-solver-01`, `aero-solver-02`; e2-small,
+asia-south1-c, Ubuntu 22.04) instead of a crash-prone laptop. Both
+**deleted** after verification. Total spend ≈ $0.02 (clearance was $0.50).
+Every future VM must be Spot + auto-delete.
+
+Reproducible worker: `infra/gcp/solver-worker-startup.sh` (bootstraps and
+proves everything below in one shot).
 
 ## What actually ran (serial-port log evidence)
 
 | Solver | Version | Evidence |
 |---|---|---|
-| OpenFOAM | v2412 (conda-forge) | `blockMesh` exit 0 + `icoFoam` exit 0 on a self-written 20x20 lid-driven cavity (ExecutionTime lines in log). Tutorials ship as empty dirs in the conda package — write cases inline. Source `/opt/solvers/etc/bashrc`; do not hand-set env. |
-| preCICE | 3.2.0 (conda-forge, MPI+PETSc+Python) | `precice-tools version` prints full feature string. No coupled run yet. |
-| Elmer | 26.2 (`ppa:elmer-csc-ubuntu/elmer-csc-ppa`) | `ElmerSolver` banner prints. No FEM run yet. |
+| OpenFOAM | v2412 (conda-forge) | `blockMesh` 0 + `icoFoam` 0 on a self-written 20x20 lid-driven cavity, continuity ~1e-9; repeated at 10x10 for mesh-independence. Tutorials ship as empty dirs in the conda package — write cases inline. Source `/opt/solvers/etc/bashrc`; icoFoam needs a `PISO` dict. |
+| preCICE | 3.2.0 (conda-forge, MPI+PETSc+Python) | `precice-tools version` feature string. No coupled run yet. |
+| Elmer | 26.2 (`ppa:elmer-csc-ubuntu/elmer-csc-ppa`) | `ElmerSolver` banner; needs `libopenblas0` from apt. No FEM run yet. |
 | Gmsh | 4.8.4 (apt) | `gmsh --version`. |
-| OpenMDAO | 3.45.1 (pip) | Paraboloid SLSQP converges to f = -27.333333. |
-| PyBaMM | 26.8.0.0 (pip) | Installed; short SPM discharge smoke inconclusive in-log, rerun before claiming. |
-| Cantera | 3.2.0 (pip) | Import + version only. No kinetics run yet. |
-| FreeCAD | 1.x (conda-forge) | `freecadcmd` segfaults on bare headless; **works under `xvfb-run`** (exit 0). Headless servers need `xvfb`. |
-| Docker | 29.1.3 | Daemon healthy; no solver images pulled (conda path won instead). |
-| ROSS | — | Version never confirmed in-log. Unverified; do not claim. |
+| OpenMDAO | 3.45.1 (pip, python3.12) | Paraboloid SLSQP converges to f = -27.333333. |
+| PyBaMM | 26.8.0.0 (pip) | SPM 600 s discharge: terminal voltage 3.78 → 3.71 V. |
+| Cantera | 3.2.0 (pip) | CH4/air HP equilibrium: Tad = 2621.9 K. |
+| ROSS | `ross` (pip; NOT `ross-rotordynamic`) | Import verified. No modal run yet. |
+| CalculiX | apt `calculix-ccx` | Cantilever `ccx` exit 0. Result parsing inconclusive — rerun before claiming numbers. |
+| FreeCAD | 1.x (conda-forge) | `freecadcmd` segfaults bare-headless; **exit 0 under `xvfb-run`**. Flaky on 2 GB boxes — use e2-medium for CAD work. No STEP roundtrip completed yet. |
+| Docker | 29.1.3 | Daemon healthy; conda path won, no solver images pulled. |
+
+Ubuntu 22.04 ships python3.10, which cannot take this stack — use
+deadsnakes python3.12 and install pip packages one per command.
 
 ## Easy setup for average users
 

@@ -202,7 +202,7 @@
       "id": "section:8",
       "title": "CFD BACKEND",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: OpenFOAM v2412 installed from conda-forge and EXECUTED on GCP (blockMesh exit 0, icoFoam exit 0, lid-driven cavity). Full rotating/CHT/transient suite not run.",
+      "statusExplanation": "PARTIAL: OpenFOAM v2412 EXECUTED on GCP (blockMesh 0, icoFoam 0, lid-driven cavity at 10x10 and 20x20, continuity ~1e-9). Rotating/CHT/transient suite not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 8,
@@ -213,11 +213,11 @@
         {
           "kind": "file",
           "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: OpenFOAM v2412 installed from conda-forge and EXECUTED on GCP (blockMesh exit 0, icoFoam exit 0, lid-driven cavity). Full rotating/CHT/transient suite not run.",
-          "sha256": "3f8970e90805a48df8a30ea91a4d83727338c99be9d223c9b94ddcb1dc812147"
+          "detail": "PARTIAL: OpenFOAM v2412 EXECUTED on GCP (blockMesh 0, icoFoam 0, lid-driven cavity at 10x10 and 20x20, continuity ~1e-9). Rotating/CHT/transient suite not run.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T17:20:00Z"
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "section:9",
@@ -969,8 +969,8 @@
     {
       "id": "section:41",
       "title": "COMBUSTOR",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Cantera 3.2.0 EXECUTED 0D CH4/air HP equilibrium (Tad 2621.9 K) on GCP. No reacting CFD or liner analysis.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 41,
@@ -979,16 +979,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:41; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:41",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: Cantera 3.2.0 EXECUTED 0D CH4/air HP equilibrium (Tad 2621.9 K) on GCP. No reacting CFD or liner analysis.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "section:42",
@@ -1039,7 +1036,7 @@
       "id": "section:44",
       "title": "FREECAD INTEROPERABILITY",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd runs headless under xvfb-run (exit 0). STEP roundtrip and semantic reconciliation unvalidated.",
+      "statusExplanation": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd exit 0 under xvfb-run (flaky on 2GB boxes, prefer e2-medium). STEP roundtrip uncompleted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 44,
@@ -1050,11 +1047,11 @@
         {
           "kind": "file",
           "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd runs headless under xvfb-run (exit 0). STEP roundtrip and semantic reconciliation unvalidated.",
-          "sha256": "3f8970e90805a48df8a30ea91a4d83727338c99be9d223c9b94ddcb1dc812147"
+          "detail": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd exit 0 under xvfb-run (flaky on 2GB boxes, prefer e2-medium). STEP roundtrip uncompleted.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T17:20:00Z"
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "section:45",
@@ -2150,8 +2147,8 @@
     {
       "id": "stopping:7",
       "title": "OpenMDAO coupling works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: OpenMDAO 3.45.1 EXECUTED paraboloid SLSQP (f=-27.333333) on GCP. Multidisciplinary coupling demo not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2160,16 +2157,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:7; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:7",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: OpenMDAO 3.45.1 EXECUTED paraboloid SLSQP (f=-27.333333) on GCP. Multidisciplinary coupling demo not run.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "stopping:8",
@@ -2198,8 +2192,8 @@
     {
       "id": "stopping:9",
       "title": "real CFD works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Real OpenFOAM cavity EXECUTED at two mesh resolutions on GCP. Rotating/aero suite not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2208,22 +2202,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:9; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:9",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: Real OpenFOAM cavity EXECUTED at two mesh resolutions on GCP. Rotating/aero suite not run.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "stopping:10",
       "title": "real structural analysis works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: CalculiX cantilever RAN (exit 0) on GCP; result numbers unverified. Code_Aster untouched.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2232,16 +2223,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:10; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:10",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: CalculiX cantilever RAN (exit 0) on GCP; result numbers unverified. Code_Aster untouched.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "stopping:11",
@@ -2492,8 +2480,8 @@
     {
       "id": "stopping:22",
       "title": "combustor workflow works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: 0D Cantera equilibrium EXECUTED on GCP. Combustor CFD and thermoacoustics not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2502,16 +2490,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:22; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:22",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: 0D Cantera equilibrium EXECUTED on GCP. Combustor CFD and thermoacoustics not run.",
+          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T17:45:00Z"
     },
     {
       "id": "stopping:23",
