@@ -154,7 +154,7 @@ def reconcile_topology(
 
     previous_keys = [entity.semantic_key for entity in previous.entities]
     current_keys = [entity.semantic_key for entity in current.entities]
-    ambiguous = sorted(
+    ambiguous_hits: list[str] = sorted(
         {
             key
             for key in (*previous_keys, *current_keys)
@@ -175,8 +175,8 @@ def reconcile_topology(
     for fingerprint, keys in previous_by_fingerprint.items():
         other = current_by_fingerprint.get(fingerprint, [])
         if len(keys) == 1 and len(other) == 1 and keys[0] != other[0]:
-            ambiguous.append(f"fingerprint-collision:{fingerprint[:24]}")
-    ambiguous = tuple(sorted(set(ambiguous)))
+            ambiguous_hits.append(f"fingerprint-collision:{fingerprint[:24]}")
+    ambiguous = tuple(sorted(set(ambiguous_hits)))
 
     previous_map = {entity.semantic_key: entity for entity in previous.entities}
     current_map = {entity.semantic_key: entity for entity in current.entities}

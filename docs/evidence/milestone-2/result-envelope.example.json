@@ -1,0 +1,65 @@
+{
+  "source": "native_solver",
+  "fidelity": "spm",
+  "units": {
+    "voltage_start_v": "V",
+    "voltage_end_v": "V",
+    "delivered_ah": "A.h",
+    "soc_end": "dimensionless"
+  },
+  "validity": {
+    "participant_id": "cell-spm-discharge",
+    "passed": true,
+    "checks": {
+      "cell_voltage_bounds": true,
+      "discharge_direction": true,
+      "coulomb_consistent": true,
+      "soc_range": true
+    },
+    "detail": "per-cell voltage within [2,5] V, coulomb count within 5%, soc in [0,1]"
+  },
+  "input_hash": "0f88826587c3e9fa2f2db3abe8a27737809e8d9b8d8cab323e04017e78b4f61c",
+  "solver_identity": "pybamm",
+  "solver_version": "26.8.0.0",
+  "run_id": "2aead5e743064709a33c6ea36462b453",
+  "provenance_id": "df9da2dd95f14fa49f614398cf8d4dab",
+  "warnings": [],
+  "scalars": {
+    "voltage_start_v": 8.286150535726618,
+    "voltage_end_v": 8.241775571315669,
+    "delivered_ah": 0.05,
+    "soc_end": 0.9966666666666667
+  },
+  "artifacts": [
+    {
+      "name": "case.json",
+      "sha256": "0b01c9e86c88959a...",
+      "bytes": 196
+    },
+    {
+      "name": "result.json",
+      "sha256": "35eb826ee7e3ce83...",
+      "bytes": 501
+    },
+    {
+      "name": "run_pybamm.py",
+      "sha256": "f115f34678b27a2a...",
+      "bytes": 3805
+    },
+    {
+      "name": "solver.log",
+      "sha256": "8832b8e4ee9bdfe6...",
+      "bytes": 34
+    },
+    {
+      "name": "stderr.log",
+      "sha256": "e3b0c44298fc1c14...",
+      "bytes": 0
+    },
+    {
+      "name": "stdout.log",
+      "sha256": "8832b8e4ee9bdfe6...",
+      "bytes": 34
+    }
+  ]
+}

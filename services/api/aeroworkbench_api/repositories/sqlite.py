@@ -3,12 +3,30 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-ArtifactFormat = Literal["parquet", "vtk", "gltf", "step", "brep", "hdf5", "zarr"]
+ArtifactFormat = Literal[
+    "parquet",
+    "vtk",
+    "gltf",
+    "step",
+    "brep",
+    "hdf5",
+    "zarr",
+    "log",
+    "json",
+    "msh",
+    "sif",
+    "comm",
+    "xml",
+    "py",
+    "txt",
+    "dat",
+]
 
 
 class ImmutableRecordError(ValueError):
@@ -61,9 +79,12 @@ class SQLiteRepository:
     """Small append-only metadata store; large engineering fields stay in artifact storage."""
 
     def __init__(self, path: str | Path) -> None:
-        self.connection = sqlite3.connect(path)
+        # Shared across the API request thread and the single native worker
+        # thread; every access is serialized below.
+        self.connection = sqlite3.connect(path, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys = ON")
+        self._lock = threading.Lock()
         self._migrate()
 
     def _migrate(self) -> None:
@@ -125,29 +146,32 @@ class SQLiteRepository:
             document=document,
         )
         try:
-            self.connection.execute(
-                "INSERT INTO design_revisions VALUES (?, ?, ?, ?, ?)",
-                (
-                    revision.design_id,
-                    revision.revision_id,
-                    revision.content_hash,
-                    revision.parent_revision_hash,
-                    _canonical_json(revision.document),
-                ),
-            )
-            self.connection.commit()
+            with self._lock:
+                self.connection.execute(
+                    "INSERT INTO design_revisions VALUES (?, ?, ?, ?, ?)",
+                    (
+                        revision.design_id,
+                        revision.revision_id,
+                        revision.content_hash,
+                        revision.parent_revision_hash,
+                        _canonical_json(revision.document),
+                    ),
+                )
+                self.connection.commit()
         except sqlite3.IntegrityError as exc:
-            self.connection.rollback()
+            with self._lock:
+                self.connection.rollback()
             raise ImmutableRecordError(
                 f"design revision ({design_id}, {revision_id}) is immutable"
             ) from exc
 
     def get_revision(self, design_id: str, revision_id: str) -> StoredRevision | None:
-        row = self.connection.execute(
-            "SELECT design_id, revision_id, content_hash, parent_revision_hash, document "
-            "FROM design_revisions WHERE design_id=? AND revision_id=?",
-            (design_id, revision_id),
-        ).fetchone()
+        with self._lock:
+            row = self.connection.execute(
+                "SELECT design_id, revision_id, content_hash, parent_revision_hash, document "
+                "FROM design_revisions WHERE design_id=? AND revision_id=?",
+                (design_id, revision_id),
+            ).fetchone()
         if row is None:
             return None
         return StoredRevision(
@@ -172,9 +196,10 @@ class SQLiteRepository:
         if not event_id.strip() or not event_type.strip() or not actor.strip():
             raise ValueError("event identity must be non-empty")
         validated_artifacts = tuple(ArtifactReference.model_validate(item) for item in artifacts)
-        previous = self.connection.execute(
-            "SELECT event_hash FROM provenance_events ORDER BY sequence DESC LIMIT 1"
-        ).fetchone()
+        with self._lock:
+            previous = self.connection.execute(
+                "SELECT event_hash FROM provenance_events ORDER BY sequence DESC LIMIT 1"
+            ).fetchone()
         previous_event_hash = None if previous is None else str(previous["event_hash"])
         body = {
             "event_id": event_id,
@@ -188,50 +213,55 @@ class SQLiteRepository:
         }
         event_hash = _event_digest(body)
         try:
-            cursor = self.connection.execute(
-                "INSERT INTO provenance_events"
-                "(event_id,event_type,subject_hash,actor,occurred_at,details,"
-                "previous_event_hash,event_hash) "
-                "VALUES(?,?,?,?,?,?,?,?)",
-                (
-                    event_id,
-                    event_type,
-                    subject_hash,
-                    actor,
-                    occurred_at,
-                    _canonical_json(details),
-                    previous_event_hash,
-                    event_hash,
-                ),
-            )
-            self.connection.executemany(
-                "INSERT INTO artifact_refs(event_id,format,uri,sha256,bytes) VALUES(?,?,?,?,?)",
-                [
-                    (event_id, artifact.format, artifact.uri, artifact.sha256, artifact.bytes)
-                    for artifact in validated_artifacts
-                ],
-            )
-            self.connection.commit()
+            with self._lock:
+                cursor = self.connection.execute(
+                    "INSERT INTO provenance_events"
+                    "(event_id,event_type,subject_hash,actor,occurred_at,details,"
+                    "previous_event_hash,event_hash) "
+                    "VALUES(?,?,?,?,?,?,?,?)",
+                    (
+                        event_id,
+                        event_type,
+                        subject_hash,
+                        actor,
+                        occurred_at,
+                        _canonical_json(details),
+                        previous_event_hash,
+                        event_hash,
+                    ),
+                )
+                self.connection.executemany(
+                    "INSERT INTO artifact_refs(event_id,format,uri,sha256,bytes) VALUES(?,?,?,?,?)",
+                    [
+                        (event_id, artifact.format, artifact.uri, artifact.sha256, artifact.bytes)
+                        for artifact in validated_artifacts
+                    ],
+                )
+                self.connection.commit()
         except sqlite3.IntegrityError as exc:
-            self.connection.rollback()
+            with self._lock:
+                self.connection.rollback()
             raise ImmutableRecordError(f"provenance event {event_id} is immutable") from exc
         if cursor.lastrowid is None:
             raise RuntimeError("SQLite did not return a provenance sequence")
         return ProvenanceEvent(sequence=cursor.lastrowid, event_hash=event_hash, **body)
 
     def list_provenance(self, subject_hash: str) -> list[ProvenanceEvent]:
-        rows = self.connection.execute(
-            "SELECT sequence,event_id,event_type,subject_hash,actor,occurred_at,details,"
-            "previous_event_hash,event_hash FROM provenance_events "
-            "WHERE subject_hash=? ORDER BY sequence",
-            (subject_hash,),
-        ).fetchall()
+        with self._lock:
+            rows = self.connection.execute(
+                "SELECT sequence,event_id,event_type,subject_hash,actor,occurred_at,details,"
+                "previous_event_hash,event_hash FROM provenance_events "
+                "WHERE subject_hash=? ORDER BY sequence",
+                (subject_hash,),
+            ).fetchall()
         events: list[ProvenanceEvent] = []
         for row in rows:
-            artifact_rows = self.connection.execute(
-                "SELECT format,uri,sha256,bytes FROM artifact_refs WHERE event_id=? ORDER BY id",
-                (row["event_id"],),
-            ).fetchall()
+            with self._lock:
+                artifact_rows = self.connection.execute(
+                    "SELECT format,uri,sha256,bytes FROM artifact_refs "
+                    "WHERE event_id=? ORDER BY id",
+                    (row["event_id"],),
+                ).fetchall()
             events.append(
                 ProvenanceEvent(
                     sequence=row["sequence"],
@@ -251,4 +281,5 @@ class SQLiteRepository:
         return events
 
     def close(self) -> None:
-        self.connection.close()
+        with self._lock:
+            self.connection.close()

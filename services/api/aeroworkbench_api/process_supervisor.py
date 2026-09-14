@@ -182,6 +182,8 @@ class ProcessSupervisor:
                     try:
                         current_rss = float(self._rss_probe(process.pid))
                     except SupervisorError:
+                        if process.poll() is not None:
+                            break
                         reason = "RSS_MONITOR_UNAVAILABLE"
                         self._terminate(process)
                         break

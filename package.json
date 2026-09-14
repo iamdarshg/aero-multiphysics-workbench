@@ -11,8 +11,8 @@
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
     "test": "pnpm --filter @aero/web test && pnpm --filter @aero/schema test && pnpm --filter @aero/solver-contracts test && node --test tests/smoke/workspace.test.mjs && uv run --directory services/api pytest -q",
-    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.packages.json && uv run --directory services/api mypy ../../packages/core ../../packages/geometry ../../packages/envelope ../../examples/aircraft ../../examples/gas_turbine aeroworkbench_api ../../tests/integration/test_sqlite_roundtrip.py",
-    "lint": "pnpm -r lint && uv run --directory services/api ruff check --no-cache ../../packages/core ../../packages/geometry ../../packages/envelope ../../examples/aircraft ../../examples/gas_turbine aeroworkbench_api ../../tests/core ../../tests/integration ../../tests/physics/test_aircraft_demo.py ../../tests/physics/test_gas_turbine_demo.py",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.packages.json && uv run --directory services/api mypy ../../packages/core ../../packages/geometry ../../packages/envelope ../../solvers/participants ../../examples/aircraft ../../examples/gas_turbine aeroworkbench_api ../../tests/integration/test_sqlite_roundtrip.py",
+    "lint": "pnpm -r lint && uv run --directory services/api ruff check --no-cache ../../packages/core ../../packages/geometry ../../packages/envelope ../../solvers/participants ../../examples/aircraft ../../examples/gas_turbine aeroworkbench_api ../../tests/core ../../tests/integration ../../tests/physics/test_aircraft_demo.py ../../tests/physics/test_gas_turbine_demo.py ../../tests/physics/test_participant_lifecycle.py ../../tests/physics/test_native_execution.py",
     "verify:workspace": "powershell -NoProfile -File scripts/verify-workspace.ps1"
   },
   "dependencies": {

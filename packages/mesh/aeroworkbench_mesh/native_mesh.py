@@ -164,7 +164,7 @@ def _wall_refinement_field(
         gmsh.model.mesh.field.setNumber(threshold, "SizeMax", base_mm)
         gmsh.model.mesh.field.setNumber(threshold, "DistMin", size_mm)
         gmsh.model.mesh.field.setNumber(threshold, "DistMax", base_mm * 4.0)
-        return threshold
+        return int(threshold)
     except Exception:
         return None
 

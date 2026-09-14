@@ -9,6 +9,10 @@ dependencies = [
   "uvicorn>=0.35,<1",
   "cadquery>=2.4,<3",
   "gmsh>=4.12,<5",
+  "ross-rotordynamics>=2.3.0",
+  "pybamm>=26.8.0.0",
+  "casadi==3.7.2",
+  "plotly<6",
 ]
 
 [dependency-groups]

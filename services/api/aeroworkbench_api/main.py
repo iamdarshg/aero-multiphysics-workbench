@@ -19,6 +19,8 @@ from aeroworkbench_core.types import FidelityLevel, ResultSource
 from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from aeroworkbench_api.native_jobs import build_native_router
+
 ANALYTICAL_MODELS = [
     "aircraft",
     "battery",
@@ -130,6 +132,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     jobs: dict[str, list[dict[str, Any]]] = {}
+    native_router, _native_manager = build_native_router()
+    app.include_router(native_router)
 
     @app.get("/health")
     def health() -> dict[str, Any]:
@@ -154,17 +158,6 @@ def create_app() -> FastAPI:
     @app.post("/v1/demos/gas-turbine")
     def gas_turbine_demo() -> dict[str, Any]:
         return _gas_turbine_demo()
-
-    @app.post("/v1/native/{solver}/execute")
-    def execute_native(solver: str) -> None:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={
-                "code": "NATIVE_SOLVER_UNAVAILABLE",
-                "solver": solver,
-                "message": "No verified native solver capability is configured.",
-            },
-        )
 
     @app.post("/v1/jobs/edf", status_code=status.HTTP_202_ACCEPTED)
     def start_edf_job() -> dict[str, str]:

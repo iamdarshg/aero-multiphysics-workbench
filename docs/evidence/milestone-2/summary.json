@@ -1,0 +1,103 @@
+{
+  "milestone": 2,
+  "date": "2026-09-14",
+  "gcp_spend_usd": 0.0,
+  "participant_types_executable": [
+    "rotor-campbell",
+    "rotor-modal",
+    "cell-spm-discharge",
+    "cell-spme-discharge",
+    "pack-thevenin-discharge",
+    "domain-mesh",
+    "cad-interchange"
+  ],
+  "participant_types_fail_closed": [
+    "incompressible-steady-flow",
+    "compressible-steady-flow",
+    "rotating-flow-mrf",
+    "structural-static",
+    "structural-modal",
+    "thermal-conduction",
+    "electrostatic-field",
+    "coupled-interface-validation"
+  ],
+  "native_benchmarks": [
+    {
+      "participant": "rotor-campbell",
+      "solver": "ross-rotordynamics 2.3.0 (NUMBA_DISABLE_JIT=1, numerics unaffected)",
+      "case": "1.5 m steel shaft, 4 elements, 1e8 N/m bearings, Campbell 0..12000 rpm",
+      "first_critical_rpm": 2691.284591,
+      "second_critical_rpm": 10464.468822,
+      "beam_estimate_rpm": 2721.5,
+      "agreement": "1.1%",
+      "source": "native_solver"
+    },
+    {
+      "participant": "cell-spm-discharge",
+      "solver": "pybamm 26.8.0.0 with IDAKLUSolver (casadi 3.7.2 to match pybammsolvers 0.9.1)",
+      "case": "Chen2020 SPM, 1 A, 60 s, 2s3p pack",
+      "pack_voltage_start_v": 8.286150535726618,
+      "pack_voltage_end_v": 8.241775571315669,
+      "pack_delivered_ah": 0.05,
+      "pack_soc_end": 0.9966666666666667,
+      "source": "native_solver"
+    },
+    {
+      "participant": "domain-mesh",
+      "solver": "gmsh 4.15.2 via milestone-1 native pipeline",
+      "case": "generic 1-rotor duct, base 10 mm",
+      "element_count": 119852,
+      "min_sicn": 0.2737852186262646,
+      "source": "native_solver"
+    },
+    {
+      "participant": "cad-interchange",
+      "solver": "ocp-fallback via cadquery 2.8.0 (FreeCADCmd absent)",
+      "case": "generic 1-rotor duct STEP roundtrip",
+      "faces_before": 6,
+      "faces_after": 6,
+      "source": "native_solver"
+    }
+  ],
+  "api_e2e": {
+    "capabilities": "15 participants probed; 7 ready, 8 unavailable",
+    "submit_status_events_cancel": "deferred submit, QUEUED events, cancel to CANCELLED, RESULT_NOT_PUBLISHED for result",
+    "acceptance": "fluid + structural fail closed with CAPABILITY_UNAVAILABLE, lightweight completes with native_solver envelope, all through POST /v1/native/analyses",
+    "provenance": "native.launch-accepted then native.result-recorded per completed job"
+  },
+  "failure_path_tests": [
+    "unknown participant -> UNKNOWN_PARTICIPANT (404)",
+    "non-opaque case ids, absolute paths, NUL bytes -> PREPARATION_FAILED",
+    "in-process participant command build -> PREPARATION_FAILED",
+    "missing binary -> CAPABILITY_UNAVAILABLE with QUEUED/PREPARING/READY/FAILED event trail",
+    "missing solver.log -> PARSER_FAILED",
+    "validity gaps, missing artifacts, non-finite scalars -> RESULT_INVALID",
+    "cancel queued job -> CANCELLED; cancel terminal job -> 409",
+    "untrusted executable and outside working directory still rejected by supervisor"
+  ],
+  "remaining_gaps": [
+    "OpenFOAM run: no binary on this Windows host (needs Linux/WSL); prepare/parse/validity complete with golden files",
+    "Code_Aster run: no binary on this host; .comm generation plus TABLEAU parsing complete with golden files",
+    "Elmer run: ElmerSolver absent; thermal and electrostatic .sif generation plus SaveScalars parsing complete with golden files",
+    "preCICE coupled run: native library absent; native precice.xml validation complete, execution gated",
+    "FreeCAD headless conversion: FreeCADCmd absent; OCC fallback executes honestly with converter recorded",
+    "ROSS forced-response participant exists in adapter but has no dedicated manifest entry yet",
+    "job ledger is local sqlite (no cross-restart worker resume); provenance is durable"
+  ],
+  "definition_of_done": {
+    "1_governed_native_analysis": true,
+    "2_no_only_fake_jobs": true,
+    "3_recordResult_implemented": true,
+    "4_evidence_gated_publication": true,
+    "5_openfoam_prepare_run_parse": "prepare+parse done, run gated (binary absent)",
+    "6_code_aster_prepare_run_parse": "prepare+parse done, run gated (binary absent)",
+    "7_ross_real_model": true,
+    "8_pybamm_real_model": true,
+    "9_elmer_real_model": "prepare+parse done, run gated (binary absent)",
+    "10_explicit_errors": true,
+    "11_artifact_provenance_lineage": true,
+    "12_canonical_benchmarks": true,
+    "13_resource_security_constraints": true,
+    "14_no_manifest_bypass": true
+  }
+}

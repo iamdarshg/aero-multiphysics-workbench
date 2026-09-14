@@ -1,0 +1,204 @@
+{
+  "capabilities": [
+    {
+      "participant_id": "incompressible-steady-flow",
+      "solver_id": "openfoam",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for openfoam is installed"
+    },
+    {
+      "participant_id": "compressible-steady-flow",
+      "solver_id": "openfoam",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for openfoam is installed"
+    },
+    {
+      "participant_id": "rotating-flow-mrf",
+      "solver_id": "openfoam",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for openfoam is installed"
+    },
+    {
+      "participant_id": "structural-static",
+      "solver_id": "code-aster",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for code-aster is installed"
+    },
+    {
+      "participant_id": "structural-modal",
+      "solver_id": "code-aster",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for code-aster is installed"
+    },
+    {
+      "participant_id": "rotor-campbell",
+      "solver_id": "ross",
+      "state": "ready",
+      "version": "ross-rotordynamics==2.3.0",
+      "detail": "governed python-module execution: ross-rotordynamics==2.3.0"
+    },
+    {
+      "participant_id": "rotor-modal",
+      "solver_id": "ross",
+      "state": "ready",
+      "version": "ross-rotordynamics==2.3.0",
+      "detail": "governed python-module execution: ross-rotordynamics==2.3.0"
+    },
+    {
+      "participant_id": "cell-spm-discharge",
+      "solver_id": "pybamm",
+      "state": "ready",
+      "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+      "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+    },
+    {
+      "participant_id": "cell-spme-discharge",
+      "solver_id": "pybamm",
+      "state": "ready",
+      "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+      "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+    },
+    {
+      "participant_id": "pack-thevenin-discharge",
+      "solver_id": "pybamm",
+      "state": "ready",
+      "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+      "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+    },
+    {
+      "participant_id": "thermal-conduction",
+      "solver_id": "elmer",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for elmer is installed"
+    },
+    {
+      "participant_id": "electrostatic-field",
+      "solver_id": "elmer",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for elmer is installed"
+    },
+    {
+      "participant_id": "coupled-interface-validation",
+      "solver_id": "precice",
+      "state": "unavailable",
+      "version": null,
+      "detail": "no executable or library for precice is installed"
+    },
+    {
+      "participant_id": "domain-mesh",
+      "solver_id": "gmsh",
+      "state": "ready",
+      "version": "4.15.2",
+      "detail": "gmsh 4.15.2 installed"
+    },
+    {
+      "participant_id": "cad-interchange",
+      "solver_id": "freecad",
+      "state": "ready",
+      "version": "2.8.0",
+      "detail": "FreeCADCmd unavailable; OCC fallback via cadquery: cadquery 2.8.0 installed"
+    }
+  ],
+  "benchmarks": [
+    {
+      "participant_id": "rotor-campbell",
+      "state": "COMPLETED",
+      "error_code": null,
+      "run_id": "8364090bfb3740c8816cc39a723bf9fc",
+      "input_hash": "7dd4c77ce7a12251a64d59b65dec71c91ea718c7d5359f6a30446039721ffd71",
+      "scalars": {
+        "first_critical_rpm": 2691.284591,
+        "second_critical_rpm": 10464.468822
+      },
+      "solver": "ross 2.3.0",
+      "fidelity": "beam-campbell",
+      "validity": {
+        "participant_id": "rotor-campbell",
+        "passed": true,
+        "checks": {
+          "criticals_positive": true,
+          "criticals_ascending": true,
+          "beam_consistent": true
+        },
+        "detail": "beam estimate 2721.5 rpm within 50%"
+      }
+    },
+    {
+      "participant_id": "cell-spm-discharge",
+      "state": "COMPLETED",
+      "error_code": null,
+      "run_id": "2aead5e743064709a33c6ea36462b453",
+      "input_hash": "0f88826587c3e9fa2f2db3abe8a27737809e8d9b8d8cab323e04017e78b4f61c",
+      "scalars": {
+        "voltage_start_v": 8.286150535726618,
+        "voltage_end_v": 8.241775571315669,
+        "delivered_ah": 0.05,
+        "soc_end": 0.9966666666666667
+      },
+      "solver": "pybamm 26.8.0.0",
+      "fidelity": "spm",
+      "validity": {
+        "participant_id": "cell-spm-discharge",
+        "passed": true,
+        "checks": {
+          "cell_voltage_bounds": true,
+          "discharge_direction": true,
+          "coulomb_consistent": true,
+          "soc_range": true
+        },
+        "detail": "per-cell voltage within [2,5] V, coulomb count within 5%, soc in [0,1]"
+      }
+    },
+    {
+      "participant_id": "domain-mesh",
+      "state": "COMPLETED",
+      "error_code": null,
+      "run_id": "5b4386d39dcb43d1b6794e1c1933d695",
+      "input_hash": "3fda10f4dd2ae21d24427f8450592eae2f8b0862288962275e82ab8e69242e77",
+      "scalars": {
+        "element_count": 119852.0,
+        "min_sicn": 0.2737852186262646
+      },
+      "solver": "gmsh 4.15.2",
+      "fidelity": "conforming-linear",
+      "validity": {
+        "participant_id": "domain-mesh",
+        "passed": true,
+        "checks": {
+          "has_elements": true,
+          "quality_bounded": true
+        },
+        "detail": "positive element count and SICN above 0.05"
+      }
+    },
+    {
+      "participant_id": "cad-interchange",
+      "state": "COMPLETED",
+      "error_code": null,
+      "run_id": "955ac12830f44beda589541bbe0d3b76",
+      "input_hash": "9783d6aebb6f4f07b49571c2ee8d629d6297be2d00dbdef077eda39d98b33141",
+      "scalars": {
+        "faces_before": 6.0,
+        "faces_after": 6.0
+      },
+      "solver": "freecad 2.8.0",
+      "fidelity": "brep-roundtrip",
+      "validity": {
+        "participant_id": "cad-interchange",
+        "passed": true,
+        "checks": {
+          "faces_positive": true,
+          "topology_preserved": true
+        },
+        "detail": "face counts survive the interchange roundtrip"
+      }
+    }
+  ]
+}

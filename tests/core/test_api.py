@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 from fastapi.testclient import TestClient
 
 from aeroworkbench_api.main import create_app
@@ -60,13 +62,44 @@ def test_gas_turbine_demonstrator_does_not_mislabel_cycle_as_pycycle() -> None:
     assert "not pyCycle" in body["cycle"]["limitations"][0]
 
 
-def test_native_solver_execution_fails_closed_when_capability_is_unavailable() -> None:
-    with TestClient(create_app()) as client:
-        response = client.post("/v1/native/openfoam/execute", json={})
+def test_native_analysis_submit_fails_closed_without_capability() -> None:
+    from participants.capabilities import probe_participant
 
-    assert response.status_code == 503
-    assert response.json()["detail"]["code"] == "NATIVE_SOLVER_UNAVAILABLE"
-    assert response.json()["detail"]["solver"] == "openfoam"
+    with TestClient(create_app()) as client:
+        response = client.post(
+            "/v1/native/analyses",
+            json={
+                "participant_id": "incompressible-steady-flow",
+                "inputs": {
+                    "compressibility": "incompressible",
+                    "steady": True,
+                    "rotating_model": "none",
+                    "thermal_model": "isothermal",
+                    "turbulence": "kOmegaSST",
+                    "inlet_velocity_m_s": 10.0,
+                    "outlet_pressure_pa": 0.0,
+                    "density_kg_m3": 1.225,
+                    "viscosity_pa_s": 1.8e-5,
+                },
+            },
+        )
+        assert response.status_code == 202
+        job_id = response.json()["job_id"]
+
+        deadline = 60.0
+        final = response.json()
+        elapsed = 0.0
+        while final["state"] not in {"COMPLETED", "FAILED", "CANCELLED"} and elapsed < deadline:
+            time.sleep(0.2)
+            elapsed += 0.2
+            final = client.get(f"/v1/native/analyses/{job_id}").json()
+
+    probe = probe_participant("incompressible-steady-flow")
+    if probe.state != "ready":
+        assert final["state"] == "FAILED"
+        assert final["error_code"] == "CAPABILITY_UNAVAILABLE"
+    else:
+        assert final["state"] == "COMPLETED"
 
 
 def test_job_progress_stream_emits_ordered_sse_events() -> None:
