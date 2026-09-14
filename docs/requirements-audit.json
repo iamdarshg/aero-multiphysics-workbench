@@ -84,8 +84,8 @@
     {
       "id": "section:3",
       "title": "FIELD COUPLING",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: preCICE contract layer only (config builder, static coupling XML, adapter gating verified). No native preCICE execution has run; field transfer remains unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 3,
@@ -94,16 +94,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:3; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:3",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "solvers/precice/config_builder.py",
+          "detail": "PARTIAL: preCICE contract layer only (config builder, static coupling XML, adapter gating verified). No native preCICE execution has run; field transfer remains unvalidated.",
+          "sha256": "73b44693e1db3881ce54ea927ca26e3357c403ac69d3f6bff0208fd51e3a88a5"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:4",
@@ -204,8 +201,8 @@
     {
       "id": "section:8",
       "title": "CFD BACKEND",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: OpenFOAM adapter contracts and fail-closed capability gating verified. No native OpenFOAM case has executed; CFD results remain analytical only.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 8,
@@ -214,22 +211,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:8; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:8",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "solvers/openfoam/adapter.py",
+          "detail": "PARTIAL: OpenFOAM adapter contracts and fail-closed capability gating verified. No native OpenFOAM case has executed; CFD results remain analytical only.",
+          "sha256": "0b3b54fa76f18330a34204ff84a21e5602ee27871597417b90d7aa3b7cb5b729"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:9",
       "title": "STRUCTURAL BACKEND",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 9,
@@ -238,16 +232,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:9; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:9",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "solvers/code_aster/adapter.py",
+          "detail": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
+          "sha256": "41085505a3199ed2da7cfbd6b0e3b7e292b9f39434d7bce60a0acb21bde26e2d"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:10",
@@ -636,8 +627,8 @@
     {
       "id": "section:26",
       "title": "USER INTERFACE",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Next.js workbench UI renders (tree, viewport, inspector, dock) with762ms-bounded capability probe; analytical-sample labeling verified. No deployment or native field visualization.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 26,
@@ -646,22 +637,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:26; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:26",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/src/app/page.tsx",
+          "detail": "PARTIAL: Next.js workbench UI renders (tree, viewport, inspector, dock) with762ms-bounded capability probe; analytical-sample labeling verified. No deployment or native field visualization.",
+          "sha256": "6711bac9fc4db2ced55e4119c4ea8dba657a7f12f870afb9a77154aae21feed2"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:27",
       "title": "MAIN LAYOUT",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: App layout shell (left tree, center viewport, right inspector, bottom dock, top status bar) implemented and unit-tested. Native-data views unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 27,
@@ -670,22 +658,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:27; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:27",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/src/app/layout.tsx",
+          "detail": "PARTIAL: App layout shell (left tree, center viewport, right inspector, bottom dock, top status bar) implemented and unit-tested. Native-data views unavailable.",
+          "sha256": "91b7171a17e7d8e8cbc73355e7b339425bf7458a2b630a48828cd687aa42fdde"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:28",
       "title": "VISUALIZATION",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical charts (convergence, energy, resonance placeholders) render from sample state with lazy loading. No native field/streamline rendering.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 28,
@@ -694,22 +679,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:28; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:28",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/src/components/analysis-charts.tsx",
+          "detail": "PARTIAL: Analytical charts (convergence, energy, resonance placeholders) render from sample state with lazy loading. No native field/streamline rendering.",
+          "sha256": "0c876dd07023a269d03a4ebe5d18f0cbd771815120b24c0c0e0a183672f71578"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:29",
       "title": "LIVE SOLVER VIEW",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical live-progress replay via jobs/SSE with fail-closed native routes (503). Decimated native field streaming unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 29,
@@ -718,22 +700,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:29; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:29",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/main.py",
+          "detail": "PARTIAL: Analytical live-progress replay via jobs/SSE with fail-closed native routes (503). Decimated native field streaming unavailable.",
+          "sha256": "60c146841de69344b795a7f6a22c6d320655ab5621c45a402e7b39e57a0b7fa5"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:30",
       "title": "AI ENGINEERING INTERFACE",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Single engineering MCP server exists with typed skeleton tools (design/result/provenance/simulation/job); stdio handshake test passes. Stores unconnected; full namespace coverage unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 30,
@@ -742,16 +721,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:30; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:30",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "mcp/engineering/server.ts",
+          "detail": "PARTIAL: Single engineering MCP server exists with typed skeleton tools (design/result/provenance/simulation/job); stdio handshake test passes. Stores unconnected; full namespace coverage unavailable.",
+          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:31",
@@ -900,8 +876,8 @@
     {
       "id": "section:37",
       "title": "LOCAL MODE",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Local-mode path documented (README) with compose file, dev script, and analytical API+UI. Native solver containers not built; cloud is not required.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 37,
@@ -910,16 +886,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:37; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:37",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "infra/docker/compose.local.yml",
+          "detail": "PARTIAL: Local-mode path documented (README) with compose file, dev script, and analytical API+UI. Native solver containers not built; cloud is not required.",
+          "sha256": "b30edca2778bd5db39670897a8a95b9fea2b9b0cf043bf6cb90fe252a5566f1f"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:38",
@@ -1044,8 +1017,8 @@
     {
       "id": "section:43",
       "title": "COMPLETE ENGINE COUPLING",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical engine coupling demo only (ideal Brayton cycle + canonical flowpath geometry, bounded inputs). No component CFD or native coupling.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 43,
@@ -1054,22 +1027,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:43; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:43",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/gas_turbine/system.py",
+          "detail": "PARTIAL: Analytical engine coupling demo only (ideal Brayton cycle + canonical flowpath geometry, bounded inputs). No component CFD or native coupling.",
+          "sha256": "daf2a26ac2114759c9afb053d9ba7364430b7201b3b16b25e8370fea5903cd53"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:44",
       "title": "FREECAD INTEROPERABILITY",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: FreeCAD adapter fails closed when FreeCADCmd is missing (verified). STEP roundtrip and semantic reconciliation unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 44,
@@ -1078,16 +1048,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:44; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:44",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "solvers/freecad/adapter.py",
+          "detail": "PARTIAL: FreeCAD adapter fails closed when FreeCADCmd is missing (verified). STEP roundtrip and semantic reconciliation unvalidated.",
+          "sha256": "67fac50a85c82a4646bf1e0b749cf5edceaf6ec337706b54284c768054aa2fdc"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:45",
@@ -1452,8 +1419,8 @@
     {
       "id": "section:60",
       "title": "CI/CD",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: CI contracts job runs node checks and platform tests on PRs touching platform paths. Native solver benchmark tier is explicitly gated off (if:false).",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 60,
@@ -1462,16 +1429,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:60; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:60",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": ".github/workflows/platform.yml",
+          "detail": "PARTIAL: CI contracts job runs node checks and platform tests on PRs touching platform paths. Native solver benchmark tier is explicitly gated off (if:false).",
+          "sha256": "0cd1fa95184a142438655bf3b15729be7c243768c681502cd5e1277933ed29c6"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:61",
@@ -1524,8 +1488,8 @@
     {
       "id": "section:63",
       "title": "COMPLETE EDF DEMO",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical 70mm-class EDF reference state (level-1 motor, ECM pack, Campbell/resonance screening) with explicit fidelity labels. No rotating CFD or native coupling.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 63,
@@ -1534,22 +1498,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:63; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:63",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/edf/system.py",
+          "detail": "PARTIAL: Analytical 70mm-class EDF reference state (level-1 motor, ECM pack, Campbell/resonance screening) with explicit fidelity labels. No rotating CFD or native coupling.",
+          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:64",
       "title": "COMPLETE AIRCRAFT DEMO",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Bounded analytical installed-EDF aircraft envelope (9 screening points, adaptive refinement, analytical provenance). No external CFD or aeroelastic validation.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 64,
@@ -1558,22 +1519,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:64; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:64",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/aircraft/system.py",
+          "detail": "PARTIAL: Bounded analytical installed-EDF aircraft envelope (9 screening points, adaptive refinement, analytical provenance). No external CFD or aeroelastic validation.",
+          "sha256": "06628f9e25e7ccb650c0a42bbb7de03ea9720d118a5db046162deca7f943dfd1"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:65",
       "title": "COMPLETE GAS-TURBINE DEMO",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Bounded analytical gas-turbine demo (ideal Brayton, bookkeeping residual <1e-12, analytical provenance). Not pyCycle or native output.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 65,
@@ -1582,22 +1540,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:65; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:65",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/gas_turbine/system.py",
+          "detail": "PARTIAL: Bounded analytical gas-turbine demo (ideal Brayton, bookkeeping residual <1e-12, analytical provenance). Not pyCycle or native output.",
+          "sha256": "daf2a26ac2114759c9afb053d9ba7364430b7201b3b16b25e8370fea5903cd53"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:66",
       "title": "UI POLISH",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: UI usability subset (loading states, design-tree search, sample/provenance notices, keyboard-focusable controls) implemented. Saved layouts and full result comparison unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 66,
@@ -1606,22 +1561,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:66; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:66",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/src/workbench-state.ts",
+          "detail": "PARTIAL: UI usability subset (loading states, design-tree search, sample/provenance notices, keyboard-focusable controls) implemented. Saved layouts and full result comparison unavailable.",
+          "sha256": "e551538e7af65f69275c6972ade352f023fb1fce2811cb822a0a2451340dd8bf"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:67",
       "title": "EXPLAINABILITY",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical explainability subset (provenance dialog, quality-gate rows, sample/blocked notices with fidelity labels). Native warning root-cause with values unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 67,
@@ -1630,16 +1582,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:67; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:67",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/src/components/engineering-viewport.tsx",
+          "detail": "PARTIAL: Analytical explainability subset (provenance dialog, quality-gate rows, sample/blocked notices with fidelity labels). Native warning root-cause with values unavailable.",
+          "sha256": "b994349f5e71405627279cc6eba113b2c50ec913abda296b3e8750e505a59c43"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:68",
@@ -1860,8 +1809,8 @@
     {
       "id": "section:77",
       "title": "AUTOMATED ENVIRONMENT BOOTSTRAP",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Bootstrap performs runtime safety checks plus capability inspection only; installs nothing. Native solver/container provisioning unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 77,
@@ -1870,22 +1819,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:77; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:77",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "scripts/platform/bootstrap.mjs",
+          "detail": "PARTIAL: Bootstrap performs runtime safety checks plus capability inspection only; installs nothing. Native solver/container provisioning unavailable.",
+          "sha256": "778638629a53ec77ffaed58dbc15cce84ba4c07a90ec9354d45a9047b962c79b"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:78",
       "title": "ONE-COMMAND DEVELOPMENT START",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Dev entrypoint script exists alongside documented pnpm/uvicorn commands. Full one-command orchestration (UI+API+scheduler+worker+MCP) unvalidated end to end.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 78,
@@ -1894,16 +1840,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:78; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:78",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "scripts/platform/dev.mjs",
+          "detail": "PARTIAL: Dev entrypoint script exists alongside documented pnpm/uvicorn commands. Full one-command orchestration (UI+API+scheduler+worker+MCP) unvalidated end to end.",
+          "sha256": "7bf85e5c969478f811e73cfcff8ed7b4a20440798a07e5a05ee1d4434347e0aa"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:79",
@@ -1932,8 +1875,8 @@
     {
       "id": "section:80",
       "title": "SOLVER CAPABILITY DETECTOR",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 80,
@@ -1942,22 +1885,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:80; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:80",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "scripts/platform/capabilities.mjs",
+          "detail": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
+          "sha256": "ebcda89a7afc4a30b516c3827dc16f13147968991265f649db2dcde20d82394e"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:81",
       "title": "DOCUMENTATION",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Architecture, operations, solver-integration, cloud/container, and MCP docs exist but do not yet cover the full mandated guide list (coupling, CAD import, all workflows, debugging).",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 81,
@@ -1966,16 +1906,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:81; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:81",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "docs/architecture.md",
+          "detail": "PARTIAL: Architecture, operations, solver-integration, cloud/container, and MCP docs exist but do not yet cover the full mandated guide list (coupling, CAD import, all workflows, debugging).",
+          "sha256": "64230942a834cc15ee12f978495d1ed7f6e0a6b7ed70947885bbdf9aea24fc86"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "section:82",
@@ -2078,8 +2015,8 @@
     {
       "id": "stopping:1",
       "title": "the repository exists and is clean",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2088,22 +2025,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:1; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:1",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "README.md",
+          "detail": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
+          "sha256": "898e58255719c9d95ea3f24ae04f3aad899564fcd99592c361cca0560907a029"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:2",
       "title": "the application runs",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2112,22 +2046,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:2; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:2",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "package.json",
+          "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
+          "sha256": "65ac83a0d6f226cad74834b98ca6cdabc1e3d12634ddee25c55c2812ef83cfd8"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:3",
       "title": "the browser UI works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Web unit suite passes (11 tests); production browser build and remote access unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2136,16 +2067,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:3; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:3",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "apps/web/package.json",
+          "detail": "PARTIAL: Web unit suite passes (11 tests); production browser build and remote access unvalidated.",
+          "sha256": "228a0ef15660cac0456aa6ca617caf0024537a792da394513fed37f0c8ebbf43"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:4",
@@ -2342,8 +2270,8 @@
     {
       "id": "stopping:12",
       "title": "EDF works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical EDF reference state only; rotating CFD and native coupling unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2352,22 +2280,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:12; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:12",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/edf/system.py",
+          "detail": "PARTIAL: Analytical EDF reference state only; rotating CFD and native coupling unavailable.",
+          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:13",
       "title": "motor model works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Level-1 motor equivalent-circuit model verified; dq dynamics and EM FEM unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2376,22 +2301,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:13; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:13",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/core/aeroworkbench_core/models/motor.py",
+          "detail": "PARTIAL: Level-1 motor equivalent-circuit model verified; dq dynamics and EM FEM unavailable.",
+          "sha256": "0891aa94a0f3ae6697ed18c64212478f88cba78837f4b714acc84b681084d81a"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:14",
       "title": "6S PyBaMM works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical pack model verified; native PyBaMM 6S execution unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2400,16 +2322,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:14; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:14",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/core/aeroworkbench_core/models/battery.py",
+          "detail": "PARTIAL: Analytical pack model verified; native PyBaMM 6S execution unavailable.",
+          "sha256": "bae823a9f3fdc72bf5a87a2857ae300270a6f77e9f2f075be33b530339c35b8e"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:15",
@@ -2462,8 +2381,8 @@
     {
       "id": "stopping:17",
       "title": "modal/resonance detection works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical resonance screening (Campbell, forcing spectrum) verified; prestressed native modes unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2472,16 +2391,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:17; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:17",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/core/aeroworkbench_core/resonance.py",
+          "detail": "PARTIAL: Analytical resonance screening (Campbell, forcing spectrum) verified; prestressed native modes unavailable.",
+          "sha256": "2834dfc1c9a46fbc83ea0413e1604ed8d9265758aff4935fdf7c9a0a217ff77d"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:18",
@@ -2510,8 +2426,8 @@
     {
       "id": "stopping:19",
       "title": "full-aircraft workflow works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical installed-EDF workflow only; whole-aircraft CFD/FSI unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2520,22 +2436,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:19; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:19",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/aircraft/system.py",
+          "detail": "PARTIAL: Analytical installed-EDF workflow only; whole-aircraft CFD/FSI unavailable.",
+          "sha256": "06628f9e25e7ccb650c0a42bbb7de03ea9720d118a5db046162deca7f943dfd1"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:20",
       "title": "operating-envelope workflow works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical envelope with viable/constrained/failed regions and refinement verified (88 pytest); native validation unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2544,16 +2457,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:20; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:20",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/envelope/aeroworkbench_envelope/engine.py",
+          "detail": "PARTIAL: Analytical envelope with viable/constrained/failed regions and refinement verified (88 pytest); native validation unavailable.",
+          "sha256": "cdc2e46e648b94cc84fc6a33c1b5593dc79d3244add66f48d3f4db9b2db73c47"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:21",
@@ -2630,8 +2540,8 @@
     {
       "id": "stopping:24",
       "title": "gas-turbine coupling works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical Brayton coupling only; component CFD and native cycle matching unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2640,16 +2550,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:24; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:24",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/gas_turbine/system.py",
+          "detail": "PARTIAL: Analytical Brayton coupling only; component CFD and native cycle matching unavailable.",
+          "sha256": "daf2a26ac2114759c9afb053d9ba7364430b7201b3b16b25e8370fea5903cd53"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:25",
@@ -2678,8 +2585,8 @@
     {
       "id": "stopping:26",
       "title": "variants work",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Immutable variant contracts verified in unit tests; full design-tree UX integration unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2688,22 +2595,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:26; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:26",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/core/aeroworkbench_core/design.py",
+          "detail": "PARTIAL: Immutable variant contracts verified in unit tests; full design-tree UX integration unavailable.",
+          "sha256": "99d083d5b8b5e4dc90579b1b881d7f179937c2ca485e115dd83e6306160aa28f"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:27",
       "title": "provenance works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Skeleton provenance tools with handshake test; connected provenance store unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2712,22 +2616,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:27; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:27",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "mcp/engineering/server.ts",
+          "detail": "PARTIAL: Skeleton provenance tools with handshake test; connected provenance store unavailable.",
+          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:28",
       "title": "caching works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Content-addressed cache contracts unit-tested; solver-artifact caching at scale unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2736,16 +2637,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:28; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:28",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/cache/src/content-addressed.ts",
+          "detail": "PARTIAL: Content-addressed cache contracts unit-tested; solver-artifact caching at scale unvalidated.",
+          "sha256": "98b5366b00491ebcb396eb30befbd2a8e91eddc84c5dc799c2519002dc57fced"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:29",
@@ -2798,8 +2696,8 @@
     {
       "id": "stopping:31",
       "title": "MCP works",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: MCP stdio handshake passes with allowlisted skeleton tools; supervisable live simulation unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2808,16 +2706,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:31; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:31",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "mcp/engineering/server.ts",
+          "detail": "PARTIAL: MCP stdio handshake passes with allowlisted skeleton tools; supervisable live simulation unavailable.",
+          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:32",
@@ -2942,8 +2837,8 @@
     {
       "id": "stopping:37",
       "title": "EDF demo passes",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical EDF demo passes; resonance-escalation proof on native physics unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2952,22 +2847,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:37; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:37",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/edf/system.py",
+          "detail": "PARTIAL: Analytical EDF demo passes; resonance-escalation proof on native physics unavailable.",
+          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:38",
       "title": "aircraft demo passes",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical aircraft demo passes (4 tests); installed-CFD interaction unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2976,22 +2868,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:38; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:38",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/aircraft/system.py",
+          "detail": "PARTIAL: Analytical aircraft demo passes (4 tests); installed-CFD interaction unavailable.",
+          "sha256": "06628f9e25e7ccb650c0a42bbb7de03ea9720d118a5db046162deca7f943dfd1"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:39",
       "title": "gas-turbine demo passes",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical gas-turbine demo passes (2 tests); component CFD connection unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -3000,22 +2889,19 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:39; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:39",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "examples/gas_turbine/system.py",
+          "detail": "PARTIAL: Analytical gas-turbine demo passes (2 tests); component CFD connection unavailable.",
+          "sha256": "daf2a26ac2114759c9afb053d9ba7364430b7201b3b16b25e8370fea5903cd53"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:40",
       "title": "physics benchmarks pass",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Analytical benchmark manifest and physics suites pass; native solver validation unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -3024,16 +2910,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:40; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:40",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "benchmarks/manifest.json",
+          "detail": "PARTIAL: Analytical benchmark manifest and physics suites pass; native solver validation unavailable.",
+          "sha256": "bec99198b9b3ff126e78af899728c0155e784f5f47b4c39cbd60606115afb30c"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:41",
@@ -3062,8 +2945,8 @@
     {
       "id": "stopping:42",
       "title": "automated tests pass",
-      "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: Python suite (88 tests) plus web/schema/contract suites pass this turn; full e2e, cloud, and native tiers not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -3072,16 +2955,13 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for stopping:42; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "stopping:42",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "services/api/pyproject.toml",
+          "detail": "PARTIAL: Python suite (88 tests) plus web/schema/contract suites pass this turn; full e2e, cloud, and native tiers not run.",
+          "sha256": "33a3fdb3ec09fc147a9eac36ce3faf50204f7c1636835aa6189d43d3f82edd45"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-14T14:36:13Z"
     },
     {
       "id": "stopping:43",
