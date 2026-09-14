@@ -21,6 +21,11 @@ COMPRESSIBILITY = ("incompressible", "compressible")
 ROTATING = ("none", "MRF", "AMI")
 THERMAL = ("isothermal", "CHT")
 TURBULENCE = ("laminar", "kEpsilon", "kOmegaSST")
+MAX_ROTATING_ZONES = 8
+
+_ZONE_NAME_CHARS = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+)
 
 
 def _fail(detail: str) -> ParticipantError:
@@ -42,6 +47,48 @@ def _require_str(inputs: Mapping[str, object], name: str, allowed: tuple[str, ..
     if not isinstance(value, str) or value not in allowed:
         raise _fail(f"input {name} must be one of {sorted(allowed)}")
     return value
+
+
+def _require_rotating_zones(data: Mapping[str, object]) -> list[tuple[str, float]] | None:
+    """Validate an optional generic list of rotating zones.
+
+    Each entry declares ``{"name": <cell-zone>, "rotation_rate_rpm": <rate>}``.
+    Zone names are opaque cell-zone identifiers (letters, digits, ``_``, ``-``);
+    rates are finite floats and may differ per zone (counter-rotation allowed).
+    Returns ``None`` when the caller declares no explicit zone list, in which
+    case the legacy single ``rotation_rate_rpm`` input applies.
+    """
+
+    raw = data.get("rotating_zones", None)
+    if raw is None:
+        return None
+    if not isinstance(raw, (list, tuple)) or not 1 <= len(raw) <= MAX_ROTATING_ZONES:
+        raise _fail(f"rotating_zones must list 1..{MAX_ROTATING_ZONES} zones")
+    zones: list[tuple[str, float]] = []
+    seen: set[str] = set()
+    for entry in raw:
+        if not isinstance(entry, Mapping):
+            raise _fail("each rotating zone must declare name and rotation_rate_rpm")
+        name = entry.get("name")
+        if (
+            not isinstance(name, str)
+            or not name
+            or len(name) > 64
+            or any(character not in _ZONE_NAME_CHARS for character in name)
+            or not name[0].isalnum()
+        ):
+            raise _fail(f"rotating zone name invalid:{name!r}")
+        if name in seen:
+            raise _fail(f"duplicate rotating zone:{name}")
+        seen.add(name)
+        rate = entry.get("rotation_rate_rpm")
+        if isinstance(rate, bool) or not isinstance(rate, (int, float)):
+            raise _fail(f"rotating zone {name} needs a numeric rotation_rate_rpm")
+        rate_value = float(rate)
+        if rate_value != rate_value or rate_value in (float("inf"), float("-inf")):
+            raise _fail(f"rotating zone {name} needs a finite rotation_rate_rpm")
+        zones.append((name, rate_value))
+    return zones
 
 
 def select_application(
@@ -88,9 +135,21 @@ def prepare_case_files(
     )
     if temperature <= 0:
         raise _fail("temperature must be positive")
-    rotation_rpm = (
-        _require_float(data, "rotation_rate_rpm") if rotating_model != "none" else 0.0
-    )
+    rotating_zones = _require_rotating_zones(data)
+    if rotating_zones is not None and rotating_model != "MRF":
+        raise _fail("rotating_zones requires rotating_model=MRF")
+    if rotating_model == "MRF" and rotating_zones is not None:
+        rotation_rpm = rotating_zones[0][1]
+        zone_specs: list[tuple[str, float]] = list(rotating_zones)
+    else:
+        rotation_rpm = (
+            _require_float(data, "rotation_rate_rpm") if rotating_model != "none" else 0.0
+        )
+        zone_specs = (
+            [("rotor", rotation_rpm)]
+            if rotating_model == "MRF"
+            else []
+        )
     default_end = 500.0 if steady else 1.0
     end_time = _require_float(data, "end_time") if "end_time" in data else default_end
     if end_time <= 0:
@@ -112,6 +171,14 @@ def prepare_case_files(
             "viscosity_pa_s": viscosity,
             "inlet_temperature_k": temperature,
             "rotation_rate_rpm": rotation_rpm,
+            "rotating_zones": (
+                [
+                    {"name": name, "rotation_rate_rpm": rate}
+                    for name, rate in zone_specs
+                ]
+                if rotating_zones is not None
+                else None
+            ),
             "end_time": end_time,
         }
     )
@@ -150,13 +217,18 @@ def prepare_case_files(
             "        Pr              0.7;\n    }}\n}}\n"
         )
     if rotating_model == "MRF":
+        blocks = "".join(
+            f"MRF{index + 1}\n{{\n    cellZone        {name};\n"
+            "    active          yes;\n"
+            "    nonRotatingPatches (inlet outlet);\n"
+            "    origin          (0 0 0);\n    axis            (0 0 1);\n"
+            f"    omega           constant {(rate * 0.104719755):.6f};\n"
+            "}}\n"
+            for index, (name, rate) in enumerate(zone_specs)
+        )
         files["constant/MRFProperties"] = (
             "FoamFile\n{\n    version     2.0;\n    format      ascii;\n"
-            "    class       dictionary;\n    object      MRFProperties;\n}\n"
-            "MRF1\n{\n    cellZone        rotor;\n    active          yes;\n"
-            "    nonRotatingPatches (inlet outlet);\n"
-            f"    origin          (0 0 0);\n    axis            (0 0 1);\n"
-            f"    omega           constant {(rotation_rpm * 0.104719755):.6f};\n}}\n"
+            "    class       dictionary;\n    object      MRFProperties;\n}\n" + blocks
         )
     if thermal_model == "CHT":
         files["0/T"] = _field_t(temperature)

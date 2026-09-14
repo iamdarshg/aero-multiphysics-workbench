@@ -1,0 +1,799 @@
+{
+  "constraint_audit": [
+    {
+      "bound": "upper",
+      "limit": 80.0,
+      "name": "outer_diameter_mm",
+      "passed": true,
+      "value": 80.0
+    },
+    {
+      "bound": "upper",
+      "limit": 90.0,
+      "name": "current_a",
+      "passed": true,
+      "value": 44.388926869747635
+    },
+    {
+      "bound": "upper",
+      "limit": 25.2,
+      "name": "voltage_v",
+      "passed": true,
+      "value": 25.2
+    },
+    {
+      "bound": "upper",
+      "limit": 393.15,
+      "name": "winding_temp_k",
+      "passed": true,
+      "value": 315.6232731795623
+    },
+    {
+      "bound": "lower",
+      "limit": 1.5,
+      "name": "fos",
+      "passed": true,
+      "value": 6.212283462206259
+    },
+    {
+      "bound": "upper",
+      "limit": 0.4,
+      "name": "tip_deflection_mm",
+      "passed": true,
+      "value": 0.018872721472829264
+    },
+    {
+      "bound": "upper",
+      "limit": 0.9,
+      "name": "tip_mach",
+      "passed": true,
+      "value": 0.5065016727216196
+    },
+    {
+      "bound": "lower",
+      "limit": 50.0,
+      "name": "resonance_margin_hz",
+      "passed": true,
+      "value": 5795.78300203719
+    },
+    {
+      "bound": "lower",
+      "limit": 0.05,
+      "name": "min_sicn",
+      "passed": true,
+      "value": 0.29318863903070624
+    }
+  ],
+  "coupled_converged": true,
+  "design_result_ref": "design_result.json",
+  "design_state": {
+    "constraints": [
+      {
+        "bound": "upper",
+        "limitSI": 80.0,
+        "name": "outer_diameter_mm",
+        "unit": "mm"
+      },
+      {
+        "bound": "upper",
+        "limitSI": 90.0,
+        "name": "current_a",
+        "unit": "A"
+      },
+      {
+        "bound": "upper",
+        "limitSI": 25.2,
+        "name": "voltage_v",
+        "unit": "V"
+      },
+      {
+        "bound": "upper",
+        "limitSI": 393.15,
+        "name": "winding_temp_k",
+        "unit": "K"
+      },
+      {
+        "bound": "lower",
+        "limitSI": 1.5,
+        "name": "fos",
+        "unit": "dimensionless"
+      },
+      {
+        "bound": "upper",
+        "limitSI": 0.4,
+        "name": "tip_deflection_mm",
+        "unit": "mm"
+      },
+      {
+        "bound": "upper",
+        "limitSI": 0.9,
+        "name": "tip_mach",
+        "unit": "dimensionless"
+      },
+      {
+        "bound": "lower",
+        "limitSI": 50.0,
+        "name": "resonance_margin_hz",
+        "unit": "Hz"
+      },
+      {
+        "bound": "lower",
+        "limitSI": 0.05,
+        "name": "min_sicn",
+        "unit": "dimensionless"
+      }
+    ],
+    "designId": "edf-80mm-three-stage",
+    "materials": {
+      "bindings": [
+        {
+          "materialDigest": "1f75055a8a872275916f95d9edb0e78f71e130a5e3af0b0f1278ae5c7916b57f",
+          "materialIdentity": "carbon-epoxy-ud-ply",
+          "region": "rotor"
+        },
+        {
+          "materialDigest": "1f75055a8a872275916f95d9edb0e78f71e130a5e3af0b0f1278ae5c7916b57f",
+          "materialIdentity": "carbon-epoxy-ud-ply",
+          "region": "stator"
+        },
+        {
+          "materialDigest": "04a46bae710f6a4b0703109b4e3bd719ad2c976649acc5485f81370adf437163",
+          "materialIdentity": "steel-structural",
+          "region": "shaft"
+        },
+        {
+          "materialDigest": "3b865f63d6bdb4ada57425ebca9dcfa258d03b5fb93920a3f0d74ca91eceec6f",
+          "materialIdentity": "aluminium-6061-t6",
+          "region": "duct"
+        },
+        {
+          "materialDigest": "0d5028feb4640cac46c7785290036b9a574151c0412b6dc1c928945b31515567",
+          "materialIdentity": "ndfeb-n42",
+          "region": "motor"
+        }
+      ]
+    },
+    "motionFrames": [
+      {
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "rotating",
+        "name": "rotor_zone_0",
+        "rateSI": 4398.22971502571
+      },
+      {
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "rotating",
+        "name": "rotor_zone_1",
+        "rateSI": 4398.22971502571
+      },
+      {
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "rotating",
+        "name": "rotor_zone_2",
+        "rateSI": 4398.22971502571
+      },
+      {
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "stationary",
+        "name": "duct-frame"
+      }
+    ],
+    "objectives": [
+      {
+        "name": "thrust_n",
+        "target": "maximize",
+        "unit": "N",
+        "weight": 1.0
+      },
+      {
+        "name": "thrust_per_power",
+        "target": "maximize",
+        "unit": "N/W",
+        "weight": 0.8
+      },
+      {
+        "name": "mass_kg",
+        "target": "minimize",
+        "unit": "kg",
+        "weight": 0.5
+      }
+    ],
+    "operatingPoints": [
+      {
+        "name": "static",
+        "values": {
+          "freestream_m_s": {
+            "unit": "m/s",
+            "value": 0.0
+          },
+          "rpm": {
+            "unit": "rpm",
+            "value": 35000.0
+          }
+        }
+      },
+      {
+        "name": "forward-flow",
+        "values": {
+          "freestream_m_s": {
+            "unit": "m/s",
+            "value": 18.0
+          },
+          "rpm": {
+            "unit": "rpm",
+            "value": 38000.0
+          }
+        }
+      },
+      {
+        "name": "max-rpm",
+        "values": {
+          "freestream_m_s": {
+            "unit": "m/s",
+            "value": 0.0
+          },
+          "rpm": {
+            "unit": "rpm",
+            "value": 42000.0
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "chord": {
+        "unit": "mm",
+        "value": 12.0
+      },
+      "hubDiameter": {
+        "unit": "mm",
+        "value": 28.0
+      },
+      "outerDiameter": {
+        "unit": "mm",
+        "value": 80.0
+      },
+      "ratedRpm": {
+        "unit": "rpm",
+        "value": 42000.0
+      },
+      "stages": {
+        "unit": "dimensionless",
+        "value": 3.0
+      }
+    },
+    "parentRevisionHash": null,
+    "participantSolvers": [
+      {
+        "participant": "rotating-flow-mrf",
+        "settings": {
+          "rotating_model": "MRF"
+        },
+        "solver": "openfoam",
+        "version": "native-or-deferred"
+      },
+      {
+        "participant": "structural-static",
+        "settings": {
+          "analysis": "static"
+        },
+        "solver": "code-aster",
+        "version": "native-or-deferred"
+      },
+      {
+        "participant": "thermal-conduction",
+        "settings": {
+          "model": "thermal"
+        },
+        "solver": "elmer",
+        "version": "native-or-deferred"
+      },
+      {
+        "participant": "rotor-campbell",
+        "settings": {
+          "analysis": "campbell"
+        },
+        "solver": "ross",
+        "version": "native"
+      },
+      {
+        "participant": "rotor-modal",
+        "settings": {
+          "analysis": "modal"
+        },
+        "solver": "ross",
+        "version": "native"
+      },
+      {
+        "participant": "pack-thevenin-discharge",
+        "settings": {
+          "model": "thevenin"
+        },
+        "solver": "pybamm",
+        "version": "native"
+      },
+      {
+        "participant": "domain-mesh",
+        "settings": {},
+        "solver": "gmsh",
+        "version": "native"
+      },
+      {
+        "participant": "cad-interchange",
+        "settings": {},
+        "solver": "freecad-occ",
+        "version": "native"
+      }
+    ],
+    "revisionId": "b8cdd3e6fe3d"
+  },
+  "design_variables": [
+    "hub_diameter_mm",
+    "blade_count",
+    "stator_count",
+    "chord_mm",
+    "twist_deg",
+    "thickness_mm",
+    "axial_gap_mm",
+    "tip_clearance_mm",
+    "inlet_radius_mm",
+    "nozzle_exit_mm",
+    "rpm"
+  ],
+  "doe": {
+    "best_outputs": {
+      "centrifugal_stress_pa": 54796981.50878125,
+      "copper_loss_w": 47.26229864579688,
+      "current_a": 76.86213196837966,
+      "electrical_power_w": 1902.2318466499244,
+      "esc_loss_w": 28.30612104675709,
+      "esc_temp_k": 330.6091815701356,
+      "exit_velocity_m_s": 98.03747684540039,
+      "figure_of_merit": 0.75,
+      "fos": 5.474754114912787,
+      "mass_flow_kg_s": 0.2573605959942797,
+      "mass_kg": 0.6799999999999999,
+      "min_sicn": 0.29318863903070624,
+      "outer_diameter_mm": 80.0,
+      "pack_voltage_v": 22.616481624569165,
+      "resonance_margin_hz": 6206.730978245208,
+      "shaft_power_w": 1649.054638530787,
+      "thrust_n": 25.230983470707642,
+      "thrust_per_power": 0.013263884481348926,
+      "tip_deflection_mm": 0.027669603078479175,
+      "tip_mach": 0.5395406945233538,
+      "tip_speed_m_s": 185.06245822151038,
+      "torque_n_m": 0.35197661831552896,
+      "voltage_v": 25.2,
+      "winding_temp_k": 352.3447131331301
+    },
+    "best_point": [
+      [
+        "chord_mm",
+        15.50468685581739
+      ],
+      [
+        "rpm",
+        44739.653174720115
+      ]
+    ],
+    "best_state": "valid",
+    "invalid": 0,
+    "samples": 18
+  },
+  "elapsed_s": 56.8,
+  "failed_constraints": [],
+  "fidelities_executed": {
+    "battery": {
+      "job_id": "9032657cd3fe4519b1ee17d0b13391ec",
+      "source": "native_solver",
+      "state": "COMPLETED"
+    },
+    "cad": {
+      "job_id": "581ecae00931421990a1c76c3abd6e4a",
+      "source": "native_solver",
+      "state": "COMPLETED"
+    },
+    "campbell": {
+      "job_id": "72c0f6722fb042558a5f7bfa3c6c9b14",
+      "source": "deferred-unavailable-engine",
+      "state": "FAILED"
+    },
+    "cfd-mrf": {
+      "job_id": "0975c7788e3b4dceb8eb5448df19af5b",
+      "source": "deferred-unavailable-engine",
+      "state": "FAILED"
+    },
+    "coupled": {
+      "job_id": "ad0d632da2b54b36a7a911c90ac51c48",
+      "source": "deferred-unavailable-engine",
+      "state": "FAILED"
+    },
+    "mesh-coarse": {
+      "job_id": "398adeb1acd74a1ab132f6f7610095bb",
+      "source": "native_solver",
+      "state": "COMPLETED"
+    },
+    "mesh-medium": {
+      "job_id": "4ce49bbeea5a49aa87c19a37f6340057",
+      "source": "native_solver",
+      "state": "COMPLETED"
+    },
+    "modal": {
+      "job_id": "21588137e0f14af09ddc4451dea64aaf",
+      "source": "native_solver",
+      "state": "COMPLETED"
+    },
+    "structural": {
+      "job_id": "997e29a6f78d42078847c5ee604cc5c0",
+      "source": "deferred-unavailable-engine",
+      "state": "FAILED"
+    },
+    "thermal": {
+      "job_id": "be665abee6084441a7caefc448209096",
+      "source": "deferred-unavailable-engine",
+      "state": "FAILED"
+    }
+  },
+  "fidelity_plans": {
+    "aero": {
+      "escalate": true,
+      "level": "mrf-steady",
+      "reasons": [
+        "tight margin 0.05 at maturity 0.7; escalate one rank to mrf-steady"
+      ]
+    },
+    "aero_finalist_hold": {
+      "escalate": false,
+      "level": "mrf-steady",
+      "reasons": [
+        "mrf-steady remains sufficient for question 'finalist-rotating-flow'"
+      ]
+    }
+  },
+  "field_transfer": {
+    "accepted": true,
+    "conservation_error": 0.0,
+    "method": "conservative"
+  },
+  "finalist_screening": {
+    "current_a": 44.388926869747635,
+    "fidelity": "screening-analytic",
+    "fos": 6.212283462206259,
+    "source": "analytical",
+    "thrust_n": 17.209402035065146,
+    "tip_mach": 0.5065016727216196
+  },
+  "gcp_spend_usd": 0.0,
+  "generic_capabilities": [
+    "build_duct_system count-agnostic (2/3/4 rotating zones, zero core changes)",
+    "openfoam N-zone MRF case builder (generic; 1/2/3/4 zones proven)",
+    "domain-mesh native meshing + quality receipts",
+    "cad-interchange STEP/BREP roundtrip",
+    "ross campbell/modal native rotor dynamics",
+    "pybamm thevenin native pack discharge",
+    "ManifestCoordinator OpenMDAO scalar reconciliation",
+    "transfer_field analytic pressure exchange + precice fail-closed probe",
+    "plan_fidelity ladder-driven escalation",
+    "run_doe LHS from design state + assess_sample quality gating",
+    "assess_measure/assess_global physical closure",
+    "separation/check_resonance generic resonance policy",
+    "MaterialDatabase seeded revisions + region bindings"
+  ],
+  "geometry_hashes": {
+    "parameter_hash": "222c904d1a5515cd5ccaa433801d834b61619a1f88f15a8c75e1558fc22de706",
+    "shape_hash": "47c7f912de7bf3abc8741b5749aff4c5a754267962f450f0829af80201dc5ebd"
+  },
+  "mesh_independence": {
+    "coarse_elements": 293004.0,
+    "flow_solution": "not-demonstrated-heavy-cfd-deferred",
+    "medium_elements": 744812.0,
+    "min_sicn": 0.29318863903070624,
+    "quality_sensitivity": 0.03563736438620901
+  },
+  "milestone": 4,
+  "native_numbers": {
+    "battery": {
+      "delivered_ah": 0.4166666666666667,
+      "soc_end": 0.49583333333333357,
+      "voltage_end_v": 22.026453016537737,
+      "voltage_start_v": 22.11885167282753
+    },
+    "cad": {
+      "faces_after": 6.0,
+      "faces_before": 6.0
+    },
+    "mesh-coarse": {
+      "element_count": 293004.0,
+      "min_sicn": 0.3036371093937402
+    },
+    "mesh-medium": {
+      "element_count": 744812.0,
+      "min_sicn": 0.29318863903070624
+    },
+    "modal": {
+      "first_damping_ratio": 0.012545952978005608,
+      "first_whirl_hz": 210.0904158178375
+    }
+  },
+  "participant_graph": {
+    "links": [
+      [
+        "rotating-flow-mrf",
+        "structural-static",
+        [
+          "pressure"
+        ]
+      ],
+      [
+        "structural-static",
+        "structural-modal",
+        [
+          "displacement"
+        ]
+      ],
+      [
+        "rotor-campbell",
+        "rotor-modal",
+        [
+          "critical-speeds"
+        ]
+      ],
+      [
+        "pack-thevenin-discharge",
+        "thermal-conduction",
+        [
+          "heat-flow"
+        ]
+      ],
+      [
+        "rotating-flow-mrf",
+        "thermal-conduction",
+        [
+          "temperature"
+        ]
+      ]
+    ],
+    "nodes": [
+      "rotating-flow-mrf",
+      "compressible-steady-flow",
+      "structural-static",
+      "structural-modal",
+      "thermal-conduction",
+      "rotor-campbell",
+      "rotor-modal",
+      "cell-spm-discharge",
+      "pack-thevenin-discharge",
+      "coupled-interface-validation",
+      "domain-mesh",
+      "cad-interchange"
+    ]
+  },
+  "remaining_general_gaps": [
+    "no native OpenFOAM/Code_Aster/Elmer/preCICE on host (fail-closed; need Linux runners)",
+    "flow-solution mesh/timestep independence unproven until heavy CFD executes",
+    "no dedicated motor/ESC participant manifest (analytic example-level via OpenMDAO)",
+    "no transient AMI execution path demonstrated (config generic, engine absent)",
+    "campbell beam-consistency gate rejects short stiff rotors (bearing modes first)"
+  ],
+  "solver_identities": {
+    "cadquery": "2.8.0",
+    "code-aster": "absent-no-binary",
+    "elmer": "absent-no-binary",
+    "gmsh": "4.15.2",
+    "openfoam": "absent-no-binary",
+    "openmdao": "3.45.1",
+    "precice": "absent-no-library",
+    "pybamm": "26.8.0.0",
+    "ross": "2.3.0"
+  },
+  "step_artifacts": [
+    {
+      "bytes": 136476,
+      "component": "assembly",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-assembly.step",
+      "sha256": "094814922322363c090378966c4be63a7d6b237becb06f5552e0d3d211b08e3a"
+    },
+    {
+      "bytes": 30190,
+      "component": "assembly",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-assembly.brep",
+      "sha256": "a10b9edce8e00a2de101f5de454362f8d8179793253ce6a328e6672b432efe96"
+    },
+    {
+      "bytes": 14170,
+      "component": "duct",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-duct.step",
+      "sha256": "a2457d1179cb8aab0f8388730a2c5f3d6390533ae789268eebf70646628fdd1b"
+    },
+    {
+      "bytes": 3439,
+      "component": "duct",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-duct.brep",
+      "sha256": "2e64988e47e8050fb5635dc647be5e2dc7f26b3a59b4304a58029ac089fafc2f"
+    },
+    {
+      "bytes": 14215,
+      "component": "fluid_inlet",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-fluid_inlet.step",
+      "sha256": "c364f1c45bf6b77d2c314eabca053f21b8a65f5143fb69875e0a29a133a641c6"
+    },
+    {
+      "bytes": 3521,
+      "component": "fluid_inlet",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-fluid_inlet.brep",
+      "sha256": "b374c7771eb2d4063590a18702304598611b878bcb3a12f248a4e70343fb4ef6"
+    },
+    {
+      "bytes": 14199,
+      "component": "rotor_zone_0",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_0.step",
+      "sha256": "1edcd72e871a5b3089ece492dae86cd2960e87280db160e9415a5cd293a8b080"
+    },
+    {
+      "bytes": 3469,
+      "component": "rotor_zone_0",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_0.brep",
+      "sha256": "d6f859c609a7ce260d944ca17eb6874ee8107b4d931e884dd8f5fa272f1b5c99"
+    },
+    {
+      "bytes": 14195,
+      "component": "stator_zone_0",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-stator_zone_0.step",
+      "sha256": "4ce673e765bcdf4ccf74ed71a6d1522bbf03c4fa4bc00f85c704a364a64d5c74"
+    },
+    {
+      "bytes": 3455,
+      "component": "stator_zone_0",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-stator_zone_0.brep",
+      "sha256": "c7cac799663ab7c58010197a66da802974235e5611cd0cd4d5ec5d1419c913a2"
+    },
+    {
+      "bytes": 14170,
+      "component": "rotor_zone_1",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_1.step",
+      "sha256": "32e6850aec6c8887816ddf6f4f8268a7d7afd27e9e3a0065a3f4ce7b37612d55"
+    },
+    {
+      "bytes": 3439,
+      "component": "rotor_zone_1",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_1.brep",
+      "sha256": "6024b0d45d7de7c3d3f303f69182c2bdf49472c4407a4bb4f3be74c73d76cc42"
+    },
+    {
+      "bytes": 14170,
+      "component": "stator_zone_1",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-stator_zone_1.step",
+      "sha256": "2d7d8b8092a1e0e9a0ada5975e8051e096e2db9f12694263484f7b7779a2ed73"
+    },
+    {
+      "bytes": 3431,
+      "component": "stator_zone_1",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-stator_zone_1.brep",
+      "sha256": "08e9e32c52a7b1fbdf3a734eb5464eeae4cb496d13b0aa8515ffa596e5aecf6b"
+    },
+    {
+      "bytes": 14174,
+      "component": "rotor_zone_2",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_2.step",
+      "sha256": "4ce57c14ef04b6e7df315db52214ec53fbcfd5777b140f29dfc2117bad0bf0f3"
+    },
+    {
+      "bytes": 3445,
+      "component": "rotor_zone_2",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-rotor_zone_2.brep",
+      "sha256": "8a3218f468f053b68ea2777d35f7e0317722bfa83ab0fb1d964d42cf5a4cf31c"
+    },
+    {
+      "bytes": 14190,
+      "component": "fluid_outlet",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-fluid_outlet.step",
+      "sha256": "02567d6eed9e6f7eca40ee2a12022aa413c9702a946fecf71084780e7883758b"
+    },
+    {
+      "bytes": 3497,
+      "component": "fluid_outlet",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-fluid_outlet.brep",
+      "sha256": "955a6579b051592e8b08c23daad2cb71c4658259a2b33555042f936cb2ca8290"
+    },
+    {
+      "bytes": 8138,
+      "component": "solid_0",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-solid_0.step",
+      "sha256": "6ac2c462cf32f7c6f1c238d0308a38a39ec6a8f330335319f7462f793318a08b"
+    },
+    {
+      "bytes": 1563,
+      "component": "solid_0",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-solid_0.brep",
+      "sha256": "2c60cc49c5756750e62a9900264357cd97a4adc5b8aeec91cf7ce2e429953bc0"
+    },
+    {
+      "bytes": 8125,
+      "component": "solid_1",
+      "format": "step",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-solid_1.step",
+      "sha256": "548e227b2470d1f46601f89dc1805e7a40338fccb3ee2d54a3bef95a2eae38d4"
+    },
+    {
+      "bytes": 1533,
+      "component": "solid_1",
+      "format": "brep",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-solid_1.brep",
+      "sha256": "45c60e28f693a819957a458a6ce43e83e68614070e1de4dad1d009e5b8d78dc1"
+    },
+    {
+      "bytes": 680084,
+      "component": "assembly",
+      "format": "stl",
+      "path": "D:/CodeProjects/aero-multiphysics-workbench/docs/evidence/milestone-4/cad/edf-80mm-3stage-assembly.stl",
+      "sha256": "b93cd4df5cf7762ebd3c75a1f2556cfb3ed2e0ed7b024080b606f06589d84136"
+    }
+  ],
+  "validation_state": "not-validated",
+  "variant": "80mm-3stage",
+  "variant_reuse": [
+    {
+      "core_changes": 0,
+      "coupled_converged": true,
+      "current_a": 26.74127712369655,
+      "n_stages": 3,
+      "shape_hash": "47c7f912de7bf3abc8741b5749aff4c5a754267962f450f0829af80201dc5ebd",
+      "thrust_n": 11.950973635461906,
+      "variant": "80mm-3stage"
+    },
+    {
+      "core_changes": 0,
+      "coupled_converged": true,
+      "current_a": 8.521948782653638,
+      "n_stages": 2,
+      "shape_hash": "fde8c0e5d9c81d6d7f9d3f0def39be9631376f1b43e99fcdcf86e1691f7e1ce2",
+      "thrust_n": 4.322863263177647,
+      "variant": "70mm-2stage"
+    },
+    {
+      "core_changes": 0,
+      "coupled_converged": true,
+      "current_a": 78.32298925174564,
+      "n_stages": 4,
+      "shape_hash": "8cf211d16fa83ac745c76dadb80f2dfbf4be9ffe8a92359c18aae50feed60826",
+      "thrust_n": 27.800241279614145,
+      "variant": "90mm-4stage"
+    }
+  ]
+}

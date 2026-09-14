@@ -1,0 +1,223 @@
+{
+  "aerodynamic": {
+    "fidelity": "screening-analytic",
+    "figure_of_merit": 0.75,
+    "mass_flow_kg_s": 0.21254840696074698,
+    "native_cfd": "deferred-unavailable-engine",
+    "source": "analytical",
+    "thrust_n": 17.209402035065146,
+    "tip_mach": 0.5065016727216196,
+    "torque_n_m": 0.21120516718124474
+  },
+  "dynamic": {
+    "first_whirl_hz": 210.0904158178375,
+    "resonance_margin_hz": 5795.78300203719,
+    "resonance_trigger": "clear",
+    "whirl_fidelity": "beam-modal",
+    "whirl_source": "native_solver"
+  },
+  "electrical": {
+    "current_a": 46.144885641393074,
+    "electrical_power_w": 1069.14894648199,
+    "fidelity": "coupled-analytic",
+    "source": "openmdao-coupled-analytic",
+    "voltage_v": 23.169392058454925
+  },
+  "geometry": {
+    "kernel_available": true,
+    "n_stages": 3,
+    "outer_diameter_mm": 80.0,
+    "parameter_hash": "222c904d1a5515cd5ccaa433801d834b61619a1f88f15a8c75e1558fc22de706",
+    "shape_hash": "47c7f912de7bf3abc8741b5749aff4c5a754267962f450f0829af80201dc5ebd",
+    "source": "native_solver"
+  },
+  "identity": {
+    "configHash": "b8cdd3e6fe3d05e6d56719f937cc02275fb3a5a630675bcdaf6774c6de69e5cf",
+    "configName": "80mm-3stage",
+    "designId": "edf-80mm-three-stage",
+    "revisionId": "b8cdd3e6fe3d"
+  },
+  "meshes": {
+    "coarse_elements": 293004.0,
+    "medium_elements": 744812.0,
+    "mesh_sensitivity": 0.03563736438620901,
+    "min_sicn": 0.29318863903070624,
+    "source": "native_solver"
+  },
+  "provenance": {
+    "design_hash": "b8cdd3e6fe3d05e6d56719f937cc02275fb3a5a630675bcdaf6774c6de69e5cf",
+    "input_hash": "088cafd8d90d7aca9202335060511bec37b745421af05bbc308bc011a56f0238",
+    "native_summary": {
+      "cad-interchange": {
+        "fidelity": "brep-roundtrip",
+        "job_id": "581ecae00931421990a1c76c3abd6e4a",
+        "scalars": {
+          "faces_after": 6.0,
+          "faces_before": 6.0
+        },
+        "source": "native_solver",
+        "units": {
+          "faces_after": "dimensionless",
+          "faces_before": "dimensionless"
+        },
+        "validity": {
+          "checks": {
+            "faces_positive": true,
+            "topology_preserved": true
+          },
+          "detail": "face counts survive the interchange roundtrip",
+          "participant_id": "cad-interchange",
+          "passed": true
+        }
+      },
+      "coupled-interface-validation": {
+        "error_code": "CAPABILITY_UNAVAILABLE",
+        "job_id": "ad0d632da2b54b36a7a911c90ac51c48",
+        "source": "deferred-unavailable-engine",
+        "state": "FAILED"
+      },
+      "domain-mesh": {
+        "fidelity": "conforming-linear",
+        "job_id": "4ce49bbeea5a49aa87c19a37f6340057",
+        "scalars": {
+          "element_count": 744812.0,
+          "min_sicn": 0.29318863903070624
+        },
+        "source": "native_solver",
+        "units": {
+          "element_count": "dimensionless",
+          "min_sicn": "dimensionless"
+        },
+        "validity": {
+          "checks": {
+            "has_elements": true,
+            "quality_bounded": true
+          },
+          "detail": "positive element count and SICN above 0.05",
+          "participant_id": "domain-mesh",
+          "passed": true
+        }
+      },
+      "pack-thevenin-discharge": {
+        "fidelity": "ecm-thevenin",
+        "job_id": "9032657cd3fe4519b1ee17d0b13391ec",
+        "scalars": {
+          "delivered_ah": 0.4166666666666667,
+          "soc_end": 0.49583333333333357,
+          "voltage_end_v": 22.026453016537737,
+          "voltage_start_v": 22.11885167282753
+        },
+        "source": "native_solver",
+        "units": {
+          "delivered_ah": "A.h",
+          "soc_end": "dimensionless",
+          "voltage_end_v": "V",
+          "voltage_start_v": "V"
+        },
+        "validity": {
+          "checks": {
+            "cell_voltage_bounds": true,
+            "coulomb_consistent": true,
+            "discharge_direction": true,
+            "soc_range": true
+          },
+          "detail": "per-cell voltage within [2,5] V, coulomb count within 5%, soc in [0,1]",
+          "participant_id": "pack-thevenin-discharge",
+          "passed": true
+        }
+      },
+      "rotating-flow-mrf": {
+        "error_code": "CAPABILITY_UNAVAILABLE",
+        "job_id": "0975c7788e3b4dceb8eb5448df19af5b",
+        "source": "deferred-unavailable-engine",
+        "state": "FAILED"
+      },
+      "rotor-campbell": {
+        "error_code": "PROCESS_EXIT_NONZERO",
+        "job_id": "72c0f6722fb042558a5f7bfa3c6c9b14",
+        "source": "deferred-unavailable-engine",
+        "state": "FAILED"
+      },
+      "rotor-modal": {
+        "fidelity": "beam-modal",
+        "job_id": "21588137e0f14af09ddc4451dea64aaf",
+        "scalars": {
+          "first_damping_ratio": 0.012545952978005608,
+          "first_whirl_hz": 210.0904158178375
+        },
+        "source": "native_solver",
+        "units": {
+          "first_damping_ratio": "dimensionless",
+          "first_whirl_hz": "Hz"
+        },
+        "validity": {
+          "checks": {
+            "damping_finite": true,
+            "whirl_positive": true
+          },
+          "detail": "forward whirl positive with bounded damping ratio",
+          "participant_id": "rotor-modal",
+          "passed": true
+        }
+      },
+      "structural-static": {
+        "error_code": "CAPABILITY_UNAVAILABLE",
+        "job_id": "997e29a6f78d42078847c5ee604cc5c0",
+        "source": "deferred-unavailable-engine",
+        "state": "FAILED"
+      },
+      "thermal-conduction": {
+        "error_code": "CAPABILITY_UNAVAILABLE",
+        "job_id": "be665abee6084441a7caefc448209096",
+        "source": "deferred-unavailable-engine",
+        "state": "FAILED"
+      }
+    },
+    "solver_identities": {
+      "cadquery": "2.8.0",
+      "code-aster": "absent-no-binary",
+      "elmer": "absent-no-binary",
+      "gmsh": "4.15.2",
+      "openfoam": "absent-no-binary",
+      "openmdao": "3.45.1",
+      "precice": "absent-no-library",
+      "pybamm": "26.8.0.0",
+      "ross": "2.3.0"
+    }
+  },
+  "quality": {
+    "convergence": {
+      "closure_passed": false,
+      "coupled_converged": true,
+      "global": "blocked by: closure"
+    },
+    "fidelity": "screening-analytic-plus-native-rotor-battery-mesh-cad",
+    "mesh_independence": 0.03563736438620901,
+    "physical_closure": {
+      "current": false,
+      "energy": false,
+      "shaft-power": true
+    },
+    "sample_state": "invalid-sample",
+    "timestep_independence": "not-applicable-steady-mrf",
+    "validation_state": "not-validated",
+    "warnings": [
+      "physical closure failed"
+    ]
+  },
+  "structural": {
+    "centrifugal_stress_pa": 48291421.636683755,
+    "fidelity": "screening-analytic",
+    "fos": 6.212283462206259,
+    "native_statics": "deferred-unavailable-engine",
+    "source": "analytical",
+    "tip_deflection_mm": 0.018872721472829264
+  },
+  "thermal": {
+    "esc_temp_k": 307.99506311989626,
+    "fidelity": "screening-analytic",
+    "native_conduction": "deferred-unavailable-engine",
+    "source": "analytical",
+    "winding_temp_k": 315.6232731795623
+  }
+}
