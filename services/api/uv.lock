@@ -16,6 +16,7 @@ dependencies = [
     { name = "casadi" },
     { name = "fastapi" },
     { name = "gmsh" },
+    { name = "openmdao" },
     { name = "plotly" },
     { name = "pybamm" },
     { name = "pydantic" },
@@ -37,6 +38,7 @@ requires-dist = [
     { name = "casadi", specifier = "==3.7.2" },
     { name = "fastapi", specifier = ">=0.116,<1" },
     { name = "gmsh", specifier = ">=4.12,<5" },
+    { name = "openmdao", specifier = ">=3.45.1" },
     { name = "plotly", specifier = "<6" },
     { name = "pybamm", specifier = ">=26.8.0.0" },
     { name = "pydantic", specifier = ">=2.11,<3" },
@@ -1072,6 +1074,15 @@ wheels = [
 ]
 
 [[package]]
+name = "networkx"
+version = "3.6.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/51/63fe664f3908c97be9d2e4f1158eb633317598cfa6e1fc14af5383f17512/networkx-3.6.1.tar.gz", hash = "sha256:26b7c357accc0c8cde558ad486283728b65b6a95d85ee1cd66bafab4c8168509", size = 2517025, upload-time = "2025-12-08T17:02:39.908Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/c9/b2622292ea83fbb4ec318f5b9ab867d0a28ab43c5717bb85b0a5f6b3b0a4/networkx-3.6.1-py3-none-any.whl", hash = "sha256:d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762", size = 2068504, upload-time = "2025-12-08T17:02:38.159Z" },
+]
+
+[[package]]
 name = "nlopt"
 version = "2.11.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1118,6 +1129,22 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c8/db/35e1c2d38b04cbd5b731f9d71495e055e813197669d22b612f11748d2ff9/numpy-2.5.3-cp312-cp312-win32.whl", hash = "sha256:bf63afbe037eb5d2fe87fbcc7778e61da53ebaf21d938a4515aa73b62532a5d4", size = 6133378, upload-time = "2026-09-06T16:24:51.915Z" },
     { url = "https://files.pythonhosted.org/packages/3c/a1/accf6d4f0c80c5d9ba9735d6b1550e444180599f34dec69ca01360f717ad/numpy-2.5.3-cp312-cp312-win_amd64.whl", hash = "sha256:0a59a421a32580a009e8a1751345bf829631b990dc1794b80514ab722b435def", size = 12567828, upload-time = "2026-09-06T16:24:54.255Z" },
     { url = "https://files.pythonhosted.org/packages/22/43/1764aff32e4652526ae2f71fa8b3efd8d25c8a3d6926914454e47138ed1e/numpy-2.5.3-cp312-cp312-win_arm64.whl", hash = "sha256:ccb32e0525d29e8b0572eb84c9a57af0e7a4e615726927506f55063c62414034", size = 10485432, upload-time = "2026-09-06T16:24:57.278Z" },
+]
+
+[[package]]
+name = "openmdao"
+version = "3.45.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "networkx" },
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "requests" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/cb/eb66d984ee6bd3f20f134cebe2096d555231d71fdba9685e59b8a66ca8aa/openmdao-3.45.1.tar.gz", hash = "sha256:314c5d796c5dbcc4334b70cd9d306cb8f8db78c84918b8406b88ede56d5cc909", size = 13233820, upload-time = "2026-09-11T00:32:33.761Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl", hash = "sha256:2ac96fcd3ebd4f3096d527f6f792f4b5ddb8823093c2fff1f89f147159fab6da", size = 13911231, upload-time = "2026-09-11T00:32:30.903Z" },
 ]
 
 [[package]]

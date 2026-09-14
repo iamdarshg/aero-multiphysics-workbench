@@ -13,6 +13,7 @@ dependencies = [
   "pybamm>=26.8.0.0",
   "casadi==3.7.2",
   "plotly<6",
+  "openmdao>=3.45.1",
 ]
 
 [dependency-groups]

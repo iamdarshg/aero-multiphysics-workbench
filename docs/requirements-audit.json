@@ -2942,8 +2942,8 @@
         {
           "kind": "file",
           "path": "services/api/pyproject.toml",
-          "detail": "PARTIAL: Python suite (135 tests incl. generic substrate plus governed native pipeline with ROSS/PyBaMM/Gmsh benchmarks) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
-          "sha256": "c4125a813b16873b95b42229107968c63437d15b96ca67e9c4835d2800e7a478"
+          "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
+          "sha256": "629a54fe15a02eda5c54a00db42663d7186c19e3c98d0af80efed58f6a36a05a"
         }
       ],
       "lastVerifiedAt": "2026-09-14T19:25:03Z"

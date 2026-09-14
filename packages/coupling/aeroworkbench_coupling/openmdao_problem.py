@@ -1,9 +1,10 @@
-"""Bounded scalar coupling with an OpenMDAO-compatible participant seam.
+"""Dependency-light fallback/screening scalar coupling loop.
 
-The coordinator is deliberately dependency-light so the API can remain
-responsive on a developer machine. If OpenMDAO is requested by the caller,
-the adapter reports its capability explicitly; this module never labels the
-fixed-point loop as an OpenMDAO run.
+This under-relaxed fixed-point loop is NOT the OpenMDAO implementation: it
+is the explicitly labelled fallback used for dependency-light screening.
+The real OpenMDAO-backed coordinator lives in ``manifest_coordinator`` and
+identifies its runs with ``engine="openmdao"``; results from this module
+must never be presented as OpenMDAO runs.
 """
 
 from __future__ import annotations
