@@ -102,19 +102,40 @@ def test_native_analysis_submit_fails_closed_without_capability() -> None:
         assert final["state"] == "COMPLETED"
 
 
-def test_job_progress_stream_emits_ordered_sse_events() -> None:
+def test_job_progress_stream_comes_from_persisted_native_transitions() -> None:
     with TestClient(create_app()) as client:
-        started = client.post("/v1/jobs/edf", json={})
-        assert started.status_code == 202
-        job_id = started.json()["job_id"]
+        submitted = client.post(
+            "/v1/native/analyses",
+            json={
+                "participant_id": "cell-spm-discharge",
+                "inputs": {
+                    "model": "spm",
+                    "parameter_set": "Chen2020",
+                    "discharge_current_a": 1.0,
+                    "duration_s": 60.0,
+                    "n_series": 1,
+                    "n_parallel": 1,
+                },
+                "deferred": True,
+            },
+        )
+        assert submitted.status_code == 202
+        job_id = submitted.json()["job_id"]
 
-        response = client.get(f"/v1/jobs/{job_id}/events")
+        response = client.get(
+            f"/v1/native/analyses/{job_id}/events", headers={"Accept": "text/event-stream"}
+        )
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
     assert "event: progress" in response.text
-    assert '"status":"completed"' in response.text
-    assert response.text.index('"status":"queued"') < response.text.index('"status":"completed"')
+    assert '"state":"QUEUED"' in response.text
+    sequences = [
+        int(line.split('"sequence":')[1].split(",")[0])
+        for line in response.text.splitlines()
+        if line.startswith("data: ")
+    ]
+    assert sequences == sorted(sequences)
 
 
 def test_frontend_contract_exposes_state_and_run_routes_with_local_cors() -> None:

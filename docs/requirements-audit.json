@@ -703,7 +703,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/main.py",
           "detail": "PARTIAL: Analytical live-progress replay via jobs/SSE; governed native scheduling routes execute real analyses with evidence-gated envelopes. Decimated native field streaming unavailable.",
-          "sha256": "e106ed19da5ad1c51bcb65bc236e813235f9a3c3089f34c7e7b7dc096be8e061"
+          "sha256": "3f49dc70f6de842f26928c30bc292bb42cdbe6262f142675f254ccc82153d0ab"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2046,7 +2046,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
-          "sha256": "37b61c8da4d8c063f6b210058c65e76a228dbc4ed6846f84aa1b234394bbd8f6"
+          "sha256": "f2a328fe7053858d670592f40f6a3fd591f22d014f7639bd17b09e8aa3f01236"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"

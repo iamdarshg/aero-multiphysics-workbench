@@ -337,6 +337,7 @@ def test_manifest_rejects_stale_or_underspecified_declarations() -> None:
 def test_error_taxonomy_covers_every_required_code() -> None:
     assert {code.value for code in NativeErrorCode} == {
         "CAPABILITY_UNAVAILABLE",
+        "ADMISSION_REJECTED",
         "PREPARATION_FAILED",
         "MESH_INVALID",
         "PROCESS_START_FAILED",
@@ -347,6 +348,7 @@ def test_error_taxonomy_covers_every_required_code() -> None:
         "QUALITY_GATE_FAILED",
         "RESULT_INVALID",
         "CANCELLED",
+        "INTERRUPTED",
     }
     error = ParticipantError(NativeErrorCode.PARSER_FAILED, "no log")
     assert error.code is NativeErrorCode.PARSER_FAILED
@@ -847,9 +849,9 @@ def test_missing_binary_fails_closed_with_capability_code(tmp_path: Path) -> Non
     status = manager.status(job_id)
     assert status["error_code"] == NativeErrorCode.CAPABILITY_UNAVAILABLE.value
     events = [event["state"] for event in manager.events(job_id)]
-    assert events[:3] == [
+    assert events == [
         JobState.QUEUED.value,
         JobState.PREPARING.value,
-        JobState.READY.value,
+        JobState.FAILED.value,
     ]
     assert events[-1] == JobState.FAILED.value

@@ -24,6 +24,10 @@ class JobRow:
     inputs_json: str | None
     created_at: str
     updated_at: str
+    owner_id: str | None = None
+    revision_id: str | None = None
+    result_id: str | None = None
+    provenance_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +79,21 @@ class JobLedger:
                 """
             )
             self._connection.commit()
+            self._migrate_job_columns()
+
+    @staticmethod
+    def _optional_job_columns() -> tuple[str, ...]:
+        return ("owner_id", "revision_id", "result_id", "provenance_id")
+
+    def _migrate_job_columns(self) -> None:
+        existing = {
+            row["name"]
+            for row in self._connection.execute("PRAGMA table_info(native_jobs)").fetchall()
+        }
+        for column in self._optional_job_columns():
+            if column not in existing:
+                self._connection.execute(f"ALTER TABLE native_jobs ADD COLUMN {column} TEXT")
+        self._connection.commit()
 
     def create(
         self,
@@ -85,13 +104,15 @@ class JobLedger:
         state: str,
         created_at: str,
         inputs: dict[str, Any],
+        owner_id: str | None = None,
+        revision_id: str | None = None,
     ) -> None:
         inputs_json = json.dumps(inputs, sort_keys=True, separators=(",", ":"))
         with self._lock:
             self._connection.execute(
                 "INSERT INTO native_jobs(job_id,participant_id,design_id,state,"
                 "error_code,error_detail,run_id,input_hash,envelope_json,inputs_json,"
-                "created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                "created_at,updated_at,owner_id,revision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
                     job_id,
                     participant_id,
@@ -105,6 +126,8 @@ class JobLedger:
                     inputs_json,
                     created_at,
                     created_at,
+                    owner_id,
+                    revision_id,
                 ),
             )
             self._connection.commit()
@@ -120,6 +143,8 @@ class JobLedger:
         run_id: str | None | Any = _UNSET,
         input_hash: str | None | Any = _UNSET,
         envelope_json: str | None | Any = _UNSET,
+        result_id: str | None | Any = _UNSET,
+        provenance_id: str | None | Any = _UNSET,
     ) -> None:
         assignments = ["state=?", "updated_at=?"]
         values: list[Any] = [state, updated_at]
@@ -129,6 +154,8 @@ class JobLedger:
             ("run_id", run_id),
             ("input_hash", input_hash),
             ("envelope_json", envelope_json),
+            ("result_id", result_id),
+            ("provenance_id", provenance_id),
         ):
             if value is not _UNSET:
                 assignments.append(f"{column}=?")
@@ -159,13 +186,21 @@ class JobLedger:
         with self._lock:
             row = self._connection.execute(
                 "SELECT job_id,participant_id,design_id,state,error_code,error_detail,"
-                "run_id,input_hash,envelope_json,inputs_json,created_at,updated_at "
+                "run_id,input_hash,envelope_json,inputs_json,created_at,updated_at,"
+                "owner_id,revision_id,result_id,provenance_id "
                 "FROM native_jobs WHERE job_id=?",
                 (job_id,),
             ).fetchone()
         if row is None:
             return None
         columns = set(row.keys())
+
+        def _optional(name: str) -> str | None:
+            if name not in columns:
+                return None
+            value = row[name]
+            return None if value is None else str(value)
+
         return JobRow(
             job_id=row["job_id"],
             participant_id=row["participant_id"],
@@ -179,7 +214,25 @@ class JobLedger:
             inputs_json=row["inputs_json"] if "inputs_json" in columns else None,
             created_at=row["created_at"],
             updated_at=row["updated_at"],
+            owner_id=_optional("owner_id"),
+            revision_id=_optional("revision_id"),
+            result_id=_optional("result_id"),
+            provenance_id=_optional("provenance_id"),
         )
+
+    def all(self) -> list[JobRow]:
+        """Return every job row; used once at startup to interrupt orphans."""
+        with self._lock:
+            rows = self._connection.execute(
+                "SELECT job_id FROM native_jobs ORDER BY created_at"
+            ).fetchall()
+            job_ids = [str(row["job_id"]) for row in rows]
+        jobs: list[JobRow] = []
+        for job_id in job_ids:
+            row = self.get(job_id)
+            if row is not None:
+                jobs.append(row)
+        return jobs
 
     def events(self, job_id: str) -> list[JobEventRow]:
         with self._lock:

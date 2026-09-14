@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import json
 from typing import Any
-from uuid import uuid4
 
 from aeroworkbench_core.coupling import CouplingPolicy
 from aeroworkbench_core.envelope import (
@@ -16,7 +14,7 @@ from aeroworkbench_core.models.edf import EDFInput, evaluate_edf
 from aeroworkbench_core.models.gas_turbine import GasTurbineInput, evaluate_gas_turbine
 from aeroworkbench_core.resonance import Excitation, Mode, ResonanceDetector
 from aeroworkbench_core.types import FidelityLevel, ResultSource
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from aeroworkbench_api.native_jobs import build_native_router
@@ -131,7 +129,6 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    jobs: dict[str, list[dict[str, Any]]] = {}
     native_router, _native_manager = build_native_router()
     app.include_router(native_router)
 
@@ -158,26 +155,6 @@ def create_app() -> FastAPI:
     @app.post("/v1/demos/gas-turbine")
     def gas_turbine_demo() -> dict[str, Any]:
         return _gas_turbine_demo()
-
-    @app.post("/v1/jobs/edf", status_code=status.HTTP_202_ACCEPTED)
-    def start_edf_job() -> dict[str, str]:
-        job_id = str(uuid4())
-        jobs[job_id] = [
-            {"sequence": 0, "status": "queued", "progress": 0},
-            {"sequence": 1, "status": "running", "progress": 50},
-            {"sequence": 2, "status": "completed", "progress": 100, "result": _edf_demo()},
-        ]
-        return {"job_id": job_id, "status": "completed"}
-
-    @app.get("/v1/jobs/{job_id}/events")
-    def job_events(job_id: str) -> Response:
-        if job_id not in jobs:
-            raise HTTPException(status_code=404, detail={"code": "JOB_NOT_FOUND"})
-        body = "".join(
-            f"event: progress\ndata: {json.dumps(event, separators=(',', ':'))}\n\n"
-            for event in jobs[job_id]
-        )
-        return Response(content=body, media_type="text/event-stream")
 
     return app
 

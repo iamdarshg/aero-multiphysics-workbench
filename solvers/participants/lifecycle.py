@@ -12,6 +12,7 @@ import dataclasses
 import hashlib
 import importlib
 import json
+import os
 import threading
 import uuid
 from collections.abc import Callable, Mapping
@@ -59,7 +60,6 @@ _PYTHON_MODULE_ENVS: dict[str, dict[str, str]] = {
 class JobState(StrEnum):
     QUEUED = "QUEUED"
     PREPARING = "PREPARING"
-    READY = "READY"
     RUNNING = "RUNNING"
     PARSING = "PARSING"
     VALIDATING = "VALIDATING"
@@ -69,6 +69,21 @@ class JobState(StrEnum):
 
 
 TERMINAL_STATES = frozenset({JobState.COMPLETED, JobState.FAILED, JobState.CANCELLED})
+
+# The product job lifecycle is exactly this chain plus terminal failure/cancel
+# from any non-terminal state. Anything else is rejected, never persisted.
+_LEGAL_TRANSITIONS: dict[JobState, frozenset[JobState]] = {
+    JobState.QUEUED: frozenset({JobState.PREPARING, JobState.FAILED, JobState.CANCELLED}),
+    JobState.PREPARING: frozenset({JobState.RUNNING, JobState.FAILED, JobState.CANCELLED}),
+    JobState.RUNNING: frozenset({JobState.PARSING, JobState.FAILED, JobState.CANCELLED}),
+    JobState.PARSING: frozenset({JobState.VALIDATING, JobState.FAILED, JobState.CANCELLED}),
+    JobState.VALIDATING: frozenset({JobState.COMPLETED, JobState.FAILED, JobState.CANCELLED}),
+    JobState.COMPLETED: frozenset(),
+    JobState.FAILED: frozenset(),
+    JobState.CANCELLED: frozenset(),
+}
+
+_RSS_CEILING_MIB = 896.0
 
 
 def _now() -> str:
@@ -131,7 +146,7 @@ class NativeJobManager:
             raise ValueError("INVALID_TIMEOUT")
         self._job_root = job_root
         self._job_root.mkdir(parents=True, exist_ok=True)
-        self._repository = repository or SQLiteRepository(":memory:")
+        self._repository = repository or SQLiteRepository(job_root / "provenance.sqlite3")
         self._ledger = ledger or JobLedger(job_root / "native_jobs.sqlite3")
         self._rss_limit_mib = rss_limit_mib
         self._timeout_s = timeout_s
@@ -139,6 +154,38 @@ class NativeJobManager:
         self._state_lock = threading.Lock()
         self._cancel_flags: dict[str, Event] = {}
         self._supervisor_cancels: dict[str, Event] = {}
+        self.recover()
+
+    def close(self) -> None:
+        """Release the ledger and provenance stores."""
+        self._ledger.close()
+        self._repository.close()
+
+    def recover(self) -> int:
+        """Interrupt jobs orphaned by a previous process lifetime.
+
+        Terminal rows stay queryable untouched; QUEUED rows never started and
+        remain startable. Every other row had a worker that will never report
+        back, so it becomes FAILED with an INTERRUPTED code and an evidence
+        event instead of a silent success.
+        """
+
+        terminal = {state.value for state in TERMINAL_STATES}
+        interrupted = 0
+        for row in self._ledger.all():
+            if row.state == JobState.QUEUED.value or row.state in terminal:
+                continue
+            detail = f"worker did not survive restart; last state was {row.state}"
+            self._transition(row.job_id, JobState.FAILED, detail)
+            self._ledger.update(
+                row.job_id,
+                state=JobState.FAILED.value,
+                updated_at=_now(),
+                error_code=NativeErrorCode.INTERRUPTED.value,
+                error_detail=detail,
+            )
+            interrupted += 1
+        return interrupted
 
     # -- submission ------------------------------------------------------
 
@@ -149,13 +196,34 @@ class NativeJobManager:
         *,
         design_id: str = "generic-design",
         deferred: bool = False,
+        owner_id: str | None = None,
+        revision_id: str | None = None,
+        analysis: str | None = None,
+        fidelity: str | None = None,
+        requested_memory_mib: float | None = None,
     ) -> str:
         manifest = get_participant(participant_id)  # raises ValueError if unknown
-        _ = manifest
         if not isinstance(inputs, dict):
             raise ValueError("INVALID_JOB_INPUTS:inputs must be a mapping")
         if not design_id.strip():
             raise ValueError("INVALID_JOB_INPUTS:design id required")
+        for label, value in (
+            ("owner id", owner_id),
+            ("revision id", revision_id),
+            ("analysis", analysis),
+        ):
+            if value is not None and not value.strip():
+                raise ValueError(f"INVALID_JOB_INPUTS:{label} must be non-empty")
+        if fidelity is not None and fidelity not in manifest.fidelity_levels:
+            raise ValueError(
+                f"INVALID_JOB_INPUTS:unknown fidelity:{fidelity} "
+                f"allowed={','.join(manifest.fidelity_levels)}"
+            )
+        if requested_memory_mib is not None and (
+            isinstance(requested_memory_mib, bool)
+            or not isinstance(requested_memory_mib, (int, float))
+        ):
+            raise ValueError("INVALID_JOB_INPUTS:requested memory must be a number")
         digest = _inputs_hash(inputs)
         job_id = uuid.uuid4().hex
         case_id = f"case-{job_id[:12]}"
@@ -166,7 +234,15 @@ class NativeJobManager:
             design_id=design_id,
             state=JobState.QUEUED.value,
             created_at=created,
-            inputs={"inputs": inputs, "case_id": case_id},
+            inputs={
+                "inputs": inputs,
+                "case_id": case_id,
+                "analysis": analysis,
+                "fidelity": fidelity,
+                "requested_memory_mib": requested_memory_mib,
+            },
+            owner_id=owner_id,
+            revision_id=revision_id,
         )
         self._ledger.append_event(
             job_id=job_id, state=JobState.QUEUED.value, at=created, detail=f"input_hash={digest}"
@@ -218,6 +294,32 @@ class NativeJobManager:
         with self._worker_lock:
             return self._run_guarded(job_id)
 
+    def _admit(self, job_id: str) -> None:
+        """Scheduler admission before any worker resources are committed.
+
+        A job that cannot be hosted (unwritable job root, infeasible memory
+        reservation) is rejected here with ADMISSION_REJECTED instead of
+        failing later as if a solver had run.
+        """
+
+        if not self._job_root.is_dir() or not os.access(self._job_root, os.W_OK):
+            raise ParticipantError(
+                NativeErrorCode.ADMISSION_REJECTED,
+                f"job root is not writable:{self._job_root}",
+            )
+        requested = self._request_meta(job_id).get("requested_memory_mib")
+        if requested is None:
+            return
+        if (
+            isinstance(requested, bool)
+            or not isinstance(requested, (int, float))
+            or not (0 < float(requested) <= _RSS_CEILING_MIB)
+        ):
+            raise ParticipantError(
+                NativeErrorCode.ADMISSION_REJECTED,
+                f"memory reservation outside 0..{_RSS_CEILING_MIB:g} MiB:{requested!r}",
+            )
+
     def _run_guarded(self, job_id: str) -> str:
         row = self._ledger.get(job_id)
         if row is None:
@@ -232,6 +334,7 @@ class NativeJobManager:
             if self._cancelled(job_id):
                 return self._transition(job_id, JobState.CANCELLED, "cancelled before prepare")
             self._transition(job_id, JobState.PREPARING, f"participant={manifest.participant_id}")
+            self._admit(job_id)
             prepare = _resolve(manifest.prepare_ref)
             receipt = prepare(self._stored_inputs(job_id), case_dir)
             if receipt.input_hash is None:
@@ -246,7 +349,6 @@ class NativeJobManager:
             )
             if self._cancelled(job_id):
                 return self._transition(job_id, JobState.CANCELLED, "cancelled after prepare")
-            self._transition(job_id, JobState.READY, f"files={len(receipt.files)}")
             probe = probe_participant(manifest.participant_id)
             if probe.state != "ready":
                 raise ParticipantError(
@@ -269,6 +371,11 @@ class NativeJobManager:
             validate = _resolve(manifest.validity_ref)
             validity = validate(dict(parsed.scalars), self._stored_inputs(job_id))
             validity = dataclasses.replace(validity, participant_id=manifest.participant_id)
+            if not validity.passed:
+                raise ParticipantError(
+                    NativeErrorCode.QUALITY_GATE_FAILED,
+                    validity.detail or "participant validity checks failed",
+                )
             envelope = self._publish(
                 manifest,
                 job_id,
@@ -280,15 +387,20 @@ class NativeJobManager:
                 case_dir,
                 probe,
             )
+            envelope_json = envelope.model_dump_json()
+            result_id = hashlib.sha256(envelope_json.encode("utf-8")).hexdigest()
+            completed = self._transition(job_id, JobState.COMPLETED, f"run_id={run_id}")
             self._ledger.update(
                 job_id,
                 state=JobState.COMPLETED.value,
                 updated_at=_now(),
-                envelope_json=envelope.model_dump_json(),
+                envelope_json=envelope_json,
+                result_id=result_id,
+                provenance_id=envelope.provenance_id,
             )
-            return self._transition(job_id, JobState.COMPLETED, f"run_id={run_id}")
+            return completed
         except ParticipantError as exc:
-            self._transition(job_id, JobState.FAILED, f"{exc.code.value}:{exc.detail}")
+            failed = self._transition(job_id, JobState.FAILED, f"{exc.code.value}:{exc.detail}")
             self._ledger.update(
                 job_id,
                 state=JobState.FAILED.value,
@@ -296,10 +408,10 @@ class NativeJobManager:
                 error_code=exc.code.value,
                 error_detail=exc.detail,
             )
-            return JobState.FAILED.value
+            return failed
         except Exception as exc:  # noqa: BLE001
             detail = f"{type(exc).__name__}:{exc}"
-            self._transition(job_id, JobState.FAILED, detail)
+            failed = self._transition(job_id, JobState.FAILED, detail)
             self._ledger.update(
                 job_id,
                 state=JobState.FAILED.value,
@@ -307,7 +419,7 @@ class NativeJobManager:
                 error_code=NativeErrorCode.RESULT_INVALID.value,
                 error_detail=detail,
             )
-            return JobState.FAILED.value
+            return failed
 
     def _execute(
         self, manifest: Any, job_id: str, case_dir: Path
@@ -413,11 +525,12 @@ class NativeJobManager:
             validity_detail=validity.detail,
         )
         provenance_id = uuid.uuid4().hex
+        fidelity = self._request_meta(job_id).get("fidelity") or manifest.fidelity_levels[0]
         envelope = publish_result(
             evidence,
             parse=parsed,
             validity=validity,
-            fidelity=manifest.fidelity_levels[0],
+            fidelity=str(fidelity),
             provenance_id=provenance_id,
             warnings=tuple(warnings),
             expected_artifacts=tuple(manifest.artifacts),
@@ -446,7 +559,7 @@ class NativeJobManager:
                 "participant_id": manifest.participant_id,
                 "run_id": run_id,
                 "solver_version": solver_version,
-                "fidelity": manifest.fidelity_levels[0],
+                "fidelity": str(fidelity),
             },
             artifacts=references,
         )
@@ -459,14 +572,22 @@ class NativeJobManager:
         row = self._ledger.get(job_id)
         if row is None:
             raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        meta = self._request_meta(job_id)
+        manifest = get_participant(row.participant_id)
         return {
             "job_id": row.job_id,
             "participant_id": row.participant_id,
             "design_id": row.design_id,
+            "owner_id": row.owner_id,
+            "revision_id": row.revision_id,
+            "analysis": meta.get("analysis"),
+            "fidelity": meta.get("fidelity") or manifest.fidelity_levels[0],
             "state": row.state,
             "error_code": row.error_code,
             "error_detail": row.error_detail,
             "run_id": row.run_id,
+            "result_id": row.result_id,
+            "provenance_id": row.provenance_id,
             "input_hash": row.input_hash,
             "created_at": row.created_at,
             "updated_at": row.updated_at,
@@ -532,12 +653,30 @@ class NativeJobManager:
         merged: dict[str, dict[str, Any]] = {}
         for subject in subjects:
             for event in self._repository.list_provenance(subject):
+                # The provenance store is shared across jobs and restarts, and
+                # identical inputs hash identically: keep only this job's lineage.
+                details = event.details if isinstance(event.details, dict) else {}
+                if details.get("job_id") != job_id:
+                    continue
                 merged[event.event_id] = event.model_dump(mode="json")
         return [merged[key] for key in sorted(merged, key=lambda key: merged[key]["sequence"])]
 
     # -- internals -------------------------------------------------------
 
     def _stored_inputs(self, job_id: str) -> dict[str, object]:
+        inputs = self._request_blob(job_id).get("inputs", {})
+        if not isinstance(inputs, dict):
+            raise ParticipantError(
+                NativeErrorCode.PREPARATION_FAILED, "stored inputs are not a mapping"
+            )
+        return dict(inputs)
+
+    def _request_meta(self, job_id: str) -> dict[str, Any]:
+        blob = self._request_blob(job_id)
+        keys = ("analysis", "fidelity", "requested_memory_mib")
+        return {key: blob[key] for key in keys if key in blob}
+
+    def _request_blob(self, job_id: str) -> dict[str, Any]:
         row = self._ledger.get(job_id)
         if row is None or not row.inputs_json:
             raise ParticipantError(
@@ -549,14 +688,22 @@ class NativeJobManager:
             raise ParticipantError(
                 NativeErrorCode.PREPARATION_FAILED, f"stored inputs corrupt:{exc}"
             ) from exc
-        inputs = data.get("inputs", {})
-        if not isinstance(inputs, dict):
+        if not isinstance(data, dict):
             raise ParticipantError(
-                NativeErrorCode.PREPARATION_FAILED, "stored inputs are not a mapping"
+                NativeErrorCode.PREPARATION_FAILED, "stored request is not a mapping"
             )
-        return dict(inputs)
+        return dict(data)
 
     def _transition(self, job_id: str, state: JobState, detail: str) -> str:
+        row = self._ledger.get(job_id)
+        if row is None:
+            raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        try:
+            current = JobState(row.state)
+        except ValueError as exc:
+            raise ValueError(f"ILLEGAL_JOB_TRANSITION:unknown stored state:{row.state}") from exc
+        if state not in _LEGAL_TRANSITIONS[current]:
+            raise ValueError(f"ILLEGAL_JOB_TRANSITION:{current.value}->{state.value}")
         self._ledger.update(job_id, state=state.value, updated_at=_now())
         self._ledger.append_event(job_id=job_id, state=state.value, at=_now(), detail=detail)
         return state.value

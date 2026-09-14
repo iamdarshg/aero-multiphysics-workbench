@@ -14,6 +14,7 @@ class NativeErrorCode(StrEnum):
     """Closed set of failure codes for the native execution pipeline."""
 
     CAPABILITY_UNAVAILABLE = "CAPABILITY_UNAVAILABLE"
+    ADMISSION_REJECTED = "ADMISSION_REJECTED"
     PREPARATION_FAILED = "PREPARATION_FAILED"
     MESH_INVALID = "MESH_INVALID"
     PROCESS_START_FAILED = "PROCESS_START_FAILED"
@@ -24,6 +25,7 @@ class NativeErrorCode(StrEnum):
     QUALITY_GATE_FAILED = "QUALITY_GATE_FAILED"
     RESULT_INVALID = "RESULT_INVALID"
     CANCELLED = "CANCELLED"
+    INTERRUPTED = "INTERRUPTED"
 
 
 class ParticipantError(RuntimeError):

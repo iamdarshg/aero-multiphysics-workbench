@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import tempfile
+import json
+import os
 import threading
 import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, Response, status
 from participants.capabilities import probe_all
 from participants.errors import ParticipantError
 from participants.lifecycle import NativeJobManager
@@ -23,14 +24,60 @@ class SubmitRequest(BaseModel):
     inputs: dict[str, Any] = Field(default_factory=dict)
     design_id: str = Field(default="generic-design", min_length=1)
     deferred: bool = False
+    owner_id: str | None = Field(default=None, min_length=1)
+    revision_id: str | None = Field(default=None, min_length=1)
+    analysis: str | None = Field(default=None, min_length=1)
+    fidelity: str | None = Field(default=None, min_length=1)
+    requested_memory_mib: float | None = None
+
+
+def default_job_root() -> Path:
+    """Stable on-disk home for the governed job lifecycle.
+
+    Terminal job records must survive API restarts, so the default is a fixed
+    directory (overridable with AEROWORKBENCH_JOB_ROOT), never a temp dir.
+    """
+
+    override = os.environ.get("AEROWORKBENCH_JOB_ROOT", "").strip()
+    if override:
+        return Path(override)
+    return Path.home() / ".aeroworkbench" / "native-jobs"
 
 
 def _manager_for(root: Path) -> NativeJobManager:
     return NativeJobManager(root)
 
 
+def _cancel_job(manager: NativeJobManager, job_id: str) -> dict[str, Any]:
+    try:
+        state = manager.cancel(job_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail={"code": "JOB_NOT_FOUND"}) from exc
+    except ParticipantError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail={"code": exc.code.value, "message": exc.detail},
+        ) from exc
+    return {"job_id": job_id, "state": state}
+
+
+def _sse_body(events: list[dict[str, Any]]) -> str:
+    """Render persisted transitions as SSE; every event keeps its ledger identity."""
+
+    chunks: list[str] = []
+    for event in events:
+        payload = {
+            "sequence": event["sequence"],
+            "state": event["state"],
+            "at": event["at"],
+            "detail": str(event.get("detail", ""))[:500],
+        }
+        chunks.append(f"event: progress\ndata: {json.dumps(payload, separators=(',', ':'))}\n\n")
+    return "".join(chunks)
+
+
 def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, NativeJobManager]:
-    root = job_root or Path(tempfile.mkdtemp(prefix="native-jobs-"))
+    root = job_root or default_job_root()
     manager = _manager_for(root)
     router = APIRouter()
 
@@ -95,6 +142,11 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
                 dict(request.inputs),
                 design_id=request.design_id,
                 deferred=request.deferred,
+                owner_id=request.owner_id,
+                revision_id=request.revision_id,
+                analysis=request.analysis,
+                fidelity=request.fidelity,
+                requested_memory_mib=request.requested_memory_mib,
             )
         except ValueError as exc:
             message = str(exc)
@@ -116,14 +168,15 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
                 status_code=404, detail={"code": "JOB_NOT_FOUND"}
             ) from exc
 
-    @router.get("/v1/native/analyses/{job_id}/events")
-    def job_events(job_id: str) -> dict[str, Any]:
+    @router.get("/v1/native/analyses/{job_id}/events", response_model=None)
+    def job_events(job_id: str, request: Request) -> Response | dict[str, Any]:
         try:
-            return {"job_id": job_id, "events": manager.events(job_id)}
+            events = manager.events(job_id)
         except KeyError as exc:
-            raise HTTPException(
-                status_code=404, detail={"code": "JOB_NOT_FOUND"}
-            ) from exc
+            raise HTTPException(status_code=404, detail={"code": "JOB_NOT_FOUND"}) from exc
+        if "text/event-stream" in request.headers.get("accept", ""):
+            return Response(content=_sse_body(events), media_type="text/event-stream")
+        return {"job_id": job_id, "events": events}
 
     @router.post("/v1/native/analyses/{job_id}/start", status_code=status.HTTP_202_ACCEPTED)
     def job_start(job_id: str) -> dict[str, Any]:
@@ -146,18 +199,11 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
 
     @router.post("/v1/native/analyses/{job_id}/cancel")
     def job_cancel(job_id: str) -> dict[str, Any]:
-        try:
-            state = manager.cancel(job_id)
-        except KeyError as exc:
-            raise HTTPException(
-                status_code=404, detail={"code": "JOB_NOT_FOUND"}
-            ) from exc
-        except ParticipantError as exc:
-            raise HTTPException(
-                status_code=409,
-                detail={"code": exc.code.value, "message": exc.detail},
-            ) from exc
-        return {"job_id": job_id, "state": state}
+        return _cancel_job(manager, job_id)
+
+    @router.delete("/v1/native/analyses/{job_id}/cancel")
+    def job_cancel_delete(job_id: str) -> dict[str, Any]:
+        return _cancel_job(manager, job_id)
 
     @router.get("/v1/native/results/{job_id}")
     def job_result(job_id: str) -> dict[str, Any]:
