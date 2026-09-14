@@ -18,9 +18,9 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../solvers", "."]
+pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
 testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics"]
-addopts = "-ra"
+addopts = "-ra -p no:cacheprovider"
 
 [tool.ruff]
 line-length = 100
@@ -33,7 +33,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../solvers", "."]
+mypy_path = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
 
 [tool.uv]
 package = false
