@@ -6,6 +6,8 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "audit:requirements": "node scripts/audit-requirements.mjs",
+    "setup": "pnpm install && node scripts/platform/bootstrap.mjs",
+    "setup:solvers": "node scripts/platform/setup-solvers.mjs",
     "dev": "pnpm --filter @aero/web dev",
     "build": "pnpm -r build",
     "test": "pnpm --filter @aero/web test && pnpm --filter @aero/schema test && pnpm --filter @aero/solver-contracts test && node --test tests/smoke/workspace.test.mjs && uv run --directory services/api pytest -q",

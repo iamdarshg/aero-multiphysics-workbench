@@ -4,6 +4,34 @@ A local-first engineering environment for exploring a single physical design sta
 
 The project is under active construction. Numerical results are required to identify their source and fidelity; unavailable native solvers must fail closed instead of returning invented data.
 
+## Quickstart (5 minutes, no solvers needed)
+
+Prerequisites: Node.js 24 and Python 3.12. Docker is optional — without it
+you still get the full UI plus analytical models; native solvers stay
+clearly labelled as unavailable instead of failing obscurely.
+
+1. `corepack pnpm install` — install pinned workspace dependencies.
+2. `pnpm setup` — verify runtimes and print a solver capability report.
+3. `pnpm dev` (UI) plus, from `services/api`,
+   `uv run uvicorn aeroworkbench_api.main:app --reload --port 8000` (API).
+
+Open http://localhost:3000. The workbench opens on a labelled analytical
+sample; the provenance dialog on any result tells you exactly what ran and
+what did not.
+
+## Solvers (one command)
+
+Most functionality needs solvers. Average users should not compile anything:
+
+`pnpm setup:solvers`
+
+This installs a private micromamba + conda-forge environment
+(`infra/local/solver-environment.yml`): OpenMDAO, ROSS, PyBaMM, Cantera,
+Gmsh everywhere, plus OpenFOAM, preCICE and FreeCAD on Linux. No sudo, no
+system changes, no servers started. Anything still unavailable is reported
+as such by `node scripts/platform/capabilities.mjs` and the UI labels it
+instead of failing obscurely.
+
 ## Run locally
 
 Install the pinned workspace dependencies with `pnpm install`, then start the API from `services/api` with `uv run uvicorn aeroworkbench_api.main:app --reload --port 8000` and the UI with `pnpm --filter @aero/web dev`. The UI performs one bounded capability check on first paint; set `NEXT_PUBLIC_API_BASE_URL` when the API is hosted elsewhere. If the API is unavailable, the workbench remains usable as a clearly labelled analytical sample and does not start solver processes.

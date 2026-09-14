@@ -1,0 +1,23 @@
+# One-command solver environment for average users (micromamba + conda-forge).
+# Usage: pnpm setup:solvers   (or: micromamba create -f this-file)
+# Verified 2026-09-14 on Ubuntu 22.04 (GCP e2-small): openfoam, precice,
+# freecad solve from conda-forge. openfoam/precice are linux-only builds;
+# on Windows/macOS the python stack still installs and heavies stay
+# clearly labelled unavailable (fail-closed).
+# Headless Linux servers also need: apt-get install -y xvfb
+# (freecadcmd segfaults without an X server; run under xvfb-run).
+name: aero-solvers
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - gmsh
+  - openfoam  # [linux]
+  - precice  # [linux]
+  - freecad  # [linux]
+  - pip:
+      - openmdao
+      - ross-rotordynamic
+      - pybamm
+      - cantera

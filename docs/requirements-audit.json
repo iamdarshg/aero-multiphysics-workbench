@@ -202,7 +202,7 @@
       "id": "section:8",
       "title": "CFD BACKEND",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: OpenFOAM adapter contracts and fail-closed capability gating verified. No native OpenFOAM case has executed; CFD results remain analytical only.",
+      "statusExplanation": "PARTIAL: OpenFOAM v2412 installed from conda-forge and EXECUTED on GCP (blockMesh exit 0, icoFoam exit 0, lid-driven cavity). Full rotating/CHT/transient suite not run.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 8,
@@ -212,12 +212,12 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "solvers/openfoam/adapter.py",
-          "detail": "PARTIAL: OpenFOAM adapter contracts and fail-closed capability gating verified. No native OpenFOAM case has executed; CFD results remain analytical only.",
-          "sha256": "0b3b54fa76f18330a34204ff84a21e5602ee27871597417b90d7aa3b7cb5b729"
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: OpenFOAM v2412 installed from conda-forge and EXECUTED on GCP (blockMesh exit 0, icoFoam exit 0, lid-driven cavity). Full rotating/CHT/transient suite not run.",
+          "sha256": "3f8970e90805a48df8a30ea91a4d83727338c99be9d223c9b94ddcb1dc812147"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-14T17:20:00Z"
     },
     {
       "id": "section:9",
@@ -1039,7 +1039,7 @@
       "id": "section:44",
       "title": "FREECAD INTEROPERABILITY",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: FreeCAD adapter fails closed when FreeCADCmd is missing (verified). STEP roundtrip and semantic reconciliation unvalidated.",
+      "statusExplanation": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd runs headless under xvfb-run (exit 0). STEP roundtrip and semantic reconciliation unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 44,
@@ -1049,12 +1049,12 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "solvers/freecad/adapter.py",
-          "detail": "PARTIAL: FreeCAD adapter fails closed when FreeCADCmd is missing (verified). STEP roundtrip and semantic reconciliation unvalidated.",
-          "sha256": "67fac50a85c82a4646bf1e0b749cf5edceaf6ec337706b54284c768054aa2fdc"
+          "path": "docs/solver-verification.md",
+          "detail": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd runs headless under xvfb-run (exit 0). STEP roundtrip and semantic reconciliation unvalidated.",
+          "sha256": "3f8970e90805a48df8a30ea91a4d83727338c99be9d223c9b94ddcb1dc812147"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-14T17:20:00Z"
     },
     {
       "id": "section:45",
@@ -2028,10 +2028,10 @@
           "kind": "file",
           "path": "README.md",
           "detail": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
-          "sha256": "898e58255719c9d95ea3f24ae04f3aad899564fcd99592c361cca0560907a029"
+          "sha256": "5132a6db427ad3b680de75deeaf782f0b60527e42b2f226c015b58b24dab6e72"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-14T17:20:00Z"
     },
     {
       "id": "stopping:2",
@@ -2049,10 +2049,10 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
-          "sha256": "65ac83a0d6f226cad74834b98ca6cdabc1e3d12634ddee25c55c2812ef83cfd8"
+          "sha256": "8865b7e83e64b8cb9f0b29237b0947ab2e9c4022a4ad5be82e8986eaf5e6ca16"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-14T17:20:00Z"
     },
     {
       "id": "stopping:3",
