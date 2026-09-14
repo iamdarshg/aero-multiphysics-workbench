@@ -6,6 +6,7 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "audit:requirements": "node scripts/audit-requirements.mjs",
+    "doctor": "node --no-warnings scripts/platform/doctor.mjs",
     "setup": "pnpm install && node scripts/platform/bootstrap.mjs",
     "setup:solvers": "node scripts/platform/setup-solvers.mjs",
     "dev": "pnpm --filter @aero/web dev",

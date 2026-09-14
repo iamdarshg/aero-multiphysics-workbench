@@ -12,7 +12,9 @@ clearly labelled as unavailable instead of failing obscurely.
 
 1. `corepack pnpm install` — install pinned workspace dependencies.
 2. `pnpm setup` — verify runtimes and print a solver capability report.
-3. `pnpm dev` (UI) plus, from `services/api`,
+3. `pnpm run doctor` (`--json` for machine output) — diagnostics-only
+   readiness and capability report; never installs or changes anything.
+4. `pnpm dev` (UI) plus, from `services/api`,
    `uv run uvicorn aeroworkbench_api.main:app --reload --port 8000` (API).
 
 Open http://localhost:3000. The workbench opens on a labelled analytical

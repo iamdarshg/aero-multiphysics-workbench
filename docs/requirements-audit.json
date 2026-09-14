@@ -2025,7 +2025,7 @@
           "kind": "file",
           "path": "README.md",
           "detail": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
-          "sha256": "5132a6db427ad3b680de75deeaf782f0b60527e42b2f226c015b58b24dab6e72"
+          "sha256": "665c82a8c024db21e1ada040767b66af19fdaf5fd568576da001caaa95fabe09"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"
@@ -2046,7 +2046,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
-          "sha256": "f2a328fe7053858d670592f40f6a3fd591f22d014f7639bd17b09e8aa3f01236"
+          "sha256": "705607be9856974290b87d17d142127c959259b5bf4ab26bdf27821c59450038"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"
