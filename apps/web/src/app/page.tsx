@@ -4,7 +4,34 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../components/icon';
 import { checkingApiStatus, probeApi, type ApiStatus } from '../lib/api';
+import {
+  cancelJob,
+  getCapabilities,
+  getJob,
+  getJobEvents,
+  getJobResult,
+  subscribeJobEvents,
+  submitJob,
+  type CapabilityReport,
+  type JobStatus,
+  type ResultEnvelopeSummary,
+} from '../lib/job-client';
 import { getDemoProfile, getDockPanel, getViewModeStatus, qualityGateEvidence, shouldRestoreProvenanceFocus, type DemoId, type DockTab, type ViewMode, updateCouplingStrength } from '../workbench-state';
+import {
+  ALLOWED_ANALYSES,
+  applyJobEvents,
+  buildSubmitPayload,
+  formatJobState,
+  isAllowedParticipant,
+  isCancellableJobState,
+  isTerminalJobState,
+  jobEmptyMessage,
+  jobProgressPercent,
+  latestJobState,
+  sourceDisplayLabel,
+  summarizeResultScalars,
+  type JobEvent,
+} from '../workbench-job';
 
 const EngineeringViewport = dynamic(() => import('../components/engineering-viewport'), { ssr: false, loading: () => <div className="viewport-loading">Preparing code-native geometry…</div> });
 const AnalysisCharts = dynamic(() => import('../components/analysis-charts'), { ssr: false, loading: () => <div className="chart-loading">Loading chart renderer…</div> });
@@ -16,7 +43,7 @@ const demoOptions: Array<{ id: DemoId; label: string }> = [
 ];
 
 const nodes = ['Physical design state', 'Rotor & duct assembly', 'Motor & ESC', 'Battery pack', 'Inlet flow domain', 'Structure & mounts', 'Thermal network'];
-const capabilities = [
+const fallbackCapabilities: Array<[string, string]> = [
   ['OpenMDAO coupling', 'Contract pending'],
   ['OpenFOAM CFD', 'Unavailable'],
   ['Code_Aster FEA', 'Unavailable'],
@@ -27,6 +54,8 @@ const dockTabs: Array<{ id: DockTab; label: string; count?: number }> = [
   { id: 'convergence', label: 'Convergence' }, { id: 'energy', label: 'Energy' }, { id: 'resonance', label: 'Resonance' },
   { id: 'timeline', label: 'Timeline' }, { id: 'warnings', label: 'Warnings', count: 2 }, { id: 'logs', label: 'Logs' },
 ];
+
+const DEFAULT_ANALYSIS = ALLOWED_ANALYSES[0]?.participantId ?? 'rotor-campbell';
 
 export default function WorkbenchPage() {
   const [demoId, setDemoId] = useState<DemoId>('edf');
@@ -40,16 +69,42 @@ export default function WorkbenchPage() {
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [provenanceOpen, setProvenanceOpen] = useState(false);
   const [apiStatus, setApiStatus] = useState<ApiStatus>(checkingApiStatus);
+  const [capabilityReport, setCapabilityReport] = useState<CapabilityReport | null>(null);
+  const [capabilityError, setCapabilityError] = useState<string | null>(null);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(DEFAULT_ANALYSIS);
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [jobEvents, setJobEvents] = useState<JobEvent[]>([]);
+  const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
+  const [jobEnvelope, setJobEnvelope] = useState<ResultEnvelopeSummary | null>(null);
+  const [jobError, setJobError] = useState<string | null>(null);
+  const [jobBusy, setJobBusy] = useState(false);
   const provenanceButtonRef = useRef<HTMLButtonElement>(null);
   const dialogCloseRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const provenanceWasOpen = useRef(false);
+  const subscribeAbort = useRef<AbortController | null>(null);
   const [history, setHistory] = useState<number[]>([0.9]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const dockTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const profile = useMemo(() => getDemoProfile(demoId), [demoId]);
   const viewStatus = getViewModeStatus(activeView);
   const dockPanel = getDockPanel(activeDockTab);
+
+  const jobState = latestJobState(jobEvents) ?? jobStatus?.state ?? null;
+  const jobActive = jobId !== null && jobState !== null && !isTerminalJobState(jobState);
+  const jobLive = jobId !== null && (jobState === null || !isTerminalJobState(jobState));
+  const jobTerminal = jobState !== null && isTerminalJobState(jobState);
+  const jobProgress = jobProgressPercent(jobEvents);
+  const readyCount = capabilityReport?.ready.length ?? 0;
+  const capabilityTotal = (capabilityReport?.ready.length ?? 0) + (capabilityReport?.unavailable.length ?? 0);
+  const selectedReady =
+    capabilityReport?.ready.some((entry) => entry.participantId === selectedAnalysis) ?? false;
+  const capabilityRows: Array<[string, string]> = capabilityReport
+    ? [
+        ...capabilityReport.ready.map((entry): [string, string] => [entry.participantId, 'Ready']),
+        ...capabilityReport.unavailable.map((entry): [string, string] => [entry.participantId, 'Unavailable']),
+      ]
+    : fallbackCapabilities;
 
   const changeCoupling = useCallback((value: number) => {
     const next = updateCouplingStrength(coupling, value);
@@ -73,14 +128,144 @@ export default function WorkbenchPage() {
     });
   }, [history]);
 
+  const stopSubscription = useCallback(() => {
+    subscribeAbort.current?.abort();
+    subscribeAbort.current = null;
+  }, []);
+
+  const settleJob = useCallback(async (settledId: string) => {
+    try {
+      const status = await getJob(settledId);
+      setJobStatus(status);
+      if (status.state === 'COMPLETED') {
+        try {
+          const envelope = await getJobResult(settledId);
+          setJobEnvelope(envelope);
+        } catch {
+          setJobEnvelope(null);
+          setJobError(jobEmptyMessage('completed-invalid'));
+        }
+      }
+    } catch (error) {
+      setJobError(error instanceof Error ? error.message : 'Failed to read job status.');
+    }
+  }, []);
+
+  const runAnalysis = useCallback(async () => {
+    if (jobBusy || jobLive) return;
+    if (!isAllowedParticipant(selectedAnalysis)) {
+      setJobError(`Selected analysis is not allowed: ${selectedAnalysis}.`);
+      return;
+    }
+    const allowed = ALLOWED_ANALYSES.find((entry) => entry.participantId === selectedAnalysis);
+    const payload = buildSubmitPayload(selectedAnalysis, allowed?.designId ?? '');
+    if (!payload) {
+      setJobError(`Selected analysis failed validation: ${selectedAnalysis}.`);
+      return;
+    }
+    if (capabilityReport && !selectedReady) {
+      setJobError(jobEmptyMessage('capability-unavailable'));
+      return;
+    }
+    stopSubscription();
+    setJobBusy(true);
+    setJobError(null);
+    setJobEnvelope(null);
+    setJobStatus(null);
+    setJobEvents([]);
+    let submittedJobId: string;
+    let submittedState: JobStatus['state'];
+    let submittedParticipant: string;
+    try {
+      const submitted = await submitJob(payload);
+      submittedJobId = submitted.jobId;
+      submittedState = submitted.state;
+      submittedParticipant = submitted.participantId;
+    } catch (error) {
+      setJobError(error instanceof Error ? error.message : 'Native job submission failed.');
+      setJobBusy(false);
+      return;
+    }
+    const activeJobId = submittedJobId;
+    setJobId(activeJobId);
+    setJobStatus({
+      jobId: activeJobId,
+      participantId: submittedParticipant,
+      designId: payload.designId,
+      ownerId: null,
+      revisionId: null,
+      analysis: payload.analysis ?? null,
+      fidelity: payload.fidelity ?? '',
+      state: submittedState,
+      errorCode: null,
+      errorDetail: null,
+      runId: null,
+      resultId: null,
+      provenanceId: null,
+      inputHash: null,
+    });
+    // Release the submit gate before the long event poll so Cancel stays
+    // available while the native worker runs. Run is still gated by jobLive.
+    setJobBusy(false);
+    const controller = new AbortController();
+    subscribeAbort.current = controller;
+    const subscription = subscribeJobEvents(activeJobId, {
+      signal: controller.signal,
+      onEvent: (_event, events) => setJobEvents([...events]),
+    });
+    void subscription.then(
+      () => {
+        if (subscribeAbort.current === controller) subscribeAbort.current = null;
+        if (controller.signal.aborted) return;
+        void settleJob(activeJobId);
+      },
+      (subscriptionError: unknown) => {
+        if (subscribeAbort.current === controller) subscribeAbort.current = null;
+        if (controller.signal.aborted) return;
+        if (
+          subscriptionError instanceof Error &&
+          subscriptionError.message !== 'Subscription aborted'
+        ) {
+          setJobError(subscriptionError.message);
+        }
+        void settleJob(activeJobId);
+      },
+    );
+  }, [capabilityReport, jobBusy, jobLive, selectedAnalysis, selectedReady, settleJob, stopSubscription]);
+
+  const cancelActiveJob = useCallback(async () => {
+    if (!jobId || !jobState || !isCancellableJobState(jobState) || jobBusy) return;
+    setJobBusy(true);
+    setJobError(null);
+    try {
+      await cancelJob(jobId);
+      const events = await getJobEvents(jobId);
+      setJobEvents((previous) => applyJobEvents(previous, events));
+      await settleJob(jobId);
+    } catch (error) {
+      setJobError(error instanceof Error ? error.message : 'Cancel request failed.');
+    } finally {
+      setJobBusy(false);
+    }
+  }, [jobBusy, jobId, jobState, settleJob]);
+
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   }, [dark]);
   useEffect(() => {
     let active = true;
     void probeApi().then((status) => { if (active) setApiStatus(status); });
+    getCapabilities()
+      .then((report) => { if (active) { setCapabilityReport(report); setCapabilityError(null); } })
+      .catch((error: unknown) => {
+        if (active) {
+          setCapabilityReport(null);
+          setCapabilityError(error instanceof Error ? error.message : 'Capability probe failed.');
+        }
+      });
     return () => { active = false; };
   }, []);
+  useEffect(() => stopSubscription, [stopSubscription]);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') { event.preventDefault(); if (event.shiftKey) redo(); else undo(); }
@@ -137,6 +322,55 @@ export default function WorkbenchPage() {
     if (event.key === 'End') { event.preventDefault(); focusDockTab(dockTabs.length - 1); }
   };
 
+  const statusLine = apiStatus.state === 'offline'
+    ? 'API UNAVAILABLE · SAMPLE-ONLY STATE'
+    : jobState !== null
+      ? `${jobState === 'COMPLETED' && jobEnvelope ? sourceDisplayLabel(jobEnvelope.source).toUpperCase() : 'NATIVE JOB'} · ${formatJobState(jobState).toUpperCase()}`
+      : capabilityReport
+        ? `ANALYTICAL SAMPLE · ${readyCount} OF ${capabilityTotal} NATIVE CAPABILITIES READY`
+        : 'ANALYTICAL SAMPLE · NATIVE SOLVERS NOT RUN';
+
+  const computeTarget = capabilityReport
+    ? `Local · ${apiStatus.label} · ${readyCount} of ${capabilityTotal} native capabilities ready`
+    : `Local · ${apiStatus.label} · native solver gate closed`;
+
+  const jobTitle = jobState === null
+    ? 'No native job submitted'
+    : formatJobState(jobState);
+  const jobDetail = jobState === null
+    ? (capabilityError ?? 'Select an allowed analysis, then request a native solve.')
+    : jobStatus?.state === 'FAILED'
+      ? `${jobStatus.errorCode ?? 'FAILED'}${jobStatus.errorDetail ? ` — ${jobStatus.errorDetail}` : ''}`
+      : jobActive
+        ? `${jobProgress}% · job ${jobId?.slice(0, 8)} · ${jobEvents.length} backend events`
+        : jobStatus?.state === 'COMPLETED' && jobEnvelope
+          ? `${sourceDisplayLabel(jobEnvelope.source)} · run ${jobEnvelope.runId.slice(0, 8)}`
+          : jobStatus?.state === 'COMPLETED'
+            ? jobEmptyMessage('completed-invalid')
+            : jobEmptyMessage('cancelled');
+
+  const scalarRows = jobEnvelope ? summarizeResultScalars(jobEnvelope.scalars) : [];
+  const envelopeValid = jobEnvelope?.validity.passed ?? false;
+
+  const warningHeading = jobStatus?.state === 'FAILED'
+    ? 'Native job failed'
+    : jobStatus?.state === 'CANCELLED'
+      ? 'Native job cancelled'
+      : jobStatus?.state === 'COMPLETED' && !envelopeValid
+        ? 'Native result withheld'
+        : jobStatus?.state === 'COMPLETED'
+          ? 'Native result published'
+          : 'Mesh suitability needs review';
+  const warningBody = jobStatus?.state === 'FAILED'
+    ? `${jobStatus.errorCode ?? 'FAILED'}${jobStatus.errorDetail ? ` — ${jobStatus.errorDetail}` : ''}. No result was published; nothing here is engineering data.`
+    : jobStatus?.state === 'CANCELLED'
+      ? 'The job record is preserved and no result was published. Retry creates a new job.'
+      : jobStatus?.state === 'COMPLETED' && !envelopeValid
+        ? `${jobEmptyMessage('completed-invalid')} ${jobEnvelope?.validity.detail ?? ''}`.trim()
+        : jobStatus?.state === 'COMPLETED' && jobEnvelope
+          ? `${jobEnvelope.warnings.length} warning(s) recorded on the published envelope. Scalar values are backend-reported.`
+          : 'Sample geometry has a duct leading-edge curvature warning. A native mesher is unavailable, so no repair or run can be requested.';
+
   return <main className="workbench">
     <h1 className="sr-only">Aero Workbench engineering workspace</h1>
     <header className="topbar">
@@ -150,10 +384,10 @@ export default function WorkbenchPage() {
       </div>
     </header>
     <section className="coupling-bar">
-      <div><span className="muted-label">COMPUTE TARGET</span><strong>Local · {apiStatus.label} · native solver gate closed</strong></div>
+      <div><span className="muted-label">COMPUTE TARGET</span><strong>{computeTarget}</strong></div>
       <div className="coupling-control"><div><span className="muted-label">COUPLING STRENGTH</span><strong>{coupling.toFixed(2)} <small>serious engineering</small></strong></div><input aria-label="Coupling strength" type="range" min="0" max="1" step="0.05" value={coupling} onChange={(e) => changeCoupling(Number(e.target.value))} /><span className="coupling-range">0.00 — 1.00</span></div>
       <button className="expert-toggle" onClick={() => setExpertOpen((value) => !value)}>{expertOpen ? 'Hide' : 'Expert'} overrides</button>
-      <div className="status" role="status" aria-live="polite"><i /> ANALYTICAL SAMPLE · NATIVE SOLVERS NOT RUN</div>
+      <div className="status" role="status" aria-live="polite"><i /> {statusLine}</div>
     </section>
     {expertOpen && <section className="expert-strip"><span>Explicit expert controls</span><label>Interface tolerance <input defaultValue="1.0e-4" /></label><label>Coupling iterations <input type="number" defaultValue="14" /></label><label>Field exchange <select defaultValue="every"><option value="every">Every iteration</option><option>Every 2 iterations</option></select></label><p>Overrides apply to a future solver request; this UI does not execute native solvers.</p></section>}
     <div className="workspace-grid">
@@ -181,9 +415,9 @@ export default function WorkbenchPage() {
     </div>
     <section className="bottom-dock">
       <div className="dock-tabs" role="tablist" aria-label="Analysis panels">{dockTabs.map((tab, index) => <button key={tab.id} ref={(element) => { dockTabRefs.current[index] = element; }} id={`dock-tab-${tab.id}`} role="tab" aria-controls="analysis-panel" aria-selected={activeDockTab === tab.id} tabIndex={activeDockTab === tab.id ? 0 : -1} className={activeDockTab === tab.id ? 'active' : ''} onClick={() => setActiveDockTab(tab.id)} onKeyDown={(event) => handleDockTabKeyDown(event, index)}>{tab.label} {tab.count ? <span>{tab.count}</span> : null}</button>)}</div>
-      <div id="analysis-panel" className="dock-content" role="tabpanel" aria-labelledby={`dock-tab-${activeDockTab}`} tabIndex={0}><div className="chart-card"><div className="chart-meta"><span className="muted-label">{dockPanel.eyebrow}</span><strong>{dockPanel.value}</strong><small>{dockPanel.detail}</small><em>{dockPanel.source} · {dockPanel.fidelity} · {dockPanel.validity}</em></div>{activeDockTab === 'convergence' ? <AnalysisCharts /> : <div className="dock-illustration" aria-hidden="true"><span /><span /><span /><span /><span /></div>}</div><div className="job-card"><span className="muted-label">JOB PROGRESS</span><strong>Analytical state prepared</strong><div className="progress" role="progressbar" aria-label="Analytical sample preparation" aria-valuemin={0} aria-valuemax={100} aria-valuenow={profile.progress}><i style={{ width: `${profile.progress}%` }} /></div><small>{profile.progress}% · no solver process launched</small><button disabled>Request native solve</button></div><div className="warning-card"><div><span className="warning-icon"><Icon name="warning" /></span><b>Mesh suitability needs review</b></div><p>Sample geometry has a duct leading-edge curvature warning. A native mesher is unavailable, so no repair or run can be requested.</p><div><button onClick={() => { setActiveNode('Inlet flow domain'); setInspectorOpen(true); }}>Inspect context</button><button className="link-button" onClick={() => setProvenanceOpen(true)}>View provenance</button></div></div></div>
+      <div id="analysis-panel" className="dock-content" role="tabpanel" aria-labelledby={`dock-tab-${activeDockTab}`} tabIndex={0}><div className="chart-card"><div className="chart-meta"><span className="muted-label">{dockPanel.eyebrow}</span><strong>{dockPanel.value}</strong><small>{dockPanel.detail}</small><em>{dockPanel.source} · {dockPanel.fidelity} · {dockPanel.validity}</em></div>{activeDockTab === 'convergence' ? <AnalysisCharts /> : <div className="dock-illustration" aria-hidden="true"><span /><span /><span /><span /><span /></div>}</div><div className="job-card"><span className="muted-label">JOB PROGRESS</span><strong>{jobTitle}</strong><div className="progress" role="progressbar" aria-label="Native job progress from backend events" aria-valuemin={0} aria-valuemax={100} aria-valuenow={jobProgress}><i style={{ width: `${jobProgress}%` }} /></div><small role={jobError ? 'alert' : undefined}>{jobError ?? jobDetail}</small>{jobState === null || jobTerminal ? <><label><span className="muted-label">NATIVE ANALYSIS</span><select aria-label="Native analysis" value={selectedAnalysis} onChange={(event) => setSelectedAnalysis(event.target.value)} disabled={jobBusy || jobActive}>{ALLOWED_ANALYSES.map((entry) => <option key={entry.participantId} value={entry.participantId}>{entry.label}</option>)}</select></label><button onClick={() => void runAnalysis()} disabled={jobBusy || jobLive || (capabilityReport !== null && !selectedReady && !jobTerminal)}>{jobTerminal ? 'Retry as new native job' : 'Request native solve'}</button></> : <button onClick={() => void cancelActiveJob()} disabled={jobBusy || !jobState || !isCancellableJobState(jobState)}>Cancel native job</button>}</div><div className="warning-card"><div><span className="warning-icon"><Icon name="warning" /></span><b>{warningHeading}</b></div><p>{warningBody}</p><div><button onClick={() => { setActiveNode('Inlet flow domain'); setInspectorOpen(true); }}>Inspect context</button><button className="link-button" onClick={() => setProvenanceOpen(true)}>View provenance</button></div></div></div>
     </section>
-      <footer><span>Keyboard: Ctrl/Cmd + K search · Ctrl/Cmd + Z undo · Ctrl/Cmd + Shift + Z redo · Arrow keys move analysis tabs</span><span role="status" aria-live="polite" title={apiStatus.detail}>{apiStatus.label}; sample-only state; numerical results are never presented as native solver output.</span></footer>
-    {provenanceOpen && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setProvenanceOpen(false); }}><section ref={dialogRef} className="provenance-dialog" role="dialog" aria-modal="true" aria-labelledby="provenance-title" aria-describedby="provenance-description"><div className="dialog-heading"><div><span className="muted-label">STATE RECEIPT</span><h2 id="provenance-title">Analytical sample provenance</h2></div><button ref={dialogCloseRef} className="icon-button" aria-label="Close provenance (Escape)" onClick={() => setProvenanceOpen(false)}><Icon name="close" /></button></div><dl><div><dt>Design</dt><dd>{profile.title}</dd></div><div><dt>Active component</dt><dd>{activeNode}</dd></div><div><dt>Evidence class</dt><dd>Analytical demonstration state</dd></div><div><dt>Source</dt><dd>{profile.evidence.source}</dd></div><div><dt>Fidelity</dt><dd>{profile.evidence.fidelity}</dd></div><div><dt>Validity</dt><dd>{profile.evidence.validity}</dd></div><div><dt>Native execution</dt><dd className="danger-text">{profile.evidence.nativeExecution}</dd></div></dl><div className="capability-list">{capabilities.map(([name, status]) => <div key={name}><span>{name}</span><b className={status === 'Unavailable' ? 'danger-text' : ''}>{status}</b></div>)}</div><p id="provenance-description">This receipt describes local UI sample data only. It is not evidence of a CFD, FEA, thermal, or coupled native solver run.</p><button className="dialog-done" onClick={() => setProvenanceOpen(false)}>Return to workbench</button></section></div>}
+      <footer><span>Keyboard: Ctrl/Cmd + K search · Ctrl/Cmd + Z undo · Ctrl/Cmd + Shift + Z redo · Arrow keys move analysis tabs</span><span role="status" aria-live="polite" title={apiStatus.detail}>{apiStatus.label}; {jobId ? `native job ${jobId.slice(0, 8)} · ${jobState ?? 'submitted'}` : 'no native job'}; numerical results are never presented as native solver output.</span></footer>
+    {provenanceOpen && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setProvenanceOpen(false); }}><section ref={dialogRef} className="provenance-dialog" role="dialog" aria-modal="true" aria-labelledby="provenance-title" aria-describedby="provenance-description"><div className="dialog-heading"><div><span className="muted-label">STATE RECEIPT</span><h2 id="provenance-title">{jobEnvelope ? 'Native result provenance' : 'Analytical sample provenance'}</h2></div><button ref={dialogCloseRef} className="icon-button" aria-label="Close provenance (Escape)" onClick={() => setProvenanceOpen(false)}><Icon name="close" /></button></div><dl><div><dt>Design</dt><dd>{profile.title}</dd></div><div><dt>Active component</dt><dd>{activeNode}</dd></div>{jobEnvelope && jobStatus ? <><div><dt>Evidence class</dt><dd>Native solver result</dd></div><div><dt>Source</dt><dd>{sourceDisplayLabel(jobEnvelope.source)}</dd></div><div><dt>Fidelity</dt><dd>{jobEnvelope.fidelity}</dd></div><div><dt>Validity</dt><dd>{jobEnvelope.validity.passed ? `passed${jobEnvelope.validity.detail ? ` — ${jobEnvelope.validity.detail}` : ''}` : `not passed — ${jobEnvelope.validity.detail || 'see quality gates'}`}</dd></div><div><dt>Solver identity</dt><dd>{jobEnvelope.solverIdentity} {jobEnvelope.solverVersion}</dd></div><div><dt>Run id</dt><dd>{jobEnvelope.runId}</dd></div><div><dt>Result id</dt><dd>{jobStatus.resultId ?? 'withheld'}</dd></div><div><dt>Provenance id</dt><dd>{jobEnvelope.provenanceId}</dd></div><div><dt>Warnings</dt><dd>{jobEnvelope.warnings.length > 0 ? jobEnvelope.warnings.join('; ') : 'none'}</dd></div>{scalarRows.map((row) => <div key={row.name}><dt>{row.name}</dt><dd>{`${row.value} ${jobEnvelope.units[row.name] ?? ''}`.trim()}</dd></div>)}</> : <><div><dt>Evidence class</dt><dd>Analytical demonstration state</dd></div><div><dt>Source</dt><dd>{profile.evidence.source}</dd></div><div><dt>Fidelity</dt><dd>{profile.evidence.fidelity}</dd></div><div><dt>Validity</dt><dd>{profile.evidence.validity}</dd></div><div><dt>Native execution</dt><dd className="danger-text">{jobId ? `job ${jobId.slice(0, 8)} · ${jobState ?? 'submitted'}` : profile.evidence.nativeExecution}</dd></div></>}</dl><div className="capability-list">{capabilityRows.map(([name, status]) => <div key={name}><span>{name}</span><b className={status === 'Unavailable' ? 'danger-text' : ''}>{status}</b></div>)}</div><p id="provenance-description">{jobEnvelope ? 'This receipt describes one evidence-gated native solver run. Scalar values are backend-reported.' : 'This receipt describes local UI sample data only. It is not evidence of a CFD, FEA, thermal, or coupled native solver run.'}</p><button className="dialog-done" onClick={() => setProvenanceOpen(false)}>Return to workbench</button></section></div>}
   </main>;
 }

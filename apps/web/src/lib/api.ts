@@ -1,3 +1,8 @@
+// Backwards-compatible capability probe built on the single typed client.
+// New code should import from './job-client' directly.
+
+import { getHealth, getWorkbenchState } from './job-client';
+
 export type ApiStatus =
   | { state: 'checking'; label: string; detail: string }
   | { state: 'ready'; label: string; detail: string }
@@ -8,35 +13,14 @@ export interface WorkbenchState {
   available_result_sources: string[];
 }
 
-const DEFAULT_API_BASE = 'http://localhost:8000';
-const REQUEST_TIMEOUT_MS = 1800;
-
-export const apiBaseUrl = (): string => {
-  const configured = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
-  return (configured || DEFAULT_API_BASE).replace(/\/$/, '');
-};
-
-const fetchJson = async <T>(path: string, signal: AbortSignal): Promise<T> => {
-  const response = await fetch(`${apiBaseUrl()}${path}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-    signal,
-  });
-  if (!response.ok) throw new Error(`API returned ${response.status}`);
-  return response.json() as Promise<T>;
-};
+export { apiBaseUrl } from './job-client';
 
 export const probeApi = async (): Promise<ApiStatus> => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
-    const [health, state] = await Promise.all([
-      fetchJson<{ status: string; native_solvers: Record<string, unknown> }>('/health', controller.signal),
-      fetchJson<WorkbenchState>('/api/v1/workbench/state', controller.signal),
-    ]);
+    const [health, state] = await Promise.all([getHealth(), getWorkbenchState()]);
     if (health.status !== 'ready') throw new Error('API is not ready');
-    const nativeCount = Object.keys(health.native_solvers ?? {}).length;
-    const sourceCount = state.available_result_sources.length;
+    const nativeCount = Object.keys(health.nativeSolvers ?? {}).length;
+    const sourceCount = state.availableResultSources.length;
     return {
       state: 'ready',
       label: 'API ready · analytical routes available',
@@ -48,8 +32,6 @@ export const probeApi = async (): Promise<ApiStatus> => {
       label: 'API disconnected · sample-only state',
       detail: 'Start the local API to inspect live analytical receipts. Native solver execution remains fail-closed.',
     };
-  } finally {
-    clearTimeout(timeout);
   }
 };
 
