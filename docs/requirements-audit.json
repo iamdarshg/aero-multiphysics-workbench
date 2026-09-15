@@ -724,7 +724,7 @@
           "kind": "file",
           "path": "mcp/engineering/server.ts",
           "detail": "PARTIAL: Single engineering MCP server exists with typed skeleton tools (design/result/provenance/simulation/job); stdio handshake test passes. Stores unconnected; full namespace coverage unavailable.",
-          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
+          "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2604,7 +2604,7 @@
           "kind": "file",
           "path": "mcp/engineering/server.ts",
           "detail": "PARTIAL: Skeleton provenance tools with handshake test; connected provenance store unavailable.",
-          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
+          "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2694,7 +2694,7 @@
           "kind": "file",
           "path": "mcp/engineering/server.ts",
           "detail": "PARTIAL: MCP stdio handshake passes with allowlisted skeleton tools; supervisable live simulation unavailable.",
-          "sha256": "a646e480021004918287ff7bebc8a88c1cbbf3bc1f218bb7365b8fdc635eb535"
+          "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
