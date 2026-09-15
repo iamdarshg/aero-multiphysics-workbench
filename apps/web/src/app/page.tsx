@@ -3,15 +3,19 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../components/icon';
+import ResultInspector from '../components/result-inspector';
 import { checkingApiStatus, probeApi, type ApiStatus } from '../lib/api';
 import {
   cancelJob,
   getCapabilities,
   getJob,
+  getJobArtifacts,
   getJobEvents,
   getJobResult,
+  resultManifestUrl,
   subscribeJobEvents,
   submitJob,
+  type ArtifactMetadata,
   type CapabilityReport,
   type JobStatus,
   type ResultEnvelopeSummary,
@@ -76,6 +80,7 @@ export default function WorkbenchPage() {
   const [jobEvents, setJobEvents] = useState<JobEvent[]>([]);
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [jobEnvelope, setJobEnvelope] = useState<ResultEnvelopeSummary | null>(null);
+  const [jobArtifacts, setJobArtifacts] = useState<ArtifactMetadata[]>([]);
   const [jobError, setJobError] = useState<string | null>(null);
   const [jobBusy, setJobBusy] = useState(false);
   const provenanceButtonRef = useRef<HTMLButtonElement>(null);
@@ -145,6 +150,11 @@ export default function WorkbenchPage() {
           setJobEnvelope(null);
           setJobError(jobEmptyMessage('completed-invalid'));
         }
+        try {
+          setJobArtifacts(await getJobArtifacts(settledId));
+        } catch {
+          setJobArtifacts([]);
+        }
       }
     } catch (error) {
       setJobError(error instanceof Error ? error.message : 'Failed to read job status.');
@@ -171,6 +181,7 @@ export default function WorkbenchPage() {
     setJobBusy(true);
     setJobError(null);
     setJobEnvelope(null);
+    setJobArtifacts([]);
     setJobStatus(null);
     setJobEvents([]);
     let submittedJobId: string;
@@ -418,6 +429,6 @@ export default function WorkbenchPage() {
       <div id="analysis-panel" className="dock-content" role="tabpanel" aria-labelledby={`dock-tab-${activeDockTab}`} tabIndex={0}><div className="chart-card"><div className="chart-meta"><span className="muted-label">{dockPanel.eyebrow}</span><strong>{dockPanel.value}</strong><small>{dockPanel.detail}</small><em>{dockPanel.source} · {dockPanel.fidelity} · {dockPanel.validity}</em></div>{activeDockTab === 'convergence' ? <AnalysisCharts /> : <div className="dock-illustration" aria-hidden="true"><span /><span /><span /><span /><span /></div>}</div><div className="job-card"><span className="muted-label">JOB PROGRESS</span><strong>{jobTitle}</strong><div className="progress" role="progressbar" aria-label="Native job progress from backend events" aria-valuemin={0} aria-valuemax={100} aria-valuenow={jobProgress}><i style={{ width: `${jobProgress}%` }} /></div><small role={jobError ? 'alert' : undefined}>{jobError ?? jobDetail}</small>{jobState === null || jobTerminal ? <><label><span className="muted-label">NATIVE ANALYSIS</span><select aria-label="Native analysis" value={selectedAnalysis} onChange={(event) => setSelectedAnalysis(event.target.value)} disabled={jobBusy || jobActive}>{ALLOWED_ANALYSES.map((entry) => <option key={entry.participantId} value={entry.participantId}>{entry.label}</option>)}</select></label><button onClick={() => void runAnalysis()} disabled={jobBusy || jobLive || (capabilityReport !== null && !selectedReady && !jobTerminal)}>{jobTerminal ? 'Retry as new native job' : 'Request native solve'}</button></> : <button onClick={() => void cancelActiveJob()} disabled={jobBusy || !jobState || !isCancellableJobState(jobState)}>Cancel native job</button>}</div><div className="warning-card"><div><span className="warning-icon"><Icon name="warning" /></span><b>{warningHeading}</b></div><p>{warningBody}</p><div><button onClick={() => { setActiveNode('Inlet flow domain'); setInspectorOpen(true); }}>Inspect context</button><button className="link-button" onClick={() => setProvenanceOpen(true)}>View provenance</button></div></div></div>
     </section>
       <footer><span>Keyboard: Ctrl/Cmd + K search · Ctrl/Cmd + Z undo · Ctrl/Cmd + Shift + Z redo · Arrow keys move analysis tabs</span><span role="status" aria-live="polite" title={apiStatus.detail}>{apiStatus.label}; {jobId ? `native job ${jobId.slice(0, 8)} · ${jobState ?? 'submitted'}` : 'no native job'}; numerical results are never presented as native solver output.</span></footer>
-    {provenanceOpen && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setProvenanceOpen(false); }}><section ref={dialogRef} className="provenance-dialog" role="dialog" aria-modal="true" aria-labelledby="provenance-title" aria-describedby="provenance-description"><div className="dialog-heading"><div><span className="muted-label">STATE RECEIPT</span><h2 id="provenance-title">{jobEnvelope ? 'Native result provenance' : 'Analytical sample provenance'}</h2></div><button ref={dialogCloseRef} className="icon-button" aria-label="Close provenance (Escape)" onClick={() => setProvenanceOpen(false)}><Icon name="close" /></button></div><dl><div><dt>Design</dt><dd>{profile.title}</dd></div><div><dt>Active component</dt><dd>{activeNode}</dd></div>{jobEnvelope && jobStatus ? <><div><dt>Evidence class</dt><dd>Native solver result</dd></div><div><dt>Source</dt><dd>{sourceDisplayLabel(jobEnvelope.source)}</dd></div><div><dt>Fidelity</dt><dd>{jobEnvelope.fidelity}</dd></div><div><dt>Validity</dt><dd>{jobEnvelope.validity.passed ? `passed${jobEnvelope.validity.detail ? ` — ${jobEnvelope.validity.detail}` : ''}` : `not passed — ${jobEnvelope.validity.detail || 'see quality gates'}`}</dd></div><div><dt>Solver identity</dt><dd>{jobEnvelope.solverIdentity} {jobEnvelope.solverVersion}</dd></div><div><dt>Run id</dt><dd>{jobEnvelope.runId}</dd></div><div><dt>Result id</dt><dd>{jobStatus.resultId ?? 'withheld'}</dd></div><div><dt>Provenance id</dt><dd>{jobEnvelope.provenanceId}</dd></div><div><dt>Warnings</dt><dd>{jobEnvelope.warnings.length > 0 ? jobEnvelope.warnings.join('; ') : 'none'}</dd></div>{scalarRows.map((row) => <div key={row.name}><dt>{row.name}</dt><dd>{`${row.value} ${jobEnvelope.units[row.name] ?? ''}`.trim()}</dd></div>)}</> : <><div><dt>Evidence class</dt><dd>Analytical demonstration state</dd></div><div><dt>Source</dt><dd>{profile.evidence.source}</dd></div><div><dt>Fidelity</dt><dd>{profile.evidence.fidelity}</dd></div><div><dt>Validity</dt><dd>{profile.evidence.validity}</dd></div><div><dt>Native execution</dt><dd className="danger-text">{jobId ? `job ${jobId.slice(0, 8)} · ${jobState ?? 'submitted'}` : profile.evidence.nativeExecution}</dd></div></>}</dl><div className="capability-list">{capabilityRows.map(([name, status]) => <div key={name}><span>{name}</span><b className={status === 'Unavailable' ? 'danger-text' : ''}>{status}</b></div>)}</div><p id="provenance-description">{jobEnvelope ? 'This receipt describes one evidence-gated native solver run. Scalar values are backend-reported.' : 'This receipt describes local UI sample data only. It is not evidence of a CFD, FEA, thermal, or coupled native solver run.'}</p><button className="dialog-done" onClick={() => setProvenanceOpen(false)}>Return to workbench</button></section></div>}
+    {provenanceOpen && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setProvenanceOpen(false); }}><section ref={dialogRef} className="provenance-dialog" role="dialog" aria-modal="true" aria-labelledby="provenance-title" aria-describedby="provenance-description"><div className="dialog-heading"><div><span className="muted-label">STATE RECEIPT</span><h2 id="provenance-title">{jobEnvelope ? 'Native result provenance' : 'Analytical sample provenance'}</h2></div><button ref={dialogCloseRef} className="icon-button" aria-label="Close provenance (Escape)" onClick={() => setProvenanceOpen(false)}><Icon name="close" /></button></div><dl><div><dt>Design</dt><dd>{profile.title}</dd></div><div><dt>Active component</dt><dd>{activeNode}</dd></div>{jobEnvelope && jobStatus ? <><div><dt>Evidence class</dt><dd>Native solver result</dd></div><div><dt>Source</dt><dd>{sourceDisplayLabel(jobEnvelope.source)}</dd></div><div><dt>Fidelity</dt><dd>{jobEnvelope.fidelity}</dd></div><div><dt>Validity</dt><dd>{jobEnvelope.validity.passed ? `passed${jobEnvelope.validity.detail ? ` — ${jobEnvelope.validity.detail}` : ''}` : `not passed — ${jobEnvelope.validity.detail || 'see quality gates'}`}</dd></div><div><dt>Solver identity</dt><dd>{jobEnvelope.solverIdentity} {jobEnvelope.solverVersion}</dd></div><div><dt>Run id</dt><dd>{jobEnvelope.runId}</dd></div><div><dt>Result id</dt><dd>{jobStatus.resultId ?? 'withheld'}</dd></div><div><dt>Provenance id</dt><dd>{jobEnvelope.provenanceId}</dd></div><div><dt>Warnings</dt><dd>{jobEnvelope.warnings.length > 0 ? jobEnvelope.warnings.join('; ') : 'none'}</dd></div>{scalarRows.map((row) => <div key={row.name}><dt>{row.name}</dt><dd>{`${row.value} ${jobEnvelope.units[row.name] ?? ''}`.trim()}</dd></div>)}<div><dt>Design id</dt><dd>{jobStatus.designId}</dd></div><div><dt>Input hash</dt><dd>{jobStatus.inputHash ?? jobEnvelope.inputHash}</dd></div></> : <><div><dt>Evidence class</dt><dd>Analytical demonstration state</dd></div><div><dt>Source</dt><dd>{profile.evidence.source}</dd></div><div><dt>Fidelity</dt><dd>{profile.evidence.fidelity}</dd></div><div><dt>Validity</dt><dd>{profile.evidence.validity}</dd></div><div><dt>Native execution</dt><dd className="danger-text">{jobId ? `job ${jobId.slice(0, 8)} · ${jobState ?? 'submitted'}` : profile.evidence.nativeExecution}</dd></div></>}</dl>{jobEnvelope && jobStatus ? <ResultInspector jobId={jobStatus.jobId} manifestUrl={resultManifestUrl(jobStatus.jobId)} artifacts={jobArtifacts} /> : null}<div className="capability-list">{capabilityRows.map(([name, status]) => <div key={name}><span>{name}</span><b className={status === 'Unavailable' ? 'danger-text' : ''}>{status}</b></div>)}</div><p id="provenance-description">{jobEnvelope ? 'This receipt describes one evidence-gated native solver run. Scalar values are backend-reported.' : 'This receipt describes local UI sample data only. It is not evidence of a CFD, FEA, thermal, or coupled native solver run.'}</p><button className="dialog-done" onClick={() => setProvenanceOpen(false)}>Return to workbench</button></section></div>}
   </main>;
 }

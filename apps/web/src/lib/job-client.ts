@@ -105,10 +105,48 @@ export interface ResultEnvelopeSummary {
   solverVersion: string;
   runId: string;
   provenanceId: string;
+  inputHash: string;
   validity: { passed: boolean; detail: string };
   warnings: string[];
   scalars: Record<string, number>;
   units: Record<string, string>;
+  artifacts: Array<{ name: string; sha256: string; bytes: number }>;
+}
+
+export interface ArtifactMetadata {
+  id: string;
+  name: string;
+  displayName: string;
+  mime: string;
+  category: string;
+  bytes: number;
+  sha256: string;
+  solverId: string;
+  runId: string | null;
+  provenanceId: string | null;
+  downloadUrl: string;
+}
+
+export interface ResultManifestArtifact {
+  name: string;
+  sha256: string;
+  bytes: number;
+}
+
+export interface ResultManifest {
+  jobId: string;
+  designId: string;
+  revisionId: string | null;
+  resultId: string | null;
+  runId: string | null;
+  provenanceId: string | null;
+  source: string;
+  fidelity: string;
+  validity: { passed: boolean; detail: string };
+  solverIdentity: string;
+  solverVersion: string;
+  inputHash: string | null;
+  artifacts: ResultManifestArtifact[];
 }
 
 export interface JobProvenance {
@@ -440,6 +478,16 @@ export const getJobResult = async (jobId: string): Promise<ResultEnvelopeSummary
     ? payload.warnings.filter((entry): entry is string => typeof entry === 'string')
     : [];
   const validity = isRecord(payload.validity) ? payload.validity : {};
+  const artifacts: Array<{ name: string; sha256: string; bytes: number }> = [];
+  if (Array.isArray(payload.artifacts)) {
+    for (const entry of payload.artifacts) {
+      if (!isRecord(entry)) continue;
+      const name = asString(entry.name);
+      const sha256 = asString(entry.sha256);
+      if (!name || !sha256 || typeof entry.bytes !== 'number') continue;
+      artifacts.push({ name, sha256, bytes: entry.bytes });
+    }
+  }
   return {
     source: 'native_solver',
     fidelity: asString(payload.fidelity),
@@ -447,6 +495,7 @@ export const getJobResult = async (jobId: string): Promise<ResultEnvelopeSummary
     solverVersion: asString(payload.solver_version),
     runId: asString(payload.run_id),
     provenanceId: asString(payload.provenance_id),
+    inputHash: asString(payload.input_hash),
     validity: {
       passed: validity.passed === true,
       detail: asString(validity.detail),
@@ -454,6 +503,7 @@ export const getJobResult = async (jobId: string): Promise<ResultEnvelopeSummary
     warnings,
     scalars,
     units,
+    artifacts,
   };
 };
 
@@ -463,4 +513,107 @@ export const getJobProvenance = async (jobId: string): Promise<JobProvenance> =>
   );
   const events = Array.isArray(payload.events) ? payload.events.filter(isRecord) : [];
   return { jobId: asString(payload.job_id, jobId), events };
+};
+
+const toArtifactMetadata = (payload: unknown): ArtifactMetadata | null => {
+  if (!isRecord(payload)) return null;
+  const id = asString(payload.id);
+  const name = asString(payload.name);
+  if (!id || !name) return null;
+  const sha256 = asString(payload.sha256);
+  if (!/^[0-9a-f]{64}$/.test(sha256)) return null;
+  return {
+    id,
+    name,
+    displayName: asString(payload.display_name, name),
+    mime: asString(payload.mime, 'application/octet-stream'),
+    category: asString(payload.category, 'other'),
+    bytes: typeof payload.bytes === 'number' ? payload.bytes : 0,
+    sha256,
+    solverId: asString(payload.solver_id),
+    runId: asNullableString(payload.run_id),
+    provenanceId: asNullableString(payload.provenance_id),
+    downloadUrl: asString(payload.download_url),
+  };
+};
+
+/** Read-only metadata for artifacts registered to a completed result. */
+export const getJobArtifacts = async (jobId: string): Promise<ArtifactMetadata[]> => {
+  const payload = await getJson<{ artifacts?: unknown }>(
+    `/v1/native/artifacts/${encodeURIComponent(jobId)}`,
+  );
+  if (!Array.isArray(payload.artifacts)) return [];
+  return payload.artifacts
+    .map(toArtifactMetadata)
+    .filter((entry): entry is ArtifactMetadata => entry !== null);
+};
+
+/** Absolute download URL for one registered artifact id (metadata-resolved only). */
+export const artifactFileUrl = (downloadUrl: string): string =>
+  `${apiBaseUrl()}${downloadUrl.startsWith('/') ? downloadUrl : `/${downloadUrl}`}`;
+
+/** Absolute URL for the small machine-readable result manifest export. */
+export const resultManifestUrl = (jobId: string): string =>
+  `${apiBaseUrl()}/v1/native/results/${encodeURIComponent(jobId)}/manifest`;
+
+/** Fetch one registered artifact as a Blob for preview; never invents bytes. */
+export const downloadJobArtifact = async (jobId: string, artifactId: string): Promise<Blob> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(
+      `${apiBaseUrl()}/v1/native/artifacts/${encodeURIComponent(jobId)}/${encodeURIComponent(artifactId)}`,
+      { headers: { accept: '*/*' }, signal: controller.signal },
+    );
+    if (!response.ok) {
+      const payload: unknown = await response.json().catch(() => null);
+      failFromPayload(response.status, payload, 'ARTIFACT_DOWNLOAD_FAILED');
+    }
+    return await response.blob();
+  } catch (error) {
+    if (error instanceof JobApiError) throw error;
+    throw new JobApiError(
+      error instanceof Error ? error.message : 'Artifact download failed',
+      0,
+      'API_UNREACHABLE',
+    );
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const toManifestArtifact = (payload: unknown): ResultManifestArtifact | null => {
+  if (!isRecord(payload)) return null;
+  const name = asString(payload.name);
+  const sha256 = asString(payload.sha256);
+  if (!name || !/^[0-9a-f]{64}$/.test(sha256) || typeof payload.bytes !== 'number') return null;
+  return { name, sha256, bytes: payload.bytes };
+};
+
+/** Small machine-readable manifest: lineage and hashes, never bundled outputs. */
+export const getResultManifest = async (jobId: string): Promise<ResultManifest> => {
+  const payload = await getJson<Record<string, unknown>>(
+    `/v1/native/results/${encodeURIComponent(jobId)}/manifest`,
+  );
+  const validity = isRecord(payload.validity) ? payload.validity : {};
+  const artifacts = Array.isArray(payload.artifacts)
+    ? payload.artifacts
+        .map(toManifestArtifact)
+        .filter((entry): entry is ResultManifestArtifact => entry !== null)
+    : [];
+  return {
+    jobId: asString(payload.job_id, jobId),
+    designId: asString(payload.design_id),
+    revisionId: asNullableString(payload.revision_id),
+    resultId: asNullableString(payload.result_id),
+    runId: asNullableString(payload.run_id),
+    provenanceId: asNullableString(payload.provenance_id),
+    source: asString(payload.source),
+    fidelity: asString(payload.fidelity),
+    validity: { passed: validity.passed === true, detail: asString(validity.detail) },
+    solverIdentity: asString(payload.solver_identity),
+    solverVersion: asString(payload.solver_version),
+    inputHash: asNullableString(payload.input_hash),
+    artifacts,
+  };
 };

@@ -640,7 +640,7 @@
           "kind": "file",
           "path": "apps/web/src/app/page.tsx",
           "detail": "PARTIAL: Next.js workbench UI renders (tree, viewport, inspector, dock) with762ms-bounded capability probe; analytical-sample labeling verified. No deployment or native field visualization.",
-          "sha256": "6711bac9fc4db2ced55e4119c4ea8dba657a7f12f870afb9a77154aae21feed2"
+          "sha256": "081a1cad80ec9be526ba96a4da3ed386e913771cf8079287d28e45a6ceaf42f8"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"

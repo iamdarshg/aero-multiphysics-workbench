@@ -222,10 +222,52 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
     @router.get("/v1/native/artifacts/{job_id}")
     def job_artifacts(job_id: str) -> dict[str, Any]:
         try:
-            return {"job_id": job_id, "artifacts": manager.artifacts(job_id)}
+            return {"job_id": job_id, "artifacts": manager.artifact_metadata(job_id)}
         except KeyError as exc:
             raise HTTPException(
                 status_code=404, detail={"code": "JOB_NOT_FOUND"}
+            ) from exc
+
+    @router.get("/v1/native/artifacts/{job_id}/{artifact_name}")
+    def job_artifact_download(job_id: str, artifact_name: str) -> Response:
+        try:
+            payload, mime, _metadata = manager.read_artifact(job_id, artifact_name)
+        except KeyError as exc:
+            # NOTE: str(KeyError) wraps the message in quotes; match on args.
+            message = str(exc.args[0]) if exc.args else ""
+            if message.startswith("JOB_NOT_FOUND"):
+                raise HTTPException(
+                    status_code=404, detail={"code": "JOB_NOT_FOUND"}
+                ) from exc
+            if message.startswith("ARTIFACT_UNAVAILABLE"):
+                raise HTTPException(
+                    status_code=404, detail={"code": "ARTIFACT_UNAVAILABLE"}
+                ) from exc
+            raise HTTPException(
+                status_code=404, detail={"code": "ARTIFACT_NOT_FOUND"}
+            ) from exc
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=409, detail={"code": "ARTIFACT_HASH_MISMATCH"}
+            ) from exc
+        return Response(
+            content=payload,
+            media_type=mime,
+            headers={"Content-Disposition": f'attachment; filename="{artifact_name}"'},
+        )
+
+    @router.get("/v1/native/results/{job_id}/manifest")
+    def job_result_manifest(job_id: str) -> dict[str, Any]:
+        try:
+            return manager.result_manifest(job_id)
+        except KeyError as exc:
+            raise HTTPException(
+                status_code=404, detail={"code": "JOB_NOT_FOUND"}
+            ) from exc
+        except ParticipantError as exc:
+            raise HTTPException(
+                status_code=404,
+                detail={"code": "RESULT_NOT_PUBLISHED", "message": exc.detail},
             ) from exc
 
     @router.get("/v1/native/provenance/{job_id}")

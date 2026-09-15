@@ -1,16 +1,21 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  artifactFileUrl,
   JobApiError,
   cancelJob,
+  downloadJobArtifact,
   getCapabilities,
   getHealth,
   getJob,
+  getJobArtifacts,
   getJobEvents,
   getJobProvenance,
   getJobResult,
   getParticipants,
+  getResultManifest,
   getWorkbenchState,
   parseSseBody,
+  resultManifestUrl,
   submitJob,
   subscribeJobEvents,
 } from './job-client';
@@ -270,5 +275,95 @@ describe('typed job API client', () => {
     expect(failure).toBeInstanceOf(JobApiError);
     expect(failure?.code).toBe('JOB_NOT_FOUND');
     expect(failure?.status).toBe(404);
+  });
+
+  it('reads registered artifact metadata with hashes and download routes', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve(
+          jsonResponse({
+            job_id: 'job-7',
+            artifacts: [
+              {
+                id: 'result.json',
+                name: 'result.json',
+                display_name: 'result.json',
+                mime: 'application/json',
+                category: 'report',
+                bytes: 42,
+                sha256: 'a'.repeat(64),
+                solver_id: 'ross',
+                run_id: 'run-1',
+                provenance_id: 'prov-1',
+                download_url: '/v1/native/artifacts/job-7/result.json',
+                uri: 'jobs/job-7/result.json',
+              },
+              { id: '', name: '', sha256: 'bogus' },
+            ],
+          }),
+        ),
+      ),
+    );
+    const artifacts = await getJobArtifacts('job-7');
+    expect(artifacts).toHaveLength(1);
+    expect(artifacts[0]?.sha256).toBe('a'.repeat(64));
+    expect(artifacts[0]?.downloadUrl).toContain('/v1/native/artifacts/job-7/result.json');
+  });
+
+  it('builds absolute artifact and manifest export URLs', () => {
+    expect(artifactFileUrl('/v1/native/artifacts/job-8/result.json')).toContain(
+      '/v1/native/artifacts/job-8/result.json',
+    );
+    expect(resultManifestUrl('job-8')).toContain('/v1/native/results/job-8/manifest');
+  });
+
+  it('downloads one registered artifact as a blob', async () => {
+    const blob = new Blob(['{}'], { type: 'application/json' });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve(new Response(blob, { status: 200 }))),
+    );
+    const downloaded = await downloadJobArtifact('job-9', 'result.json');
+    expect(await downloaded.text()).toBe('{}');
+  });
+
+  it('carries the artifact error code when a download is rejected', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve(jsonResponse({ detail: { code: 'ARTIFACT_NOT_FOUND' } }, 404))),
+    );
+    await expect(downloadJobArtifact('job-9', '../sibling')).rejects.toMatchObject({
+      code: 'ARTIFACT_NOT_FOUND',
+    });
+  });
+
+  it('reads the machine-readable result manifest with lineage and hashes', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve(
+          jsonResponse({
+            job_id: 'job-10',
+            design_id: 'edf-90-rotor',
+            revision_id: null,
+            result_id: 'b'.repeat(64),
+            run_id: 'run-2',
+            provenance_id: 'prov-2',
+            source: 'native_solver',
+            fidelity: 'beam-campbell',
+            validity: { passed: true, detail: '' },
+            solver_identity: 'ross',
+            solver_version: '4.6.0',
+            input_hash: 'c'.repeat(64),
+            artifacts: [{ name: 'result.json', sha256: 'a'.repeat(64), bytes: 42 }],
+          }),
+        ),
+      ),
+    );
+    const manifest = await getResultManifest('job-10');
+    expect(manifest.designId).toBe('edf-90-rotor');
+    expect(manifest.provenanceId).toBe('prov-2');
+    expect(manifest.artifacts[0]?.sha256).toBe('a'.repeat(64));
   });
 });

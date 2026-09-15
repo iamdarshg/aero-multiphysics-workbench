@@ -85,6 +85,56 @@ _LEGAL_TRANSITIONS: dict[JobState, frozenset[JobState]] = {
 
 _RSS_CEILING_MIB = 896.0
 
+_ARTIFACT_MIME: dict[str, str] = {
+    "json": "application/json",
+    "xml": "application/xml",
+    "log": "text/plain",
+    "txt": "text/plain",
+    "dat": "text/plain",
+    "sif": "text/plain",
+    "comm": "text/plain",
+    "py": "text/plain",
+    "export": "text/plain",
+    "step": "application/step",
+    "stp": "application/step",
+}
+
+_ARTIFACT_CATEGORY: dict[str, str] = {
+    "result.json": "report",
+    "case.json": "case",
+    "solver.log": "log",
+    "stdout.log": "log",
+    "stderr.log": "log",
+}
+
+
+def artifact_mime_for(name: str) -> str:
+    """Bounded content type for a registered artifact name."""
+
+    suffix = Path(name).suffix.lower().lstrip(".")
+    return _ARTIFACT_MIME.get(suffix, "application/octet-stream")
+
+
+def artifact_category_for(name: str) -> str:
+    """Lightweight type category for a registered artifact name."""
+
+    if name in _ARTIFACT_CATEGORY:
+        return _ARTIFACT_CATEGORY[name]
+    suffix = Path(name).suffix.lower().lstrip(".")
+    if suffix in {"msh", "msh2"}:
+        return "mesh"
+    if suffix in {"step", "stp", "brep"}:
+        return "geometry"
+    if suffix in {"vtu", "h5", "hdf5", "zarr"}:
+        return "field"
+    if suffix in {"sif", "comm", "xml", "py"}:
+        return "case"
+    if suffix in {"log"}:
+        return "log"
+    if suffix in {"json", "txt", "dat", "export"}:
+        return "report"
+    return "other"
+
 
 def _now() -> str:
     return datetime.now(UTC).isoformat()
@@ -633,6 +683,118 @@ class NativeJobManager:
                     {"name": name, "sha256": digest, "bytes": size, "uri": f"jobs/{job_id}/{name}"}
                 )
         return entries
+
+    def artifact_metadata(self, job_id: str) -> list[dict[str, Any]]:
+        """Bounded read-only metadata for artifacts registered to a result.
+
+        Only files already registered to the job (manifest outputs plus
+        captured solver logs actually present on disk) are exposed. No
+        directory listing or arbitrary paths leave this method.
+        """
+
+        row = self._ledger.get(job_id)
+        if row is None:
+            raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        manifest = get_participant(row.participant_id)
+        enriched: list[dict[str, Any]] = []
+        for entry in self.artifacts(job_id):
+            name = str(entry["name"])
+            enriched.append(
+                {
+                    "id": name,
+                    "name": name,
+                    "display_name": name,
+                    "mime": artifact_mime_for(name),
+                    "category": artifact_category_for(name),
+                    "bytes": entry["bytes"],
+                    "sha256": entry["sha256"],
+                    "solver_id": manifest.executable.solver_id,
+                    "run_id": row.run_id,
+                    "provenance_id": row.provenance_id,
+                    "download_url": f"/v1/native/artifacts/{job_id}/{name}",
+                    "uri": entry["uri"],
+                }
+            )
+        return enriched
+
+    def read_artifact(self, job_id: str, artifact_name: str) -> tuple[bytes, str, dict[str, Any]]:
+        """Return the bytes of one registered artifact after containment+hash checks.
+
+        Resolution goes only through repository metadata: the name must match
+        a declared output exactly (which rejects every traversal spelling),
+        the resolved path must stay inside the job case directory, and for a
+        completed job the on-disk bytes must still match the digest recorded
+        in the published envelope.
+        """
+
+        row = self._ledger.get(job_id)
+        if row is None:
+            raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        manifest = get_participant(row.participant_id)
+        case_dir = self._job_root / f"case-{job_id[:12]}"
+        declared = list(manifest.artifacts)
+        if (case_dir / "stdout.log").exists():
+            declared += ["stdout.log", "stderr.log"]
+        if not artifact_name or artifact_name != Path(artifact_name).name:
+            raise KeyError(f"ARTIFACT_NOT_FOUND:{job_id}:{artifact_name}")
+        if artifact_name not in declared:
+            raise KeyError(f"ARTIFACT_NOT_FOUND:{job_id}:{artifact_name}")
+        target = (case_dir / artifact_name).resolve()
+        if target.parent != case_dir.resolve() or not target.is_file():
+            raise KeyError(f"ARTIFACT_UNAVAILABLE:{job_id}:{artifact_name}")
+        payload = target.read_bytes()
+        if row.state == JobState.COMPLETED.value and row.envelope_json:
+            baseline = {
+                str(item.get("name")): str(item.get("sha256"))
+                for item in cast("dict[str, Any]", json.loads(row.envelope_json)).get(
+                    "artifacts", []
+                )
+                if isinstance(item, dict)
+            }
+            expected = baseline.get(artifact_name)
+            if expected is None:
+                raise KeyError(f"ARTIFACT_NOT_FOUND:{job_id}:{artifact_name}")
+            if hashlib.sha256(payload).hexdigest() != expected:
+                raise ValueError(f"ARTIFACT_HASH_MISMATCH:{job_id}:{artifact_name}")
+        metadata = next(
+            item for item in self.artifact_metadata(job_id) if item["id"] == artifact_name
+        )
+        return payload, artifact_mime_for(artifact_name), metadata
+
+    def result_manifest(self, job_id: str) -> dict[str, Any]:
+        """Small machine-readable manifest: lineage and hashes, never blobs."""
+
+        row = self._ledger.get(job_id)
+        if row is None:
+            raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        if row.state != JobState.COMPLETED.value or not row.envelope_json:
+            raise ParticipantError(
+                NativeErrorCode.RESULT_INVALID, f"no published envelope:{row.state}"
+            )
+        envelope = cast("dict[str, Any]", json.loads(row.envelope_json))
+        raw_validity = envelope.get("validity")
+        validity: dict[str, Any] = raw_validity if isinstance(raw_validity, dict) else {}
+        return {
+            "job_id": row.job_id,
+            "design_id": row.design_id,
+            "revision_id": row.revision_id,
+            "result_id": row.result_id,
+            "run_id": row.run_id,
+            "provenance_id": row.provenance_id,
+            "source": envelope.get("source"),
+            "fidelity": envelope.get("fidelity"),
+            "validity": {
+                "passed": validity.get("passed") is True,
+                "detail": str(validity.get("detail") or ""),
+            },
+            "solver_identity": envelope.get("solver_identity"),
+            "solver_version": envelope.get("solver_version"),
+            "input_hash": row.input_hash or envelope.get("input_hash"),
+            "artifacts": [
+                {"name": str(entry["name"]), "sha256": entry["sha256"], "bytes": entry["bytes"]}
+                for entry in self.artifacts(job_id)
+            ],
+        }
 
     def provenance(self, job_id: str) -> list[dict[str, Any]]:
         row = self._ledger.get(job_id)
