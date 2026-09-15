@@ -1,13 +1,78 @@
+# Local smoke stack for the lightweight platform image (issue #8).
+#
+# This file is a manifest-only smoke intent, NOT the default local startup
+# path: `pnpm start:local` / `pnpm dev:all` (scripts/platform/stack.mjs) runs
+# the same API + web services directly on the host without Docker.
+#
+# Services:
+#   api  - FastAPI + in-process governed job lifecycle, health-gated
+#   web  - Next.js production server, starts only after the API is healthy
+#   engineering-mcp (profile: explicit-mcp) - stdio MCP server against the API
+#
+# State: job records live in the named `platform-data` volume
+# (AEROWORKBENCH_JOB_ROOT=/data/jobs). Nothing is written to the repo.
+# Shutdown: `docker compose -f infra/docker/compose.local.yml down`.
+name: aero-platform
 services:
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.platform
+    image: aero-platform:local
+    command: ["api"]
+    ports:
+      - "8000:8000"
+    environment:
+      AEROWORKBENCH_JOB_ROOT: /data/jobs
+      AERO_ALLOW_REMOTE_COMPUTE: "0"
+      AERO_REMOTE_COST_CEILING_USD: "0"
+    volumes:
+      - platform-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    mem_limit: 2g
+    stop_grace_period: 30s
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.platform
+    image: aero-platform:local
+    command: ["web"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_BASE_URL: http://api:8000
+      NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000
+    mem_limit: 1g
+    stop_grace_period: 30s
+
   engineering-mcp:
     build:
       context: ../..
       dockerfile: infra/docker/Dockerfile.platform
+    image: aero-platform:local
+    command: ["mcp"]
     profiles: ["explicit-mcp"]
+    depends_on:
+      api:
+        condition: service_healthy
     environment:
+      AERO_API_BASE_URL: http://api:8000
       AERO_ALLOW_DESTRUCTIVE: "0"
       AERO_ALLOW_REMOTE_COMPUTE: "0"
       AERO_REMOTE_COST_CEILING_USD: "0"
     stdin_open: true
     tty: true
     mem_limit: 250m
+    stop_grace_period: 10s
+
+volumes:
+  platform-data:

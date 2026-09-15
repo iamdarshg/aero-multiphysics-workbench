@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { summarizeAudit, validateAuditDocument } from "../../scripts/audit-requirements.mjs";
@@ -112,5 +113,22 @@ describe("requirements audit contract", () => {
     mutated.source.sha256 = "0".repeat(64);
     const errors = validateAuditDocument(mutated, { repoRoot });
     assert.ok(errors.some((error: string) => error.includes("source SHA-256")));
+  });
+
+  it("report mode surfaces remaining gaps without hiding failures or failing the gate", () => {
+    const script = fileURLToPath(new URL("../../scripts/audit-requirements.mjs", import.meta.url));
+    const result = spawnSync(process.execPath, [script, "--report"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      timeout: 120_000,
+    });
+    assert.equal(result.status, 0);
+    const stdout = String(result.stdout);
+    assert.match(stdout, /PARTIAL=\d+/);
+    assert.match(stdout, /gap: section:\d+ (PARTIAL|FAIL|BLOCKED)/);
+    const summary = JSON.parse(stdout.split("\n").filter(Boolean).at(-1));
+    assert.equal(summary.total, 130);
+    assert.equal(summary.mandatoryComplete, false);
+    assert.ok(summary.counts.PARTIAL + summary.counts.FAIL + summary.counts.BLOCKED > 0);
   });
 });

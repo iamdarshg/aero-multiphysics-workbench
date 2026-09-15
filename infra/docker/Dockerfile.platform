@@ -1,6 +1,74 @@
-# Deliberately lean manifest; no image has been built or published by this repository.
-FROM node:24-alpine
+# Lightweight product-plane image: UI build/runtime, API, product scripts, MCP.
+#
+# Deliberately EXCLUDED by design (see issue #8): heavyweight native solver
+# binaries (OpenFOAM, Code_Aster, ElmerSolver, preCICE, FreeCADCmd). The API
+# stage installs only the pip-declared services/api dependencies (ross,
+# pybamm, gmsh, cadquery, ...), which back the tiny deterministic and
+# in-process participants. Native binaries stay opt-in via `pnpm setup:solvers`
+# on hosts that intentionally provision them; the image never fakes them.
+#
+# Runtime versions are pinned to meaningful minor releases:
+#   node:24-bookworm-slim, python:3.12-slim-bookworm, uv==0.9.6.
+# Installs are frozen (pnpm --frozen-lockfile, uv sync --frozen).
+
+# ---- Stage 1: production UI build -------------------------------------------
+FROM node:24-bookworm-slim AS web-build
+ENV COREPACK_ENABLE_PROJECT_SPEC=1
 WORKDIR /workbench
-COPY packages/solver-contracts ./packages/solver-contracts
-COPY mcp/engineering ./mcp/engineering
-ENTRYPOINT ["node", "mcp/engineering/server.ts"]
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web/package.json ./apps/web/package.json
+COPY packages/cache/package.json ./packages/cache/package.json
+COPY packages/convergence/package.json ./packages/convergence/package.json
+COPY packages/core/package.json ./packages/core/package.json
+COPY packages/coupling/package.json ./packages/coupling/package.json
+COPY packages/dynamics/package.json ./packages/dynamics/package.json
+COPY packages/envelope/package.json ./packages/envelope/package.json
+COPY packages/geometry/package.json ./packages/geometry/package.json
+COPY packages/materials/package.json ./packages/materials/package.json
+COPY packages/mesh/package.json ./packages/mesh/package.json
+COPY packages/optimization/package.json ./packages/optimization/package.json
+COPY packages/provenance/package.json ./packages/provenance/package.json
+COPY packages/schema/package.json ./packages/schema/package.json
+COPY packages/semantics/package.json ./packages/semantics/package.json
+COPY packages/solver-contracts/package.json ./packages/solver-contracts/package.json
+COPY packages/thermal/package.json ./packages/thermal/package.json
+COPY packages/units/package.json ./packages/units/package.json
+RUN corepack enable && pnpm install --frozen-lockfile
+COPY . .
+ARG NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+RUN pnpm --filter @aero/web build
+
+# ---- Stage 2: API third-party venv (pip declarations only) -------------------
+FROM python:3.12-slim-bookworm AS api-venv
+WORKDIR /opt/api
+COPY services/api/pyproject.toml services/api/uv.lock ./
+RUN pip install --no-cache-dir "uv==0.9.6" \
+  && uv sync --frozen --no-dev \
+  && rm -rf /root/.cache/uv
+
+# ---- Stage 3: runtime (node + API venv, no solver binaries) ------------------
+FROM node:24-bookworm-slim AS runtime
+ENV NODE_ENV=production \
+  COREPACK_ENABLE_PROJECT_SPEC=1 \
+  VIRTUAL_ENV=/opt/aero-api-venv \
+  PATH=/opt/aero-api-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  PYTHONPATH=/workbench/solvers:/workbench/packages/core:/workbench/packages/geometry:/workbench/packages/semantics:/workbench/packages/materials:/workbench/packages/mesh:/workbench/packages/coupling:/workbench/packages/convergence:/workbench/packages/optimization:/workbench/packages/dynamics:/workbench/packages/thermal:/workbench/packages/envelope:/workbench:/workbench/services/api \
+  AEROWORKBENCH_JOB_ROOT=/data/jobs
+WORKDIR /workbench
+COPY --from=web-build /workbench/package.json /workbench/pnpm-workspace.yaml ./
+COPY --from=web-build /workbench/node_modules ./node_modules
+COPY --from=web-build /workbench/apps/web ./apps/web
+COPY --from=web-build /workbench/packages ./packages
+COPY --from=web-build /workbench/mcp ./mcp
+COPY --from=web-build /workbench/scripts ./scripts
+COPY --from=web-build /workbench/services/api ./services/api
+COPY --from=web-build /workbench/solvers ./solvers
+COPY --from=api-venv /opt/api/.venv /opt/aero-api-venv
+COPY infra/docker/platform-entrypoint.mjs ./infra/docker/platform-entrypoint.mjs
+VOLUME ["/data"]
+EXPOSE 3000 8000
+HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=3 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:8000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+ENTRYPOINT ["node", "infra/docker/platform-entrypoint.mjs"]
+CMD ["api"]

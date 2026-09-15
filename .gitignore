@@ -14,6 +14,7 @@ __pycache__/
 !.env.example
 data/
 artifacts/
+.aeroworkbench/
 docs/evidence/milestone-4/jobs/
 *.sqlite3
 *.db

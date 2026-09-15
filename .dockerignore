@@ -1,0 +1,27 @@
+# Docker build context guardrails: keep the platform image deterministic and
+# free of generated runtime state. Solver outputs, SQLite state, provenance
+# ledgers, venvs, and install caches never enter the image.
+.git/
+.worktrees/
+.superpowers/
+node_modules/
+.next/
+dist/
+coverage/
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.tsbuildinfo
+*.sqlite3
+*.db
+data/
+artifacts/
+docs/evidence/milestone-4/jobs/
+.aeroworkbench/
+.env
+.env.*
+playwright-report/
+test-results/
+install-web*.log

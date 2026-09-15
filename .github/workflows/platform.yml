@@ -1,21 +1,232 @@
+# Product release gate for the shippable stack (issue #8).
+#
+# Fast jobs verify the real product paths from issues #1-#7:
+#   #2 jobs ............ product-smoke (real API lifecycle, rotor-campbell)
+#   #3 doctor ........... install-doctor (deterministic readiness report)
+#   #5 stack scripts .... product-smoke drives the same API the stack serves;
+#                        stack orchestration itself is covered by stack-live
+#                        unit tests inside test-js
+#   #7 MCP E2E .......... test-platform (explicit MCP stdio E2E step)
+#
+# Cache policy: pnpm store and uv package downloads ONLY. Generated result
+# artifacts, SQLite state, solver output, provenance ledgers, .next output,
+# and venvs are never cached and never cross job boundaries.
+#
+# Heavyweight native-solver benchmarks stay opt-in (last job): manual dispatch
+# or the `native-solvers` PR label. Hosted CI never fakes native success.
 name: platform
 on:
-  pull_request:
-    paths: ["packages/solver-contracts/**", "solvers/**", "mcp/**", "infra/**", "scripts/**", "docs/**", "benchmarks/platform/**", "tests/platform/**", ".github/workflows/platform.yml"]
   push:
-    branches: [main, feature/platform-integrations]
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  COREPACK_ENABLE_PROJECT_SPEC: "1"
+
 jobs:
-  contracts:
+  install-doctor:
+    name: install (frozen) + product doctor
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
-      - run: node --check packages/solver-contracts/src/index.ts
-      - run: node --test tests/platform/platform.test.ts
-  native-solver-benchmarks:
-    if: ${{ false }} # Requires separately provisioned, explicitly authorized native solver runner.
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --frozen --directory services/api
+      - name: product doctor (issue #3 path, fails only on blocked baseline)
+        run: pnpm doctor
+
+  typecheck-ts:
+    name: TypeScript typecheck
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - run: exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r typecheck
+      - run: npx tsc -p tsconfig.packages.json
+
+  test-js:
+    name: JS/TS unit + web tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - run: node --test tests/unit/*.test.ts
+      - run: node --test tests/smoke/workspace.test.mjs
+      - run: pnpm --filter @aero/web test
+
+  test-platform:
+    name: contracts + MCP stdio E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - name: solver contracts + participant + doctor paths
+        run: node --test tests/platform/platform.test.ts tests/platform/participants.test.ts tests/platform/doctor.test.ts
+      - name: MCP stdio E2E (issue #7 path)
+        run: node --test tests/platform/mcp-stdio.test.ts
+
+  test-py:
+    name: Python tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: uv sync --frozen --directory services/api
+      - run: uv run --no-sync --directory services/api pytest -q
+        env:
+          AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/native-jobs
+
+  python-checks:
+    name: Python lint + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: corepack enable
+      - run: uv sync --frozen --directory services/api
+      - run: pnpm lint:py
+      - run: pnpm typecheck:py
+
+  build-web:
+    name: frontend production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @aero/web build
+
+  audit-report:
+    name: requirements audit (reporting mode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Full history: gap receipts are validated against commit ancestry.
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      # Reporting mode surfaces every remaining non-product physics gap in
+      # the log without hiding failures, and never fails this gate: the
+      # strict `pnpm audit:requirements` exit code stays red until the
+      # mandatory physics work it tracks is genuinely complete.
+      - run: node scripts/audit-requirements.mjs --report
+
+  product-smoke:
+    name: product smoke (real API job path)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: uv sync --frozen --directory services/api
+      # One tiny deterministic rotor-campbell job through the governed API
+      # lifecycle to a verified native_solver envelope + provenance, on an
+      # isolated job root under runner temp (never reused, never committed).
+      - run: node --no-warnings scripts/platform/product-smoke.mjs
+        env:
+          AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/smoke-jobs
+
+  container-smoke:
+    name: platform container smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      # ubuntu runners provide a Docker daemon; the script fails closed
+      # (SMOKE_NO_DAEMON) instead of faking success when none answers.
+      - run: docker info
+      - run: node --no-warnings scripts/platform/container-smoke.mjs
+
+  native-solver-benchmarks:
+    # Opt-in only: hosted CI does not contain every solver. Manual dispatch
+    # or the `native-solvers` label on a PR; never required, never faked.
+    # Self-hosted runners with provisioned solvers can take this job by
+    # adding `runs-on: [self-hosted, native-solvers]` here.
+    name: native solver benchmarks (opt-in)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'native-solvers'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: uv sync --frozen --directory services/api
+      - run: uv run --no-sync --directory services/api pytest -q ../../tests/physics/test_native_benchmarks.py
+        env:
+          AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/native-jobs

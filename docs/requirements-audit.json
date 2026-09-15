@@ -889,7 +889,7 @@
           "kind": "file",
           "path": "infra/docker/compose.local.yml",
           "detail": "PARTIAL: Local-mode path documented (README) with compose file, dev script, and analytical API+UI. Native solver containers not built; cloud is not required.",
-          "sha256": "b30edca2778bd5db39670897a8a95b9fea2b9b0cf043bf6cb90fe252a5566f1f"
+          "sha256": "866e33dccc4a430cfc0a9afd990e6867661a7bf58663b348d712900972e0c54a"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1429,7 +1429,7 @@
           "kind": "file",
           "path": ".github/workflows/platform.yml",
           "detail": "PARTIAL: CI contracts job runs node checks and platform tests on PRs touching platform paths. Native solver benchmark tier is explicitly gated off (if:false).",
-          "sha256": "0cd1fa95184a142438655bf3b15729be7c243768c681502cd5e1277933ed29c6"
+          "sha256": "094449e179208a4ba544157b3795be5741abcc737d564f23668d8359ee3c88b2"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2046,7 +2046,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
-          "sha256": "20b066d4abc0ccbc5f034de2404d574fce4ddcc0898459086845970c2379a652"
+          "sha256": "6937046cc87ceec24747fa3bcf338dde59f1b316658b118ae6e3fb66df764fe8"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"
