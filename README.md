@@ -14,8 +14,15 @@ clearly labelled as unavailable instead of failing obscurely.
 2. `pnpm setup` — verify runtimes and print a solver capability report.
 3. `pnpm run doctor` (`--json` for machine output) — diagnostics-only
    readiness and capability report; never installs or changes anything.
-4. `pnpm dev` (UI) plus, from `services/api`,
-   `uv run uvicorn aeroworkbench_api.main:app --reload --port 8000` (API).
+4. `pnpm dev:all` — one command starts the API (with the in-process
+   single-worker native job path), the UI, and verifies readiness gates
+   before printing `stack ready`. `pnpm start:local` is the production-ish
+   equivalent (needs `pnpm --filter @aero/web build` first). Append `--`
+   `--with-mcp` for the optional stdio MCP server. Ctrl-C shuts the stack
+   down in reverse order with no owned survivors. `pnpm dev` (UI) plus,
+   from `services/api`,
+   `uv run uvicorn aeroworkbench_api.main:app --reload --port 8000` (API)
+   remain available as individual service commands.
 
 Open http://localhost:3000. The workbench opens on a labelled analytical
 sample; the provenance dialog on any result tells you exactly what ran and

@@ -12,10 +12,27 @@ All missing commands fail closed. No platform command installs packages, fetches
 node scripts/platform/bootstrap.mjs
 node scripts/platform/capabilities.mjs
 node scripts/platform/dev.mjs
+node scripts/platform/stack.mjs dev [--with-mcp]
+node scripts/platform/stack.mjs start [--with-mcp]
 node scripts/platform/benchmark.mjs
 node scripts/platform/demo.mjs edf
 node mcp/engineering/server.ts
 ```
+
+`pnpm dev:all` and `pnpm start:local` are the package.json entries for the
+stack commands. The orchestrator starts only product services (API, web UI,
+optionally MCP); it never launches solver executables and never requires
+Docker. The governed single-worker native job lifecycle runs in-process
+inside the API, so there is no separate worker service: the worker gate is a
+live GET of `/v1/native/capabilities` after `/health` responds, and the web
+gate is a loopback TCP accept on the UI port. `stack ready` is printed only
+after every gate responds, within bounded timeouts
+(`AERO_STACK_READY_TIMEOUT_MS`). Ports default to 8000/3000 with explicit
+`AERO_API_PORT`/`AERO_WEB_PORT` overrides; occupied ports fail fast with an
+actionable message and ports are never chosen at random. On Ctrl-C, child
+exit, or startup failure the stack stops owned children in reverse dependency
+order (mcp, web, api) with a bounded grace period (`AERO_STACK_STOP_GRACE_MS`)
+and then force-kills only the observed process tree.
 
 The demo command deliberately exits without a numerical result until an explicit native case runner supplies case data and READY capabilities. It is a safe operational gate, not a completed EDF/aircraft/turbine demonstration.
 
