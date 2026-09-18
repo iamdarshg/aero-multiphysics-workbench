@@ -32,6 +32,7 @@ __all__ = [
     "preflight_design_state",
     "unflatten_design_state",
     "validate_design_space",
+    "variable_is_active",
 ]
 
 _UNIT_SCALE: dict[str, float] = {"m": 1.0, "cm": 0.01, "mm": 0.001, "in": 0.0254}
@@ -594,44 +595,71 @@ def _branch_allows(
     return True
 
 
+def _activation(
+    index: Mapping[str, Mapping[str, Any]],
+    membership: Mapping[str, list[Mapping[str, Any]]],
+    memo: dict[str, bool],
+    variable_id: str,
+    visiting: set[str],
+    state: Mapping[str, Any],
+) -> bool:
+    """One variable's activation, memoized across a single activation query."""
+    remembered = memo.get(variable_id)
+    if remembered is not None:
+        return remembered
+    if variable_id in visiting:
+        raise DesignSpaceError(f"DESIGN_SPACE_ACTIVATION_CYCLE:{variable_id}")
+    visiting.add(variable_id)
+    variable = index[variable_id]
+    active = _branch_allows(variable_id, membership.get(variable_id, []), index, state)
+    if active and variable.get("activeWhen") is not None:
+        active = _evaluate_predicate(variable["activeWhen"], index, state)
+    domain = variable["domain"]
+    if active and domain["kind"] == "linked":
+        active = _activation(
+            index, membership, memo, str(domain["targetVariable"]), visiting, state
+        )
+    if active and domain["kind"] == "derived":
+        active = all(
+            _activation(index, membership, memo, name, visiting, state)
+            for name in _expression_variables(domain["expression"])
+        )
+    if active and domain["kind"] == "vector-profile" and domain.get("lengthVariable") is not None:
+        active = _activation(
+            index, membership, memo, str(domain["lengthVariable"]), visiting, state
+        )
+    visiting.discard(variable_id)
+    memo[variable_id] = active
+    return active
+
+
+def variable_is_active(
+    space: Mapping[str, Any], state: Mapping[str, Any], variable_id: str
+) -> bool:
+    """Single-variable activation for lazy traversal of conditional spaces.
+
+    Mirrors :func:`active_variable_ids` but answers one variable at a time so a
+    generator can decide whether a branch is reachable before enumerating it.
+    Referenced values that are missing from a partial state raise the same
+    :class:`DesignSpaceError` as the full query, letting callers enforce a
+    dependency order instead of silently guessing.
+    """
+    index = _index(space)
+    target = str(variable_id)
+    if target not in index:
+        raise DesignSpaceError(f"UNKNOWN_VARIABLE:{target}")
+    return _activation(index, _branch_membership(space), {}, target, set(), state)
+
+
 def active_variable_ids(space: Mapping[str, Any], state: Mapping[str, Any]) -> tuple[str, ...]:
     """Active variables in declaration order; inactive ones stay as lineage."""
     index = _index(space)
     membership = _branch_membership(space)
     memo: dict[str, bool] = {}
-
-    def is_active(variable_id: str, visiting: set[str]) -> bool:
-        remembered = memo.get(variable_id)
-        if remembered is not None:
-            return remembered
-        if variable_id in visiting:
-            raise DesignSpaceError(f"DESIGN_SPACE_ACTIVATION_CYCLE:{variable_id}")
-        visiting.add(variable_id)
-        variable = index[variable_id]
-        active = _branch_allows(variable_id, membership.get(variable_id, []), index, state)
-        if active and variable.get("activeWhen") is not None:
-            active = _evaluate_predicate(variable["activeWhen"], index, state)
-        domain = variable["domain"]
-        if active and domain["kind"] == "linked":
-            active = is_active(str(domain["targetVariable"]), visiting)
-        if active and domain["kind"] == "derived":
-            active = all(
-                is_active(name, visiting) for name in _expression_variables(domain["expression"])
-            )
-        if (
-            active
-            and domain["kind"] == "vector-profile"
-            and domain.get("lengthVariable") is not None
-        ):
-            active = is_active(str(domain["lengthVariable"]), visiting)
-        visiting.discard(variable_id)
-        memo[variable_id] = active
-        return active
-
     return tuple(
         str(variable["id"])
         for variable in space["variables"]
-        if is_active(str(variable["id"]), set())
+        if _activation(index, membership, memo, str(variable["id"]), set(), state)
     )
 
 

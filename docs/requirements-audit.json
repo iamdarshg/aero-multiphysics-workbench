@@ -235,7 +235,7 @@
           "kind": "file",
           "path": "solvers/code_aster/adapter.py",
           "detail": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
-          "sha256": "3d83ca99601e28a34ac7d1caf3ccf043c4cf5f702ec8a5c09ad59f9343e4f312"
+          "sha256": "2409c907574372ff97bac6942f0269e80e6e3020ef24da989b888a87196c41b5"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2073,7 +2073,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "083f5866c675de856fb7252ccca17fce469b3064e12943ef337aa78ba17a4073"
+          "sha256": "effd79ec9af8da8589793763213da5f7df7c47565e618ecaba88df170536fab5"
         },
         {
           "kind": "file",

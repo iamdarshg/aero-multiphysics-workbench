@@ -1,21 +1,38 @@
 """Real Code_Aster input generation, result parsing, and validation.
 
-The writer emits an executable .comm study (DEBUT..FIN) covering static,
-modal (optionally prestressed), harmonic, and transient analyses with
-thermal-load and contact flags, plus the as_run .export handoff. The parser
-reads the TABLEAU result table and the solver log; it never invents values.
+The writer has two explicitly separated paths:
+
+- a *legacy* scalar path (kept byte-stable for manifest-declared cases) that
+  emits the historic DEBUT..FIN static/modal deck, and
+- a *governed* path that consumes a validated :class:`StructuralRequest`
+  (generated mesh semantic groups, material bindings, orientation frames,
+  constraints, and loads) and emits a native deck for static, modal,
+  prestressed-modal, harmonic, and transient analyses.
+
+The governed path never invents groups or materials: every reference is
+resolved by :mod:`code_aster.structure` against the declared mesh, or the case
+fails closed. The parser reads the TABLEAU result table plus the solver log and
+optional result metadata; it never invents values.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.receipts import ParseReceipt, PrepareReceipt, ValidityReport
+
+from .structure import (
+    ConstraintIngestion,
+    LoadIngestion,
+    MaterialIngestion,
+    StructuralRequest,
+    ingest_structural_request,
+)
 
 ANALYSES = ("static", "modal", "harmonic", "transient")
 
@@ -42,9 +59,23 @@ def _require_str(inputs: Mapping[str, object], name: str, allowed: tuple[str, ..
 
 
 def prepare_comm(inputs: dict[str, object], case_dir: Path) -> PrepareReceipt:
-    """Write case.comm plus the as_run export file from validated inputs."""
+    """Write case.comm plus the as_run export file from validated inputs.
+
+    A governed request (one that carries a ``mesh`` mapping) is rendered through
+    the structural ingestion path; the historic scalar inputs keep their stable
+    deck so existing manifest ports remain valid.
+    """
 
     data: Mapping[str, object] = dict(inputs)
+    if "mesh" in data:
+        return _prepare_governed(data, case_dir)
+    return _prepare_legacy(data, case_dir)
+
+
+# -- legacy scalar path ------------------------------------------------------
+
+
+def _prepare_legacy(data: Mapping[str, object], case_dir: Path) -> PrepareReceipt:
     analysis = _require_str(data, "analysis", ANALYSES)
     prestress_raw = data.get("prestress", False)
     thermal_raw = data.get("thermal_load", False)
@@ -116,6 +147,437 @@ def prepare_comm(inputs: dict[str, object], case_dir: Path) -> PrepareReceipt:
         files=("case.comm", "case.export"),
         detail=f"analysis={analysis} prestress={prestress}",
     )
+
+
+# -- governed path -----------------------------------------------------------
+
+
+def _prepare_governed(data: Mapping[str, object], case_dir: Path) -> PrepareReceipt:
+    request = ingest_structural_request(data)
+    digest = hashlib.sha256(
+        json.dumps(
+            _governed_canonical(request), sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
+    comm = _render_governed_comm(request)
+    export = _render_export(request.mesh.file)
+    case_dir.mkdir(parents=True, exist_ok=True)
+    (case_dir / "case.comm").write_text(comm, encoding="utf-8")
+    (case_dir / "case.export").write_text(export, encoding="utf-8")
+    return PrepareReceipt(
+        participant_id="code-aster",
+        case_id=case_dir.name,
+        input_hash=digest,
+        files=("case.comm", "case.export"),
+        geometry_hash=request.mesh.geometry_hash,
+        mesh_hash=request.mesh.mesh_hash,
+        detail=(
+            f"analysis={request.analysis} governed "
+            f"volumes={len(request.mesh.volumes)} "
+            f"materials={len(request.materials)} "
+            f"loads={len(request.loads)}"
+        ),
+    )
+
+
+def _governed_canonical(request: StructuralRequest) -> dict[str, Any]:
+    return {
+        "analysis": request.analysis,
+        "prestress": request.prestress,
+        "contact": (
+            None
+            if request.contact is None
+            else {
+                "mode": request.contact.mode,
+                "slave": request.contact.slave,
+                "master": request.contact.master,
+            }
+        ),
+        "mesh": {
+            "file": request.mesh.file,
+            "format": request.mesh.format,
+            "volumes": list(request.mesh.volumes),
+            "surfaces": list(request.mesh.surfaces),
+            "nodes": list(request.mesh.nodes),
+            "materialGroups": dict(request.mesh.material_groups),
+            "geometryHash": request.mesh.geometry_hash,
+            "meshHash": request.mesh.mesh_hash,
+            "interfaces": [
+                {
+                    "name": item.name,
+                    "kind": item.kind,
+                    "zoneA": item.zone_a,
+                    "zoneB": item.zone_b,
+                    "surface": item.surface,
+                }
+                for item in request.mesh.interfaces
+            ],
+            "frames": {
+                name: {
+                    "origin": list(frame.origin),
+                    "axis": list(frame.axis),
+                    "anglesDeg": list(frame.angles_deg),
+                }
+                for name, frame in sorted(request.mesh.frames.items())
+            },
+        },
+        "materials": [
+            {
+                "region": material.region,
+                "identity": material.identity,
+                "symmetry": material.symmetry,
+                "properties": {k: material.properties[k] for k in sorted(material.properties)},
+                "frame": material.frame,
+            }
+            for material in request.materials
+        ],
+        "constraints": [
+            {
+                "name": constraint.name,
+                "mode": constraint.mode,
+                "group": constraint.group,
+                "groupKind": constraint.group_kind,
+                "dofs": {k: constraint.dofs[k] for k in sorted(constraint.dofs)},
+            }
+            for constraint in request.constraints
+        ],
+        "loads": [
+            {
+                "name": load.name,
+                "kind": load.kind,
+                "target": load.target,
+                "groupKind": load.group_kind,
+                "parameters": _canonical(load.parameters),
+            }
+            for load in request.loads
+        ],
+        "n_modes": request.n_modes,
+        "time_end_s": request.time_end_s,
+        "n_steps": request.n_steps,
+    }
+
+
+def _canonical(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {str(key): _canonical(value[key]) for key in sorted(value)}
+    if isinstance(value, tuple):
+        return [_canonical(item) for item in value]
+    return value
+
+
+def _identifier(text: str) -> str:
+    cleaned = "".join(character if character.isalnum() else "_" for character in text)
+    if not cleaned or not cleaned[0].isalpha():
+        cleaned = f"x_{cleaned}"
+    return cleaned
+
+
+def _tuple_literal(values: Sequence[str]) -> str:
+    inner = ", ".join(f"'{value}'" for value in values)
+    return f"({inner},)" if len(values) == 1 else f"({inner})"
+
+
+def _vec_literal(values: Sequence[float]) -> str:
+    return "(" + ", ".join(f"{value:.6f}" for value in values) + ")"
+
+
+def _material_var(region: str) -> str:
+    return f"mat_{_identifier(region)}"
+
+
+def _render_governed_comm(request: StructuralRequest) -> str:
+    lines: list[str] = ["DEBUT();", ""]
+    lines += [
+        f"mesh = LIRE_MAILLAGE(FORMAT='{request.mesh.format}', UNITE=20);",
+        "",
+        f"solid_groups = {_tuple_literal(request.mesh.volumes)};",
+        "",
+        "model = AFFE_MODELE(",
+        "    MAILLAGE=mesh,",
+        "    AFFE=_F(",
+        "        GROUP_MA=solid_groups,",
+        "        PHENOMENE='MECANIQUE',",
+        "        MODELISATION='3D',",
+        "    ),",
+        ");",
+        "",
+    ]
+
+    material_vars: dict[str, str] = {}
+    for material in request.materials:
+        variable = _material_var(material.region)
+        material_vars[material.region] = variable
+        lines += _render_material(variable, material)
+
+    lines += ["fieldmat = AFFE_MATERIAU(", "    MAILLAGE=mesh,", "    AFFE=("]
+    for material in request.materials:
+        group = request.mesh.material_groups[material.region]
+        lines.append(
+            f"        _F(GROUP_MA='{group}', MATER=({material_vars[material.region]},)),"
+        )
+    lines += ["    ),", ");", ""]
+
+    oriented = [material for material in request.materials if material.frame is not None]
+    if oriented:
+        lines += ["orientation = AFFE_CARA_ELEM(", "    MODELE=model,", "    ORIENTATION=("]
+        for material in oriented:
+            frame = request.mesh.frames[material.frame or ""]
+            group = request.mesh.material_groups[material.region]
+            lines.append(
+                f"        _F(GROUP_MA='{group}', ANGL_NAUT={_vec_literal(frame.angles_deg)}),"
+            )
+        lines += ["    ),", ");", ""]
+
+    if request.contact is not None:
+        lines += [
+            "contact = DEFI_CONTACT(",
+            "    MODELE=model,",
+            f"    FORMULATION='{request.contact.mode.upper()}',",
+            "    ZONE=_F(",
+            f"        GROUP_MA_ESCL='{request.contact.slave}',",
+            f"        GROUP_MA_MAIT='{request.contact.master}',",
+            "    ),",
+            ");",
+            "",
+        ]
+
+    excitation: list[str] = []
+    for constraint in request.constraints:
+        variable = f"char_{_identifier(constraint.name)}"
+        lines += _render_constraint(variable, constraint)
+        excitation.append(variable)
+
+    harmonic_frequencies: list[float] = []
+    for load in request.loads:
+        if load.kind == "harmonic_spectrum":
+            harmonic_frequencies.extend(load.parameters["frequencies_hz"])
+            continue
+        variable = f"load_{_identifier(load.name)}"
+        lines += _render_load(variable, load, request)
+        excitation.append(variable)
+
+    if request.prestress:
+        lines += [
+            "prestressed = MECA_STATIQUE(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+            "    EXCIT=(",
+            *[f"        _F(CHARGE={variable})," for variable in excitation],
+            "    ),",
+            ");",
+            "",
+            "prestress_field = CREA_CHAMP(",
+            "    TYPE_CHAM='NOEU_DEPL_R',",
+            "    OPERATION='EXTR',",
+            "    RESULTAT=prestressed,",
+            "    NOM_CHAM='DEPL',",
+            ");",
+            "",
+        ]
+
+    analysis = request.analysis
+    if analysis == "static":
+        lines += [
+            "result = MECA_STATIQUE(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+            "    EXCIT=(",
+            *[f"        _F(CHARGE={variable})," for variable in excitation],
+            "    ),",
+            ");",
+            "",
+        ]
+        result_name = "result"
+    elif analysis == "modal":
+        block = [
+            "modes = CALC_MODES(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+        ]
+        if request.prestress:
+            block.append("    PREC_CONTRAINTE=prestress_field,")
+        block += [
+            "    CALC_FREQ=_F(",
+            "        OPTION='PLUS_PETITE',",
+            f"        NMAX_FREQ={request.n_modes},",
+            "    ),",
+            ");",
+            "",
+        ]
+        lines += block
+        result_name = "modes"
+    elif analysis == "harmonic":
+        freq_literal = "(" + ", ".join(f"{value:.6f}" for value in harmonic_frequencies) + ",)"
+        block = [
+            "harm = DYNA_LINE_HARM(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+        ]
+        if request.prestress:
+            block.append("    PREC_CONTRAINTE=prestress_field,")
+        block += [
+            "    EXCIT=(",
+            *[f"        _F(CHARGE={variable})," for variable in excitation],
+            "    ),",
+            f"    FREQ=_F(LIST_FREQ={freq_literal}),",
+            ");",
+            "",
+        ]
+        lines += block
+        result_name = "harm"
+    else:
+        block = [
+            "time = DEFI_LIST_REEL(",
+            "    DEBUT=0.0,",
+            f"    INTERVALLE=_F(JUSQU_A={request.time_end_s:.6e}, NOMBRE={request.n_steps}),",
+            ");",
+            "",
+            "tran = DYNA_LINE_TRAN(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+        ]
+        if request.prestress:
+            block.append("    PREC_CONTRAINTE=prestress_field,")
+        block += [
+            "    EXCIT=(",
+            *[f"        _F(CHARGE={variable})," for variable in excitation],
+            "    ),",
+            "    INCREMENT=_F(LIST_INST=time),",
+            "    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK'),",
+            ");",
+            "",
+        ]
+        lines += block
+        result_name = "tran"
+
+    lines += [
+        "IMPR_RESU(",
+        "    FORMAT='TABLEAU',",
+        "    UNITE=80,",
+        f"    RESU=_F(RESULTAT={result_name}),",
+        ");",
+        "",
+        "FIN();",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def _render_material(variable: str, material: MaterialIngestion) -> list[str]:
+    props = material.properties
+    if material.symmetry == "isotropic":
+        body = [
+            "    ELAS=_F(",
+            f"        E={props['youngs_modulus_pa']:.6e},",
+            f"        NU={props['poisson_ratio']:.6f},",
+            f"        RHO={props['density_kg_m3']:.6e},",
+            "    ),",
+        ]
+    elif material.symmetry == "orthotropic":
+        body = [
+            "    ELAS_ORTH=_F(",
+            f"        E_L={props['e_l_pa']:.6e},",
+            f"        E_T={props['e_t_pa']:.6e},",
+            f"        E_N={props['e_n_pa']:.6e},",
+            f"        NU_LT={props['nu_lt']:.6f},",
+            f"        NU_LN={props['nu_ln']:.6f},",
+            f"        NU_TN={props['nu_tn']:.6f},",
+            f"        G_LT={props['g_lt_pa']:.6e},",
+            f"        G_LN={props['g_ln_pa']:.6e},",
+            f"        G_TN={props['g_tn_pa']:.6e},",
+            f"        RHO={props['density_kg_m3']:.6e},",
+            "    ),",
+        ]
+    else:
+        body = [
+            "    ELAS_ORTH=_F(",
+            f"        E_L={props['e_l_pa']:.6e},",
+            f"        E_T={props['e_t_pa']:.6e},",
+            f"        E_N={props['e_t_pa']:.6e},",
+            f"        NU_LT={props['nu_lt']:.6f},",
+            f"        NU_LN={props['nu_lt']:.6f},",
+            f"        NU_TN={props['nu_tn']:.6f},",
+            f"        G_LT={props['g_lt_pa']:.6e},",
+            f"        G_LN={props['g_lt_pa']:.6e},",
+            f"        G_TN={props['g_tn_pa']:.6e},",
+            f"        RHO={props['density_kg_m3']:.6e},",
+            "    ),",
+        ]
+    return [f"{variable} = DEFI_MATERIAU(", *body, ");", ""]
+
+
+def _render_constraint(variable: str, constraint: ConstraintIngestion) -> list[str]:
+    group_kw = "GROUP_NO" if constraint.group_kind == "node" else "GROUP_MA"
+    dofs = ", ".join(
+        f"{dof}={value:.6e}" for dof, value in sorted(constraint.dofs.items())
+    )
+    return [
+        f"{variable} = AFFE_CHAR_MECA(",
+        "    MODELE=model,",
+        f"    DDL_IMPO=_F({group_kw}='{constraint.group}', {dofs}),",
+        ");",
+        "",
+    ]
+
+
+def _render_load(variable: str, load: LoadIngestion, request: StructuralRequest) -> list[str]:
+    params = load.parameters
+    if load.kind == "nodal_force":
+        group_kw = "GROUP_NO" if load.group_kind == "node" else "GROUP_MA"
+        components = ", ".join(
+            f"{component}={value:.6e}" for component, value in sorted(params["components"].items())
+        )
+        return [
+            f"{variable} = AFFE_CHAR_MECA(",
+            "    MODELE=model,",
+            f"    FORCE_NODALE=_F({group_kw}='{params['group']}', {components}),",
+            ");",
+            "",
+        ]
+    if load.kind in {"distributed_force", "traction"}:
+        components = ", ".join(
+            f"{component}={value:.6e}" for component, value in sorted(params["components"].items())
+        )
+        return [
+            f"{variable} = AFFE_CHAR_MECA(",
+            "    MODELE=model,",
+            f"    FORCE_FACE=_F(GROUP_MA='{params['group']}', {components}),",
+            ");",
+            "",
+        ]
+    if load.kind == "pressure":
+        return [
+            f"{variable} = AFFE_CHAR_MECA(",
+            "    MODELE=model,",
+            f"    PRES=_F(GROUP_MA='{params['group']}', PRES={params['pressure_pa']:.6e}),",
+            ");",
+            "",
+        ]
+    if load.kind == "centrifugal":
+        frame = request.mesh.frames[str(params["frame"])]
+        return [
+            f"{variable} = AFFE_CHAR_MECA(",
+            "    MODELE=model,",
+            "    ROTATION=_F(",
+            f"        GROUP_MA='{params['group']}',",
+            f"        VITESSE={params['omega_rad_s']:.6e},",
+            f"        AXE={_vec_literal(frame.axis)},",
+            f"        CENTRE={_vec_literal(frame.origin)},",
+            "    ),",
+            ");",
+            "",
+        ]
+    if load.kind == "thermal":
+        return [
+            f"{variable} = AFFE_CHAR_MECA(",
+            "    MODELE=model,",
+            f"    TEMP_CALCULEE=_F(GROUP_MA='{params['group']}', "
+            f"TEMP={params['temperature_k']:.6e}),",
+            ");",
+            "",
+        ]
+    # harmonic_spectrum is folded into the analysis FREQ list, never a CHARGE.
+    raise _fail(f"UNRENDERABLE_LOAD_KIND:{load.name}:{load.kind}")
 
 
 def _render_comm(
@@ -286,8 +748,24 @@ def _render_export(mesh_file: str) -> str:
     )
 
 
+# -- parsing -----------------------------------------------------------------
+
+_REQUESTED_RESULT_KEYS: dict[str, str] = {
+    "displacement": "max_displacement_m",
+    "stress": "max_von_mises_pa",
+    "strain": "max_strain",
+    "reaction": "max_reaction_n",
+    "frequency": "first_frequency_hz",
+    "mode": "mode_count",
+    "harmonic": "peak_harmonic_displacement_m",
+    "resonance": "resonance_frequency_hz",
+    "transient": "transient_final_time_s",
+    "residual": "residual_norm",
+}
+
+
 def parse_comm_result(case_dir: Path) -> ParseReceipt:
-    """Parse the TABLEAU result table plus the solver log."""
+    """Parse the TABLEAU result table plus the solver log and metadata."""
 
     log_path = case_dir / "solver.log"
     if not log_path.is_file():
@@ -310,28 +788,8 @@ def parse_comm_result(case_dir: Path) -> ParseReceipt:
             NativeErrorCode.PARSER_FAILED, f"result table unreadable:{exc}"
         ) from exc
     values = _parse_tableau(table_text)
-    if "FREQUENCY_HZ" in values:
-        frequencies = values["FREQUENCY_HZ"]
-        if not frequencies:
-            raise ParticipantError(NativeErrorCode.PARSER_FAILED, "frequency table is empty")
-        scalars = {"first_frequency_hz": float(frequencies[0])}
-        units = {"first_frequency_hz": "Hz"}
-        detail = f"parsed {len(frequencies)} modal frequencies"
-    elif "DISPLACEMENT_M" in values and "VON_MISES_PA" in values:
-        displacements = values["DISPLACEMENT_M"]
-        stresses = values["VON_MISES_PA"]
-        if not displacements or not stresses:
-            raise ParticipantError(NativeErrorCode.PARSER_FAILED, "static table is empty")
-        scalars = {
-            "max_displacement_m": float(max(displacements)),
-            "max_von_mises_pa": float(max(stresses)),
-        }
-        units = {"max_displacement_m": "m", "max_von_mises_pa": "Pa"}
-        detail = "parsed static displacement/stress table"
-    else:
-        raise ParticipantError(
-            NativeErrorCode.PARSER_FAILED, "result table has no known columns"
-        )
+    scalars, units, detail = _compose_scalars(values)
+    scalars.update(_solver_state_scalars(case_dir, scalars))
     return ParseReceipt(
         participant_id="code-aster",
         parser="code_aster.comm:parse_comm_result",
@@ -339,6 +797,88 @@ def parse_comm_result(case_dir: Path) -> ParseReceipt:
         units=units,
         detail=detail,
     )
+
+
+def _compose_scalars(
+    values: Mapping[str, list[float]],
+) -> tuple[dict[str, float], dict[str, str], str]:
+    scalars: dict[str, float] = {}
+    units: dict[str, str] = {}
+    detail: list[str] = []
+
+    def take(column: str, key: str, unit: str) -> None:
+        column_values = values.get(column)
+        if not column_values:
+            return
+        scalars[key] = float(max(column_values))
+        units[key] = unit
+
+    if "FREQUENCY_HZ" in values:
+        frequencies = values["FREQUENCY_HZ"]
+        if not frequencies:
+            raise ParticipantError(NativeErrorCode.PARSER_FAILED, "frequency table is empty")
+        scalars["first_frequency_hz"] = float(frequencies[0])
+        scalars["mode_count"] = float(len(frequencies))
+        units["first_frequency_hz"] = "Hz"
+        units["mode_count"] = "dimensionless"
+        detail.append(f"{len(frequencies)} modal frequencies")
+
+    take("DISPLACEMENT_M", "max_displacement_m", "m")
+    take("VON_MISES_PA", "max_von_mises_pa", "Pa")
+    take("STRAIN", "max_strain", "dimensionless")
+    take("REACTION_N", "max_reaction_n", "N")
+    take("RESIDUAL", "residual_norm", "dimensionless")
+    take("TIME_S", "transient_final_time_s", "s")
+    take("HARMONIC_DISPLACEMENT_M", "peak_harmonic_displacement_m", "m")
+    take("HARMONIC_FREQUENCY_HZ", "resonance_frequency_hz", "Hz")
+
+    if not scalars:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED, "result table has no known columns"
+        )
+    return scalars, units, "; ".join(detail) or "parsed result table"
+
+
+def _solver_state_scalars(case_dir: Path, scalars: Mapping[str, float]) -> dict[str, float]:
+    """Merge optional solver metadata: convergence, residual, load/reaction."""
+
+    meta_path = case_dir / "result.json"
+    if not meta_path.is_file():
+        return {}
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED, f"result.json unreadable:{exc}"
+        ) from exc
+    if not isinstance(meta, Mapping):
+        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "result.json is not an object")
+
+    merged: dict[str, float] = {}
+    converged = meta.get("converged")
+    if isinstance(converged, bool):
+        merged["solver_converged"] = 1.0 if converged else 0.0
+    residual = meta.get("residual_norm")
+    if isinstance(residual, (int, float)) and not isinstance(residual, bool):
+        merged["residual_norm"] = float(residual)
+    for label, key in (("loads", "load_total_n"), ("reactions", "reaction_total_n")):
+        block = meta.get(label)
+        if isinstance(block, Mapping):
+            total = block.get("total_force_n")
+            if isinstance(total, (int, float)) and not isinstance(total, bool):
+                merged[key] = float(total)
+    requested = meta.get("requested_results")
+    if (
+        isinstance(requested, Sequence)
+        and not isinstance(requested, (str, bytes))
+        and requested
+    ):
+        known = {*scalars, *merged}
+        available = all(
+            _REQUESTED_RESULT_KEYS.get(str(item)) in known for item in requested
+        )
+        merged["requested_results_available"] = 1.0 if available else 0.0
+    return merged
 
 
 def _parse_tableau(text: str) -> dict[str, list[float]]:
@@ -374,30 +914,77 @@ def _parse_tableau(text: str) -> dict[str, list[float]]:
     return columns
 
 
+# -- validity ----------------------------------------------------------------
+
+
 def validate_comm_result(
     scalars: Mapping[str, float], inputs: Mapping[str, object]
 ) -> ValidityReport:
+    governed = "mesh" in inputs
+    checks: dict[str, bool] = {}
+
     if "first_frequency_hz" in scalars:
         first = float(scalars["first_frequency_hz"])
-        checks = {
-            "frequency_positive": first == first and first > 0,
-            "frequency_bounded": first == first and first < 1e6,
-        }
-        detail = "first eigenfrequency positive and below 1 MHz"
+        checks["frequency_positive"] = first == first and first > 0
+        checks["frequency_bounded"] = first == first and first < 1e6
+    if "max_displacement_m" in scalars:
+        displacement = float(scalars["max_displacement_m"])
+        checks["displacement_finite"] = displacement == displacement and displacement >= 0
+    if "max_von_mises_pa" in scalars:
+        stress = float(scalars["max_von_mises_pa"])
+        checks["stress_finite"] = stress == stress and stress >= 0
+    if "max_strain" in scalars:
+        strain = float(scalars["max_strain"])
+        checks["strain_finite"] = strain == strain and strain >= 0
+    if "peak_harmonic_displacement_m" in scalars:
+        peak = float(scalars["peak_harmonic_displacement_m"])
+        checks["harmonic_response_finite"] = peak == peak and peak >= 0
+
+    if governed:
+        present = any(
+            key in scalars
+            for key in (
+                "first_frequency_hz",
+                "max_displacement_m",
+                "max_von_mises_pa",
+                "peak_harmonic_displacement_m",
+                "transient_final_time_s",
+            )
+        )
+        checks["result_fields_present"] = present
+        if "solver_converged" in scalars:
+            checks["solver_converged"] = float(scalars["solver_converged"]) == 1.0
+        if "requested_results_available" in scalars:
+            checks["requested_results_available"] = (
+                float(scalars["requested_results_available"]) == 1.0
+            )
+        if "load_total_n" in scalars and "reaction_total_n" in scalars:
+            load = float(scalars["load_total_n"])
+            reaction = float(scalars["reaction_total_n"])
+            denominator = max(abs(load), abs(reaction), 1e-12)
+            checks["load_reaction_consistent"] = (
+                abs(load - reaction) / denominator <= 1e-3
+            )
     else:
-        displacement = float(scalars.get("max_displacement_m", float("nan")))
-        stress = float(scalars.get("max_von_mises_pa", float("nan")))
         force = inputs.get("applied_force_n", 0.0)
-        loaded = isinstance(force, (int, float)) and float(force) > 0
-        checks = {
-            "displacement_finite": displacement == displacement and displacement >= 0,
-            "stress_finite": stress == stress and stress >= 0,
-            "loaded_means_moved": (not loaded) or displacement > 0,
-        }
-        detail = "static displacement/stress finite; loaded cases must move"
+        loaded = (
+            isinstance(force, (int, float))
+            and not isinstance(force, bool)
+            and float(force) > 0
+        )
+        if "max_displacement_m" in scalars:
+            displacement = float(scalars["max_displacement_m"])
+            checks["loaded_means_moved"] = (not loaded) or displacement > 0
+
+    if checks and "frequency_positive" in checks:
+        detail = "eigenfrequency positive and below 1 MHz"
+    elif checks.get("result_fields_present"):
+        detail = "governed result fields finite, converged, and consistency-checked"
+    else:
+        detail = "displacement/stress finite; loaded cases must move"
     return ValidityReport(
         participant_id="code-aster",
-        passed=all(checks.values()),
+        passed=bool(checks) and all(checks.values()),
         checks=checks,
         detail=detail,
     )

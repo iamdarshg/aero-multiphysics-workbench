@@ -1,5 +1,19 @@
 """Adaptive fidelity, quality-gated studies, and DOE/optimization drivers."""
 
+from .campaign import (
+    CampaignBudget,
+    CampaignRecord,
+    CampaignSpec,
+    CampaignState,
+    CandidateRecord,
+    EvaluationRecord,
+    EvaluationResult,
+    InMemoryResultStore,
+    PromotionDecision,
+    ResultStore,
+    Selector,
+    run_campaign,
+)
 from .design_space import (
     DesignSpaceError,
     active_variable_ids,
@@ -9,6 +23,7 @@ from .design_space import (
     preflight_design_state,
     unflatten_design_state,
     validate_design_space,
+    variable_is_active,
 )
 from .drivers import (
     DesignVariable,
@@ -25,6 +40,19 @@ from .drivers import (
     study_from_design_state,
 )
 from .fidelity import FidelityDecision, select_fidelity
+from .generation import (
+    Assignment,
+    Candidate,
+    CandidateGenerator,
+    CandidateProvenance,
+    CardinalityEstimate,
+    GenerationBudgetError,
+    GenerationError,
+    GenerationPlan,
+    GenerationRequest,
+    GenerationStats,
+    Mutation,
+)
 from .planner import (
     FidelityImplementation,
     FidelityPlan,
@@ -34,17 +62,39 @@ from .planner import (
 from .quality import PhysicsFlags, QualityPolicy, SampleVerdict, assess_sample
 
 __all__ = [
+    "Assignment",
+    "CampaignBudget",
+    "CampaignRecord",
+    "CampaignSpec",
+    "CampaignState",
+    "Candidate",
+    "CandidateGenerator",
+    "CandidateProvenance",
+    "CandidateRecord",
+    "CardinalityEstimate",
     "DesignSpaceError",
     "DesignVariable",
+    "EvaluationRecord",
+    "EvaluationResult",
     "FidelityDecision",
     "FidelityImplementation",
     "FidelityPlan",
     "FidelitySignals",
+    "GenerationBudgetError",
+    "GenerationError",
+    "GenerationPlan",
+    "GenerationRequest",
+    "GenerationStats",
+    "InMemoryResultStore",
+    "Mutation",
     "OperatingPointEval",
     "PhysicsFlags",
+    "PromotionDecision",
     "QualityPolicy",
+    "ResultStore",
     "SampleReport",
     "SampleVerdict",
+    "Selector",
     "StudyConstraint",
     "StudyObjective",
     "StudyResult",
@@ -57,6 +107,7 @@ __all__ = [
     "plan_fidelity",
     "preflight_design_state",
     "rank_valid",
+    "run_campaign",
     "run_doe",
     "run_optimize",
     "run_sweep",
@@ -64,4 +115,5 @@ __all__ = [
     "study_from_design_state",
     "unflatten_design_state",
     "validate_design_space",
+    "variable_is_active",
 ]

@@ -1,9 +1,13 @@
 """Real Elmer model preparation, log parsing, and validation.
 
-Supports a steady heat-conduction model and an electrostatic model, each
-with mesh/material/boundary export in native .sif syntax. The sif declares
-SaveScalars output so the parser reads solver-produced result.dat plus the
-ElmerSolver log; execution stays fail-closed when ElmerSolver is absent.
+The lifecycle entry points live here. Given a governed solver-mesh mapping the
+native thermal builder (steady or transient, multi-body, semantic material
+groups, heat sources, fixed/flux/convection/interface boundary conditions) is
+used; otherwise the original single-body thermal/electrostatic scalar deck is
+rendered. Parsing reads solver-produced SaveScalars tables plus the ElmerSolver
+log and fails closed when ElmerSolver is absent. Native parsing also publishes
+canonical interface field artifacts (Temperature / Heat-Flux) with mesh and
+interface lineage.
 """
 
 from __future__ import annotations
@@ -16,6 +20,9 @@ from typing import Any
 
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.receipts import ParseReceipt, PrepareReceipt, ValidityReport
+
+from .case import prepare_native_thermal
+from .parser import parse_elmer_output, publish_case_fields, validate_elmer_result
 
 MODELS = ("thermal", "electrostatic")
 
@@ -42,7 +49,16 @@ def _require_str(inputs: Mapping[str, object], name: str, allowed: tuple[str, ..
 
 
 def prepare_sif(inputs: dict[str, object], case_dir: Path) -> PrepareReceipt:
-    """Write case.sif for the requested supported model."""
+    """Write case.sif for the requested supported model.
+
+    A governed solver-mesh mapping (``mesh_mapping`` or ``mesh_mapping_path``)
+    selects the native thermal case builder, which ingests semantic groups and
+    material revisions. The scalar legacy thermal/electrostatic inputs keep the
+    original single-body behavior.
+    """
+
+    if "mesh_mapping" in inputs or "mesh_mapping_path" in inputs:
+        return prepare_native_thermal(inputs, case_dir)
 
     data: Mapping[str, object] = dict(inputs)
     model = _require_str(data, "model", MODELS)
@@ -237,99 +253,25 @@ def _electrostatic_sif(permittivity: float, voltage: float) -> str:
 
 
 def parse_sif_result(case_dir: Path) -> ParseReceipt:
-    """Parse ElmerSolver log plus SaveScalars result.dat."""
+    """Parse an Elmer run: native thermal output or the legacy scalar tables.
 
-    log_path = case_dir / "solver.log"
-    if not target_exists(log_path):
-        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "solver.log is missing")
-    log_text = log_path.read_text(encoding="utf-8")
-    if "ElmerSolver: ALL DONE" not in log_text and "ELMER SOLVER FINISHED" not in log_text:
-        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "Elmer log shows no clean finish")
-    table_path = case_dir / "result.dat"
-    if not table_path.is_file():
-        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "result.dat is missing")
-    values = _parse_save_scalars(table_path.read_text(encoding="utf-8"))
-    if "Temperature" in values:
-        maximum, minimum = values["Temperature"]
-        scalars = {
-            "max_temperature_k": maximum,
-            "min_temperature_k": minimum,
-        }
-        units = {"max_temperature_k": "K", "min_temperature_k": "K"}
-        detail = "parsed heat-equation SaveScalars"
-    elif "Potential" in values:
-        maximum, minimum = values["Potential"]
-        scalars = {
-            "max_potential_v": maximum,
-            "potential_span_v": max(maximum - minimum, 0.0),
-        }
-        units = {"max_potential_v": "V", "potential_span_v": "V"}
-        detail = "parsed electrostatics SaveScalars"
-    else:
-        raise ParticipantError(
-            NativeErrorCode.PARSER_FAILED, "result.dat has no known variable"
-        )
-    return ParseReceipt(
-        participant_id="elmer",
-        parser="elmer.sif:parse_sif_result",
-        scalars=scalars,
-        units=units,
-        detail=detail,
-    )
+    Native cases additionally publish canonical interface field artifacts
+    (Temperature / Heat-Flux / interface heat flow) when native values exist.
+    """
 
-
-def target_exists(path: Path) -> bool:
-    try:
-        return path.is_file()
-    except OSError:
-        return False
-
-
-def _parse_save_scalars(text: str) -> dict[str, tuple[float, float]]:
-    import re
-
-    pattern = re.compile(r"^\s*(\w+)\s*:\s*max\s*=\s*([0-9.eE+-]+)\s+min\s*=\s*([0-9.eE+-]+)")
-    values: dict[str, tuple[float, float]] = {}
-    for line in text.splitlines():
-        match = pattern.match(line)
-        if match:
-            try:
-                values[match.group(1)] = (float(match.group(2)), float(match.group(3)))
-            except ValueError:
-                continue
-    if not values:
-        raise ParticipantError(
-            NativeErrorCode.PARSER_FAILED, "result.dat has no max/min rows"
-        )
-    return values
+    parsed = parse_elmer_output(case_dir)
+    publish_case_fields(case_dir, parsed)
+    return parsed
 
 
 def validate_sif_result(
     scalars: Mapping[str, float], inputs: Mapping[str, object]
 ) -> ValidityReport:
-    if "max_temperature_k" in scalars:
-        maximum = float(scalars["max_temperature_k"])
-        minimum = float(scalars.get("min_temperature_k", float("nan")))
-        ambient = inputs.get("ambient_k", 0.0)
-        ambient_value = float(ambient) if isinstance(ambient, (int, float)) else 0.0
-        checks = {
-            "temperature_finite": maximum == maximum and minimum == minimum,
-            "heating_consistent": maximum >= minimum >= ambient_value,
-        }
-        detail = "peak/min temperatures finite and at/above the fixed boundary value"
-    else:
-        maximum = float(scalars.get("max_potential_v", float("nan")))
-        span = float(scalars.get("potential_span_v", float("nan")))
-        voltage = inputs.get("voltage_v", 0.0)
-        applied = float(voltage) if isinstance(voltage, (int, float)) else 0.0
-        checks = {
-            "potential_finite": maximum == maximum and span == span and span >= 0,
-            "bounded_by_electrode": maximum <= applied * (1.0 + 1e-6) + 1e-12,
-        }
-        detail = "potential span finite and bounded by the electrode voltage"
-    return ValidityReport(
-        participant_id="elmer",
-        passed=all(checks.values()),
-        checks=checks,
-        detail=detail,
-    )
+    """Validate an Elmer result.
+
+    Native thermal cases require solver convergence and an energy-balance
+    closure within the declared tolerance; the legacy scalar paths keep their
+    original temperature/potential checks.
+    """
+
+    return validate_elmer_result(scalars, inputs)
