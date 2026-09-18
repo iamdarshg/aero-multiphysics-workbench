@@ -128,6 +128,15 @@ const main = async () => {
     process.exitCode = 2;
     return;
   }
+  // Defence in depth: a missing cwd makes spawn fail with ENOENT naming the
+  // executable even when the executable exists. Create the service cwd first.
+  try {
+    mkdirSync(service.cwd, { recursive: true });
+  } catch (error) {
+    console.error(`[platform-entrypoint] cannot create cwd ${service.cwd}: ${error.message}`);
+    process.exitCode = 1;
+    return;
+  }
   const child = spawn(service.cmd, service.argv, {
     cwd: service.cwd,
     env: { ...process.env, ...service.extraEnv },
@@ -144,7 +153,10 @@ const main = async () => {
   process.once("SIGTERM", () => forward("SIGTERM"));
   process.once("SIGINT", () => forward("SIGINT"));
   child.once("error", (error) => {
-    console.error(`[platform-entrypoint] ${parsed.mode} failed to start: ${error.message}`);
+    console.error(
+      `[platform-entrypoint] ${parsed.mode} failed to start: ${error.message} ` +
+        `(cmd=${service.cmd} cwd=${service.cwd} cwdExists=${existsSync(service.cwd)})`,
+    );
     process.exitCode = 1;
   });
   child.once("exit", (code, signal) => {

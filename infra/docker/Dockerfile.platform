@@ -66,6 +66,13 @@ COPY --from=web-build /workbench/scripts ./scripts
 COPY --from=web-build /workbench/services/api ./services/api
 COPY --from=web-build /workbench/solvers ./solvers
 COPY infra/docker/platform-entrypoint.mjs ./infra/docker/platform-entrypoint.mjs
+# Fail the build (not the container) if a runtime path the entrypoint relies on
+# is missing, and show the interpreter so ENOENT-type failures are diagnosable.
+RUN test -d /workbench/services/api \
+  && test -d /workbench/packages/materials \
+  && test -x /usr/local/bin/python3 \
+  && ls -l /usr/local/bin/python3 \
+  && /usr/local/bin/python3 -c "import sys; print('runtime interpreter', sys.version.split()[0])"
 VOLUME ["/data"]
 EXPOSE 3000 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=3 \
