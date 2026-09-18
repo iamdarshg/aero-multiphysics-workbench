@@ -7,6 +7,9 @@
 #                        stack orchestration itself is covered by stack-live
 #                        unit tests inside test-js
 #   #7 MCP E2E .......... test-platform (explicit MCP stdio E2E step)
+#   #10 release E2E ..... release-e2e (doctor + stack start + tiny job +
+#                        artifact export + MCP call + UI root + trust checks +
+#                        shutdown with no owned children; summary uploaded)
 #
 # Cache policy: pnpm store and uv package downloads ONLY. Generated result
 # artifacts, SQLite state, solver output, provenance ledgers, .next output,
@@ -199,6 +202,48 @@ jobs:
       - run: node --no-warnings scripts/platform/product-smoke.mjs
         env:
           AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/smoke-jobs
+
+  release-e2e:
+    name: release E2E (full local product path)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: corepack enable
+      - name: cache pnpm downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --frozen --directory services/api
+      # Production UI build first: the release E2E drives `stack.mjs start`
+      # (the same command users run via `pnpm start:local`), which requires
+      # apps/web/.next/BUILD_ID and never uses the dev server.
+      - run: pnpm --filter @aero/web build
+      # Bounded release gate (issue #10 path): isolated dirs, doctor, stack
+      # start, one tiny rotor-campbell job to a verified native_solver
+      # envelope, artifact export, read-only MCP call, UI root, trust
+      # assertions, shutdown with no owned children left behind.
+      - run: pnpm test:product-e2e
+        env:
+          AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/e2e-jobs
+          AERO_E2E_SUMMARY_DIR: ${{ runner.temp }}/e2e-summary
+      - name: upload release E2E summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-e2e-summary
+          path: ${{ runner.temp }}/e2e-summary/product-e2e-summary.json
+          if-no-files-found: error
 
   container-smoke:
     name: platform container smoke

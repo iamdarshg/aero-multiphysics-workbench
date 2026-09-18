@@ -9,6 +9,7 @@
     "audit:report": "node scripts/audit-requirements.mjs --report",
     "smoke:product": "node --no-warnings scripts/platform/product-smoke.mjs",
     "smoke:container": "node --no-warnings scripts/platform/container-smoke.mjs",
+    "test:product-e2e": "node --no-warnings scripts/platform/product-e2e.mjs",
     "doctor": "node --no-warnings scripts/platform/doctor.mjs",
     "start:local": "node scripts/platform/stack.mjs start",
     "dev:all": "node scripts/platform/stack.mjs dev",

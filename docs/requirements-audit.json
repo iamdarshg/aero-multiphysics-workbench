@@ -176,7 +176,7 @@
     },
     {
       "id": "section:7",
-      "title": "EDF SYSTEM — FULL FIRST IMPLEMENTATION",
+      "title": "EDF SYSTEM \u2014 FULL FIRST IMPLEMENTATION",
       "status": "PARTIAL",
       "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
       "sourceRef": {
@@ -266,7 +266,7 @@
     },
     {
       "id": "section:11",
-      "title": "ELECTRIC MOTOR — THREE FIDELITY LEVELS",
+      "title": "ELECTRIC MOTOR \u2014 THREE FIDELITY LEVELS",
       "status": "PARTIAL",
       "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
       "sourceRef": {
@@ -628,7 +628,7 @@
       "id": "section:26",
       "title": "USER INTERFACE",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Next.js workbench UI renders (tree, viewport, inspector, dock) with762ms-bounded capability probe; analytical-sample labeling verified. No deployment or native field visualization.",
+      "statusExplanation": "PARTIAL: Next.js workbench UI loads live capabilities and drives real governed jobs (submit, events, cancel) with honest analytical-vs-native labels and result/artifact inspection. No deployment and no native field visualization.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 26,
@@ -639,11 +639,17 @@
         {
           "kind": "file",
           "path": "apps/web/src/app/page.tsx",
-          "detail": "PARTIAL: Next.js workbench UI renders (tree, viewport, inspector, dock) with762ms-bounded capability probe; analytical-sample labeling verified. No deployment or native field visualization.",
+          "detail": "PARTIAL: UI wiring for capability load, real job control, failure states and result inspection.",
           "sha256": "081a1cad80ec9be526ba96a4da3ed386e913771cf8079287d28e45a6ceaf42f8"
+        },
+        {
+          "kind": "file",
+          "path": "apps/web/src/lib/job-client.ts",
+          "detail": "PARTIAL: single typed API client for health, capabilities, submit, events, cancel and results.",
+          "sha256": "7dd6353e83a73c72ad1d4dfd5439814177ef7ee4b4d65388a3b0acf6fda73076"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "section:27",
@@ -691,7 +697,7 @@
       "id": "section:29",
       "title": "LIVE SOLVER VIEW",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Analytical live-progress replay via jobs/SSE; governed native scheduling routes execute real analyses with evidence-gated envelopes. Decimated native field streaming unavailable.",
+      "statusExplanation": "PARTIAL: Live job lifecycle over SSE with persisted transitions and governed native scheduling; real analyses return evidence-gated envelopes. Decimated native field streaming remains unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 29,
@@ -702,11 +708,17 @@
         {
           "kind": "file",
           "path": "services/api/aeroworkbench_api/main.py",
-          "detail": "PARTIAL: Analytical live-progress replay via jobs/SSE; governed native scheduling routes execute real analyses with evidence-gated envelopes. Decimated native field streaming unavailable.",
+          "detail": "PARTIAL: governed job routes, persisted SSE transitions and result/artifact metadata; no decimated field streaming yet.",
           "sha256": "3f49dc70f6de842f26928c30bc292bb42cdbe6262f142675f254ccc82153d0ab"
+        },
+        {
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/native_jobs.py",
+          "detail": "PARTIAL: native analysis submit/status/events/cancel/result routes over the real lifecycle.",
+          "sha256": "c14d901f4e03ff651e6f9dbe02d4b054cef1eff0cf05a7da4988b06b7421c743"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "section:30",
@@ -732,8 +744,8 @@
     {
       "id": "section:31",
       "title": "MCP CAPABILITIES",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: API-backed engineering MCP server over stdio with a small policy-gated tool set (capabilities/job/result inspection, validated variant, deferred submit, owned-job cancel); no shell/path/raw-solver surface. Supervisable live simulation and full namespace coverage remain unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 31,
@@ -742,16 +754,25 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:31; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:31",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "mcp/engineering/server.ts",
+          "detail": "PARTIAL: stdio server starts frames-only with stderr diagnostics and nonzero exit on init failure.",
+          "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
+        },
+        {
+          "kind": "file",
+          "path": "mcp/engineering/tools.ts",
+          "detail": "PARTIAL: seven strict-Zod product tools backed by the public API; no scheduler internals imported.",
+          "sha256": "71c9592d403beea34a3b92265c7bc09c8a7c20984966e57d9a6507d80229320b"
+        },
+        {
+          "kind": "file",
+          "path": "mcp/engineering/api-client.ts",
+          "detail": "PARTIAL: typed loopback-only API client over the same public routes the UI uses.",
+          "sha256": "4d6f6693f8f2aae019c810181fe94f09b60f8b793bf29ad699be42d3165bfa61"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "section:32",
@@ -877,7 +898,7 @@
       "id": "section:37",
       "title": "LOCAL MODE",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Local-mode path documented (README) with compose file, dev script, and analytical API+UI. Native solver containers not built; cloud is not required.",
+      "statusExplanation": "PARTIAL: One-command local startup (pnpm start:local / dev:all) with readiness gates and clean shutdown verified by the release E2E; native solver containers still not built, and cloud is not required.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 37,
@@ -887,12 +908,18 @@
       "evidence": [
         {
           "kind": "file",
+          "path": "scripts/platform/stack.mjs",
+          "detail": "PARTIAL: local stack orchestration with readiness gates, reverse-order shutdown and owned-only tree sweep.",
+          "sha256": "dc89059b40464ee88b71706ec1f05e65c9c9f95016c7cd6695917eb548585ff9"
+        },
+        {
+          "kind": "file",
           "path": "infra/docker/compose.local.yml",
-          "detail": "PARTIAL: Local-mode path documented (README) with compose file, dev script, and analytical API+UI. Native solver containers not built; cloud is not required.",
+          "detail": "PARTIAL: compose intent for the lightweight platform plane; Docker is never required by the default local path.",
           "sha256": "866e33dccc4a430cfc0a9afd990e6867661a7bf58663b348d712900972e0c54a"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "section:38",
@@ -1428,11 +1455,11 @@
         {
           "kind": "file",
           "path": ".github/workflows/platform.yml",
-          "detail": "PARTIAL: CI contracts job runs node checks and platform tests on PRs touching platform paths. Native solver benchmark tier is explicitly gated off (if:false).",
-          "sha256": "094449e179208a4ba544157b3795be5741abcc737d564f23668d8359ee3c88b2"
+          "detail": "PARTIAL: fast release-gate workflow (install/typecheck/JS-TS/Python/UI build/MCP E2E/product smoke/release E2E) with package-download-only caching.",
+          "sha256": "c54c237843548e53881081128459a254432d6c25025f0fb1343e1e94cb144874"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "section:61",
@@ -2034,7 +2061,7 @@
       "id": "stopping:2",
       "title": "the application runs",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
+      "statusExplanation": "PARTIAL: One-command local stack start/stop is exercised end-to-end by the release E2E (doctor, readiness, capabilities, real job, result, MCP, UI root, clean shutdown); continuous long-running operation still unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2045,11 +2072,17 @@
         {
           "kind": "file",
           "path": "package.json",
-          "detail": "PARTIAL: Local run path scripted (pnpm dev, uvicorn API) and unit suites pass; continuous local operation unvalidated.",
-          "sha256": "6937046cc87ceec24747fa3bcf338dde59f1b316658b118ae6e3fb66df764fe8"
+          "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
+          "sha256": "43e8c569c37b7ef2e319ce5666860f1ead31d766a21e4855fd7db4296f9239bb"
+        },
+        {
+          "kind": "file",
+          "path": "scripts/platform/product-e2e.mjs",
+          "detail": "PARTIAL: bounded release E2E over the real public product path with trust-boundary and orphan assertions.",
+          "sha256": "5e9765a0bbe5d1cc6a42c7ed81c9abfd43853ea3ddb502c46f418312bc4395e1"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T17:20:00Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "stopping:3",
@@ -2682,7 +2715,7 @@
       "id": "stopping:31",
       "title": "MCP works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: MCP stdio handshake passes with allowlisted skeleton tools; supervisable live simulation unavailable.",
+      "statusExplanation": "PARTIAL: API-backed MCP server with policy gates and an stdio E2E covering tool list, deferred submit, owned-job cancel and fail-closed rejection. Supervisable live simulation unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2692,12 +2725,18 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "mcp/engineering/server.ts",
-          "detail": "PARTIAL: MCP stdio handshake passes with allowlisted skeleton tools; supervisable live simulation unavailable.",
-          "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
+          "path": "mcp/engineering/tools.ts",
+          "detail": "PARTIAL: seven product tools calling the public API only; policy gates for mutation, destructive, ownership and remote.",
+          "sha256": "71c9592d403beea34a3b92265c7bc09c8a7c20984966e57d9a6507d80229320b"
+        },
+        {
+          "kind": "file",
+          "path": "tests/platform/participants.test.ts",
+          "detail": "PARTIAL: MCP stdio E2E over the real server including frames-only stdout and rejection paths.",
+          "sha256": "5a500be2ad5722aeaf790b966c164768d9f3f1a05c1e67e0dacceb359ff59d23"
         }
       ],
-      "lastVerifiedAt": "2026-09-14T14:36:13Z"
+      "lastVerifiedAt": "2026-09-18T19:43:51Z"
     },
     {
       "id": "stopping:32",

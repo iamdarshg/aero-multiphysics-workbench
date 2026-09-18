@@ -514,6 +514,9 @@ const realDeps = (log) => ({
       detached: process.platform !== "win32",
       stdio: name === "mcp" ? ["pipe", "pipe", "pipe"] : ["ignore", "pipe", "pipe"],
     });
+    // Observable owned PID: the release E2E and operators use this to account
+    // for the CLI's children when the CLI itself exits abruptly.
+    log(`[${name}] spawned pid ${child.pid}`);
     return wrapChild(name, child, log);
   },
 });
