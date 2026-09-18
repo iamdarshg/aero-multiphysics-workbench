@@ -19,17 +19,32 @@ add-apt-repository -y ppa:deadsnakes/ppa 2>&1 | tail -1
 add-apt-repository -y ppa:elmer-csc-ubuntu/elmer-csc-ppa 2>&1 | tail -1
 apt-get update -qq 2>&1 | tail -1
 apt-get install -y -qq elmerfem-csc python3.12 python3.12-venv 2>&1 | tail -1
-curl -sS https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-python3.12 /tmp/get-pip.py 2>&1 | tail -1
 
-echo "--- B: pip stack (one per command) ---"
+echo "--- B: python 3.12 venv + pip stack (one per command) ---"
+# One explicit interpreter for install AND every proof. Ubuntu 22.04's
+# `python3` is 3.10, so proofs must never fall back to it.
+PY=/opt/solvers-py312/bin/python
+rm -rf /opt/solvers-py312
+python3.12 -m venv /opt/solvers-py312 2>&1 | tail -1
+"$PY" -m pip install -q --upgrade pip 2>&1 | tail -1
 for PKG in openmdao ross pybamm cantera; do
-  timeout 600 python3.12 -m pip install -q "$PKG" 2>&1 | tail -1
-  python3.12 -c "import importlib.util as u; print('P12 $PKG:', u.find_spec('$PKG') is not None)" 2>&1 | tail -1
+  timeout 600 "$PY" -m pip install -q "$PKG" 2>&1 | tail -1
+  "$PY" -c "import importlib.util as u; print('P12 $PKG:', u.find_spec('$PKG') is not None)" 2>&1 | tail -1
 done
 gmsh --version 2>&1 | head -1 | sed 's/^/P gmsh /'
 ElmerSolver --version 2>&1 | head -1 | sed 's/^/P elmer /'
 ccx -v 2>&1 | head -2 | tr '\n' ' '; echo "(ccx)"
+
+echo "--- B2: interpreter smoke assertion (gates proofs D1-D4) ---"
+# Assert the exact interpreter used above is >=3.12 AND every proof import
+# resolves, BEFORE any proof runs. A failure skips D1-D4 with a clear reason
+# instead of letting python3 (3.10) produce misleading ModuleNotFoundError.
+PY_OK=0
+if "$PY" -c "import sys; assert sys.version_info[:2] >= (3, 12), sys.version; import openmdao, ross, pybamm, cantera; print('P12 smoke ok', sys.version.split()[0])"; then
+  PY_OK=1
+else
+  echo "P12 SMOKE FAILED: python3.12 venv/imports incomplete; proofs D1-D4 skipped (never substituted)"
+fi
 
 echo "--- C: conda heavies ---"
 curl -sL https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xj -C /usr/local/bin bin/micromamba
@@ -39,8 +54,9 @@ export LD_LIBRARY_PATH=/opt/solvers/lib:${LD_LIBRARY_PATH:-}
 source /opt/solvers/etc/bashrc 2>/dev/null
 echo "P openfoam=$WM_PROJECT_VERSION precice=$(precice-tools version 2>/dev/null | head -c 20)"
 
+if [ "$PY_OK" = 1 ]; then
 echo "--- D1: openmdao paraboloid ---"
-python3 -c "
+"$PY" -c "
 import openmdao.api as om
 p = om.Problem()
 p.model.add_subsystem('p', om.ExecComp('f = (x-3)**2 + x*y + (y+4)**2 - 3'))
@@ -53,7 +69,7 @@ print('R openmdao f =', round(float(p['p.f'][0]), 6))
 " 2>&1 | tail -1
 
 echo "--- D2: cantera gri30 HP equilibrate ---"
-timeout 120 python3 -c "
+timeout 120 "$PY" -c "
 import cantera as ct
 g = ct.Solution('gri30.yaml'); g.TP = 1200, 101325
 g.equilibrate('HP')
@@ -61,7 +77,7 @@ print('R cantera Tad =', round(float(g.T), 1), 'K')
 " 2>&1 | tail -1
 
 echo "--- D3: pybamm SPM discharge ---"
-timeout 150 python3 -c "
+timeout 150 "$PY" -c "
 import pybamm, numpy as np
 model = pybamm.lithium_ion.SPM()
 sim = pybamm.Simulation(model)
@@ -71,14 +87,17 @@ print('R pybamm V =', round(float(v[0]), 3), '->', round(float(v[-1]), 3))
 " 2>&1 | tail -3
 
 echo "--- D4: ross modal (best effort) ---"
-timeout 150 python3 -c "
+timeout 150 "$PY" -c "
 import ross as rs
 print('R ross import ok')
 " 2>&1 | tail -3
+else
+echo "P12 D1-D4 skipped: interpreter smoke assertion did not pass"
+fi
 
 echo "--- D5: calculix cantilever ---"
 rm -rf /tmp/ccx && mkdir -p /tmp/ccx && cd /tmp/ccx
-python3 - <<'PYEOF' > beam.inp
+"$PY" - <<'PYEOF' > beam.inp
 print("*HEADING\ncantilever 10x1x1")
 print("*NODE")
 nid = 0
@@ -104,7 +123,7 @@ print("*NODE FILE,OUTPUT=2D\nU\n*EL FILE\nS\n*END STEP")
 PYEOF
 timeout 200 ccx beam > ccx.log 2>&1; echo "ccx_exit=$?"
 grep -a "displacements" ccx.log | head -2
-python3 -c "
+"$PY" -c "
 import re
 txt = open('/tmp/ccx/beam.dat').read() if __import__('os').path.exists('/tmp/ccx/beam.dat') else ''
 m = re.findall(r'^\s*\d+\s+([-\d.E+]+)\s+([-\d.E+]+)', txt, re.M)
