@@ -15,17 +15,20 @@ import { fileURLToPath } from "node:url";
 const MODES = Object.freeze(["api", "web", "mcp"]);
 
 /**
- * Resolve the API interpreter. A bare "python" is not guaranteed on PATH in
- * the runtime image, so prefer the venv's own interpreter by absolute path and
- * fall back to python3/python only when it is absent.
+ * Resolve the venv site-packages for the API's PYTHONPATH.
+ *
+ * The API is launched with the image's own `python3` and the venv's
+ * site-packages on PYTHONPATH, so a venv interpreter symlink that is broken in
+ * the shipped image can never make the container fail with ENOENT.
  */
-export const resolvePython = (env = {}) => {
+export const resolveSitePackages = (env = {}) => {
   const venv = env.VIRTUAL_ENV?.trim();
-  const candidates = [
-    venv ? join(venv, "bin", "python") : null,
-    venv ? join(venv, "bin", "python3") : null,
-  ].filter((value) => value && existsSync(value));
-  return candidates[0] ?? "python3";
+  if (!venv) return null;
+  for (const version of ["python3.12", "python3"]) {
+    const candidate = join(venv, "lib", version, "site-packages");
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
 };
 
 const usageError = (detail) => new Error(`ENTRYPOINT_USAGE:${detail}`);
@@ -47,11 +50,18 @@ export const resolveServiceCommand = ({ mode, root, env = {} }) => {
     }
     const jobRoot = env.AEROWORKBENCH_JOB_ROOT?.trim() || "/data/jobs";
     mkdirSync(jobRoot, { recursive: true });
+    const sitePackages = resolveSitePackages(env);
+    const pythonPath = [sitePackages, env.PYTHONPATH]
+      .filter((value) => typeof value === "string" && value.trim() !== "")
+      .join(":");
     return {
-      cmd: resolvePython(env),
+      cmd: "python3",
       argv: ["-m", "uvicorn", "aeroworkbench_api.main:app", "--host", "0.0.0.0", "--port", String(port)],
       cwd: join(root, "services", "api"),
-      extraEnv: { AEROWORKBENCH_JOB_ROOT: jobRoot },
+      extraEnv: {
+        AEROWORKBENCH_JOB_ROOT: jobRoot,
+        ...(pythonPath ? { PYTHONPATH: pythonPath } : {}),
+      },
     };
   }
   if (mode === "web") {

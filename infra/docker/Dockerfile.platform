@@ -43,6 +43,7 @@ ENV UV_PYTHON_DOWNLOADS=never
 RUN pip install --no-cache-dir "uv==0.9.6" \
   && uv sync --frozen --no-dev --python /usr/local/bin/python3.12 --link-mode=copy \
   && /opt/api/.venv/bin/python -c "import sys, uvicorn, fastapi; print('venv ok', sys.version.split()[0])" \
+  && PYTHONPATH=/opt/api/.venv/lib/python3.12/site-packages python3 -c "import uvicorn, fastapi; print('image interpreter resolves venv deps')" \
   && rm -rf /root/.cache/uv
 ENV NODE_ENV=production \
   COREPACK_ENABLE_PROJECT_SPEC=1 \

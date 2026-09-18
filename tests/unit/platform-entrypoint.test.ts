@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
 import {
   parseMode,
-  resolvePython,
   resolveServiceCommand,
+  resolveSitePackages,
 } from "../../infra/docker/platform-entrypoint.mjs";
 
 test("platform entrypoint accepts exactly one service mode", () => {
@@ -52,20 +52,19 @@ test("platform entrypoint resolves loopback-safe service commands", () => {
   );
 });
 
-test("platform entrypoint prefers the venv interpreter over bare python", () => {
+test("platform entrypoint runs the API on the image interpreter with venv packages", () => {
   const venv = mkdtempSync(join(tmpdir(), "aero-venv-"));
-  // No venv python yet: falls back to a PATH-resolvable interpreter.
-  assert.equal(resolvePython({ VIRTUAL_ENV: venv }), "python3");
-  assert.equal(resolvePython({}), "python3");
-  // With the venv interpreter present it is used by absolute path.
-  mkdirSync(join(venv, "bin"), { recursive: true });
-  const python = join(venv, "bin", "python");
-  writeFileSync(python, "");
-  assert.equal(resolvePython({ VIRTUAL_ENV: venv }), python);
+  assert.equal(resolveSitePackages({}), null);
+  assert.equal(resolveSitePackages({ VIRTUAL_ENV: venv }), null);
+  const sitePackages = join(venv, "lib", "python3.12", "site-packages");
+  mkdirSync(sitePackages, { recursive: true });
+  assert.equal(resolveSitePackages({ VIRTUAL_ENV: venv }), sitePackages);
   const api = resolveServiceCommand({
     mode: "api",
     root: "/workbench",
-    env: { VIRTUAL_ENV: venv, AEROWORKBENCH_JOB_ROOT: venv },
+    env: { VIRTUAL_ENV: venv, AEROWORKBENCH_JOB_ROOT: venv, PYTHONPATH: "/workbench" },
   });
-  assert.equal(api.cmd, python);
+  // The image's own interpreter is used; venv packages arrive via PYTHONPATH.
+  assert.equal(api.cmd, "python3");
+  assert.equal(api.extraEnv.PYTHONPATH, `${sitePackages}:/workbench`);
 });
