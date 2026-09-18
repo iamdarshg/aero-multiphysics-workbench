@@ -2073,7 +2073,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "88aab778aa35bbe65dea9a4b04768b0b5ed552d65ae8c7a64c64e3d8a3021e8a"
+          "sha256": "083f5866c675de856fb7252ccca17fce469b3064e12943ef337aa78ba17a4073"
         },
         {
           "kind": "file",
@@ -2658,7 +2658,7 @@
           "kind": "file",
           "path": "packages/cache/src/content-addressed.ts",
           "detail": "PARTIAL: Content-addressed cache contracts unit-tested; solver-artifact caching at scale unvalidated.",
-          "sha256": "98b5366b00491ebcb396eb30befbd2a8e91eddc84c5dc799c2519002dc57fced"
+          "sha256": "a126261f12804ae3a8cf9b666a3345f3caa6eba161d3e3308484bbfa94507221"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2982,7 +2982,7 @@
           "kind": "file",
           "path": "services/api/pyproject.toml",
           "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
-          "sha256": "9ba11d9f1ca244f969390e2c41e314e7da2d9b3e66dbce99aeac0d51b8f4bd82"
+          "sha256": "f9b7180c4ef25ec24a15e3cc575d4a4539b79d930f912435ed8c79ab08f8c201"
         }
       ],
       "lastVerifiedAt": "2026-09-14T19:25:03Z"

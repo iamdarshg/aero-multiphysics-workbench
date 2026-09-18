@@ -83,12 +83,25 @@ def prepare_mesh_case(inputs: dict[str, object], case_dir: Path) -> PrepareRecei
 
 
 def execute_mesh_case(inputs: dict[str, object], case_dir: Path) -> None:
-    """Run the milestone-1 native mesh pipeline inside the governed job."""
+    """Run the semantics-driven native mesh pipeline inside the governed job."""
 
-    from aeroworkbench_geometry import build_duct_system, rotating_zone_names
+    from aeroworkbench_geometry import build_duct_system
     from aeroworkbench_geometry.builder import live_shapes
     from aeroworkbench_geometry.parametric import export_artifacts
-    from aeroworkbench_mesh import build_native_mesh, duct_mesh_spec, probe_gmsh
+    from aeroworkbench_mesh import (
+        BoundaryLayerIntent,
+        BoxSelector,
+        ExportNeed,
+        InterfaceDeclaration,
+        build_native_mesh,
+        build_solver_exports,
+        probe_gmsh,
+        resolve_semantic_mesh_request,
+        semantic_request_from_topology,
+        semantic_topology_from_model,
+        write_solver_mapping,
+    )
+    from aeroworkbench_semantics import topology_from_components
 
     canonical = _canonical_inputs(dict(inputs))
     capability = probe_gmsh()
@@ -97,13 +110,16 @@ def execute_mesh_case(inputs: dict[str, object], case_dir: Path) -> None:
             NativeErrorCode.CAPABILITY_UNAVAILABLE, f"gmsh unavailable:{capability.detail}"
         )
     n_rotating = int(canonical["n_rotating"])
+    length = float(canonical["length_mm"])
+    inner = float(canonical["inner_diameter_mm"])
+    outer = float(canonical["outer_diameter_mm"])
     built = build_duct_system(
         n_rotating=n_rotating,
         n_solids=1,
-        outer_diameter_mm=float(canonical["outer_diameter_mm"]),
-        inner_diameter_mm=float(canonical["inner_diameter_mm"]),
-        length_mm=float(canonical["length_mm"]),
-        hub_diameter_mm=float(canonical["inner_diameter_mm"]) * 0.3,
+        outer_diameter_mm=outer,
+        inner_diameter_mm=inner,
+        length_mm=length,
+        hub_diameter_mm=inner * 0.3,
         zone_length_mm=float(canonical["zone_length_mm"]),
         zone_gap_mm=float(canonical["zone_gap_mm"]),
     ).build()
@@ -115,23 +131,82 @@ def execute_mesh_case(inputs: dict[str, object], case_dir: Path) -> None:
         for artifact in records["artifacts"]
         if artifact["format"] == "step" and artifact["component"] != "assembly"
     }
-    rotating = rotating_zone_names(n_rotating)
-    stationary = ("fluid_inlet", "fluid_outlet") + tuple(
-        f"stator_zone_{i}" for i in range(n_rotating - 1)
+
+    assignments = _semantic_assignments(n_rotating)
+    face_map = {
+        component.name: component.face_fingerprints for component in built.components
+    }
+    topology = topology_from_components(assignments, face_map)  # type: ignore[arg-type]
+
+    radius = inner / 2.0
+    half = length / 2.0
+    end = 0.51 * length
+    selectors = {
+        "inlet": BoxSelector(
+            -radius, -radius, -half - 1.0, radius, radius, -half + end * 0.02 + 1.0
+        ),
+        "outlet": BoxSelector(
+            -radius, -radius, half - end * 0.02 - 1.0, radius, radius, half + 1.0
+        ),
+        "duct-wall": BoxSelector(
+            -radius - 1.0, -radius - 1.0, -half, radius + 1.0, radius + 1.0, half
+        ),
+    }
+    interfaces = (
+        InterfaceDeclaration(
+            "rotor0-inlet-fsi", "fsi_interface", "rotor-zone-0", "inlet-zone",
+            True, ("rotor.0",),
+        ),
+        InterfaceDeclaration(
+            "shell-flow-cht", "cht_interface", "duct-shell", "inlet-zone",
+            True, ("shell.region", "flow.inlet.region"),
+        ),
     )
-    spec = duct_mesh_spec(
+    request = semantic_request_from_topology(
+        topology,
         name="domain",
-        rotating=rotating,
-        stationary_fluid=stationary,
-        solids=(),
-        length_mm=float(canonical["length_mm"]),
-        inner_diameter_mm=float(canonical["inner_diameter_mm"]),
+        geometry_hash=built.shape_hash,
+        dimension=3,
         base_size_mm=float(canonical["base_size_mm"]),
+        min_size_mm=float(canonical["base_size_mm"]) / 4.0,
+        max_size_mm=float(canonical["base_size_mm"]) * 2.0,
+        selectors=selectors,
+        interfaces=interfaces,
+        boundary_layer=BoundaryLayerIntent(
+            ("duct-wall",), float(canonical["base_size_mm"]) / 4.0, 1.2, 3
+        ),
+        exports=(
+            ExportNeed("openfoam"),
+            ExportNeed("code_aster"),
+            ExportNeed("elmer"),
+            ExportNeed("precice"),
+        ),
+        required_kinds=("rotating_region", "fluid_region", "solid_region"),
+        required_patches=("inlet", "outlet"),
     )
-    receipt = build_native_mesh(spec, files, built.shape_hash, case_dir / "mesh")
+    resolved = resolve_semantic_mesh_request(
+        request, semantic_topology_from_model(topology), files
+    )
+    receipt = build_native_mesh(
+        resolved.spec,
+        files,
+        built.shape_hash,
+        case_dir / "mesh",
+        mapping_payload=resolved.mapping.canonical_payload(),
+    )
     if receipt.state != "completed" or receipt.mesh_path is None:
         raise ParticipantError(NativeErrorCode.MESH_INVALID, receipt.detail)
     quality = receipt.quality
+    exports = build_solver_exports(resolved, resolved.mapping)
+    mapping_hash = write_solver_mapping(
+        case_dir / "mesh_mapping.json",
+        exports,
+        provenance={
+            "geometryHash": built.shape_hash,
+            "meshHash": receipt.mesh_hash or "",
+            "topologyDigest": resolved.request.topology_digest,
+        },
+    )
     (case_dir / "result.json").write_text(
         json.dumps(
             {
@@ -141,6 +216,13 @@ def execute_mesh_case(inputs: dict[str, object], case_dir: Path) -> None:
                 "element_count": quality.element_count if quality else 0,
                 "min_sicn": quality.min_sicn if quality else None,
                 "inverted_count": quality.inverted_count if quality else None,
+                "physical_group_count": len(receipt.physical_groups),
+                "interface_count": len(receipt.interfaces),
+                "orphan_surface_count": len(receipt.orphan_surfaces),
+                "boundary_layer_requested": receipt.boundary_layer_requested,
+                "boundary_layer_achieved": receipt.boundary_layer_achieved,
+                "mesh_mapping_hash": mapping_hash,
+                "percentile_sicn": quality.percentile_sicn if quality else [],
             },
             indent=2,
             sort_keys=True,
@@ -150,6 +232,34 @@ def execute_mesh_case(inputs: dict[str, object], case_dir: Path) -> None:
     mesh_target = case_dir / "domain.msh"
     if Path(receipt.mesh_path) != mesh_target:
         mesh_target.write_bytes(Path(receipt.mesh_path).read_bytes())
+
+
+def _semantic_assignments(
+    n_rotating: int,
+) -> tuple[tuple[str, str, str, str], ...]:
+    assignments: list[tuple[str, str, str, str]] = [
+        ("shell.region", "solid_region", "duct-shell", "duct"),
+        ("flow.inlet.region", "fluid_region", "inlet-zone", "fluid_inlet"),
+        ("flow.outlet.region", "fluid_region", "outlet-zone", "fluid_outlet"),
+        ("flow.inlet", "inlet", "inlet", "fluid_inlet"),
+        ("flow.outlet", "outlet", "outlet", "fluid_outlet"),
+        ("flow.wall", "wall", "duct-wall", "fluid_inlet"),
+        ("shell.material", "material_assignment", "duct-shell-material", "duct"),
+    ]
+    for index in range(n_rotating):
+        assignments.append(
+            (f"rotor.{index}", "rotating_region", f"rotor-zone-{index}", f"rotor_zone_{index}")
+        )
+        if index < n_rotating - 1:
+            assignments.append(
+                (
+                    f"stator.{index}",
+                    "stationary_region",
+                    f"stator-zone-{index}",
+                    f"stator_zone_{index}",
+                )
+            )
+    return tuple(assignments)
 
 
 def parse_mesh_result(case_dir: Path) -> ParseReceipt:

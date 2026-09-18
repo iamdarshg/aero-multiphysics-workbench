@@ -24,6 +24,7 @@ from typing import Literal
 from aeroworkbench_semantics import TopologyReport
 
 UpdateDecision = Literal["morph_candidate", "remesh_required"]
+MeshUpdateAction = Literal["reuse", "morph_candidate", "remesh_required"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +44,87 @@ class MorphReceipt:
     max_displacement_mm: float
     min_sicn_after: float | None
     detail: str
+
+
+@dataclass(frozen=True, slots=True)
+class MeshUpdateReceipt:
+    """Safe mesh-reuse decision with the reason it was chosen."""
+
+    action: MeshUpdateAction
+    reason: str
+    geometry_hash_match: bool
+    topology_preserved: bool
+    max_displacement_mm: float
+
+
+def select_mesh_update(
+    *,
+    parent_geometry_hash: str | None,
+    current_geometry_hash: str,
+    parent_mesh_hash: str | None,
+    report: TopologyReport | None,
+    max_param_shift_mm: float,
+    policy: UpdatePolicy | None = None,
+) -> MeshUpdateReceipt:
+    """Hash-gated reuse/morph/remesh decision.
+
+    A parent mesh is reused only when the geometry content hash is unchanged.
+    When the hash changed, a mesh may be morphed only if semantic correspondence
+    is valid, topology identity is preserved, and the parameter shift is inside
+    the morph budget; otherwise a full remesh is required.
+    """
+
+    settings = policy or UpdatePolicy()
+    if parent_mesh_hash is None or parent_geometry_hash is None:
+        return MeshUpdateReceipt(
+            "remesh_required",
+            "NO_PARENT_MESH:build fresh mesh",
+            geometry_hash_match=False,
+            topology_preserved=False,
+            max_displacement_mm=max_param_shift_mm,
+        )
+    geometry_match = parent_geometry_hash == current_geometry_hash
+    topology_preserved = bool(
+        report is not None and report.valid and not report.requires_remesh
+    )
+    if geometry_match and topology_preserved:
+        return MeshUpdateReceipt(
+            "reuse",
+            "GEOMETRY_HASH_MATCH:reuse accepted parent mesh",
+            geometry_hash_match=True,
+            topology_preserved=True,
+            max_displacement_mm=0.0,
+        )
+    if geometry_match and report is None:
+        return MeshUpdateReceipt(
+            "reuse",
+            "GEOMETRY_HASH_MATCH:no topology change recorded",
+            geometry_hash_match=True,
+            topology_preserved=True,
+            max_displacement_mm=0.0,
+        )
+    if report is None or not report.valid or report.requires_remesh:
+        reason = "TOPOLOGY_INVALID" if report is not None else "NO_TOPOLOGY_REPORT"
+        return MeshUpdateReceipt(
+            "remesh_required",
+            f"{reason}:{report.reason if report is not None else 'missing'}:remesh",
+            geometry_hash_match=geometry_match,
+            topology_preserved=False,
+            max_displacement_mm=max_param_shift_mm,
+        )
+    decision, reason = decide_update_strategy(
+        report, max_param_shift_mm=max_param_shift_mm, policy=settings
+    )
+    action: MeshUpdateAction = (
+        "morph_candidate" if decision == "morph_candidate" else "remesh_required"
+    )
+    return MeshUpdateReceipt(
+        action,
+        reason,
+        geometry_hash_match=geometry_match,
+        topology_preserved=True,
+        max_displacement_mm=max_param_shift_mm,
+    )
 
 
 def decide_update_strategy(

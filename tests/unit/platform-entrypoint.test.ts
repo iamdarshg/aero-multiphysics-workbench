@@ -68,5 +68,5 @@ test("platform entrypoint runs the API on the image interpreter with venv packag
   // The image's own interpreter is used (absolute when present); venv packages
   // arrive via PYTHONPATH so a dangling venv symlink cannot break startup.
   assert.equal(api.cmd, resolveInterpreter());
-  assert.equal(api.extraEnv.PYTHONPATH, `${sitePackages}:/workbench`);
+  assert.equal(api.extraEnv.PYTHONPATH, `/workbench:${sitePackages}`);
 });

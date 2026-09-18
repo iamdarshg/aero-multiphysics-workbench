@@ -25,6 +25,7 @@ CHANGE_IMPACT: dict[str, tuple[str, ...]] = {
     "parameters": ("geometry", "mesh", "analysis", "objectives"),
     "parameterRevision": ("geometry", "mesh", "analysis", "objectives"),
     "geometry": ("geometry", "mesh", "analysis", "interfaces", "objectives"),
+    "designSpace": ("geometry", "mesh", "analysis", "optimization", "objectives"),
     "geometryBindings": ("geometry", "mesh", "analysis", "objectives"),
     "geometryRebuildPolicy": ("geometry", "mesh", "analysis", "optimization"),
     "topologyDigest": ("mesh", "analysis", "interfaces", "objectives"),

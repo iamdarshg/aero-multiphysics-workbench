@@ -64,7 +64,10 @@ export const resolveServiceCommand = ({ mode, root, env = {} }) => {
     const jobRoot = env.AEROWORKBENCH_JOB_ROOT?.trim() || "/data/jobs";
     mkdirSync(jobRoot, { recursive: true });
     const sitePackages = resolveSitePackages(env);
-    const pythonPath = [sitePackages, env.PYTHONPATH]
+    // Workspace first, venv packages last: `/workbench/solvers/ross` (our
+    // participant adapter) must win over the PyPI `ross` library, while
+    // fastapi/uvicorn/pybamm still resolve from site-packages.
+    const pythonPath = [env.PYTHONPATH, sitePackages]
       .filter((value) => typeof value === "string" && value.trim() !== "")
       .join(":");
     return {

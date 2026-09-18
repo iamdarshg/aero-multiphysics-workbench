@@ -12,7 +12,7 @@ import hashlib
 import json
 import threading
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Literal
 
@@ -23,7 +23,7 @@ from .domains import (
     PatchSpec,
     ZoneSpec,
 )
-from .quality import MeshQuality, compute_quality
+from .quality import MeshQuality, compute_quality, evaluate_quality_gate
 
 _MESH_LOCK = threading.Lock()
 
@@ -53,6 +53,10 @@ class InterfaceGroup:
     zone_a: str
     zone_b: str
     surface_count: int
+    kind: str = "interface"
+    conformal_requested: bool = True
+    conformal_achieved: bool = True
+    node_count: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +81,12 @@ class NativeMeshReceipt:
     periodic: tuple[PeriodicPair, ...]
     minimum_quality: float | None
     detail: str
+    input_hashes: dict[str, str] = field(default_factory=dict)
+    orphan_surfaces: tuple[int, ...] = ()
+    unclassified_volumes: tuple[int, ...] = ()
+    boundary_layer_requested: bool = False
+    boundary_layer_achieved: bool = False
+    warnings: tuple[str, ...] = ()
 
     @property
     def element_count(self) -> int:
@@ -103,9 +113,100 @@ def _fail(
     )
 
 
+def mesh_spec_digest(spec: MeshSpec) -> str:
+    """Deterministic content digest of one mesh request specification."""
+
+    payload = {
+        "name": spec.name,
+        "dimension": spec.dimension,
+        "baseSizeMm": spec.base_size_mm,
+        "minSizeMm": spec.min_size_mm,
+        "maxSizeMm": spec.max_size_mm,
+        "secondOrder": spec.second_order,
+        "zones": [
+            [zone.name, zone.motion, zone.domain, list(zone.components)]
+            for zone in spec.zones
+        ],
+        "patches": [
+            [
+                patch.name,
+                patch.kind,
+                patch.domain,
+                list(patch.region_components),
+                [
+                    patch.selector.xmin,
+                    patch.selector.ymin,
+                    patch.selector.zmin,
+                    patch.selector.xmax,
+                    patch.selector.ymax,
+                    patch.selector.zmax,
+                ],
+                patch.periodic_partner,
+                list(patch.periodic_translation_mm)
+                if patch.periodic_translation_mm
+                else None,
+            ]
+            for patch in spec.patches
+        ],
+        "materials": [
+            [material.name, material.material, material.domain, list(material.components)]
+            for material in spec.materials
+        ],
+        "interfaces": [
+            [
+                interface.name,
+                interface.kind,
+                interface.zone_a,
+                interface.zone_b,
+                interface.conformal,
+                list(interface.semantic_keys),
+            ]
+            for interface in spec.interfaces
+        ],
+        "boundaryLayer": None
+        if spec.boundary_layer is None
+        else [
+            list(spec.boundary_layer.wall_patches),
+            spec.boundary_layer.first_layer_mm,
+            spec.boundary_layer.growth_ratio,
+            spec.boundary_layer.layer_count,
+        ],
+        "refinements": [
+            [
+                refinement.name,
+                refinement.element_size_mm,
+                [
+                    refinement.selector.xmin,
+                    refinement.selector.ymin,
+                    refinement.selector.zmin,
+                    refinement.selector.xmax,
+                    refinement.selector.ymax,
+                    refinement.selector.zmax,
+                ],
+            ]
+            for refinement in spec.refinements
+        ],
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def _surface_center(gmsh: Any, tag: int) -> tuple[float, float, float]:
     xmin, ymin, zmin, xmax, ymax, zmax = gmsh.model.getBoundingBox(2, tag)
     return ((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, (zmin + zmax) / 2.0)
+
+
+def _face_node_count(gmsh: Any, surfaces: list[int]) -> int:
+    """Count distinct mesh nodes on a set of surfaces (0 before generation)."""
+
+    nodes: set[int] = set()
+    for tag in surfaces:
+        try:
+            node_tags, _, _ = gmsh.model.mesh.getNodes(2, tag)
+        except Exception:
+            continue
+        nodes.update(int(node) for node in node_tags)
+    return len(nodes)
 
 
 def _apply_patch(
@@ -177,6 +278,7 @@ def build_native_mesh(
     *,
     mesh_filename: str | None = None,
     minimum_sicn: float = 0.05,
+    mapping_payload: dict[str, Any] | None = None,
 ) -> NativeMeshReceipt:
     """Generate a real mesh with Gmsh from per-component STEP files."""
 
@@ -266,8 +368,12 @@ def build_native_mesh(
                 )
                 zone_volume_tags[zone.name] = tags
 
-            # Shared-boundary interface groups between zone pairs.
+            # Shared-boundary interface groups between zone pairs. Declared
+            # interfaces are built first (named/kind-tagged); remaining zone
+            # pairs sharing faces get a generic interface group.
             interfaces: list[InterfaceGroup] = []
+            interface_surfaces: dict[str, list[int]] = {}
+            classified_surfaces: set[int] = set()
             zone_names = [zone.name for zone in spec.zones]
             boundaries: dict[str, set[int]] = {}
             for zone_name, tags in zone_volume_tags.items():
@@ -279,8 +385,51 @@ def build_native_mesh(
                         if dim == 2:
                             faces.add(face)
                 boundaries[zone_name] = faces
+            declared_pairs: set[frozenset[str]] = set()
+            warnings: list[str] = []
+            for declared in spec.interfaces:
+                shared = sorted(
+                    boundaries.get(declared.zone_a, set())
+                    & boundaries.get(declared.zone_b, set())
+                )
+                if not shared:
+                    return _fail(
+                        parent_geometry_hash, "MESH_INTERFACE_EMPTY",
+                        f"interface {declared.name} has no shared faces between "
+                        f"{declared.zone_a} and {declared.zone_b}",
+                    )
+                group = gmsh.model.addPhysicalGroup(2, shared)
+                gmsh.model.setPhysicalName(2, group, declared.name)
+                physical_groups[f"interface:{declared.name}"] = (
+                    f"{declared.kind}:{declared.zone_a}<->{declared.zone_b}:"
+                    f"{len(shared)}faces"
+                )
+                node_count = _face_node_count(gmsh, shared)
+                interface_surfaces[declared.name] = shared
+                if not declared.conformal:
+                    warnings.append(
+                        f"NONCONFORMAL_REQUESTED:{declared.name}:fragment produced "
+                        "shared conformal faces"
+                    )
+                interfaces.append(
+                    InterfaceGroup(
+                        declared.name,
+                        declared.zone_a,
+                        declared.zone_b,
+                        len(shared),
+                        kind=declared.kind,
+                        conformal_requested=declared.conformal,
+                        conformal_achieved=True,
+                        node_count=node_count,
+                    )
+                )
+                classified_surfaces.update(shared)
+                declared_pairs.add(frozenset((declared.zone_a, declared.zone_b)))
             for index, name_a in enumerate(zone_names):
                 for name_b in zone_names[index + 1:]:
+                    pair = frozenset((name_a, name_b))
+                    if pair in declared_pairs:
+                        continue
                     shared = sorted(boundaries[name_a] & boundaries[name_b])
                     if not shared:
                         continue
@@ -290,7 +439,17 @@ def build_native_mesh(
                     physical_groups[f"interface:{label}"] = (
                         f"{name_a}<->{name_b}:{len(shared)}faces"
                     )
-                    interfaces.append(InterfaceGroup(label, name_a, name_b, len(shared)))
+                    interfaces.append(
+                        InterfaceGroup(
+                            label,
+                            name_a,
+                            name_b,
+                            len(shared),
+                            node_count=_face_node_count(gmsh, shared),
+                        )
+                    )
+                    interface_surfaces[label] = shared
+                    classified_surfaces.update(shared)
 
             # Named boundary patches via generic selectors.
             patch_surfaces: dict[str, list[int]] = {}
@@ -304,6 +463,25 @@ def build_native_mesh(
                 gmsh.model.setPhysicalName(2, group, patch.name)
                 physical_groups[f"patch:{patch.name}"] = f"{patch.kind}:{note}"
                 patch_surfaces[patch.name] = surfaces
+                classified_surfaces.update(surfaces)
+
+            # Material regions: volume physical groups carrying material identity.
+            classified_volumes: set[int] = set()
+            for volume_tags in zone_volume_tags.values():
+                classified_volumes.update(volume_tags)
+            for material in spec.materials:
+                material_tags: list[int] = []
+                for component in material.components:
+                    material_tags.extend(zone_volumes.get(component, []))
+                if not material_tags:
+                    return _fail(parent_geometry_hash, "MESH_MATERIAL_EMPTY",
+                                  f"material region {material.name} has no volumes")
+                group = gmsh.model.addPhysicalGroup(3, material_tags)
+                gmsh.model.setPhysicalName(3, group, f"material_{material.name}")
+                physical_groups[f"material:{material.name}"] = (
+                    f"{material.material}:{material.domain}:{len(material_tags)}vol"
+                )
+                classified_volumes.update(material_tags)
 
             # Local refinement fields.
             background_fields: list[int] = []
@@ -333,7 +511,9 @@ def build_native_mesh(
                     continue
 
             # Boundary-layer intent: real 3D BL field attempt, honest fallback.
-            bl_applied, bl_detail = False, "no boundary-layer intent requested"
+            bl_requested = spec.boundary_layer is not None
+            bl_achieved = False
+            bl_detail = "no boundary-layer intent requested"
             if spec.boundary_layer is not None:
                 intent = spec.boundary_layer
                 wall_surfaces: list[int] = []
@@ -344,10 +524,13 @@ def build_native_mesh(
                 )
                 if tried is not None:
                     background_fields.append(tried)
+                    bl_achieved = True
                     bl_detail = (
-                        f"wall Distance/Threshold refinement at {intent.first_layer_mm}mm "
-                        f"on {len(wall_surfaces)} faces; full 3D BL extrusion with "
-                        "fan-point control is downstream solver-mesh work"
+                        f"requested {intent.layer_count} layers/growth "
+                        f"{intent.growth_ratio}/first {intent.first_layer_mm}mm on "
+                        f"{len(wall_surfaces)} wall faces; achieved size field only, "
+                        "full 3D BL extrusion with fan-point control is downstream "
+                        "solver-mesh work"
                     )
                 else:
                     bl_detail = "wall refinement field failed; base sizing used"
@@ -378,8 +561,22 @@ def build_native_mesh(
                     "Relocate3D" if spec.dimension == 3 else "Relocate2D"
                 )
             quality = compute_quality(
-                gmsh, boundary_layer=(bl_applied or bool(background_fields), bl_detail)
+                gmsh,
+                boundary_layer=(bl_requested and bl_achieved, bl_detail),
+                classified_surfaces=classified_surfaces,
+                classified_volumes=classified_volumes,
             )
+            all_surface_tags = {int(tag) for _, tag in gmsh.model.getEntities(2)}
+            all_volume_tags = {int(tag) for _, tag in gmsh.model.getEntities(3)}
+            interfaces = [
+                replace(
+                    item,
+                    node_count=_face_node_count(
+                        gmsh, interface_surfaces.get(item.name, [])
+                    ),
+                )
+                for item in interfaces
+            ]
             gmsh.write(str(mesh_path))
         finally:
             with suppress(Exception):
@@ -388,22 +585,37 @@ def build_native_mesh(
     if not mesh_path.is_file():
         return _fail(parent_geometry_hash, "MESH_WRITE_FAILED",
                       "gmsh produced no mesh file")
-    if quality.inverted_count:
-        return _fail(parent_geometry_hash, "MESH_INVERTED_ELEMENTS",
-                      f"{quality.inverted_count} inverted elements")
-    if quality.min_sicn is not None and quality.min_sicn < minimum_sicn:
-        return _fail(parent_geometry_hash, "MESH_QUALITY_BELOW_THRESHOLD",
-                      f"min SICN {quality.min_sicn:.4f} < {minimum_sicn}")
+    accepted, gate_detail = evaluate_quality_gate(quality, minimum_sicn)
+    if not accepted:
+        return _fail(parent_geometry_hash, gate_detail.split(":", 1)[0], gate_detail)
     digest = hashlib.sha256(mesh_path.read_bytes()).hexdigest()
+    input_hashes: dict[str, str] = {
+        "geometryHash": parent_geometry_hash,
+        "meshSpecDigest": mesh_spec_digest(spec),
+    }
+    for component in sorted(spec.components()):
+        artifact = component_files.get(component)
+        if artifact is not None and artifact.is_file():
+            input_hashes[f"artifact:{component}"] = hashlib.sha256(
+                artifact.read_bytes()
+            ).hexdigest()
+    if mapping_payload is not None:
+        input_hashes["semanticMapping"] = hashlib.sha256(
+            json.dumps(mapping_payload, sort_keys=True, separators=(",", ":")).encode(
+                "utf-8"
+            )
+        ).hexdigest()
     fingerprint = hashlib.sha256(
         json.dumps(
             {
                 "groups": sorted(physical_groups),
                 "interfaces": sorted(
-                    f"{i.name}:{i.zone_a}:{i.zone_b}" for i in interfaces
+                    f"{i.name}:{i.kind}:{i.zone_a}:{i.zone_b}:{i.surface_count}"
+                    for i in interfaces
                 ),
                 "elements": quality.element_count,
                 "nodes": quality.node_count,
+                "spec": input_hashes["meshSpecDigest"],
             },
             sort_keys=True, separators=(",", ":"),
         ).encode("utf-8")
@@ -422,6 +634,12 @@ def build_native_mesh(
         minimum_quality=quality.min_sicn,
         detail=f"gmsh {spec.dimension}D mesh accepted: "
         f"{quality.element_count} elements, min SICN {quality.min_sicn}",
+        input_hashes=input_hashes,
+        orphan_surfaces=tuple(sorted(all_surface_tags - classified_surfaces)),
+        unclassified_volumes=tuple(sorted(all_volume_tags - classified_volumes)),
+        boundary_layer_requested=bl_requested,
+        boundary_layer_achieved=bl_achieved,
+        warnings=tuple(warnings),
     )
 
 

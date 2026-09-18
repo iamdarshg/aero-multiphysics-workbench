@@ -25,7 +25,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
+pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/electrical", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
 testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics", "../../tests/perf"]
 addopts = "-ra -p no:cacheprovider"
 
@@ -40,7 +40,13 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["../../typings", "../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
+mypy_path = ["../../typings", "../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/electrical", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
+
+# The coupling layer wraps untyped native libraries (OpenMDAO, preCICE) and is
+# not part of the strict gate; imports of it resolve to Any for checked targets.
+[[tool.mypy.overrides]]
+module = ["aeroworkbench_coupling.*"]
+follow_imports = "skip"
 
 [tool.uv]
 package = false
