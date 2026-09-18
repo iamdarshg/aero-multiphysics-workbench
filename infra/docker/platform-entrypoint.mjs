@@ -106,7 +106,8 @@ const printUsage = () => {
 };
 
 const main = async () => {
-  const root = resolve(fileURLToPath(new URL(".", import.meta.url)), "..", "..", "..");
+  // Entrypoint lives at <root>/infra/docker/platform-entrypoint.mjs.
+  const root = resolve(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
   let parsed;
   try {
     parsed = parseMode(process.argv.slice(2));
