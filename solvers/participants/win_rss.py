@@ -9,12 +9,24 @@ from __future__ import annotations
 
 import ctypes
 from ctypes import wintypes
+from typing import Any
 
 from aeroworkbench_api.process_supervisor import SupervisorError
 
 _TH32CS_SNAPPROCESS = 0x00000002
 _PROCESS_QUERY_INFORMATION = 0x0400
 _PROCESS_VM_READ = 0x0010
+
+
+def _load_library(name: str) -> Any:
+    """Resolve ``ctypes.WinDLL`` without a hard attribute reference.
+
+    ``WinDLL`` only exists on Windows; referencing it directly makes the module
+    unimportable-under-type-check on Linux. This module is only imported on
+    Windows at runtime, so the lazy lookup is safe and type-check friendly.
+    """
+
+    return getattr(ctypes, "WinDLL")(name, use_last_error=True)  # noqa: B009
 
 
 class _ProcessEntry(ctypes.Structure):
@@ -48,7 +60,7 @@ class _MemoryCounters(ctypes.Structure):
 
 
 def _snapshot_pids() -> dict[int, int]:
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32 = _load_library("kernel32")
     snapshot = kernel32.CreateToolhelp32Snapshot(_TH32CS_SNAPPROCESS, 0)
     if snapshot == wintypes.HANDLE(-1).value:  # INVALID_HANDLE_VALUE
         raise SupervisorError("RSS_MONITOR_UNAVAILABLE")
@@ -81,8 +93,8 @@ def _descendants(root: int, table: dict[int, int]) -> list[int]:
 
 
 def _working_set_mib(pid: int) -> float | None:
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    psapi = ctypes.WinDLL("psapi", use_last_error=True)
+    kernel32 = _load_library("kernel32")
+    psapi = _load_library("psapi")
     handle = kernel32.OpenProcess(
         _PROCESS_QUERY_INFORMATION | _PROCESS_VM_READ, False, pid
     )

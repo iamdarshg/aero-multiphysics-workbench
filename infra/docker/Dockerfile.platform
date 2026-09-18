@@ -18,20 +18,9 @@ WORKDIR /workbench
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/package.json
 COPY packages/cache/package.json ./packages/cache/package.json
-COPY packages/convergence/package.json ./packages/convergence/package.json
-COPY packages/core/package.json ./packages/core/package.json
-COPY packages/coupling/package.json ./packages/coupling/package.json
-COPY packages/dynamics/package.json ./packages/dynamics/package.json
-COPY packages/envelope/package.json ./packages/envelope/package.json
-COPY packages/geometry/package.json ./packages/geometry/package.json
-COPY packages/materials/package.json ./packages/materials/package.json
-COPY packages/mesh/package.json ./packages/mesh/package.json
-COPY packages/optimization/package.json ./packages/optimization/package.json
 COPY packages/provenance/package.json ./packages/provenance/package.json
 COPY packages/schema/package.json ./packages/schema/package.json
-COPY packages/semantics/package.json ./packages/semantics/package.json
 COPY packages/solver-contracts/package.json ./packages/solver-contracts/package.json
-COPY packages/thermal/package.json ./packages/thermal/package.json
 COPY packages/units/package.json ./packages/units/package.json
 RUN corepack enable && pnpm install --frozen-lockfile
 COPY . .
@@ -56,6 +45,11 @@ ENV NODE_ENV=production \
   PYTHONPATH=/workbench/solvers:/workbench/packages/core:/workbench/packages/geometry:/workbench/packages/semantics:/workbench/packages/materials:/workbench/packages/mesh:/workbench/packages/coupling:/workbench/packages/convergence:/workbench/packages/optimization:/workbench/packages/dynamics:/workbench/packages/thermal:/workbench/packages/envelope:/workbench:/workbench/services/api \
   AEROWORKBENCH_JOB_ROOT=/data/jobs
 WORKDIR /workbench
+# gmsh's Python module (installed in the API venv) links libGLU/libGL even
+# when meshing headlessly; keep the runtime image able to import it.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends libglu1-mesa libgl1 \
+  && rm -rf /var/lib/apt/lists/*
 COPY --from=web-build /workbench/package.json /workbench/pnpm-workspace.yaml ./
 COPY --from=web-build /workbench/node_modules ./node_modules
 COPY --from=web-build /workbench/apps/web ./apps/web

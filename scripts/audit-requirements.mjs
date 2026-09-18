@@ -43,8 +43,20 @@ function expectedIds(prefix) {
   return prefix === "section" ? REQUIRED_SECTION_IDS : REQUIRED_STOPPING_IDS;
 }
 
+/**
+ * Evidence digests are line-ending independent: the repository stores LF, but a
+ * Windows checkout (core.autocrlf) materializes CRLF. Hashing the normalized
+ * bytes keeps one digest valid on every platform. Binary payloads (NUL byte
+ * present) are hashed verbatim.
+ */
 function sha256File(filePath) {
-  return createHash("sha256").update(readFileSync(filePath)).digest("hex");
+  const raw = readFileSync(filePath);
+  if (raw.includes(0)) return createHash("sha256").update(raw).digest("hex");
+  const normalized = Buffer.from(
+    raw.toString("latin1").replace(/\r\n/g, "\n"),
+    "latin1",
+  );
+  return createHash("sha256").update(normalized).digest("hex");
 }
 
 function normalizedRepoPath(rawPath, repoRoot, label, errors) {

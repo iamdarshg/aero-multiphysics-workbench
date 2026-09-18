@@ -35,7 +35,7 @@ from participants.envelope import (
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.manifest import get_participant
 from participants.receipts import ParseReceipt
-from participants.runner import run_governed
+from participants.runner import SUPERVISOR_RSS_LIMIT_MIB, run_governed
 from participants.store import JobLedger
 
 _ALLOWED_MODULES = frozenset(
@@ -188,10 +188,15 @@ class NativeJobManager:
         repository: SQLiteRepository | None = None,
         ledger: JobLedger | None = None,
         rss_limit_mib: float = 352.0,
+        supervisor_rss_limit_mib: float = SUPERVISOR_RSS_LIMIT_MIB,
         timeout_s: float = 900.0,
     ) -> None:
         if not 0 < rss_limit_mib <= 896.0:
             raise ValueError("INVALID_RSS_LIMIT")
+        if not 0 < supervisor_rss_limit_mib <= 896.0:
+            raise ValueError("INVALID_SUPERVISOR_RSS_LIMIT")
+        if supervisor_rss_limit_mib < rss_limit_mib:
+            raise ValueError("SUPERVISOR_RSS_LIMIT_BELOW_ADMISSION_BUDGET")
         if timeout_s <= 0:
             raise ValueError("INVALID_TIMEOUT")
         self._job_root = job_root
@@ -199,6 +204,7 @@ class NativeJobManager:
         self._repository = repository or SQLiteRepository(job_root / "provenance.sqlite3")
         self._ledger = ledger or JobLedger(job_root / "native_jobs.sqlite3")
         self._rss_limit_mib = rss_limit_mib
+        self._supervisor_rss_limit_mib = supervisor_rss_limit_mib
         self._timeout_s = timeout_s
         self._worker_lock = threading.Lock()
         self._state_lock = threading.Lock()
@@ -494,7 +500,7 @@ class NativeJobManager:
                 command,
                 case_dir=case_dir,
                 job_root=self._job_root,
-                rss_limit_mib=self._rss_limit_mib,
+                rss_limit_mib=self._supervisor_rss_limit_mib,
                 timeout_s=self._timeout_s,
                 cancel=supervisor_cancel,
                 extra_env=_PYTHON_MODULE_ENVS.get(manifest.executable.solver_id),

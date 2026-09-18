@@ -97,7 +97,7 @@
           "kind": "file",
           "path": "solvers/precice/config_builder.py",
           "detail": "PARTIAL: preCICE contract layer only (config builder, static coupling XML, adapter gating verified). No native preCICE execution has run; field transfer remains unvalidated.",
-          "sha256": "73b44693e1db3881ce54ea927ca26e3357c403ac69d3f6bff0208fd51e3a88a5"
+          "sha256": "89bad874e9b36c202025db2d040f017f5425c070606345b91ef5578c3fa56a8a"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -235,7 +235,7 @@
           "kind": "file",
           "path": "solvers/code_aster/adapter.py",
           "detail": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
-          "sha256": "41085505a3199ed2da7cfbd6b0e3b7e292b9f39434d7bce60a0acb21bde26e2d"
+          "sha256": "3d83ca99601e28a34ac7d1caf3ccf043c4cf5f702ec8a5c09ad59f9343e4f312"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -667,7 +667,7 @@
           "kind": "file",
           "path": "apps/web/src/app/layout.tsx",
           "detail": "PARTIAL: App layout shell (left tree, center viewport, right inspector, bottom dock, top status bar) implemented and unit-tested. Native-data views unavailable.",
-          "sha256": "91b7171a17e7d8e8cbc73355e7b339425bf7458a2b630a48828cd687aa42fdde"
+          "sha256": "e8da5fdf746f1b975c3a45e39f973cd48be7653619902eff556c03208f3b46f1"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -688,7 +688,7 @@
           "kind": "file",
           "path": "apps/web/src/components/analysis-charts.tsx",
           "detail": "PARTIAL: Analytical charts (convergence, energy, resonance placeholders) render from sample state with lazy loading. No native field/streamline rendering.",
-          "sha256": "0c876dd07023a269d03a4ebe5d18f0cbd771815120b24c0c0e0a183672f71578"
+          "sha256": "bd74b9da792bd57eea89dec1b753753ba5829c40821b6821aaf739a9337299c9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -709,7 +709,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/main.py",
           "detail": "PARTIAL: governed job routes, persisted SSE transitions and result/artifact metadata; no decimated field streaming yet.",
-          "sha256": "3f49dc70f6de842f26928c30bc292bb42cdbe6262f142675f254ccc82153d0ab"
+          "sha256": "a1fcbd5224db678aa43ab52ec983079123ba46dbd58242db4de928d6a9713898"
         },
         {
           "kind": "file",
@@ -1456,7 +1456,7 @@
           "kind": "file",
           "path": ".github/workflows/platform.yml",
           "detail": "PARTIAL: fast release-gate workflow (install/typecheck/JS-TS/Python/UI build/MCP E2E/product smoke/release E2E) with package-download-only caching.",
-          "sha256": "c54c237843548e53881081128459a254432d6c25025f0fb1343e1e94cb144874"
+          "sha256": "e20e8d363a54abc292d41a550e31b03db01e6a88029ac7eced235dd7b7508583"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -1525,7 +1525,7 @@
           "kind": "file",
           "path": "examples/edf/system.py",
           "detail": "PARTIAL: Analytical 70mm-class EDF reference state (level-1 motor, ECM pack, Campbell/resonance screening) with explicit fidelity labels. No rotating CFD or native coupling.",
-          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
+          "sha256": "f8a63fe5caf67490ee03ae2eb9cd636f5345ebee03df52adef72c9bfee2dc5a9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1588,7 +1588,7 @@
           "kind": "file",
           "path": "apps/web/src/workbench-state.ts",
           "detail": "PARTIAL: UI usability subset (loading states, design-tree search, sample/provenance notices, keyboard-focusable controls) implemented. Saved layouts and full result comparison unavailable.",
-          "sha256": "e551538e7af65f69275c6972ade352f023fb1fce2811cb822a0a2451340dd8bf"
+          "sha256": "7df845fcf6244f1138236a36d1dde677c3ad2267010e9244acca470486c656cb"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1609,7 +1609,7 @@
           "kind": "file",
           "path": "apps/web/src/components/engineering-viewport.tsx",
           "detail": "PARTIAL: Analytical explainability subset (provenance dialog, quality-gate rows, sample/blocked notices with fidelity labels). Native warning root-cause with values unavailable.",
-          "sha256": "b994349f5e71405627279cc6eba113b2c50ec913abda296b3e8750e505a59c43"
+          "sha256": "87db3bc52daed0af7219babec801be22df0db6313d9082c9f4f43c1b084fe6d2"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1846,7 +1846,7 @@
           "kind": "file",
           "path": "scripts/platform/bootstrap.mjs",
           "detail": "PARTIAL: Bootstrap performs runtime safety checks plus capability inspection only; installs nothing. Native solver/container provisioning unavailable.",
-          "sha256": "778638629a53ec77ffaed58dbc15cce84ba4c07a90ec9354d45a9047b962c79b"
+          "sha256": "5c069b9018bf13a805a31869d61fdb1fff0f3a01bcff563e7282dd3e3f5cdedc"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1867,7 +1867,7 @@
           "kind": "file",
           "path": "scripts/platform/dev.mjs",
           "detail": "PARTIAL: Dev entrypoint script exists alongside documented pnpm/uvicorn commands. Full one-command orchestration (UI+API+scheduler+worker+MCP) unvalidated end to end.",
-          "sha256": "7bf85e5c969478f811e73cfcff8ed7b4a20440798a07e5a05ee1d4434347e0aa"
+          "sha256": "86a053c4a1a09c0d7a5e27811fde51b199642ad2281e6f55ede1cc2970f85bc4"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1912,7 +1912,7 @@
           "kind": "file",
           "path": "scripts/platform/capabilities.mjs",
           "detail": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
-          "sha256": "ebcda89a7afc4a30b516c3827dc16f13147968991265f649db2dcde20d82394e"
+          "sha256": "1b0f977a439edb67418447d9382f0f497138d7fc36eaa2f3df403e0e4295cdf9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1933,7 +1933,7 @@
           "kind": "file",
           "path": "docs/architecture.md",
           "detail": "PARTIAL: Architecture, operations, solver-integration, cloud/container, and MCP docs exist but do not yet cover the full mandated guide list (coupling, CAD import, all workflows, debugging).",
-          "sha256": "64230942a834cc15ee12f978495d1ed7f6e0a6b7ed70947885bbdf9aea24fc86"
+          "sha256": "9f7a911b6b118607b0cdd9f168599032b5a7148a25dc1d72487e03be8813b94f"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2100,7 +2100,7 @@
           "kind": "file",
           "path": "apps/web/package.json",
           "detail": "PARTIAL: Web unit suite passes (11 tests); production browser build and remote access unvalidated.",
-          "sha256": "228a0ef15660cac0456aa6ca617caf0024537a792da394513fed37f0c8ebbf43"
+          "sha256": "4fb945f0f0e6ebf3a9dd9e7f005efbdd97fcc03afa5d13fc57fa97ea27c8c70f"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2304,7 +2304,7 @@
           "kind": "file",
           "path": "examples/edf/system.py",
           "detail": "PARTIAL: Analytical EDF reference state only; rotating CFD and native coupling unavailable.",
-          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
+          "sha256": "f8a63fe5caf67490ee03ae2eb9cd636f5345ebee03df52adef72c9bfee2dc5a9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2325,7 +2325,7 @@
           "kind": "file",
           "path": "packages/core/aeroworkbench_core/models/motor.py",
           "detail": "PARTIAL: Level-1 motor equivalent-circuit model verified; dq dynamics and EM FEM unavailable.",
-          "sha256": "0891aa94a0f3ae6697ed18c64212478f88cba78837f4b714acc84b681084d81a"
+          "sha256": "d681477d408ce350f57db2d3064a2742d28b6f7c3b1c7ad334569c5708265319"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2346,7 +2346,7 @@
           "kind": "file",
           "path": "packages/core/aeroworkbench_core/models/battery.py",
           "detail": "PARTIAL: Analytical pack model verified; native PyBaMM 6S execution unavailable.",
-          "sha256": "bae823a9f3fdc72bf5a87a2857ae300270a6f77e9f2f075be33b530339c35b8e"
+          "sha256": "cf04b4f287e62b09da86134af2a2a51dd553a675db4fe2873390b1899dd79c9f"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2415,7 +2415,7 @@
           "kind": "file",
           "path": "packages/core/aeroworkbench_core/resonance.py",
           "detail": "PARTIAL: Analytical resonance screening (Campbell, forcing spectrum) verified; prestressed native modes unavailable.",
-          "sha256": "2834dfc1c9a46fbc83ea0413e1604ed8d9265758aff4935fdf7c9a0a217ff77d"
+          "sha256": "28a90768ef1ba0393f19911d5af69f733a8d4e001fe91b0da14d3a6e20e05ac1"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2616,7 +2616,7 @@
           "kind": "file",
           "path": "packages/core/aeroworkbench_core/design.py",
           "detail": "PARTIAL: Immutable variant contracts verified in unit tests; full design-tree UX integration unavailable.",
-          "sha256": "99d083d5b8b5e4dc90579b1b881d7f179937c2ca485e115dd83e6306160aa28f"
+          "sha256": "0015577bee0e69a5a76642ee190ade0c91114b673bfcf0256537380f7fa96ff9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2874,7 +2874,7 @@
           "kind": "file",
           "path": "examples/edf/system.py",
           "detail": "PARTIAL: Analytical EDF demo passes; resonance-escalation proof on native physics unavailable.",
-          "sha256": "cfd27006a160a5f33c9e30dfa7daf02f1e35aba5131286da25d56bae8e80a13e"
+          "sha256": "f8a63fe5caf67490ee03ae2eb9cd636f5345ebee03df52adef72c9bfee2dc5a9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"

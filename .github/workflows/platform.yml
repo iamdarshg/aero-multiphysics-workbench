@@ -130,6 +130,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with: { enable-cache: true }
+      # gmsh's Python module links libGLU/libGL even in headless use.
+      - name: gmsh runtime libraries
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libglu1-mesa libgl1
       - run: uv sync --frozen --directory services/api
       - run: uv run --no-sync --directory services/api pytest -q
         env:
@@ -195,6 +198,8 @@ jobs:
         with: { node-version: 24 }
       - uses: astral-sh/setup-uv@v6
         with: { enable-cache: true }
+      - name: gmsh runtime libraries
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libglu1-mesa libgl1
       - run: uv sync --frozen --directory services/api
       # One tiny deterministic rotor-campbell job through the governed API
       # lifecycle to a verified native_solver envelope + provenance, on an
@@ -224,6 +229,8 @@ jobs:
           restore-keys: pnpm-store-${{ runner.os }}-
       - run: pnpm config set store-dir ${{ runner.temp }}/pnpm-store
       - run: pnpm install --frozen-lockfile
+      - name: gmsh runtime libraries
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libglu1-mesa libgl1
       - run: uv sync --frozen --directory services/api
       # Production UI build first: the release E2E drives `stack.mjs start`
       # (the same command users run via `pnpm start:local`), which requires

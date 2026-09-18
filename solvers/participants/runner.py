@@ -48,6 +48,13 @@ def _resilient_probe(pid: int) -> float:
     raise last if last is not None else SupervisorError("RSS_MONITOR_UNAVAILABLE")
 
 _RSS_CEILING_MIB = 896.0
+# The architecture separates admission from termination: a job reserves a
+# declared budget at admission, and the supervisor only terminates fail-closed
+# near the hard process-group ceiling. Python native solvers (ROSS/PyBaMM/casadi)
+# legitimately exceed the 352 MiB admission budget once BLAS/imports are counted,
+# so the kill threshold keeps a reserve below the 896 MiB hard ceiling instead.
+RSS_SYSTEM_RESERVE_MIB = 96.0
+SUPERVISOR_RSS_LIMIT_MIB = _RSS_CEILING_MIB - RSS_SYSTEM_RESERVE_MIB
 
 
 def _map_reason(reason: str | None) -> NativeErrorCode | None:
@@ -66,7 +73,7 @@ def run_governed(
     *,
     case_dir: Path,
     job_root: Path,
-    rss_limit_mib: float = 352.0,
+    rss_limit_mib: float = SUPERVISOR_RSS_LIMIT_MIB,
     timeout_s: float = 600.0,
     poll_s: float = 0.05,
     cancel: Event | None = None,

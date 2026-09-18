@@ -47,7 +47,11 @@ the user's explicit remote-compute switch and cost ceiling.
 
 Suggested steady-state envelopes are 192 MiB for the web UI, 160 MiB for the API,
 96 MiB for the scheduler, 96 MiB for MCP, and at most 352 MiB for one active local
-worker. These are admission budgets, not claims of measured consumption.
+worker. These are admission budgets, not claims of measured consumption. Admission
+reserves the declared budget; the process supervisor separately terminates a job
+fail-closed only near the 896 MiB hard ceiling (96 MiB reserve), so a measured
+Python native solver that legitimately exceeds the suggested 352 MiB admission
+envelope is not killed while the process group remains below the ceiling.
 
 ## Security and compute boundaries
 
