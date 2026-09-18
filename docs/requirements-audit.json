@@ -1456,7 +1456,7 @@
           "kind": "file",
           "path": ".github/workflows/platform.yml",
           "detail": "PARTIAL: fast release-gate workflow (install/typecheck/JS-TS/Python/UI build/MCP E2E/product smoke/release E2E) with package-download-only caching.",
-          "sha256": "e20e8d363a54abc292d41a550e31b03db01e6a88029ac7eced235dd7b7508583"
+          "sha256": "774c91c1502e88b679faefabb5d19f78d8b48601c0600622b710e787fdec6423"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"

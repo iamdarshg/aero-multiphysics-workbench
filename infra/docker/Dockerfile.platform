@@ -36,8 +36,14 @@ RUN pip install --no-cache-dir "uv==0.9.6" \
   && uv sync --frozen --no-dev \
   && rm -rf /root/.cache/uv
 
-# ---- Stage 3: runtime (node + API venv, no solver binaries) ------------------
-FROM node:24-bookworm-slim AS runtime
+# ---- Stage 3: runtime (python venv + node binary, no solver binaries) --------
+# The runtime base must be the SAME interpreter base the venv was built against
+# (python:3.12-slim-bookworm): a venv copied into a node-only image points at a
+# missing /usr/local/bin/python3.12 and the API container exits immediately.
+FROM python:3.12-slim-bookworm AS runtime
+# The Node runtime is a single self-contained binary; the web service and the
+# entrypoint only need `node` (next is invoked by path, never via npm/pnpm).
+COPY --from=web-build /usr/local/bin/node /usr/local/bin/node
 ENV NODE_ENV=production \
   COREPACK_ENABLE_PROJECT_SPEC=1 \
   VIRTUAL_ENV=/opt/aero-api-venv \
@@ -48,7 +54,7 @@ WORKDIR /workbench
 # gmsh's Python module (installed in the API venv) links libGLU/libGL even
 # when meshing headlessly; keep the runtime image able to import it.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends libglu1-mesa libgl1 \
+  && apt-get install -y --no-install-recommends libglu1-mesa libgl1 libstdc++6 ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 COPY --from=web-build /workbench/package.json /workbench/pnpm-workspace.yaml ./
 COPY --from=web-build /workbench/node_modules ./node_modules

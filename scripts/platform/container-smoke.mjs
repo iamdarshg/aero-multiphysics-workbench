@@ -176,6 +176,14 @@ const main = async () => {
     }, null, 2));
   } catch (error) {
     console.error(`[container-smoke] ${error.message}`);
+    // Diagnostics: surface the API service logs so a failed container start is
+    // actionable without reproducing locally.
+    try {
+      const logs = await compose(config, "logs", "--no-color", "--tail", "120", "api");
+      console.error(`[container-smoke] api logs:\n${logs.slice(-8000)}`);
+    } catch {
+      // best effort only; the exit code below is authoritative
+    }
     process.exitCode = 1;
   } finally {
     if (started) {

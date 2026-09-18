@@ -84,7 +84,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # Full history: the requirements-audit receipts verify git ancestry.
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - run: corepack enable
@@ -137,6 +139,15 @@ jobs:
       - run: uv run --no-sync --directory services/api pytest -q
         env:
           AEROWORKBENCH_JOB_ROOT: ${{ runner.temp }}/native-jobs
+      # Failed native runs keep their captured stdout/stderr under the job root;
+      # upload them so a Linux-only solver failure is diagnosable.
+      - name: upload native job logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-job-logs
+          path: ${{ runner.temp }}/native-jobs
+          if-no-files-found: ignore
 
   python-checks:
     name: Python lint + typecheck

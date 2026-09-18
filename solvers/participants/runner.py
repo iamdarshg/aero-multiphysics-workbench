@@ -68,6 +68,21 @@ def _map_reason(reason: str | None) -> NativeErrorCode | None:
     return mapping.get(reason) if reason is not None else None
 
 
+def _solver_log_tail(case_dir: Path, limit: int = 1200) -> str:
+    """Bounded stdout/stderr tail for a failed native run (operator evidence)."""
+
+    chunks: list[str] = []
+    for name in ("stderr.log", "stdout.log"):
+        path = case_dir / name
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace").strip()
+        except OSError:
+            continue
+        if text:
+            chunks.append(f"{name}: {text[-limit:]}")
+    return " | ".join(chunks)
+
+
 def run_governed(
     command: tuple[str, ...],
     *,
@@ -114,5 +129,9 @@ def run_governed(
         ) from exc
     if receipt.state != "completed":
         code = _map_reason(receipt.reason) or NativeErrorCode.PROCESS_EXIT_NONZERO
-        raise ParticipantError(code, f"native process failed:{receipt.reason}")
+        tail = _solver_log_tail(case_dir)
+        detail = f"native process failed:{receipt.reason}"
+        if tail:
+            detail = f"{detail}:{tail}"
+        raise ParticipantError(code, detail)
     return receipt
