@@ -31,6 +31,19 @@ export const resolveSitePackages = (env = {}) => {
   return null;
 };
 
+/**
+ * Resolve the API interpreter to an absolute image path.
+ *
+ * A bare `python3` can resolve to a dangling venv symlink that shadows PATH and
+ * fails with ENOENT; address the image interpreter directly instead.
+ */
+export const resolveInterpreter = () => {
+  for (const candidate of ["/usr/local/bin/python3", "/usr/bin/python3"]) {
+    if (existsSync(candidate)) return candidate;
+  }
+  return "python3";
+};
+
 const usageError = (detail) => new Error(`ENTRYPOINT_USAGE:${detail}`);
 
 export const parseMode = (argv) => {
@@ -55,7 +68,7 @@ export const resolveServiceCommand = ({ mode, root, env = {} }) => {
       .filter((value) => typeof value === "string" && value.trim() !== "")
       .join(":");
     return {
-      cmd: "python3",
+      cmd: resolveInterpreter(),
       argv: ["-m", "uvicorn", "aeroworkbench_api.main:app", "--host", "0.0.0.0", "--port", String(port)],
       cwd: join(root, "services", "api"),
       extraEnv: {

@@ -48,7 +48,7 @@ RUN pip install --no-cache-dir "uv==0.9.6" \
 ENV NODE_ENV=production \
   COREPACK_ENABLE_PROJECT_SPEC=1 \
   VIRTUAL_ENV=/opt/api/.venv \
-  PATH=/opt/api/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   PYTHONPATH=/workbench/solvers:/workbench/packages/core:/workbench/packages/geometry:/workbench/packages/semantics:/workbench/packages/materials:/workbench/packages/mesh:/workbench/packages/coupling:/workbench/packages/convergence:/workbench/packages/optimization:/workbench/packages/dynamics:/workbench/packages/thermal:/workbench/packages/envelope:/workbench:/workbench/services/api \
   AEROWORKBENCH_JOB_ROOT=/data/jobs
 WORKDIR /workbench

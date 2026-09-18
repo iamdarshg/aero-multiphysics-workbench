@@ -6,6 +6,7 @@ import test from "node:test";
 
 import {
   parseMode,
+  resolveInterpreter,
   resolveServiceCommand,
   resolveSitePackages,
 } from "../../infra/docker/platform-entrypoint.mjs";
@@ -64,7 +65,8 @@ test("platform entrypoint runs the API on the image interpreter with venv packag
     root: "/workbench",
     env: { VIRTUAL_ENV: venv, AEROWORKBENCH_JOB_ROOT: venv, PYTHONPATH: "/workbench" },
   });
-  // The image's own interpreter is used; venv packages arrive via PYTHONPATH.
-  assert.equal(api.cmd, "python3");
+  // The image's own interpreter is used (absolute when present); venv packages
+  // arrive via PYTHONPATH so a dangling venv symlink cannot break startup.
+  assert.equal(api.cmd, resolveInterpreter());
   assert.equal(api.extraEnv.PYTHONPATH, `${sitePackages}:/workbench`);
 });
