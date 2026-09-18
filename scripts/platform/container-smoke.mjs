@@ -176,13 +176,15 @@ const main = async () => {
     }, null, 2));
   } catch (error) {
     console.error(`[container-smoke] ${error.message}`);
-    // Diagnostics: surface the API service logs so a failed container start is
-    // actionable without reproducing locally.
-    try {
-      const logs = await compose(config, "logs", "--no-color", "--tail", "120", "api");
-      console.error(`[container-smoke] api logs:\n${logs.slice(-8000)}`);
-    } catch {
-      // best effort only; the exit code below is authoritative
+    // Diagnostics: surface the service logs so a failed container start or a
+    // crashed Next.js server is actionable without reproducing locally.
+    for (const service of ["api", "web"]) {
+      try {
+        const logs = await compose(config, "logs", "--no-color", "--tail", "120", service);
+        console.error(`[container-smoke] ${service} logs:\n${logs.slice(-8000)}`);
+      } catch {
+        // best effort only; the exit code below is authoritative
+      }
     }
     process.exitCode = 1;
   } finally {
