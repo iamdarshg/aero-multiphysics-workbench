@@ -28,26 +28,22 @@ ARG NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 RUN pnpm --filter @aero/web build
 
-# ---- Stage 2: API third-party venv (pip declarations only) -------------------
-FROM python:3.12-slim-bookworm AS api-venv
-WORKDIR /opt/api
-COPY services/api/pyproject.toml services/api/uv.lock ./
-RUN pip install --no-cache-dir "uv==0.9.6" \
-  && uv sync --frozen --no-dev \
-  && rm -rf /root/.cache/uv
-
-# ---- Stage 3: runtime (python venv + node binary, no solver binaries) --------
-# The runtime base must be the SAME interpreter base the venv was built against
-# (python:3.12-slim-bookworm): a venv copied into a node-only image points at a
-# missing /usr/local/bin/python3.12 and the API container exits immediately.
+# ---- Stage 2: runtime (python venv + node binary, no solver binaries) --------
+# The API venv is created IN this stage from the same python base, so its
+# interpreter is never a copied symlink to a missing binary.
 FROM python:3.12-slim-bookworm AS runtime
 # The Node runtime is a single self-contained binary; the web service and the
 # entrypoint only need `node` (next is invoked by path, never via npm/pnpm).
 COPY --from=web-build /usr/local/bin/node /usr/local/bin/node
+WORKDIR /opt/api
+COPY services/api/pyproject.toml services/api/uv.lock ./
+RUN pip install --no-cache-dir "uv==0.9.6" \
+  && uv sync --frozen --no-dev --link-mode=copy \
+  && rm -rf /root/.cache/uv
 ENV NODE_ENV=production \
   COREPACK_ENABLE_PROJECT_SPEC=1 \
-  VIRTUAL_ENV=/opt/aero-api-venv \
-  PATH=/opt/aero-api-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  VIRTUAL_ENV=/opt/api/.venv \
+  PATH=/opt/api/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   PYTHONPATH=/workbench/solvers:/workbench/packages/core:/workbench/packages/geometry:/workbench/packages/semantics:/workbench/packages/materials:/workbench/packages/mesh:/workbench/packages/coupling:/workbench/packages/convergence:/workbench/packages/optimization:/workbench/packages/dynamics:/workbench/packages/thermal:/workbench/packages/envelope:/workbench:/workbench/services/api \
   AEROWORKBENCH_JOB_ROOT=/data/jobs
 WORKDIR /workbench
@@ -64,7 +60,6 @@ COPY --from=web-build /workbench/mcp ./mcp
 COPY --from=web-build /workbench/scripts ./scripts
 COPY --from=web-build /workbench/services/api ./services/api
 COPY --from=web-build /workbench/solvers ./solvers
-COPY --from=api-venv /opt/api/.venv /opt/aero-api-venv
 COPY infra/docker/platform-entrypoint.mjs ./infra/docker/platform-entrypoint.mjs
 VOLUME ["/data"]
 EXPOSE 3000 8000

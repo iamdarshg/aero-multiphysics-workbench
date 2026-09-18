@@ -65,7 +65,7 @@ test("platform entrypoint prefers the venv interpreter over bare python", () => 
   const api = resolveServiceCommand({
     mode: "api",
     root: "/workbench",
-    env: { VIRTUAL_ENV: venv },
+    env: { VIRTUAL_ENV: venv, AEROWORKBENCH_JOB_ROOT: venv },
   });
   assert.equal(api.cmd, python);
 });

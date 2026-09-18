@@ -109,6 +109,25 @@ class ProcessSupervisor:
                 raise SupervisorError("RSS_MONITOR_UNAVAILABLE") from None
         raise SupervisorError("RSS_MONITOR_UNAVAILABLE")
 
+    def _sample_rss(self, process: subprocess.Popen[bytes]) -> tuple[float | None, bool]:
+        """Sample RSS, tolerating the process-exit visibility race.
+
+        Returns ``(rss, unavailable)``: ``(None, False)`` means the process
+        exited during sampling (finalize normally), ``(None, True)`` means it is
+        still alive but could not be measured within a bounded retry window
+        (fail closed). A single `/proc` miss on a just-exited process must not
+        be reported as an RSS failure.
+        """
+
+        for _ in range(10):
+            try:
+                return float(self._rss_probe(process.pid)), False
+            except SupervisorError:
+                if process.poll() is not None:
+                    return None, False
+                time.sleep(0.02)
+        return None, True
+
     def _validate(self, command: Sequence[str], cwd: Path) -> tuple[str, ...]:
         invalid = any(not isinstance(arg, str) or not arg or "\x00" in arg for arg in command)
         if not command or invalid:
@@ -179,13 +198,13 @@ class ProcessSupervisor:
                 peak_rss = 0.0
                 reason: str | None = None
                 while process.poll() is None:
-                    try:
-                        current_rss = float(self._rss_probe(process.pid))
-                    except SupervisorError:
-                        if process.poll() is not None:
-                            break
+                    current_rss, unavailable = self._sample_rss(process)
+                    if unavailable:
                         reason = "RSS_MONITOR_UNAVAILABLE"
                         self._terminate(process)
+                        break
+                    if current_rss is None:
+                        # The process exited between the poll and the sample.
                         break
                     if current_rss < 0 or current_rss != current_rss:
                         reason = "RSS_MONITOR_UNAVAILABLE"
