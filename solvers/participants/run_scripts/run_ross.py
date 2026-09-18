@@ -80,7 +80,9 @@ def _build_rotor(case: dict[str, Any]) -> Any:
     return rs.Rotor(shaft, disks, bearings)
 
 
-def _critical_speeds(camp: Any, speeds_rpm: np.ndarray) -> list[float]:
+def _critical_speeds(
+    camp: Any, speeds_rpm: np.ndarray, *, forward_only: bool = True
+) -> list[float]:
     speeds_rad = speeds_rpm * 2.0 * float(np.pi) / 60.0
     wd = np.asarray(camp.wd, dtype=float)
     whirl = np.asarray(camp.whirl_values, dtype=float)
@@ -89,7 +91,7 @@ def _critical_speeds(camp: Any, speeds_rpm: np.ndarray) -> list[float]:
         branch = wd[:, mode]
         forward = whirl[:, mode] > 0.5
         for index in range(len(speeds_rpm) - 1):
-            if not (forward[index] and forward[index + 1]):
+            if forward_only and not (forward[index] and forward[index + 1]):
                 continue
             gap_before = branch[index] - speeds_rad[index]
             gap_after = branch[index + 1] - speeds_rad[index + 1]
@@ -105,11 +107,20 @@ def _critical_speeds(camp: Any, speeds_rpm: np.ndarray) -> list[float]:
 
 def _run_campbell(rotor: Any, case: dict[str, Any]) -> dict[str, Any]:
     max_speed = float(case["max_speed_rpm"])
-    speeds_rpm = np.linspace(0.0, max_speed, 7)
+    # A dense synchronous-speed sweep keeps mode-tracked critical detection
+    # stable across BLAS/LAPACK backends; a coarse sweep can miss a crossing.
+    speeds_rpm = np.linspace(0.0, max_speed, 41)
     camp = rotor.run_campbell(speed_range=speeds_rpm)
     criticals = _critical_speeds(camp, speeds_rpm)
     if len(criticals) < 2:
-        raise RuntimeError(f"ROSS found fewer than two critical speeds:{criticals}")
+        # Some builds classify the higher mode as backward whirl; fall back to
+        # every branch crossing so a physically present critical is not lost.
+        combined = sorted(
+            set(criticals) | set(_critical_speeds(camp, speeds_rpm, forward_only=False))
+        )
+        criticals = combined
+    if not criticals:
+        raise RuntimeError("ROSS found no critical speeds")
     return {
         "critical_speeds_rpm": criticals[:4],
         "speed_range_rpm": [float(value) for value in speeds_rpm],

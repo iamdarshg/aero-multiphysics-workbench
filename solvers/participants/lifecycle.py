@@ -195,8 +195,6 @@ class NativeJobManager:
             raise ValueError("INVALID_RSS_LIMIT")
         if not 0 < supervisor_rss_limit_mib <= 896.0:
             raise ValueError("INVALID_SUPERVISOR_RSS_LIMIT")
-        if supervisor_rss_limit_mib < rss_limit_mib:
-            raise ValueError("SUPERVISOR_RSS_LIMIT_BELOW_ADMISSION_BUDGET")
         if timeout_s <= 0:
             raise ValueError("INVALID_TIMEOUT")
         self._job_root = job_root

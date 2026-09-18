@@ -87,7 +87,7 @@ def test_ross_campbell_benchmark_runs_natively(tmp_path) -> None:  # noqa: ANN00
         pytest.skip("ROSS is not installed")
     manager = NativeJobManager(tmp_path / "jobs")
     job_id = manager.submit("rotor-campbell", _rotor_inputs(), deferred=True)
-    assert manager.run(job_id) == JobState.COMPLETED.value
+    assert manager.run(job_id) == JobState.COMPLETED.value, manager.status(job_id)
     envelope = manager.envelope(job_id)
     assert envelope["source"] == "native_solver"
     assert envelope["fidelity"] == "beam-campbell"
@@ -108,7 +108,7 @@ def test_pybamm_spm_benchmark_runs_natively(tmp_path) -> None:  # noqa: ANN001
         pytest.skip("PyBaMM is not installed")
     manager = NativeJobManager(tmp_path / "jobs")
     job_id = manager.submit("cell-spm-discharge", _spm_inputs(), deferred=True)
-    assert manager.run(job_id) == JobState.COMPLETED.value
+    assert manager.run(job_id) == JobState.COMPLETED.value, manager.status(job_id)
     envelope = manager.envelope(job_id)
     assert envelope["source"] == "native_solver"
     assert envelope["solver_identity"] == "pybamm"
@@ -126,7 +126,7 @@ def test_gmsh_mesh_benchmark_runs_natively(tmp_path) -> None:  # noqa: ANN001
     job_id = manager.submit(
         "domain-mesh", {"base_size_mm": 10.0, "n_rotating": 1, **MESH_DIMS}, deferred=True
     )
-    assert manager.run(job_id) == JobState.COMPLETED.value
+    assert manager.run(job_id) == JobState.COMPLETED.value, manager.status(job_id)
     envelope = manager.envelope(job_id)
     assert envelope["source"] == "native_solver"
     assert envelope["scalars"]["element_count"] > 0
@@ -142,7 +142,7 @@ def test_cad_interchange_benchmark_runs_natively(tmp_path) -> None:  # noqa: ANN
         {"n_rotating": 1, "source_format": "step", **MESH_DIMS},
         deferred=True,
     )
-    assert manager.run(job_id) == JobState.COMPLETED.value
+    assert manager.run(job_id) == JobState.COMPLETED.value, manager.status(job_id)
     envelope = manager.envelope(job_id)
     assert envelope["scalars"]["faces_before"] == envelope["scalars"]["faces_after"]
 

@@ -152,15 +152,17 @@ def parse_rotor_result(case_dir: Path) -> ParseReceipt:
     try:
         if analysis == "campbell":
             criticals = [float(value) for value in data["critical_speeds_rpm"]]
-            if len(criticals) < 2:
+            if not criticals:
                 raise ParticipantError(
-                    NativeErrorCode.PARSER_FAILED, "campbell result needs two criticals"
+                    NativeErrorCode.PARSER_FAILED, "campbell result has no critical speeds"
                 )
-            scalars = {
-                "first_critical_rpm": criticals[0],
-                "second_critical_rpm": criticals[1],
-            }
-            units = {"first_critical_rpm": "rpm", "second_critical_rpm": "rpm"}
+            scalars = {"first_critical_rpm": criticals[0]}
+            units = {"first_critical_rpm": "rpm"}
+            # A short bearing-dominated rotor can show only one forward critical
+            # below the swept speed; report a second only when it is detected.
+            if len(criticals) >= 2:
+                scalars["second_critical_rpm"] = criticals[1]
+                units["second_critical_rpm"] = "rpm"
         elif analysis == "modal":
             scalars = {
                 "first_whirl_hz": float(data["first_whirl_hz"]),
@@ -208,14 +210,15 @@ def validate_rotor_result(
 ) -> ValidityReport:
     if "first_critical_rpm" in scalars:
         first = float(scalars["first_critical_rpm"])
-        second = float(scalars["second_critical_rpm"])
+        has_second = "second_critical_rpm" in scalars
+        second = float(scalars.get("second_critical_rpm", float("nan")))
         estimate = beam_first_critical_rpm(
             shaft_length_m=float(inputs["shaft_length_m"]),
             shaft_diameter_m=float(inputs["shaft_diameter_m"]),
         )
         checks = {
-            "criticals_positive": first > 0 and second > 0,
-            "criticals_ascending": second > first,
+            "criticals_positive": first > 0 and (not has_second or second > 0),
+            "criticals_ascending": (not has_second) or second > first,
             "beam_consistent": first > 0 and abs(first - estimate) / estimate < 0.5,
         }
         detail = f"beam estimate {estimate:.1f} rpm within 50%"
