@@ -23,10 +23,17 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from math import isfinite
+from typing import TYPE_CHECKING
 
 from participants.manifest import ParticipantManifest
 
 from .units import convert_value, units_compatible
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from aeroworkbench_geometry import (
+        GeometryRegenerationRequest,
+        GeometryRegenerator,
+    )
 
 ScalarFunction = Callable[[Mapping[str, float]], Mapping[str, float]]
 ClosureFunction = Callable[[Mapping[str, float]], float]
@@ -566,3 +573,89 @@ class ManifestCoordinator:
                         raw, source_unit, var.unit
                     )
         return values
+
+
+@dataclass(frozen=True, slots=True)
+class GeometryDesignVariable:
+    """One OpenMDAO design variable bound to a geometry parameter path."""
+
+    name: str
+    parameter_path: str
+    unit: str = "mm"
+
+    def __post_init__(self) -> None:
+        if not self.name.strip() or not self.parameter_path.strip():
+            raise ValueError("GEOMETRY_VARIABLE_NEEDS_NAME_AND_PATH")
+        if not self.unit.strip():
+            raise ValueError("GEOMETRY_VARIABLE_NEEDS_UNIT")
+
+
+def make_geometry_regeneration_component(
+    request: GeometryRegenerationRequest,
+    variables: tuple[GeometryDesignVariable, ...],
+    *,
+    regenerator: GeometryRegenerator | None = None,
+) -> type:
+    """Build an OpenMDAO ``ExplicitComponent`` that regenerates real CAD.
+
+    Each variable change resolves the geometry parameter graph, regenerates the
+    native model, validates shape/topology, and returns geometry metrics. An
+    invalid regeneration is exposed as ``shape_valid = 0`` with zero metrics so
+    a campaign treats it as an invalid design instead of crashing or receiving
+    fabricated numbers. The full :class:`GeometryReceipt` is retained on the
+    component (``last_receipt`` / ``receipts``) for cache and provenance.
+    """
+
+    import openmdao.api as om
+    from aeroworkbench_geometry import GeometryRegenerator
+
+    if not variables:
+        raise ValueError("GEOMETRY_COMPONENT_NEEDS_VARIABLES")
+    variable_names = [variable.name for variable in variables]
+    if len(set(variable_names)) != len(variable_names):
+        raise ValueError("DUPLICATE_GEOMETRY_VARIABLE")
+    engine = regenerator or GeometryRegenerator(request)
+
+    class _GeometryRegenerationComponent(om.ExplicitComponent):  # type: ignore[valid-type, misc]
+        def __init__(self) -> None:
+            super().__init__()
+            self._engine = engine
+            self._variables = variables
+            self.receipts: dict[str, object] = {}
+            self.last_receipt: object | None = None
+
+        def setup(self) -> None:
+            for variable in self._variables:
+                self.add_input(_sanitize(variable.name), val=0.0)
+            self.add_output("total_volume_mm3", val=0.0)
+            self.add_output("min_volume_mm3", val=0.0)
+            self.add_output("component_count", val=0.0)
+            self.add_output("shape_valid", val=0.0)
+            self.declare_partials("*", "*", method="fd")
+
+        def compute(self, inputs: object, outputs: object) -> None:
+            from aeroworkbench_geometry import geometry_receipt_digest
+
+            bound = {
+                variable.parameter_path: _as_float(
+                    inputs[_sanitize(variable.name)]  # type: ignore[index]
+                )
+                for variable in self._variables
+            }
+            receipt = self._engine.evaluate(bound)
+            self.last_receipt = receipt
+            self.receipts[geometry_receipt_digest(receipt)] = receipt
+            valid = 1.0 if receipt.valid else 0.0
+            volumes = [component.volume_mm3 for component in receipt.components]
+            outputs["shape_valid"] = valid  # type: ignore[index]
+            outputs["total_volume_mm3"] = sum(volumes) if valid else 0.0  # type: ignore[index]
+            outputs["min_volume_mm3"] = (  # type: ignore[index]
+                min(volumes) if valid and volumes else 0.0
+            )
+            outputs["component_count"] = (  # type: ignore[index]
+                float(len(receipt.components)) if valid else 0.0
+            )
+
+    _GeometryRegenerationComponent.__name__ = "GeometryRegenerationComponent"
+    _GeometryRegenerationComponent.__qualname__ = "GeometryRegenerationComponent"
+    return _GeometryRegenerationComponent

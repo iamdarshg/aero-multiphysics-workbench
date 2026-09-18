@@ -26,7 +26,7 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = ["../../packages/core", "../../packages/geometry", "../../packages/semantics", "../../packages/materials", "../../packages/mesh", "../../packages/coupling", "../../packages/convergence", "../../packages/optimization", "../../packages/dynamics", "../../packages/thermal", "../../packages/envelope", "../../solvers", "../..", "."]
-testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics"]
+testpaths = ["../../tests/core", "../../tests/integration", "../../tests/physics", "../../tests/perf"]
 addopts = "-ra -p no:cacheprovider"
 
 [tool.ruff]

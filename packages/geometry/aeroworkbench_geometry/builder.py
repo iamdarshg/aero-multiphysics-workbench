@@ -10,6 +10,7 @@ from .parametric import (
     BuiltModel,
     ComponentTopology,
     ParametricModel,
+    geometry_definition_digest,
     probe_kernel,
 )
 
@@ -34,6 +35,16 @@ def _face_fingerprint(face: Any) -> str:
     return f"{geom_type}|A={area}|C={point[0]},{point[1]},{point[2]}"
 
 
+def _as_count(value: Any, detail: str) -> int:
+    try:
+        count = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"PATTERN_COUNT_INVALID:{detail}") from exc
+    if count != float(value) or count < 2:
+        raise ValueError(f"PATTERN_COUNT_MUST_BE_AT_LEAST_TWO:{detail}")
+    return count
+
+
 def _oriented(workplane: Any, axis: str) -> Any:
     axis = axis.upper()
     if axis == "X":
@@ -51,7 +62,7 @@ def _execute_operation(
     op = operation["op"]
     if op == "box":
         dx, dy, dz = operation["dx"], operation["dy"], operation["dz"]
-        if not dx > 0 and dy > 0 and dz > 0:
+        if not (dx > 0 and dy > 0 and dz > 0):
             raise ValueError("BOX_DIMENSIONS_MUST_BE_POSITIVE")
         cx, cy, cz = operation["center"]
         solid = (
@@ -63,7 +74,7 @@ def _execute_operation(
         shapes[operation["name"]] = solid
     elif op == "cylinder":
         diameter, height = operation["diameter"], operation["height"]
-        if not diameter > 0 and height > 0:
+        if not (diameter > 0 and height > 0):
             raise ValueError("CYLINDER_DIMENSIONS_MUST_BE_POSITIVE")
         axis = operation.get("axis", "Z").upper()
         cx, cy, cz = operation["center"]
@@ -89,7 +100,7 @@ def _execute_operation(
             operation["diameterTop"],
             operation["height"],
         )
-        if not base > 0 and top >= 0 and height > 0:
+        if not (base > 0 and top >= 0 and height > 0):
             raise ValueError("CONE_DIMENSIONS_MUST_BE_POSITIVE")
         cx, cy, cz = operation["center"]
         shapes[operation["name"]] = (
@@ -183,7 +194,7 @@ def _execute_operation(
         source = shapes.get(operation["source"])
         if source is None:
             raise ValueError(f"PATTERN_SOURCE_MISSING:{operation['source']}")
-        count = operation["count"]
+        count = _as_count(operation["count"], str(operation["name"]))
         axis = operation.get("axis", "Z").upper()
         axis_vector = {"X": (1, 0, 0), "Y": (0, 1, 0), "Z": (0, 0, 1)}[axis]
         copies = [source]
@@ -200,7 +211,7 @@ def _execute_operation(
         source = shapes.get(operation["source"])
         if source is None:
             raise ValueError(f"PATTERN_SOURCE_MISSING:{operation['source']}")
-        count = operation["count"]
+        count = _as_count(operation["count"], str(operation["name"]))
         direction = tuple(operation["direction"])
         spacing = operation["spacing"]
         copies = [source]
@@ -220,10 +231,11 @@ def execute(model: ParametricModel) -> BuiltModel:
         raise RuntimeError("CAD_KERNEL_UNAVAILABLE")
     import cadquery as cq  # noqa: PLC0415
 
-    resolved = model.parameters.resolve()
-    _ = resolved  # operations carry literal mm values; expressions resolve for hashing
+    # Deterministic resolution before kernel execution: bound parameter
+    # references become concrete millimetre values here.
+    operations = model.resolved_operations()
     shapes: dict[str, Any] = {}
-    for operation in model.operations:
+    for operation in operations:
         _execute_operation(cq, operation, shapes)
     components: list[ComponentTopology] = []
     fingerprint_source: list[str] = []
@@ -268,7 +280,8 @@ def execute(model: ParametricModel) -> BuiltModel:
         shape_hash=shape_hash,
         kernel=kernel,
         components=tuple(components),
-        operation_count=len(model.operations),
+        operation_count=len(operations),
+        definition_hash=geometry_definition_digest(model),
     )
     # Stash live shapes on the side for exporters without polluting the hash.
     built_live_shapes[id(built)] = shapes

@@ -1,0 +1,4 @@
+# Generated perf reports and profiles are never committed.
+reports/
+*.prof
+*.cpuprofile

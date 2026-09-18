@@ -9,13 +9,43 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass, field
+from math import isfinite
 from pathlib import Path
 from typing import Any, Literal
 
 from .parameters import ParameterSet
 
 Axis = Literal["X", "Y", "Z"]
+
+
+@dataclass(frozen=True, slots=True)
+class ParameterRef:
+    """Typed reference to a named parameter, resolved at evaluation time.
+
+    The unit is carried so a bound dimension is checked against the
+    parameter's declared unit before any kernel execution.
+    """
+
+    name: str
+    unit: str = "mm"
+
+    def __post_init__(self) -> None:
+        if not self.name.strip():
+            raise ValueError("PARAMETER_REF_NAME_REQUIRED")
+        if not self.unit.strip():
+            raise ValueError("PARAMETER_REF_UNIT_REQUIRED")
+
+
+def param(name: str, unit: str = "mm") -> ParameterRef:
+    """Bind an operation argument to a named parameter path."""
+
+    return ParameterRef(name, unit)
+
+
+BindArg = float | int | ParameterRef
+BindValue = BindArg | tuple[Any, ...] | list[Any]
 
 
 @dataclass(frozen=True, slots=True)
@@ -80,11 +110,11 @@ class ParametricModel:
     def add_box(
         self,
         name: str,
-        dx_mm: float,
-        dy_mm: float,
-        dz_mm: float,
+        dx_mm: BindArg,
+        dy_mm: BindArg,
+        dz_mm: BindArg,
         *,
-        center_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        center_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
         return self._record(
             {
@@ -100,11 +130,11 @@ class ParametricModel:
     def add_cylinder(
         self,
         name: str,
-        diameter_mm: float,
-        height_mm: float,
+        diameter_mm: BindArg,
+        height_mm: BindArg,
         *,
         axis: Axis = "Z",
-        center_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        center_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
         return self._record(
             {
@@ -120,9 +150,9 @@ class ParametricModel:
     def add_sphere(
         self,
         name: str,
-        diameter_mm: float,
+        diameter_mm: BindArg,
         *,
-        center_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        center_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
         return self._record(
             {"op": "sphere", "name": name, "diameter": diameter_mm,
@@ -132,12 +162,12 @@ class ParametricModel:
     def add_cone(
         self,
         name: str,
-        diameter_base_mm: float,
-        diameter_top_mm: float,
-        height_mm: float,
+        diameter_base_mm: BindArg,
+        diameter_top_mm: BindArg,
+        height_mm: BindArg,
         *,
         axis: Axis = "Z",
-        center_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        center_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
         return self._record(
             {
@@ -154,11 +184,11 @@ class ParametricModel:
     def extrude_profile(
         self,
         name: str,
-        profile_mm: tuple[tuple[float, float], ...],
-        depth_mm: float,
+        profile_mm: tuple[tuple[BindArg, BindArg], ...],
+        depth_mm: BindArg,
         *,
         plane: str = "XY",
-        offset_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        offset_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
         if len(profile_mm) < 3:
             raise ValueError("EXTRUDE_PROFILE_NEEDS_AT_LEAST_THREE_POINTS")
@@ -176,8 +206,8 @@ class ParametricModel:
     def revolve_profile(
         self,
         name: str,
-        profile_mm: tuple[tuple[float, float], ...],
-        angle_deg: float = 360.0,
+        profile_mm: tuple[tuple[BindArg, BindArg], ...],
+        angle_deg: BindArg = 360.0,
         *,
         axis: Axis = "Z",
     ) -> ParametricModel:
@@ -196,9 +226,9 @@ class ParametricModel:
     def loft_profiles(
         self,
         name: str,
-        profiles_mm: tuple[tuple[tuple[float, float], ...], ...],
+        profiles_mm: tuple[tuple[tuple[BindArg, BindArg], ...], ...],
         *,
-        offsets_mm: tuple[float, ...] | None = None,
+        offsets_mm: tuple[BindArg, ...] | None = None,
         ruled: bool = True,
     ) -> ParametricModel:
         if len(profiles_mm) < 2:
@@ -216,8 +246,8 @@ class ParametricModel:
     def sweep_profile(
         self,
         name: str,
-        profile_mm: tuple[tuple[float, float], ...],
-        path_mm: tuple[tuple[float, float, float], ...],
+        profile_mm: tuple[tuple[BindArg, BindArg], ...],
+        path_mm: tuple[tuple[BindArg, BindArg, BindArg], ...],
     ) -> ParametricModel:
         if len(profile_mm) < 3:
             raise ValueError("SWEEP_PROFILE_NEEDS_AT_LEAST_THREE_POINTS")
@@ -232,10 +262,10 @@ class ParametricModel:
             }
         )
 
-    def fillet(self, name: str, radius_mm: float) -> ParametricModel:
+    def fillet(self, name: str, radius_mm: BindArg) -> ParametricModel:
         return self._record({"op": "fillet", "name": name, "radius": radius_mm})
 
-    def chamfer(self, name: str, length_mm: float) -> ParametricModel:
+    def chamfer(self, name: str, length_mm: BindArg) -> ParametricModel:
         return self._record({"op": "chamfer", "name": name, "length": length_mm})
 
     def boolean(
@@ -256,12 +286,12 @@ class ParametricModel:
         self,
         name: str,
         source: str,
-        count: int,
+        count: int | ParameterRef,
         *,
         axis: Axis = "Z",
-        center_mm: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        center_mm: tuple[BindArg, BindArg, BindArg] = (0.0, 0.0, 0.0),
     ) -> ParametricModel:
-        if count < 2:
+        if not isinstance(count, ParameterRef) and count < 2:
             raise ValueError("PATTERN_COUNT_MUST_BE_AT_LEAST_TWO")
         return self._record(
             {
@@ -278,12 +308,12 @@ class ParametricModel:
         self,
         name: str,
         source: str,
-        count: int,
-        spacing_mm: float,
+        count: int | ParameterRef,
+        spacing_mm: BindArg,
         *,
-        direction: tuple[float, float, float] = (1.0, 0.0, 0.0),
+        direction: tuple[BindArg, BindArg, BindArg] = (1.0, 0.0, 0.0),
     ) -> ParametricModel:
-        if count < 2:
+        if not isinstance(count, ParameterRef) and count < 2:
             raise ValueError("PATTERN_COUNT_MUST_BE_AT_LEAST_TWO")
         return self._record(
             {
@@ -306,6 +336,27 @@ class ParametricModel:
             raise ValueError(f"DUPLICATE_FRAME:{name}")
         self.frames[name] = Frame(name, origin_mm, direction)
         return self
+
+    # -- binding resolution ---------------------------------------------------
+    def resolved_parameters(self) -> dict[str, float]:
+        """Evaluate the parameter graph to concrete millimetre values."""
+
+        return self.parameters.resolve()
+
+    def resolved_operations(self) -> list[dict[str, Any]]:
+        """Return the operation log with every :class:`ParameterRef` bound.
+
+        Resolution is deterministic and happens before any kernel execution.
+        Unknown references, unit mismatches, and non-finite bindings fail
+        closed.
+        """
+
+        values = self.resolved_parameters()
+        units = {item.name: item.unit for item in self.parameters.definitions}
+        return [
+            _resolve_operation(operation, values, units)
+            for operation in self.operations
+        ]
 
     # -- execution ------------------------------------------------------------
     def build(self) -> BuiltModel:
@@ -336,11 +387,13 @@ class BuiltModel:
     kernel: KernelIdentity
     components: tuple[ComponentTopology, ...]
     operation_count: int
+    definition_hash: str = ""
 
     def canonical_payload(self) -> dict[str, Any]:
         return {
             "modelName": self.model_name,
             "parameterHash": self.parameter_hash,
+            "definitionHash": self.definition_hash,
             "kernel": {
                 "cadquery": self.kernel.cadquery_version,
                 "ocp": self.kernel.ocp_version,
@@ -423,15 +476,126 @@ def export_artifacts(
     }
 
 
+def _resolve_value(
+    value: Any,
+    values: Mapping[str, float],
+    units: Mapping[str, str],
+    path: str,
+) -> Any:
+    if isinstance(value, ParameterRef):
+        if value.name not in values:
+            raise ValueError(f"UNKNOWN_GEOMETRY_PARAMETER:{value.name}")
+        declared = units.get(value.name)
+        if declared is not None and declared != value.unit:
+            raise ValueError(
+                f"GEOMETRY_PARAMETER_UNIT_MISMATCH:{value.name}:"
+                f"{value.unit}!={declared}"
+            )
+        resolved = float(values[value.name])
+        if not isfinite(resolved):
+            raise ValueError(f"GEOMETRY_PARAMETER_NOT_FINITE:{value.name}")
+        return resolved
+    if isinstance(value, (tuple, list)):
+        return [_resolve_value(item, values, units, path) for item in value]
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        if not isfinite(float(value)):
+            raise ValueError(f"GEOMETRY_VALUE_NOT_FINITE:{path}")
+        return value
+    if value is None:
+        return None
+    return value
+
+
+def resolve_operation(
+    operation: Mapping[str, Any],
+    values: Mapping[str, float],
+    units: Mapping[str, str],
+) -> dict[str, Any]:
+    """Bind every parameter reference in one operation record."""
+
+    resolved: dict[str, Any] = {}
+    for key, value in operation.items():
+        resolved[key] = _resolve_value(value, values, units, str(key))
+    return resolved
+
+
+def _resolve_operation(
+    operation: dict[str, Any],
+    values: Mapping[str, float],
+    units: Mapping[str, str],
+) -> dict[str, Any]:
+    return resolve_operation(operation, values, units)
+
+
+def _definition_value(value: Any) -> Any:
+    if isinstance(value, ParameterRef):
+        return {"$param": value.name, "unit": value.unit}
+    if isinstance(value, (tuple, list)):
+        return [_definition_value(item) for item in value]
+    return value
+
+
+def geometry_definition_payload(model: ParametricModel) -> dict[str, Any]:
+    """Canonical serialization of the CAD definition, excluding resolved values.
+
+    Bound parameter references are serialized by name/unit and the parameter
+    structure records expressions/units only, so a bound value change alters
+    the resolved parameter hash but not this definition hash.
+    """
+
+    return {
+        "name": model.name,
+        "operations": [
+            {
+                key: _definition_value(value)
+                for key, value in sorted(operation.items())
+            }
+            for operation in model.operations
+        ],
+        "frames": {
+            name: {
+                "originMm": list(frame.origin_mm),
+                "direction": list(frame.direction),
+            }
+            for name, frame in sorted(model.frames.items())
+        },
+        "parameterStructure": [
+            {"name": item.name, "expression": item.expression, "unit": item.unit}
+            for item in sorted(model.parameters.definitions, key=lambda d: d.name)
+        ],
+    }
+
+
+def geometry_definition_digest(model: ParametricModel) -> str:
+    """Deterministic SHA-256 of the geometry definition (bindings, not values)."""
+
+    encoded = json.dumps(
+        geometry_definition_payload(model),
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 __all__ = [
     "Axis",
+    "BindArg",
+    "BindValue",
     "BuiltModel",
     "ComponentTopology",
     "Frame",
     "KernelIdentity",
+    "ParameterRef",
     "ParametricModel",
     "built_model_digest",
     "export_artifacts",
+    "geometry_definition_digest",
+    "geometry_definition_payload",
+    "param",
     "probe_kernel",
     "require_kernel",
+    "resolve_operation",
 ]

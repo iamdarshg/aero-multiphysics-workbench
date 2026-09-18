@@ -9,6 +9,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from math import isfinite
 from typing import Any
@@ -203,6 +204,49 @@ class ParameterSet:
                 raise ValueError("PARAMETER_RESOLUTION_STALLED")
         return dict(sorted(resolved.items()))
 
+    def unit_of(self, name: str) -> str:
+        """Return the declared unit of one parameter, failing closed if absent."""
+
+        for item in self.definitions:
+            if item.name == name:
+                return item.unit
+        raise ValueError(f"UNKNOWN_PARAMETER:{name}")
+
+    def with_literals(self, values: Mapping[str, float | int]) -> ParameterSet:
+        """Return a new set with literal values overridden by evaluation inputs.
+
+        Only literal parameters may be overridden; derived expression
+        parameters must stay derived so the dependency graph remains the single
+        source of truth. Unknown names and non-finite values fail closed.
+        """
+
+        known = {item.name: item for item in self.definitions}
+        unknown = [name for name in values if name not in known]
+        if unknown:
+            raise ValueError(f"UNKNOWN_PARAMETER:{sorted(unknown)[0]}")
+        overrides: dict[str, float] = {}
+        for name, value in values.items():
+            item = known[name]
+            if item.expression is not None:
+                raise ValueError(f"CANNOT_OVERRIDE_DERIVED_PARAMETER:{name}")
+            numeric = float(value)
+            if not isfinite(numeric):
+                raise ValueError(f"PARAMETER_VALUE_NOT_FINITE:{name}")
+            overrides[name] = numeric
+        return ParameterSet(
+            tuple(
+                ParameterDef(
+                    item.name,
+                    overrides.get(item.name, item.value),
+                    item.expression,
+                    item.unit,
+                )
+                if item.name in overrides
+                else item
+                for item in self.definitions
+            )
+        )
+
     def canonical_payload(self) -> dict[str, Any]:
         return {
             "parameters": [
@@ -220,5 +264,17 @@ class ParameterSet:
 def parameter_digest(parameters: ParameterSet) -> str:
     encoded = json.dumps(
         parameters.canonical_payload(), sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def resolved_parameter_digest(values: Mapping[str, float]) -> str:
+    """Content digest of resolved parameter values (deterministic, ordered)."""
+
+    encoded = json.dumps(
+        {name: float(value) for name, value in sorted(values.items())},
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()

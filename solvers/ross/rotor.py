@@ -1,10 +1,13 @@
-"""Real ROSS rotor preparation, result parsing, and validation.
+"""Real ROSS rotor preparation, result parsing, and validity policy.
 
-Prepare writes an auditable case.json plus a hashed copy of the governed run
-script; the run script builds actual shaft/bearing/disk models with the ROSS
-library in a subprocess. Parse converts result.json into typed scalars and
-validity cross-checks the first critical speed against a simply-supported
-Euler-Bernoulli beam estimate.
+Prepare normalizes a generic rotating-assembly description (shaft segments,
+material, disks, bearings, speed range, gyroscopic settings, unbalance) plus
+any participant-declared forcing spectra, then writes an auditable ``case.json``
+and a hashed copy of the governed run script. The run script builds actual ROSS
+shaft/disk/bearing elements in a subprocess. Parse converts ``result.json`` into
+typed scalars; validity treats a simply-supported Euler-Bernoulli beam estimate
+as a wide screening plausibility band only -- native bearing/gyroscopic modes
+are authoritative at native fidelity.
 """
 
 from __future__ import annotations
@@ -17,6 +20,12 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from aeroworkbench_dynamics import (
+    ForcingSpecError,
+    RotorModelError,
+    normalize_forcing_lines,
+    normalize_rotor_model,
+)
 from participants.commands import run_script_path
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.receipts import ParseReceipt, PrepareReceipt, ValidityReport
@@ -24,94 +33,52 @@ from participants.receipts import ParseReceipt, PrepareReceipt, ValidityReport
 ANALYSES = ("campbell", "modal", "forced")
 ROSS_MIN_VERSION = "2.0.0"
 RUN_SCRIPT = "run_ross.py"
+DEFAULT_WARNING_MARGIN_HZ = 5.0
+DEFAULT_CRITICAL_MARGIN_HZ = 2.0
+# A simply-supported beam estimate is a screening plausibility band only. The
+# band is deliberately wide (an order-and-a-half of magnitude either way) so
+# bearing-dominated and gyroscopic modes are never rejected merely for differing
+# from a flexible-beam estimate; outside it the comparison indicates an invalid
+# model/result rather than a fidelity difference.
+SCREENING_PLAUSIBILITY_FACTOR = 50.0
 
 
-def _fail(detail: str) -> ParticipantError:
-    return ParticipantError(NativeErrorCode.PREPARATION_FAILED, detail)
-
-
-def _require_float(inputs: Mapping[str, object], name: str) -> float:
-    value = inputs.get(name)
+def _finite_optional(value: object) -> float | None:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise _fail(f"input {name} must be a number")
+        return None
     result = float(value)
-    if result != result or result in (float("inf"), float("-inf")):
-        raise _fail(f"input {name} must be finite")
+    if not math.isfinite(result):
+        return None
     return result
 
 
-def _require_int(inputs: Mapping[str, object], name: str) -> int:
-    value = inputs.get(name)
-    if isinstance(value, bool) or not isinstance(value, int):
-        raise _fail(f"input {name} must be an integer")
-    return int(value)
+def prepare_rotor_case(inputs: dict[str, object], case_dir: Path) -> PrepareReceipt:
+    """Validate a generic rotating assembly and stage the governed run."""
 
+    try:
+        model = normalize_rotor_model(inputs)
+        forcing_lines = normalize_forcing_lines(inputs.get("forcings"))
+    except (RotorModelError, ForcingSpecError) as exc:
+        raise ParticipantError(NativeErrorCode.PREPARATION_FAILED, str(exc)) from exc
 
-def _require_str(inputs: Mapping[str, object], name: str, allowed: tuple[str, ...]) -> str:
-    value = inputs.get(name)
-    if not isinstance(value, str) or value not in allowed:
-        raise _fail(f"input {name} must be one of {sorted(allowed)}")
-    return value
-
-
-def prepare_rotor_case(
-    inputs: dict[str, object], case_dir: Path
-) -> PrepareReceipt:
-    """Validate a generic rotor description and stage the governed run."""
-
-    data: Mapping[str, object] = dict(inputs)
-    analysis = _require_str(data, "analysis", ANALYSES)
-    shaft_length = _require_float(data, "shaft_length_m")
-    shaft_diameter = _require_float(data, "shaft_diameter_m")
-    n_elements = _require_int(data, "n_elements")
-    bearing_stiffness = _require_float(data, "bearing_stiffness_n_m")
-    if "bearing_damping_n_s_m" in data:
-        bearing_damping = _require_float(data, "bearing_damping_n_s_m")
-    else:
-        bearing_damping = 1000.0
-    if shaft_length <= 0 or shaft_diameter <= 0:
-        raise _fail("shaft dimensions must be positive")
-    if n_elements < 2 or n_elements > 64:
-        raise _fail("n_elements must be within 2..64")
-    if bearing_stiffness <= 0 or bearing_damping < 0:
-        raise _fail("bearing coefficients out of physical range")
-    disk_raw = data.get("disk", None)
-    disk: dict[str, float] | None = None
-    if disk_raw is not None:
-        if not isinstance(disk_raw, Mapping):
-            raise _fail("disk must be a mapping")
-        disk = {
-            "position": _require_float(disk_raw, "position"),
-            "outer_diameter_m": _require_float(disk_raw, "outer_diameter_m"),
-            "width_m": _require_float(disk_raw, "width_m"),
-        }
-        if (
-            disk["outer_diameter_m"] <= shaft_diameter
-            or disk["width_m"] <= 0
-            or not 0 <= disk["position"] <= n_elements
-        ):
-            raise _fail("disk geometry out of range")
-    if analysis == "campbell":
-        max_speed = _require_float(data, "max_speed_rpm")
-        if max_speed <= 0 or max_speed > 200_000:
-            raise _fail("max_speed_rpm out of range")
-        speed_rpm = 0.0
-    else:
-        speed_rpm = _require_float(data, "speed_rpm")
-        if speed_rpm < 0 or speed_rpm > 200_000:
-            raise _fail("speed_rpm out of range")
-        max_speed = speed_rpm
+    warning = _finite_optional(inputs.get("forcing_warning_margin_hz"))
+    critical = _finite_optional(inputs.get("forcing_critical_margin_hz"))
+    warning = DEFAULT_WARNING_MARGIN_HZ if warning is None else warning
+    critical = DEFAULT_CRITICAL_MARGIN_HZ if critical is None else critical
+    if warning <= 0 or critical <= 0 or critical > warning:
+        raise ParticipantError(
+            NativeErrorCode.PREPARATION_FAILED,
+            "forcing margins must be positive with critical <= warning",
+        )
 
     canonical: dict[str, Any] = {
-        "analysis": analysis,
-        "shaft_length_m": shaft_length,
-        "shaft_diameter_m": shaft_diameter,
-        "n_elements": n_elements,
-        "bearing_stiffness_n_m": bearing_stiffness,
-        "bearing_damping_n_s_m": bearing_damping,
-        "disk": disk,
-        "max_speed_rpm": max_speed,
-        "speed_rpm": speed_rpm,
+        "analysis": model.analysis,
+        "model": model.canonical_payload(),
+        "speed_rpm": model.speed_rpm,
+        "max_speed_rpm": model.max_speed_rpm,
+        "forcings": [line.canonical_payload() for line in forcing_lines],
+        "forcing_warning_margin_hz": warning,
+        "forcing_critical_margin_hz": critical,
         "library": "ross-rotordynamics",
         "min_version": ROSS_MIN_VERSION,
     }
@@ -130,7 +97,11 @@ def prepare_rotor_case(
         case_id=case_dir.name,
         input_hash=digest,
         files=("case.json", RUN_SCRIPT),
-        detail=f"analysis={analysis} elements={n_elements}",
+        detail=(
+            f"analysis={model.analysis} segments={len(model.segments)} "
+            f"disks={len(model.disks)} bearings={len(model.bearings)} "
+            f"forcings={len(forcing_lines)}"
+        ),
     )
 
 
@@ -149,6 +120,8 @@ def parse_rotor_result(case_dir: Path) -> ParseReceipt:
     if not isinstance(data, dict) or data.get("library") != "ross-rotordynamics":
         raise ParticipantError(NativeErrorCode.PARSER_FAILED, "result.json is not a ROSS receipt")
     analysis = data.get("analysis")
+    scalars: dict[str, float] = {}
+    units: dict[str, str] = {}
     try:
         if analysis == "campbell":
             criticals = [float(value) for value in data["critical_speeds_rpm"]]
@@ -156,29 +129,35 @@ def parse_rotor_result(case_dir: Path) -> ParseReceipt:
                 raise ParticipantError(
                     NativeErrorCode.PARSER_FAILED, "campbell result has no critical speeds"
                 )
-            scalars = {"first_critical_rpm": criticals[0]}
-            units = {"first_critical_rpm": "rpm"}
+            scalars["first_critical_rpm"] = criticals[0]
+            units["first_critical_rpm"] = "rpm"
             # A short bearing-dominated rotor can show only one forward critical
             # below the swept speed; report a second only when it is detected.
             if len(criticals) >= 2:
                 scalars["second_critical_rpm"] = criticals[1]
                 units["second_critical_rpm"] = "rpm"
         elif analysis == "modal":
-            scalars = {
-                "first_whirl_hz": float(data["first_whirl_hz"]),
-                "first_damping_ratio": float(data["first_damping_ratio"]),
-            }
-            units = {"first_whirl_hz": "Hz", "first_damping_ratio": "dimensionless"}
+            scalars["first_whirl_hz"] = float(data["first_whirl_hz"])
+            scalars["first_damping_ratio"] = float(data["first_damping_ratio"])
+            units["first_whirl_hz"] = "Hz"
+            units["first_damping_ratio"] = "dimensionless"
         elif analysis == "forced":
-            scalars = {
-                "peak_response_m": float(data["peak_response_m"]),
-                "peak_speed_rpm": float(data["peak_speed_rpm"]),
-            }
-            units = {"peak_response_m": "m", "peak_speed_rpm": "rpm"}
+            scalars["peak_response_m"] = float(data["peak_response_m"])
+            scalars["peak_speed_rpm"] = float(data["peak_speed_rpm"])
+            units["peak_response_m"] = "m"
+            units["peak_speed_rpm"] = "rpm"
         else:
             raise ParticipantError(
                 NativeErrorCode.PARSER_FAILED, f"unknown ROSS analysis:{analysis}"
             )
+        log_decrement = _finite_optional(data.get("first_log_decrement"))
+        if analysis == "modal" and log_decrement is not None:
+            scalars["first_log_decrement"] = log_decrement
+            units["first_log_decrement"] = "dimensionless"
+        forcing_margin = _finite_optional(data.get("min_forcing_separation_hz"))
+        if forcing_margin is not None and forcing_margin >= 0:
+            scalars["min_forcing_separation_hz"] = forcing_margin
+            units["min_forcing_separation_hz"] = "Hz"
     except (KeyError, TypeError, ValueError) as exc:
         raise ParticipantError(
             NativeErrorCode.PARSER_FAILED, f"ROSS result fields invalid:{exc}"
@@ -205,35 +184,80 @@ def beam_first_critical_rpm(
     return omega * 60.0 / (2.0 * math.pi)
 
 
+def screening_beam_critical_rpm(inputs: Mapping[str, object]) -> float | None:
+    """Best-effort screening estimate; never raises on unusual model shapes."""
+
+    try:
+        length = float(inputs["shaft_length_m"])  # type: ignore[arg-type]
+        diameter = float(inputs["shaft_diameter_m"])  # type: ignore[arg-type]
+        if length > 0 and diameter > 0:
+            return beam_first_critical_rpm(shaft_length_m=length, shaft_diameter_m=diameter)
+    except (KeyError, TypeError, ValueError):
+        pass
+    try:
+        model = normalize_rotor_model(inputs)
+    except (RotorModelError, ForcingSpecError):
+        return None
+    length = model.total_length_m
+    diameter = model.max_outer_diameter_m
+    if length <= 0 or diameter <= 0:
+        return None
+    return beam_first_critical_rpm(
+        shaft_length_m=length,
+        shaft_diameter_m=diameter,
+        youngs_pa=model.material.youngs_modulus_pa,
+        density_kg_m3=model.material.density_kg_m3,
+    )
+
+
 def validate_rotor_result(
     scalars: Mapping[str, float], inputs: Mapping[str, object]
 ) -> ValidityReport:
+    checks: dict[str, bool] = {}
     if "first_critical_rpm" in scalars:
         first = float(scalars["first_critical_rpm"])
         has_second = "second_critical_rpm" in scalars
         second = float(scalars.get("second_critical_rpm", float("nan")))
-        estimate = beam_first_critical_rpm(
-            shaft_length_m=float(inputs["shaft_length_m"]),
-            shaft_diameter_m=float(inputs["shaft_diameter_m"]),
-        )
-        checks = {
-            "criticals_positive": first > 0 and (not has_second or second > 0),
-            "criticals_ascending": (not has_second) or second > first,
-            "beam_consistent": first > 0 and abs(first - estimate) / estimate < 0.5,
-        }
-        detail = f"beam estimate {estimate:.1f} rpm within 50%"
+        checks["criticals_positive"] = first > 0 and (not has_second or second > 0)
+        checks["criticals_ascending"] = (not has_second) or second > first
+        estimate = screening_beam_critical_rpm(inputs)
+        if estimate is not None and estimate > 0:
+            ratio = first / estimate
+            checks["screening_plausible"] = (
+                math.isfinite(ratio)
+                and 1.0 / SCREENING_PLAUSIBILITY_FACTOR
+                <= ratio
+                <= SCREENING_PLAUSIBILITY_FACTOR
+            )
+            detail = (
+                f"native first critical {first:.1f} rpm vs screening beam estimate "
+                f"{estimate:.1f} rpm (ratio {ratio:.3f}); native bearing/gyroscopic modes "
+                "are authoritative, the beam estimate is a plausibility band only"
+            )
+        else:
+            detail = (
+                "screening beam estimate unavailable for this assembly; "
+                "native bearing/gyroscopic modes are authoritative"
+            )
     elif "first_whirl_hz" in scalars:
         whirl = float(scalars["first_whirl_hz"])
         damping = float(scalars["first_damping_ratio"])
-        checks = {
-            "whirl_positive": whirl > 0,
-            "damping_finite": damping == damping and abs(damping) < 1.0,
-        }
+        checks["whirl_positive"] = whirl > 0
+        checks["damping_finite"] = damping == damping and abs(damping) < 1.0
+        log_decrement = scalars.get("first_log_decrement")
+        if log_decrement is not None:
+            value = float(log_decrement)
+            checks["log_decrement_valid"] = math.isfinite(value) and value >= 0
         detail = "forward whirl positive with bounded damping ratio"
     else:
         peak = float(scalars.get("peak_response_m", float("nan")))
-        checks = {"response_finite": peak == peak and peak >= 0}
+        checks["response_finite"] = peak == peak and peak >= 0
         detail = "forced peak response finite and non-negative"
+    margin = scalars.get("min_forcing_separation_hz")
+    if margin is not None:
+        value = float(margin)
+        checks["forcing_separation_nonnegative"] = math.isfinite(value) and value >= 0
+        detail = f"{detail}; declared forcing separation {value:.3f} Hz"
     return ValidityReport(
         participant_id="ross",
         passed=all(checks.values()),

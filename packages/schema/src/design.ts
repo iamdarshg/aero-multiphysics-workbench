@@ -21,12 +21,29 @@ export interface ParameterRevisionRef {
   readonly count: number;
 }
 
+/** Binding from a design-variable name to a geometry parameter path. */
+export interface GeometryParameterBinding {
+  readonly variable: string;
+  readonly parameterPath: string;
+  readonly unit: string;
+}
+
+/** Rebuild and permitted topology-change policy for a geometry definition. */
+export interface GeometryRebuildPolicy {
+  readonly onParameterChange: "rebuild" | "reuse";
+  readonly permittedTopologyChange: "preserve" | "remesh" | "any";
+}
+
 /** Immutable reference to a geometry definition plus its semantic topology. */
 export interface GeometryRef {
   readonly digest: string;
   readonly semanticDigest: string;
   readonly definitionDigest?: string;
   readonly revisionId?: string;
+  readonly parameterRevision?: ParameterRevisionRef;
+  readonly topologyDigest?: string;
+  readonly bindings?: ReadonlyArray<GeometryParameterBinding>;
+  readonly rebuildPolicy?: GeometryRebuildPolicy;
 }
 
 /** One region's binding to an immutable material revision. */
@@ -146,6 +163,23 @@ export function createDesignRevision(input: Omit<DesignRevision, "contentHash">)
     requireDigest(name, digest);
   }
   if (input.parameterRevision) requireDigest("parameterRevision", input.parameterRevision.digest);
+  if (input.geometry.definitionDigest) requireDigest("geometryDefinition", input.geometry.definitionDigest);
+  if (input.geometry.topologyDigest) requireDigest("geometryTopology", input.geometry.topologyDigest);
+  if (input.geometry.parameterRevision) requireDigest("geometryParameterRevision", input.geometry.parameterRevision.digest);
+  for (const binding of input.geometry.bindings ?? []) {
+    if (!binding.variable.trim() || !binding.parameterPath.trim() || !binding.unit.trim()) {
+      throw new TypeError("geometry bindings need a variable, parameter path, and unit");
+    }
+  }
+  if (input.geometry.rebuildPolicy) {
+    const { onParameterChange, permittedTopologyChange } = input.geometry.rebuildPolicy;
+    if (onParameterChange !== "rebuild" && onParameterChange !== "reuse") {
+      throw new TypeError("unknown geometry rebuild policy");
+    }
+    if (!["preserve", "remesh", "any"].includes(permittedTopologyChange)) {
+      throw new TypeError("unknown geometry topology-change policy");
+    }
+  }
   if (input.semanticsDigest) requireDigest("semantics", input.semanticsDigest);
   for (const binding of input.materials.bindings ?? []) {
     requireDigest(`material:${binding.region}`, binding.materialDigest);
@@ -227,6 +261,9 @@ export const CHANGE_IMPACT: Readonly<Record<string, ReadonlyArray<string>>> = Ob
   parameters: Object.freeze(["geometry", "mesh", "analysis", "objectives"]),
   parameterRevision: Object.freeze(["geometry", "mesh", "analysis", "objectives"]),
   geometry: Object.freeze(["geometry", "mesh", "analysis", "interfaces", "objectives"]),
+  geometryBindings: Object.freeze(["geometry", "mesh", "analysis", "objectives"]),
+  geometryRebuildPolicy: Object.freeze(["geometry", "mesh", "analysis", "optimization"]),
+  topologyDigest: Object.freeze(["mesh", "analysis", "interfaces", "objectives"]),
   semantics: Object.freeze(["mesh", "analysis", "interfaces", "objectives"]),
   materials: Object.freeze(["mesh", "structural", "thermal", "electromagnetic", "objectives"]),
   operatingPoints: Object.freeze(["analysis", "objectives"]),

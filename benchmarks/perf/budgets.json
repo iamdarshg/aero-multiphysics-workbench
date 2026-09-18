@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "policy": "Generous ceilings on bounded deterministic microbenchmarks plus catastrophic-hang guards for cold starts. Our intent is to catch order-of-magnitude regressions (typically >3-10x) without flaking on host variance. CI must not assert 'faster than an absolute laptop number': the deterministic microbenchmark budgets are the gate; cold-start budgets only catch hangs. The Python executable and Node version are recorded in every report.",
+  "budgets": [
+    {
+      "id": "node.content_lookup",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 5,
+      "rationale": "in-memory content-addressed cache get (structuredClone of a tiny value)"
+    },
+    {
+      "id": "node.canonical_digest",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 5,
+      "rationale": "canonicalJson + sha256 over one representative DAG-node key"
+    },
+    {
+      "id": "node.doctor_total",
+      "metric": "total_ms",
+      "direction": "max",
+      "limit": 60000,
+      "rationale": "catastrophic-hang guard; real probe cost varies with installed solvers"
+    },
+    {
+      "id": "stack.cold_start_ready",
+      "metric": "median_ms",
+      "direction": "max",
+      "limit": 45000,
+      "rationale": "catastrophic-hang guard for API+web cold start; host and Next.js build variance dominate"
+    },
+    {
+      "id": "api.warm_request_latency",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 250,
+      "rationale": "warm in-process GET /health via the governed FastAPI app"
+    },
+    {
+      "id": "api.cold_start_ready",
+      "metric": "median_ms",
+      "direction": "max",
+      "limit": 30000,
+      "rationale": "catastrophic-hang guard for a real uvicorn cold start to first HTTP 200"
+    },
+    {
+      "id": "lifecycle.submit_to_preparing",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 2000,
+      "rationale": "queue wait for the tiny in-process participant, from persisted QUEUED to PREPARING"
+    },
+    {
+      "id": "lifecycle.tiny_job_stage_split",
+      "metric": "total_ms",
+      "direction": "max",
+      "limit": 5000,
+      "rationale": "full governed lifecycle with no solver compute; catches orchestration/I-O regressions"
+    },
+    {
+      "id": "lifecycle.process_launch_overhead",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 2000,
+      "rationale": "governed spawn of a trivial python process (launch path only)"
+    },
+    {
+      "id": "cache.content_lookup",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 5,
+      "rationale": "Python ContentCache.get (deepcopy of a tiny tuple)"
+    },
+    {
+      "id": "dag.cache_hit_vs_miss",
+      "metric": "p95_ms",
+      "direction": "max",
+      "limit": 50,
+      "rationale": "12-node DAG all-cache-hit pass; the miss delta is reported but not budgeted"
+    },
+    {
+      "id": "sqlite.provenance_write",
+      "metric": "items_per_second",
+      "direction": "min",
+      "limit": 10,
+      "rationale": "committed append-only provenance events per second (catastrophic floor; a 5x contention drop must not flake the gate)"
+    },
+    {
+      "id": "sqlite.ledger_event_write",
+      "metric": "items_per_second",
+      "direction": "min",
+      "limit": 10,
+      "rationale": "committed native_job_events inserts per second (catastrophic floor under concurrent host load)"
+    },
+    {
+      "id": "artifact.hashing_throughput",
+      "metric": "mib_per_second",
+      "direction": "min",
+      "limit": 10,
+      "rationale": "sha256 MiB/s on a bounded 4 MiB fixture (catastrophic floor)"
+    },
+    {
+      "id": "python.suite_wall",
+      "metric": "median_ms",
+      "direction": "max",
+      "limit": 55000,
+      "rationale": "catastrophic-hang guard keeping the Python half inside the 60 s suite budget"
+    }
+  ]
+}
