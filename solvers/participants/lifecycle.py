@@ -13,6 +13,7 @@ import hashlib
 import importlib
 import json
 import os
+import sys
 import threading
 import uuid
 from collections.abc import Callable, Mapping
@@ -443,37 +444,36 @@ class NativeJobManager:
             )
             envelope_json = envelope.model_dump_json()
             result_id = hashlib.sha256(envelope_json.encode("utf-8")).hexdigest()
-            completed = self._transition(job_id, JobState.COMPLETED, f"run_id={run_id}")
-            self._ledger.update(
+            return self._transition(
                 job_id,
-                state=JobState.COMPLETED.value,
-                updated_at=_now(),
-                envelope_json=envelope_json,
-                result_id=result_id,
-                provenance_id=envelope.provenance_id,
+                JobState.COMPLETED,
+                f"run_id={run_id}",
+                {
+                    "envelope_json": envelope_json,
+                    "result_id": result_id,
+                    "provenance_id": envelope.provenance_id,
+                },
             )
-            return completed
         except ParticipantError as exc:
-            failed = self._transition(job_id, JobState.FAILED, f"{exc.code.value}:{exc.detail}")
-            self._ledger.update(
-                job_id,
-                state=JobState.FAILED.value,
-                updated_at=_now(),
-                error_code=exc.code.value,
-                error_detail=exc.detail,
+            print(
+                f"[native] job {job_id} FAILED {exc.code.value}:{exc.detail}",
+                file=sys.stderr,
             )
-            return failed
+            return self._transition(
+                job_id,
+                JobState.FAILED,
+                f"{exc.code.value}:{exc.detail}",
+                {"error_code": exc.code.value, "error_detail": exc.detail},
+            )
         except Exception as exc:  # noqa: BLE001
             detail = f"{type(exc).__name__}:{exc}"
-            failed = self._transition(job_id, JobState.FAILED, detail)
-            self._ledger.update(
+            print(f"[native] job {job_id} FAILED {detail}", file=sys.stderr)
+            return self._transition(
                 job_id,
-                state=JobState.FAILED.value,
-                updated_at=_now(),
-                error_code=NativeErrorCode.RESULT_INVALID.value,
-                error_detail=detail,
+                JobState.FAILED,
+                detail,
+                {"error_code": NativeErrorCode.RESULT_INVALID.value, "error_detail": detail},
             )
-            return failed
 
     def _execute(
         self, manifest: Any, job_id: str, case_dir: Path
@@ -860,7 +860,13 @@ class NativeJobManager:
             )
         return dict(data)
 
-    def _transition(self, job_id: str, state: JobState, detail: str) -> str:
+    def _transition(
+        self,
+        job_id: str,
+        state: JobState,
+        detail: str,
+        fields: Mapping[str, Any] | None = None,
+    ) -> str:
         row = self._ledger.get(job_id)
         if row is None:
             raise KeyError(f"JOB_NOT_FOUND:{job_id}")
@@ -870,7 +876,12 @@ class NativeJobManager:
             raise ValueError(f"ILLEGAL_JOB_TRANSITION:unknown stored state:{row.state}") from exc
         if state not in _LEGAL_TRANSITIONS[current]:
             raise ValueError(f"ILLEGAL_JOB_TRANSITION:{current.value}->{state.value}")
-        self._ledger.update(job_id, state=state.value, updated_at=_now())
+        # Terminal metadata (result/error ids) is written in the SAME update as
+        # the state so a concurrent poller can never observe a terminal state
+        # before its metadata (e.g. FAILED with a missing error_code).
+        self._ledger.update(
+            job_id, state=state.value, updated_at=_now(), **(dict(fields) if fields else {})
+        )
         self._ledger.append_event(job_id=job_id, state=state.value, at=_now(), detail=detail)
         return state.value
 

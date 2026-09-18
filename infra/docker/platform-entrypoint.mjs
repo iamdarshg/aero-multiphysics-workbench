@@ -8,11 +8,25 @@
 // The child runs with inherited stdio; SIGTERM/SIGINT are forwarded and the
 // child's exit code propagates. No solvers are launched here.
 import { spawn } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MODES = Object.freeze(["api", "web", "mcp"]);
+
+/**
+ * Resolve the API interpreter. A bare "python" is not guaranteed on PATH in
+ * the runtime image, so prefer the venv's own interpreter by absolute path and
+ * fall back to python3/python only when it is absent.
+ */
+export const resolvePython = (env = {}) => {
+  const venv = env.VIRTUAL_ENV?.trim();
+  const candidates = [
+    venv ? join(venv, "bin", "python") : null,
+    venv ? join(venv, "bin", "python3") : null,
+  ].filter((value) => value && existsSync(value));
+  return candidates[0] ?? "python3";
+};
 
 const usageError = (detail) => new Error(`ENTRYPOINT_USAGE:${detail}`);
 
@@ -33,9 +47,8 @@ export const resolveServiceCommand = ({ mode, root, env = {} }) => {
     }
     const jobRoot = env.AEROWORKBENCH_JOB_ROOT?.trim() || "/data/jobs";
     mkdirSync(jobRoot, { recursive: true });
-    // "python" resolves via PATH: the image puts the API venv first.
     return {
-      cmd: "python",
+      cmd: resolvePython(env),
       argv: ["-m", "uvicorn", "aeroworkbench_api.main:app", "--host", "0.0.0.0", "--port", String(port)],
       cwd: join(root, "services", "api"),
       extraEnv: { AEROWORKBENCH_JOB_ROOT: jobRoot },

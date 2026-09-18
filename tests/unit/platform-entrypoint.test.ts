@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { parseMode, resolveServiceCommand } from "../../infra/docker/platform-entrypoint.mjs";
+import {
+  parseMode,
+  resolvePython,
+  resolveServiceCommand,
+} from "../../infra/docker/platform-entrypoint.mjs";
 
 test("platform entrypoint accepts exactly one service mode", () => {
   assert.equal(parseMode(["api"]).mode, "api");
@@ -46,4 +50,22 @@ test("platform entrypoint resolves loopback-safe service commands", () => {
     () => resolveServiceCommand({ mode: "api", root: "/workbench", env: { AERO_API_PORT: "huge" } }),
     /ENTRYPOINT_USAGE/,
   );
+});
+
+test("platform entrypoint prefers the venv interpreter over bare python", () => {
+  const venv = mkdtempSync(join(tmpdir(), "aero-venv-"));
+  // No venv python yet: falls back to a PATH-resolvable interpreter.
+  assert.equal(resolvePython({ VIRTUAL_ENV: venv }), "python3");
+  assert.equal(resolvePython({}), "python3");
+  // With the venv interpreter present it is used by absolute path.
+  mkdirSync(join(venv, "bin"), { recursive: true });
+  const python = join(venv, "bin", "python");
+  writeFileSync(python, "");
+  assert.equal(resolvePython({ VIRTUAL_ENV: venv }), python);
+  const api = resolveServiceCommand({
+    mode: "api",
+    root: "/workbench",
+    env: { VIRTUAL_ENV: venv },
+  });
+  assert.equal(api.cmd, python);
 });
