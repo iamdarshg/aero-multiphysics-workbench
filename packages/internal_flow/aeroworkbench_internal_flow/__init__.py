@@ -1,0 +1,205 @@
+"""Generic internal-flow networks, leakage, cooling, and secondary-flow coupling.
+
+Public API (downstream issues import these exact paths):
+
+    from aeroworkbench_internal_flow import (
+        FluidNetwork, NodeSpec, BranchSpec, NodeKind, BranchKind,
+        solve_composition, apply_structure_heat_loads, secondary_flow_report,
+        evaluate_native_cfd,
+    )
+
+The package models fluid movement outside the primary aerodynamic stream:
+cooling circuits, bleed networks, leakage paths, cavities, ducts, vents, and
+pneumatic systems. It reuses :mod:`aeroworkbench_fluid_properties` for
+temperature-dependent properties, :mod:`aeroworkbench_thermal` for structural
+thermal coupling, and the shared core provenance contract. Every result keeps
+source/fidelity/units/validity/input-hash/software-identity/provenance, and a
+requested native CFD capability fails closed when no engine is wired.
+"""
+
+from __future__ import annotations
+
+from .cfd import (
+    CfdCapability,
+    NativeCfdBackend,
+    NativeCfdRequest,
+    NativeCfdResult,
+    NativeCfdSolution,
+    build_native_request,
+    escalation_reasons,
+    evaluate_native_cfd,
+    probe_any_cfd_capability,
+    probe_cfd_capability,
+    require_cfd_capability,
+    solve_native_or_fail,
+)
+from .composition import NodeComposition, solve_composition
+from .correlations import (
+    ANNULAR_SEAL_LAMINAR,
+    CHURCHILL_FRICTION,
+    COUNTERFLOW_HX,
+    DAILY_NECE_LAMINAR,
+    DAILY_NECE_TURBULENT,
+    DITTUS_BOELTER,
+    HAALAND_FRICTION,
+    INCOMPRESSIBLE_ORIFICE,
+    LABYRINTH_SEAL,
+    LAMINAR_FRICTION,
+    CorrelationRef,
+    DeclaredCoefficient,
+    annular_seal_linear_resistance,
+    annular_seal_mass_flow,
+    churchill_friction_factor,
+    counterflow_effectiveness,
+    dittus_boelter_nusselt,
+    duct_convection_coefficient,
+    haaland_friction_factor,
+    heat_exchanger_duty,
+    labyrinth_seal_mass_flow,
+    laminar_friction_factor,
+    orifice_mass_flow,
+    orifice_pressure_drop,
+    require_annular_seal_validity,
+    require_labyrinth_seal_validity,
+    require_orifice_validity,
+    windage_moment_coefficient,
+    windage_power_w,
+)
+from .errors import (
+    InternalFlowCapabilityUnavailableError,
+    InternalFlowError,
+    InternalFlowValidationError,
+    InternalFlowValidityError,
+)
+from .kinds import (
+    BOUNDARY_NODE_KINDS,
+    INTERNAL_NODE_KINDS,
+    LEAKAGE_BRANCH_KINDS,
+    THERMAL_BRANCH_KINDS,
+    WORK_BRANCH_KINDS,
+    BranchKind,
+    NodeKind,
+)
+from .losses import (
+    DuctLoss,
+    ExplicitResistance,
+    LossModel,
+    OrificeLoss,
+    SealLoss,
+    ValveLoss,
+    evaluate_loss_model,
+    loss_model_payload,
+)
+from .network import (
+    BranchResult,
+    BranchSpec,
+    FluidNetwork,
+    NetworkResult,
+    NodeResult,
+    NodeSpec,
+)
+from .provenance import (
+    SOFTWARE_IDENTITY,
+    SOFTWARE_NAME,
+    SOFTWARE_VERSION,
+    ResultValidity,
+    analytical_provenance,
+    native_provenance,
+)
+from .states import BranchState, HydraulicResistance, LossEvaluation, ModelReference
+from .system import SecondaryFlowReport, secondary_flow_report
+from .thermal_coupling import (
+    StructureCouplingResult,
+    StructureThermalLink,
+    apply_structure_heat_loads,
+    heat_exchanger_duty_to_wall,
+    structure_links_from_result,
+)
+
+__all__ = [
+    "ANNULAR_SEAL_LAMINAR",
+    "BOUNDARY_NODE_KINDS",
+    "BranchKind",
+    "BranchResult",
+    "BranchSpec",
+    "BranchState",
+    "CHURCHILL_FRICTION",
+    "COUNTERFLOW_HX",
+    "CfdCapability",
+    "CorrelationRef",
+    "DAILY_NECE_LAMINAR",
+    "DAILY_NECE_TURBULENT",
+    "DITTUS_BOELTER",
+    "DeclaredCoefficient",
+    "DuctLoss",
+    "ExplicitResistance",
+    "FluidNetwork",
+    "HAALAND_FRICTION",
+    "HydraulicResistance",
+    "INCOMPRESSIBLE_ORIFICE",
+    "INTERNAL_NODE_KINDS",
+    "InternalFlowCapabilityUnavailableError",
+    "InternalFlowError",
+    "InternalFlowValidationError",
+    "InternalFlowValidityError",
+    "LABYRINTH_SEAL",
+    "LAMINAR_FRICTION",
+    "LEAKAGE_BRANCH_KINDS",
+    "LossEvaluation",
+    "LossModel",
+    "ModelReference",
+    "NativeCfdBackend",
+    "NativeCfdRequest",
+    "NativeCfdResult",
+    "NativeCfdSolution",
+    "NetworkResult",
+    "NodeComposition",
+    "NodeKind",
+    "NodeResult",
+    "NodeSpec",
+    "OrificeLoss",
+    "ResultValidity",
+    "SOFTWARE_IDENTITY",
+    "SOFTWARE_NAME",
+    "SOFTWARE_VERSION",
+    "SecondaryFlowReport",
+    "SealLoss",
+    "StructureCouplingResult",
+    "StructureThermalLink",
+    "THERMAL_BRANCH_KINDS",
+    "ValveLoss",
+    "WORK_BRANCH_KINDS",
+    "analytical_provenance",
+    "annular_seal_linear_resistance",
+    "annular_seal_mass_flow",
+    "apply_structure_heat_loads",
+    "build_native_request",
+    "churchill_friction_factor",
+    "counterflow_effectiveness",
+    "duct_convection_coefficient",
+    "dittus_boelter_nusselt",
+    "escalation_reasons",
+    "evaluate_loss_model",
+    "evaluate_native_cfd",
+    "haaland_friction_factor",
+    "heat_exchanger_duty",
+    "heat_exchanger_duty_to_wall",
+    "labyrinth_seal_mass_flow",
+    "laminar_friction_factor",
+    "loss_model_payload",
+    "native_provenance",
+    "orifice_mass_flow",
+    "orifice_pressure_drop",
+    "probe_any_cfd_capability",
+    "probe_cfd_capability",
+    "require_annular_seal_validity",
+    "require_cfd_capability",
+    "require_labyrinth_seal_validity",
+    "require_orifice_validity",
+    "secondary_flow_report",
+    "solve_composition",
+    "solve_native_or_fail",
+    "structure_links_from_result",
+    "windage_moment_coefficient",
+    "windage_power_w",
+]

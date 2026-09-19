@@ -1,0 +1,12 @@
+{
+  "curve_id": "steel-sn",
+  "revision": "screening-r1",
+  "source": "generic handbook screening set; verify before certification use",
+  "fatigue_strength_coefficient_pa": 1000000000.0,
+  "fatigue_strength_exponent": -0.1,
+  "temperature_min_k": 293.15,
+  "temperature_max_k": 873.15,
+  "r_ratio": -1.0,
+  "endurance_limit_pa": 50000000.0,
+  "note": "synthetic Basquin curve for platform verification"
+}

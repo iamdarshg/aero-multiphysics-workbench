@@ -1,0 +1,18 @@
+{
+  "limit": {
+    "name": "overspeed",
+    "kind": "overspeed",
+    "variable": "shaft_speed_rad_s",
+    "unit": "rad/s",
+    "threshold": 100.0,
+    "direction": "high",
+    "hysteresis": 10.0,
+    "latching": false
+  },
+  "sequence": [
+    {"value": 90.0, "expectActive": false},
+    {"value": 101.0, "expectActive": true},
+    {"value": 95.0, "expectActive": true},
+    {"value": 89.0, "expectActive": false}
+  ]
+}

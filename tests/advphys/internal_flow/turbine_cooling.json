@@ -1,0 +1,25 @@
+{
+  "name": "turbine-secondary-cooling",
+  "description": "Generic turbine cooling/leakage/bleed network: source, plenum, rotating cavity, sink, bleed extraction.",
+  "nodes": [
+    {"id": "S", "kind": "source", "fluid": "dry_air", "pressurePa": 300000.0, "temperatureK": 400.0},
+    {"id": "K", "kind": "sink", "fluid": "dry_air", "pressurePa": 100000.0, "temperatureK": 300.0},
+    {"id": "P", "kind": "plenum", "fluid": "dry_air"},
+    {"id": "C", "kind": "cavity", "fluid": "dry_air", "rotationSpeedRpm": 8000.0, "cavityRadiusM": 0.15, "windageSides": 2},
+    {"id": "X", "kind": "bleed_extraction", "fluid": "dry_air", "pressurePa": 150000.0, "temperatureK": 350.0}
+  ],
+  "branches": [
+    {"id": "feed", "kind": "duct", "from": "S", "to": "P", "loss": {"type": "duct", "lengthM": 0.5, "diameterM": 0.04, "roughnessM": 0.000045, "source": "smooth drawn tube"}},
+    {"id": "hx", "kind": "heat_exchanger", "from": "P", "to": "C", "heatDutyW": 5000.0, "loss": {"type": "valve", "areaM2": 0.0005, "lossCoefficient": {"name": "hx-loss-k", "value": 3.0, "unit": "1", "source": "core flow bench"}, "source": "cooling passage"}},
+    {"id": "out", "kind": "valve", "from": "C", "to": "K", "loss": {"type": "valve", "areaM2": 0.0005, "lossCoefficient": {"name": "out-loss-k", "value": 3.0, "unit": "1", "source": "core flow bench"}, "source": "return line"}},
+    {"id": "leak", "kind": "seal", "from": "P", "to": "K", "loss": {"type": "seal", "diameterM": 0.1, "clearanceM": 0.0001, "lengthM": 0.1, "source": "labyrinth clearance"}},
+    {"id": "bleed", "kind": "valve", "from": "P", "to": "X", "loss": {"type": "valve", "areaM2": 0.0001, "lossCoefficient": {"name": "bleed-loss-k", "value": 3.0, "unit": "1", "source": "core flow bench"}, "source": "bleed port"}}
+  ],
+  "expect": {
+    "converged": true,
+    "coolingHeatW": 5000.0,
+    "minLeakageKgS": 0.001,
+    "minBleedKgS": 0.001,
+    "cavityHotterThanPlenum": true
+  }
+}

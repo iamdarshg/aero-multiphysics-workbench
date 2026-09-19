@@ -1,0 +1,10 @@
+{
+  "revision": "screening-r1",
+  "source": "generic laminate fatigue screening set; verify before certification use",
+  "stress_amplitude_allowable_pa": 300000000.0,
+  "reference_life_cycles": 1000000.0,
+  "fatigue_strength_exponent": -0.1,
+  "temperature_min_k": 233.15,
+  "temperature_max_k": 393.15,
+  "note": "laminate-specific allowables; not an isotropic S-N equivalence"
+}

@@ -1,0 +1,12 @@
+{
+  "kind": "particulate_fouling",
+  "drivers": {
+    "deposit_rate": {"value": 2.0, "unit": "g/(m2*h)"},
+    "duration": {"value": 100.0, "unit": "h"}
+  },
+  "expect": {
+    "depositArealMassKgM2": 0.2,
+    "depositThicknessM": 0.00013333333333333334,
+    "blockedAreaFraction": 0.4
+  }
+}

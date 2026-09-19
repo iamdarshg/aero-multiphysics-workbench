@@ -1,0 +1,13 @@
+{
+  "kind": "salt_corrosive",
+  "drivers": {
+    "salt_concentration": {"value": 1.0, "unit": "g/m3"},
+    "relative_humidity": {"value": 0.85, "unit": "dimensionless"},
+    "duration": {"value": 100.0, "unit": "h"}
+  },
+  "expect": {
+    "materialLossDepthM": 3.6e-07,
+    "strengthFractionReduction": 7.2e-05,
+    "stiffnessFractionReduction": 3.6e-05
+  }
+}

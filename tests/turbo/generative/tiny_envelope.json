@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "turbo05-v1",
+  "manufacturing": [
+    {
+      "kind": "manufacturing-process",
+      "id": "tiny-stock",
+      "process": "tiny-stock",
+      "revision": 1,
+      "limits": [
+        {
+          "id": "max-overall-pressure-ratio",
+          "valueName": "overall_pressure_ratio",
+          "relation": "lessOrEqual",
+          "limit": 3.0,
+          "unit": "1",
+          "stage": "pre-cad-algebraic",
+          "constraintClass": "hard",
+          "provenance": {
+            "sourceKind": "manufacturing-method",
+            "reference": "tiny-stock-capability",
+            "revision": "1",
+            "digest": ""
+          },
+          "recommendedVariables": ["overall_pressure_ratio"],
+          "detail": "tiny deterministic envelope"
+        }
+      ],
+      "capability": {},
+      "schemaVersion": "turbo05-v1",
+      "parentHash": null
+    }
+  ],
+  "hardware": []
+}

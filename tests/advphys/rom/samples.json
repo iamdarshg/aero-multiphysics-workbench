@@ -1,0 +1,14 @@
+{
+  "mapId": "rom-fixture-map",
+  "samples": [
+    {"id": "s1", "inputs": {"mach": 0.2, "alpha_deg": -4.0}, "outputs": {"lift_coefficient": 0.08, "drag_coefficient": 0.184}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s2", "inputs": {"mach": 0.2, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 0.38, "drag_coefficient": 0.064}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s3", "inputs": {"mach": 0.2, "alpha_deg": 8.0}, "outputs": {"lift_coefficient": 0.68, "drag_coefficient": 0.664}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s4", "inputs": {"mach": 0.55, "alpha_deg": -4.0}, "outputs": {"lift_coefficient": 0.395, "drag_coefficient": 0.21025}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s5", "inputs": {"mach": 0.55, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 0.695, "drag_coefficient": 0.09025}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s6", "inputs": {"mach": 0.55, "alpha_deg": 8.0}, "outputs": {"lift_coefficient": 0.995, "drag_coefficient": 0.69025}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s7", "inputs": {"mach": 0.9, "alpha_deg": -4.0}, "outputs": {"lift_coefficient": 0.71, "drag_coefficient": 0.261}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s8", "inputs": {"mach": 0.9, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 1.01, "drag_coefficient": 0.141}, "source": "analytical", "kind": "simulation", "cost": 1.0},
+    {"id": "s9", "inputs": {"mach": 0.9, "alpha_deg": 8.0}, "outputs": {"lift_coefficient": 1.31, "drag_coefficient": 0.741}, "source": "analytical", "kind": "simulation", "cost": 1.0}
+  ]
+}

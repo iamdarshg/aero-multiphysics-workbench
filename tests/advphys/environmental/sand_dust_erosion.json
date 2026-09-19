@@ -1,0 +1,14 @@
+{
+  "kind": "sand_dust",
+  "drivers": {
+    "particle_concentration": {"value": 5.0, "unit": "g/m3"},
+    "particle_diameter": {"value": 100.0, "unit": "um"},
+    "impact_speed": {"value": 80.0, "unit": "m/s"},
+    "duration": {"value": 7200.0, "unit": "s"}
+  },
+  "expect": {
+    "arealMassImpactedKgM2": 2880.0,
+    "materialLossDepthM": 2.88e-7,
+    "erosionRateMS": 4.0e-11
+  }
+}

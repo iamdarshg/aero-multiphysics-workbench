@@ -1,0 +1,19 @@
+{
+  "model": {
+    "inertiaKgM2": 0.05,
+    "dampingNmS": 0.01,
+    "initialSpeedRadS": 0.0
+  },
+  "scenario": {
+    "durationS": 2.0,
+    "stepS": 0.001,
+    "shaftTorqueNm": 1.0,
+    "loadTorqueNm": 0.0
+  },
+  "expect": {
+    "steadySpeedRadS": 100.0,
+    "finalSpeedRadS": 32.968058,
+    "finalSpeedToleranceRadS": 0.05,
+    "softwareModel": "transient-system-dynamics"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "icing",
+  "drivers": {
+    "water_content": {"value": 0.5, "unit": "g/m3"},
+    "droplet_diameter": {"value": 20.0, "unit": "um"},
+    "ambient_temperature": {"value": -10.0, "unit": "degC"},
+    "impact_speed": {"value": 100.0, "unit": "m/s"},
+    "duration": {"value": 600.0, "unit": "s"}
+  },
+  "expect": {
+    "accretedArealMassKgM2": 24.0,
+    "iceThicknessM": 0.02666666666666667,
+    "fidelity": "envelope",
+    "source": "analytical"
+  }
+}

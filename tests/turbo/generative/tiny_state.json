@@ -1,0 +1,59 @@
+{
+  "family": {"kind": "categorical", "value": "axial"},
+  "stage_count": {"kind": "dimensionless", "value": 1.0},
+  "row_count": {"kind": "dimensionless", "value": 2.0},
+  "arrangement": {"kind": "categorical", "value": "rotor_stator"},
+  "spool_count": {"kind": "dimensionless", "value": 2.0},
+  "machine_kind": {"kind": "categorical", "value": "work_adding"},
+  "free_power_turbine": {"kind": "boolean", "value": false},
+  "heat_addition": {"kind": "boolean", "value": true},
+  "recuperator": {"kind": "boolean", "value": false},
+  "intercooler": {"kind": "boolean", "value": false},
+  "bypass_topology": {"kind": "categorical", "value": "none"},
+  "shrouded": {"kind": "boolean", "value": false},
+  "diffuser_type": {"kind": "categorical", "value": "none"},
+  "material_family": {"kind": "categorical", "value": "titanium"},
+  "process": {"kind": "categorical", "value": "subtractive-5axis"},
+  "axial_reaction_deg": {"kind": "dimensionless", "value": 0.5},
+  "min_wall_mm": {"kind": "number", "value": 1.0, "unit": "mm"},
+  "tool_access_ratio": {"kind": "dimensionless", "value": 0.5},
+  "overall_pressure_ratio": {"kind": "dimensionless", "value": 4.0},
+  "corrected_flow_target": {"kind": "dimensionless", "value": 10.0},
+  "turbine_inlet_temperature_k": {"kind": "dimensionless", "value": 1200.0},
+  "cooling_fraction": {"kind": "dimensionless", "value": 0.1},
+  "bleed_fraction": {"kind": "dimensionless", "value": 0.0},
+  "row_blade_count": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 40.0}, {"id": "r1", "value": 30.0}]},
+  "row_chord_m": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.05}, {"id": "r1", "value": 0.04}]},
+  "row_solidity": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 1.2}, {"id": "r1", "value": 1.1}]},
+  "row_stagger_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 20.0}, {"id": "r1", "value": -20.0}]},
+  "row_twist_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 5.0}, {"id": "r1", "value": -5.0}]},
+  "row_metal_angle_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 30.0}, {"id": "r1", "value": -30.0}]},
+  "row_camber_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 25.0}, {"id": "r1", "value": 30.0}]},
+  "row_thickness_ratio": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.08}, {"id": "r1", "value": 0.09}]},
+  "row_hub_radius_m": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.08}, {"id": "r1", "value": 0.09}]},
+  "row_tip_radius_m": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.20}, {"id": "r1", "value": 0.21}]},
+  "row_clearance_m": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.0003}, {"id": "r1", "value": 0.0003}]},
+  "row_sweep_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.0}, {"id": "r1", "value": 0.0}]},
+  "row_lean_deg": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.0}, {"id": "r1", "value": 0.0}]},
+  "row_gap_m": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 0.01}, {"id": "r1", "value": 0.012}]},
+  "row_speed_rpm": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 20000.0}, {"id": "r1", "value": 18000.0}]},
+  "spool_speed_schedule": {"kind": "vector-profile", "points": [
+    {"id": "r0", "value": 30000.0}, {"id": "r1", "value": 25000.0}]},
+  "nozzle_area_schedule": {"kind": "vector-profile", "points": [
+    {"id": "s0", "value": 0.1}]}
+}

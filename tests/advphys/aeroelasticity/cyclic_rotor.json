@@ -1,0 +1,8 @@
+{
+  "structure_id": "cyclic-ring-6",
+  "sector_count": 6,
+  "sector_mass_kg": 1.0,
+  "sector_stiffness_n_m": 1000000.0,
+  "inter_sector_coupling_n_m": 100000.0,
+  "mistuning": [0.3, -0.2, 0.25, -0.1, 0.15, 0.05]
+}

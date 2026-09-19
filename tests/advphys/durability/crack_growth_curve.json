@@ -1,0 +1,11 @@
+{
+  "curve_id": "steel-paris",
+  "revision": "screening-r1",
+  "source": "generic handbook screening set; verify before certification use",
+  "paris_coefficient": 1e-29,
+  "paris_exponent": 3.0,
+  "threshold_delta_k_pa_m05": 100000.0,
+  "delta_k_min_pa_m05": 100000.0,
+  "delta_k_max_pa_m05": 50000000.0,
+  "fracture_toughness_pa_m05": 30000000.0
+}

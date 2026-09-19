@@ -1,0 +1,59 @@
+{
+  "name": "ducted-rotor-shared-contract",
+  "architecture": {
+    "architectureId": "fixture-ducted",
+    "placement": "tractor",
+    "ducted": true,
+    "stator": false,
+    "ductGeometryRef": "duct-shared-geometry",
+    "spinner": {
+      "noseRadiusM": 0.1,
+      "noseLengthM": 0.2,
+      "hubRadiusM": 0.12,
+      "shaftRadiusM": 0.03
+    },
+    "installationFrame": {
+      "originM": [0.0, 0.0, 0.0],
+      "axis": [1.0, 0.0, 0.0],
+      "bodyRef": "vehicle-nacelle"
+    },
+    "rotors": [
+      {
+        "rotorId": "ducted-rotor",
+        "bladeCount": 7,
+        "tipRadiusM": 0.5,
+        "hubRadiusM": 0.12,
+        "rpm": 3000.0,
+        "direction": "clockwise",
+        "shaftId": "shaft-ducted",
+        "pitchControl": "fixed",
+        "collectivePitchDeg": 18.0,
+        "groupId": null,
+        "geometryRef": "geom-ducted-rotor",
+        "materialRef": "alu-7075"
+      }
+    ],
+    "shafts": [
+      {"shaftId": "shaft-ducted", "kind": "independent", "speedRpm": 3000.0, "linkedShaftId": null, "gearRatio": null, "mechanicalLossFraction": 0.02}
+    ],
+    "pitchSchedules": [],
+    "cyclic": null
+  },
+  "geometry": {
+    "ducted-rotor": {
+      "pitchAxisFraction": 0.25,
+      "shroudState": "shrouded",
+      "coaxial": false,
+      "axialSpacingM": null,
+      "axialOffsetM": 0.0,
+      "rootFilletM": 0.002,
+      "sections": [
+        {"radiusFraction": 0.3, "chordM": 0.11, "twistDeg": 32.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.10, "camberRatio": 0.05, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 0.65, "chordM": 0.09, "twistDeg": 22.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.08, "camberRatio": 0.04, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 1.0, "chordM": 0.06, "twistDeg": 12.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.05, "camberRatio": 0.02, "camberFamily": "circular_arc", "thicknessFamily": "naca4"}
+      ]
+    }
+  },
+  "inflow": {"axialVelocityMS": 25.0, "densityKgM3": 1.0, "speedOfSoundMS": 320.0},
+  "expect": {"ducted": true, "thrustPositive": true}
+}

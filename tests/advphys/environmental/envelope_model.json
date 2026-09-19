@@ -1,0 +1,14 @@
+{
+  "model_id": "fixture-screening-envelope",
+  "revision": "1",
+  "ice_density_kg_m3": 900.0,
+  "collection_efficiency": 0.8,
+  "erosion_coefficient_m3_per_kg": 1.0e-10,
+  "corrosion_coefficient_m3_per_kg": 1.0e-9,
+  "deposit_density_kg_m3": 1500.0,
+  "fouling_reference_areal_mass_kg_m2": 0.5,
+  "thermal_cycle_clearance_m_per_k": 1.0e-9,
+  "strength_loss_per_cycle": 1.0e-6,
+  "reference_material_thickness_m": 5.0e-3,
+  "source": "fixture-screening-envelope"
+}

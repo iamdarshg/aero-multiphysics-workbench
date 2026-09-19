@@ -1,0 +1,23 @@
+{
+  "actuator": {
+    "actuatorId": "aileron",
+    "commandName": "command_m",
+    "outputName": "position_m",
+    "unit": "m",
+    "lowerLimit": 0.0,
+    "upperLimit": 0.05,
+    "maxRate": 0.02,
+    "timeConstantS": 0.0,
+    "initialPosition": 0.0
+  },
+  "scenario": {
+    "durationS": 4.0,
+    "stepS": 0.01,
+    "commandM": 0.05
+  },
+  "expect": {
+    "finalPositionM": 0.05,
+    "rateLimitMS": 0.02,
+    "timeToReachS": 2.5
+  }
+}

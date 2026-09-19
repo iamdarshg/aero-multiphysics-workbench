@@ -1348,7 +1348,7 @@
           "kind": "file",
           "path": "packages/optimization/aeroworkbench_optimization/campaign.py",
           "detail": "PARTIAL: campaign evaluation/selection/promotion orchestration (GEN 04).",
-          "sha256": "21a79bc25bbec64fdf3cb71b9da6a2643d17595aae8673bc6350c1e8587d92f8"
+          "sha256": "454dfbc6974b6cd5e9dd0f776cabb4e93c949f28f2db6ee698a8e139a546f4cd"
         },
         {
           "kind": "file",
@@ -2385,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "2bcf7377bb7f32b5f489d7fabc469b2aab0e7ffa65cff6f6a6e0883f7a805d86"
+          "sha256": "4f246a9b3780516444b524ca4836760be6d92f5e3e6931918c2c6fd50a7149ac"
         },
         {
           "kind": "file",
@@ -3324,7 +3324,7 @@
           "kind": "file",
           "path": "services/api/pyproject.toml",
           "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
-          "sha256": "1bb2155af6e2c1263cfca440bd658acd60e5fbf4abeb32f162918061334d84d0"
+          "sha256": "9ed380f4c978c5b81bb43cffdeadd20b472fd18328c02776ec061e0dd116904a"
         },
         {
           "kind": "file",

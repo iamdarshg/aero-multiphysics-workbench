@@ -1,0 +1,60 @@
+{
+  "name": "pusher-propeller",
+  "architecture": {
+    "architectureId": "fixture-pusher",
+    "placement": "pusher",
+    "ducted": false,
+    "stator": false,
+    "spinner": null,
+    "installationFrame": {
+      "originM": [4.0, 0.0, 0.0],
+      "axis": [1.0, 0.0, 0.0],
+      "bodyRef": "vehicle-tail"
+    },
+    "rotors": [
+      {
+        "rotorId": "prop-rear",
+        "bladeCount": 6,
+        "tipRadiusM": 0.9,
+        "hubRadiusM": 0.12,
+        "rpm": 1500.0,
+        "direction": "counterclockwise",
+        "shaftId": "shaft-rear",
+        "pitchControl": "fixed",
+        "collectivePitchDeg": 25.0,
+        "groupId": null,
+        "geometryRef": "geom-prop-rear",
+        "materialRef": "composite-cfrp"
+      }
+    ],
+    "shafts": [
+      {
+        "shaftId": "shaft-rear",
+        "kind": "independent",
+        "speedRpm": 1500.0,
+        "linkedShaftId": null,
+        "gearRatio": null,
+        "mechanicalLossFraction": 0.0
+      }
+    ],
+    "pitchSchedules": [],
+    "cyclic": null
+  },
+  "geometry": {
+    "prop-rear": {
+      "pitchAxisFraction": 0.3,
+      "shroudState": "unshrouded",
+      "coaxial": false,
+      "axialSpacingM": null,
+      "axialOffsetM": 0.0,
+      "rootFilletM": 0.003,
+      "sections": [
+        {"radiusFraction": 0.2, "chordM": 0.12, "twistDeg": 30.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.12, "camberRatio": 0.05, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 0.6, "chordM": 0.10, "twistDeg": 20.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.10, "camberRatio": 0.03, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 1.0, "chordM": 0.07, "twistDeg": 12.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.06, "camberRatio": 0.02, "camberFamily": "circular_arc", "thicknessFamily": "naca4"}
+      ]
+    }
+  },
+  "inflow": {"axialVelocityMS": 30.0, "densityKgM3": 1.0, "speedOfSoundMS": 320.0},
+  "expect": {"thrustPositive": true, "efficiencyPositive": true}
+}

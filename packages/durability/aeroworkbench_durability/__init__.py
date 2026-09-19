@@ -1,0 +1,193 @@
+"""Generic durability, fatigue, creep, fracture, and life-limited-part analysis.
+
+The package provides provenance-backed, unit-bearing, validity-bounded models
+for whether structures survive their required load/thermal histories: rainflow
+cycle counting, S-N and strain-life fatigue with mean-stress corrections,
+Miner damage, creep/rupture and creep-fatigue interaction, Paris crack growth,
+environmental degradation modifiers, thermo-mechanical fatigue, laminate
+fatigue seams, and life-limited-part bookkeeping with inspection intervals and
+strength margins. Missing material-life data and absent native structural/FEA
+engines fail closed; nothing is fabricated.
+"""
+
+from .composites import CompositeFatigueAllowables, evaluate_composite_fatigue
+from .counting import CountingResult, Cycle, LoadHistory, rainflow_count, turning_points
+from .creep import (
+    CreepDamageResult,
+    CreepExposure,
+    InteractionResult,
+    NortonParameters,
+    creep_fatigue_interaction,
+    creep_strain_rate_per_s,
+    robinson_rupture_fraction,
+)
+from .curves import CrackGrowthCurve, CreepRuptureCurve, SNCurve, StrainLifeCurve
+from .environment import (
+    DegradationMechanism,
+    DegradationModifier,
+    ModifiedProperty,
+    apply_modifiers,
+)
+from .fatigue import (
+    DamageContribution,
+    DamageResult,
+    MeanStressCorrection,
+    StrainCycle,
+    StressCycle,
+    equivalent_amplitude,
+    miner_damage,
+    strain_life_damage,
+)
+from .fracture import (
+    CrackGrowthResult,
+    CrackType,
+    StressIntensityResult,
+    critical_crack_length_m,
+    evaluate_crack_criticality,
+    geometry_factor_for,
+    paris_life,
+    stress_intensity_factor_pa_m05,
+)
+from .invalidations import (
+    DurabilityInputs,
+    durability_change_sections,
+    durability_invalidated_families,
+    durability_invalidated_for,
+)
+from .life import (
+    LifeAssessment,
+    LifeLedger,
+    LifeLedgerEntry,
+    LifeRequirement,
+    MarginResult,
+    assess_life_requirement,
+    evaluate_margin,
+    inspection_interval_cycles,
+    overspeed_burst_margin,
+    ultimate_load_margin,
+)
+from .participants import (
+    DURABILITY_PARTICIPANTS,
+    CapabilityState,
+    DurabilityParticipant,
+    DurabilityPort,
+    durability_participants,
+    native_capability,
+    participant_ids,
+    require_native,
+    solve_native_durability,
+)
+from .provenance import (
+    MINER_LIMITATIONS,
+    SOFTWARE_IDENTITY,
+    SOFTWARE_VERSION,
+    analytical_provenance,
+    catalog_provenance,
+    native_provenance,
+    reduced_provenance,
+)
+from .thermomechanical import (
+    ThermalMechanicalCycle,
+    evaluate_tmf,
+    temperature_range_from_thermal,
+)
+from .units import SI_UNITS, UnitError, require_unit
+from .validity import (
+    CapabilityUnavailable,
+    DataUnavailable,
+    DurabilityError,
+    Fidelity,
+    LimitExceeded,
+    Validity,
+    finite,
+    finite_vector,
+    flag,
+    integer,
+)
+
+__all__ = [
+    "DURABILITY_PARTICIPANTS",
+    "MINER_LIMITATIONS",
+    "SI_UNITS",
+    "SOFTWARE_IDENTITY",
+    "SOFTWARE_VERSION",
+    "CapabilityState",
+    "CapabilityUnavailable",
+    "CompositeFatigueAllowables",
+    "CountingResult",
+    "CrackGrowthCurve",
+    "CrackGrowthResult",
+    "CrackType",
+    "CreepDamageResult",
+    "CreepExposure",
+    "CreepRuptureCurve",
+    "Cycle",
+    "DamageContribution",
+    "DamageResult",
+    "DataUnavailable",
+    "DegradationMechanism",
+    "DegradationModifier",
+    "DurabilityError",
+    "DurabilityInputs",
+    "DurabilityParticipant",
+    "DurabilityPort",
+    "Fidelity",
+    "InteractionResult",
+    "LifeAssessment",
+    "LifeLedger",
+    "LifeLedgerEntry",
+    "LifeRequirement",
+    "LimitExceeded",
+    "LoadHistory",
+    "MarginResult",
+    "MeanStressCorrection",
+    "ModifiedProperty",
+    "NortonParameters",
+    "SNCurve",
+    "StrainCycle",
+    "StrainLifeCurve",
+    "StressCycle",
+    "StressIntensityResult",
+    "ThermalMechanicalCycle",
+    "UnitError",
+    "Validity",
+    "analytical_provenance",
+    "apply_modifiers",
+    "assess_life_requirement",
+    "catalog_provenance",
+    "creep_fatigue_interaction",
+    "creep_strain_rate_per_s",
+    "critical_crack_length_m",
+    "durability_change_sections",
+    "durability_invalidated_families",
+    "durability_invalidated_for",
+    "durability_participants",
+    "equivalent_amplitude",
+    "evaluate_composite_fatigue",
+    "evaluate_crack_criticality",
+    "evaluate_margin",
+    "evaluate_tmf",
+    "finite",
+    "finite_vector",
+    "flag",
+    "geometry_factor_for",
+    "inspection_interval_cycles",
+    "integer",
+    "miner_damage",
+    "native_capability",
+    "native_provenance",
+    "overspeed_burst_margin",
+    "paris_life",
+    "participant_ids",
+    "rainflow_count",
+    "reduced_provenance",
+    "require_native",
+    "require_unit",
+    "robinson_rupture_fraction",
+    "solve_native_durability",
+    "strain_life_damage",
+    "stress_intensity_factor_pa_m05",
+    "temperature_range_from_thermal",
+    "turning_points",
+    "ultimate_load_margin",
+]

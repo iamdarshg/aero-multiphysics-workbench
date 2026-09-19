@@ -1,0 +1,14 @@
+{
+  "eventId": "fod-1",
+  "location": "leading-edge",
+  "impactorMass": {"value": 0.5, "unit": "kg"},
+  "impactSpeed": {"value": 150.0, "unit": "m/s"},
+  "impactorDiameter": {"value": 0.02, "unit": "m"},
+  "incidenceAngleDeg": 30.0,
+  "expect": {
+    "kineticEnergyJ": 5625.0,
+    "momentumKgMS": 75.0,
+    "footprintAreaM2": 0.0003141592653589793,
+    "residualStrengthProvided": false
+  }
+}

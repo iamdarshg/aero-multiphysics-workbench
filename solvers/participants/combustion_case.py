@@ -16,7 +16,7 @@ import json
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 from cantera.case import (
@@ -583,9 +583,9 @@ def validate_combustor_network_result(
     heat_release = float(scalars.get("heat_release_w", float("nan")))
     efficiency = float(scalars.get("combustion_efficiency", float("nan")))
     exit_temperature = float(scalars.get("exit_total_temperature_k", float("nan")))
-    inlet_temperature = float(inputs.get("inlet_temperature_k", float("nan")))
+    inlet_temperature = float(cast("float", inputs.get("inlet_temperature_k", float("nan"))))
     exit_pressure = float(scalars.get("exit_total_pressure_pa", float("nan")))
-    inlet_pressure = float(inputs.get("inlet_pressure_pa", float("nan")))
+    inlet_pressure = float(cast("float", inputs.get("inlet_pressure_pa", float("nan"))))
     checks = {
         "heat_release_positive": heat_release == heat_release and heat_release > 0.0,
         "efficiency_bounds": efficiency == efficiency and 0.0 < efficiency <= 1.0,

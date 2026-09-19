@@ -1,0 +1,70 @@
+{
+  "name": "single-tractor-propeller",
+  "architecture": {
+    "architectureId": "fixture-single-tractor",
+    "placement": "tractor",
+    "ducted": false,
+    "stator": false,
+    "spinner": {
+      "noseRadiusM": 0.12,
+      "noseLengthM": 0.25,
+      "hubRadiusM": 0.15,
+      "shaftRadiusM": 0.03
+    },
+    "installationFrame": {
+      "originM": [0.0, 0.0, 0.0],
+      "axis": [1.0, 0.0, 0.0],
+      "bodyRef": "vehicle-nose"
+    },
+    "rotors": [
+      {
+        "rotorId": "prop-front",
+        "bladeCount": 4,
+        "tipRadiusM": 1.0,
+        "hubRadiusM": 0.15,
+        "rpm": 1200.0,
+        "direction": "clockwise",
+        "shaftId": "shaft-front",
+        "pitchControl": "variable",
+        "collectivePitchDeg": 20.0,
+        "groupId": null,
+        "geometryRef": "geom-prop-front",
+        "materialRef": "alu-2024"
+      }
+    ],
+    "shafts": [
+      {
+        "shaftId": "shaft-front",
+        "kind": "independent",
+        "speedRpm": 1200.0,
+        "linkedShaftId": null,
+        "gearRatio": null,
+        "mechanicalLossFraction": 0.02
+      }
+    ],
+    "pitchSchedules": [
+      {
+        "rotorId": "prop-front",
+        "points": [[0.0, 24.0], [0.8, 18.0], [1.6, 12.0]]
+      }
+    ],
+    "cyclic": null
+  },
+  "geometry": {
+    "prop-front": {
+      "pitchAxisFraction": 0.25,
+      "shroudState": "unshrouded",
+      "coaxial": false,
+      "axialSpacingM": null,
+      "axialOffsetM": 0.0,
+      "rootFilletM": 0.004,
+      "sections": [
+        {"radiusFraction": 0.2, "chordM": 0.18, "twistDeg": 28.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.12, "camberRatio": 0.04, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 0.5, "chordM": 0.16, "twistDeg": 18.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.10, "camberRatio": 0.03, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 1.0, "chordM": 0.10, "twistDeg": 10.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.06, "camberRatio": 0.02, "camberFamily": "circular_arc", "thicknessFamily": "naca4"}
+      ]
+    }
+  },
+  "inflow": {"axialVelocityMS": 40.0, "densityKgM3": 1.0, "speedOfSoundMS": 320.0},
+  "expect": {"thrustPositive": true, "efficiencyPositive": true, "tipMachBelowLimit": true}
+}

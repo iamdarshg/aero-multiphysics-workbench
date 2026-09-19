@@ -1,0 +1,6 @@
+{
+  "constraints": [
+    {"name": "drag_coefficient", "bound": "upper", "limit": 0.5, "unit": "1"},
+    {"name": "lift_coefficient", "bound": "lower", "limit": 0.5, "unit": "1"}
+  ]
+}

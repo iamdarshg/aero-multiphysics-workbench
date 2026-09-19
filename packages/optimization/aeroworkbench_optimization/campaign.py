@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 from math import ceil, isfinite, sqrt
 from time import perf_counter
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 from .batch_eval import (
     BatchEvaluator,
@@ -129,8 +129,8 @@ class CampaignBudget:
         ):
             if value is not None and value <= 0:
                 raise ValueError(f"INVALID_CAMPAIGN_BUDGET:{label}")
-        for label, value in (("max_cost", self.max_cost), ("max_seconds", self.max_seconds)):
-            if value is not None and (not isfinite(value) or value <= 0):
+        for label, budget_value in (("max_cost", self.max_cost), ("max_seconds", self.max_seconds)):
+            if budget_value is not None and (not isfinite(budget_value) or budget_value <= 0):
                 raise ValueError(f"INVALID_CAMPAIGN_BUDGET:{label}")
         if self.target_feasibility is not None and not 0.0 <= self.target_feasibility <= 1.0:
             raise ValueError("INVALID_CAMPAIGN_BUDGET:target_feasibility")
@@ -728,7 +728,7 @@ def _build_signals(
         resonance_proximity=float(measured.get("resonance_proximity", 1.0)),
         validity_ok={rung.name: record.state == "valid"},
         cost_budget=float(
-            measured.get("cost_budget")
+            cast("float", measured.get("cost_budget"))
             if measured.get("cost_budget") is not None
             else (
                 spec.budget.max_cost
@@ -959,13 +959,13 @@ def _evaluate_rung_batched(
         if cached_flag:
             evaluation = cached
         else:
-            row = rows_by_key.get((candidate.candidate_hash, "nominal"))
-            if row is None:
+            batch_row = rows_by_key.get((candidate.candidate_hash, "nominal"))
+            if batch_row is None:
                 evaluation = _evaluate_one(
                     candidate, rung, spec, evaluator, store, evaluator_identity, counters
                 )
             else:
-                evaluation = _record_from_batch_row(candidate, rung, row, spec)
+                evaluation = _record_from_batch_row(candidate, rung, batch_row, spec)
                 store.put(
                     result_key(candidate.candidate_hash, rung.name, evaluator_identity),
                     evaluation,

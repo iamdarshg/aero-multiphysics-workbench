@@ -1,0 +1,19 @@
+{
+  "name": "electronics-cold-plate-loop",
+  "description": "Generic electronics cold-plate loop driven by a pump interface; same engine, no turbomachinery assumption.",
+  "nodes": [
+    {"id": "S", "kind": "source", "fluid": "dry_air", "pressurePa": 200000.0, "temperatureK": 320.0},
+    {"id": "K", "kind": "sink", "fluid": "dry_air", "pressurePa": 100000.0, "temperatureK": 300.0},
+    {"id": "P", "kind": "plenum", "fluid": "dry_air"}
+  ],
+  "branches": [
+    {"id": "pump", "kind": "pump", "from": "K", "to": "S", "pressureRisePa": 150000.0, "shaftPowerW": 500.0, "shaftEfficiency": 1.0, "loss": {"type": "valve", "areaM2": 0.001, "lossCoefficient": {"name": "pump-loss-k", "value": 5.0, "unit": "1", "source": "pump curve"}, "source": "pump housing"}},
+    {"id": "cold_plate", "kind": "heat_exchanger", "from": "S", "to": "P", "heatDutyW": 200.0, "loss": {"type": "valve", "areaM2": 0.001, "lossCoefficient": {"name": "plate-loss-k", "value": 5.0, "unit": "1", "source": "vendor data"}, "source": "cold plate"}},
+    {"id": "restrictor", "kind": "valve", "from": "P", "to": "K", "loss": {"type": "valve", "areaM2": 0.001, "lossCoefficient": {"name": "restrictor-k", "value": 5.0, "unit": "1", "source": "vendor data"}, "source": "restrictor"}}
+  ],
+  "expect": {
+    "converged": true,
+    "coolingHeatW": 200.0,
+    "parasiticPowerW": 500.0
+  }
+}

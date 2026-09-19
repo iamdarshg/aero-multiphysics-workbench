@@ -1,0 +1,20 @@
+{
+  "model": {
+    "volumeM3": 0.01,
+    "gasConstantJKgK": 287.0,
+    "temperatureK": 300.0,
+    "specificHeatRatio": 1.4,
+    "initialPressurePa": 100000.0
+  },
+  "scenario": {
+    "durationS": 1.0,
+    "stepS": 0.001,
+    "massFlowInKgS": 0.01,
+    "massFlowOutKgS": 0.0
+  },
+  "expect": {
+    "pressureRatePaS": 120540.0,
+    "finalPressurePa": 220540.0,
+    "finalPressureTolerancePa": 1.0
+  }
+}

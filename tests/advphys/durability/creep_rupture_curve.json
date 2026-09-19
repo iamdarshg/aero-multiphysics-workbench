@@ -1,0 +1,9 @@
+{
+  "curve_id": "steel-creep",
+  "revision": "screening-r1",
+  "source": "generic handbook screening set; verify before certification use",
+  "larson_miller_constant": 20.0,
+  "samples": [[50000000.0, 25000.0], [100000000.0, 24000.0], [200000000.0, 23000.0]],
+  "temperature_min_k": 800.0,
+  "temperature_max_k": 1200.0
+}

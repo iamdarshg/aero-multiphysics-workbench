@@ -1,0 +1,12 @@
+{
+  "interface_id": "lifting-surface-0",
+  "samples": [
+    {"node_id": "n0", "location_m": [0.0, 0.0, 0.0], "pressure_pa": 100.0, "area_m2": 0.01, "normal": [0.0, 1.0, 0.0]},
+    {"node_id": "n1", "location_m": [0.5, 0.0, 0.0], "pressure_pa": 200.0, "area_m2": 0.01, "normal": [0.0, 1.0, 0.0]}
+  ],
+  "modes": [
+    {"mode_id": "bend-1", "frequency_hz": 10.0, "damping_ratio": 0.02, "generalized_mass_kg": 1.0, "shape": [[0.0, 1.0, 0.0], [0.0, 1.0, 0.0]]},
+    {"mode_id": "bend-2", "frequency_hz": 20.0, "damping_ratio": 0.02, "generalized_mass_kg": 1.0, "shape": [[0.0, 1.0, 0.0], [0.0, -1.0, 0.0]]}
+  ],
+  "rotating_order": {"source": "rotor-order", "order": 1.0, "amplitude": 1.0, "speed_dependence": "order", "speed_rpm": 600.0}
+}

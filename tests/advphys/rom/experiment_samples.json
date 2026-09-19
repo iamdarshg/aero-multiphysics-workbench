@@ -1,0 +1,7 @@
+{
+  "samples": [
+    {"id": "e1", "inputs": {"mach": 0.2, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 0.43, "drag_coefficient": 0.054}, "source": "benchmark", "kind": "experiment", "cost": 5.0},
+    {"id": "e2", "inputs": {"mach": 0.55, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 0.745, "drag_coefficient": 0.08025}, "source": "benchmark", "kind": "experiment", "cost": 5.0},
+    {"id": "e3", "inputs": {"mach": 0.9, "alpha_deg": 2.0}, "outputs": {"lift_coefficient": 1.06, "drag_coefficient": 0.131}, "source": "benchmark", "kind": "experiment", "cost": 5.0}
+  ]
+}

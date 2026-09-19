@@ -1,0 +1,11 @@
+{
+  "planId": "rom-fixture-plan",
+  "variables": [
+    {"name": "mach", "unit": "1", "kind": "continuous", "lower": 0.2, "upper": 0.9},
+    {"name": "alpha_deg", "unit": "deg", "kind": "continuous", "lower": -4.0, "upper": 8.0}
+  ],
+  "outputs": [
+    {"name": "lift_coefficient", "unit": "1"},
+    {"name": "drag_coefficient", "unit": "1"}
+  ]
+}

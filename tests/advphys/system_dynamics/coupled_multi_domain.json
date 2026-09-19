@@ -1,0 +1,28 @@
+{
+  "plantId": "multi-domain-transient",
+  "scenario": {
+    "durationS": 1.0,
+    "stepS": 0.001,
+    "inputs": {
+      "shaft_torque_n_m": 1.0,
+      "load_torque_n_m": 0.0,
+      "heat_in_w": 100.0,
+      "mass_flow_in_kg_s": 0.005,
+      "current_a": 2.0,
+      "thrust_n": 4.0,
+      "drag_n": 0.0
+    }
+  },
+  "expect": {
+    "shaftSpeedRadS": 18.126926,
+    "temperatureK": 309.063463,
+    "pressurePa": 160270.0,
+    "stateOfCharge": 0.999444,
+    "speedMS": 2.0,
+    "toleranceSpeedRadS": 0.01,
+    "toleranceTemperatureK": 0.01,
+    "tolerancePressurePa": 1.0,
+    "toleranceStateOfCharge": 1e-06,
+    "toleranceSpeedMS": 0.001
+  }
+}

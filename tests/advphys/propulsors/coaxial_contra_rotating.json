@@ -1,0 +1,86 @@
+{
+  "name": "coaxial-contra-rotating-pair",
+  "architecture": {
+    "architectureId": "fixture-coaxial",
+    "placement": "tractor",
+    "ducted": false,
+    "stator": false,
+    "spinner": {
+      "noseRadiusM": 0.14,
+      "noseLengthM": 0.3,
+      "hubRadiusM": 0.16,
+      "shaftRadiusM": 0.04
+    },
+    "installationFrame": {
+      "originM": [0.0, 0.0, 0.0],
+      "axis": [1.0, 0.0, 0.0],
+      "bodyRef": "vehicle-nose"
+    },
+    "rotors": [
+      {
+        "rotorId": "coax-front",
+        "bladeCount": 5,
+        "tipRadiusM": 1.0,
+        "hubRadiusM": 0.16,
+        "rpm": 1200.0,
+        "direction": "clockwise",
+        "shaftId": "shaft-a",
+        "pitchControl": "variable",
+        "collectivePitchDeg": 22.0,
+        "groupId": "coax-stack",
+        "geometryRef": "geom-coax-front",
+        "materialRef": "composite-cfrp"
+      },
+      {
+        "rotorId": "coax-rear",
+        "bladeCount": 5,
+        "tipRadiusM": 0.95,
+        "hubRadiusM": 0.16,
+        "rpm": 1200.0,
+        "direction": "counterclockwise",
+        "shaftId": "shaft-b",
+        "pitchControl": "variable",
+        "collectivePitchDeg": 22.0,
+        "groupId": "coax-stack",
+        "geometryRef": "geom-coax-rear",
+        "materialRef": "composite-cfrp"
+      }
+    ],
+    "shafts": [
+      {"shaftId": "shaft-a", "kind": "independent", "speedRpm": 1200.0, "linkedShaftId": null, "gearRatio": null, "mechanicalLossFraction": 0.01},
+      {"shaftId": "shaft-b", "kind": "independent", "speedRpm": 1200.0, "linkedShaftId": null, "gearRatio": null, "mechanicalLossFraction": 0.01}
+    ],
+    "pitchSchedules": [],
+    "cyclic": null
+  },
+  "geometry": {
+    "coax-front": {
+      "pitchAxisFraction": 0.25,
+      "shroudState": "unshrouded",
+      "coaxial": true,
+      "axialSpacingM": 0.25,
+      "axialOffsetM": 0.0,
+      "rootFilletM": 0.004,
+      "sections": [
+        {"radiusFraction": 0.2, "chordM": 0.17, "twistDeg": 26.0, "sweepM": 0.0, "rakeM": -0.01, "thicknessRatio": 0.12, "camberRatio": 0.04, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 0.6, "chordM": 0.14, "twistDeg": 17.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.10, "camberRatio": 0.03, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 1.0, "chordM": 0.09, "twistDeg": 9.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.06, "camberRatio": 0.02, "camberFamily": "circular_arc", "thicknessFamily": "naca4"}
+      ]
+    },
+    "coax-rear": {
+      "pitchAxisFraction": 0.25,
+      "shroudState": "unshrouded",
+      "coaxial": true,
+      "axialSpacingM": 0.25,
+      "axialOffsetM": 0.25,
+      "rootFilletM": 0.004,
+      "sections": [
+        {"radiusFraction": 0.2, "chordM": 0.16, "twistDeg": 26.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.12, "camberRatio": 0.04, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 0.6, "chordM": 0.13, "twistDeg": 17.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.10, "camberRatio": 0.03, "camberFamily": "circular_arc", "thicknessFamily": "naca4"},
+        {"radiusFraction": 1.0, "chordM": 0.085, "twistDeg": 9.0, "sweepM": 0.0, "rakeM": 0.0, "thicknessRatio": 0.06, "camberRatio": 0.02, "camberFamily": "circular_arc", "thicknessFamily": "naca4"}
+      ]
+    }
+  },
+  "inflow": {"axialVelocityMS": 35.0, "densityKgM3": 1.0, "speedOfSoundMS": 320.0},
+  "expect": {"oppositeDirections": true, "coupledInducedFlow": true, "totalThrustPositive": true}
+}

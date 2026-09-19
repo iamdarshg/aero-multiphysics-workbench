@@ -1,0 +1,19 @@
+{
+  "model": {
+    "heatCapacityJK": 10.0,
+    "ambientTemperatureK": 300.0,
+    "resistanceKW": 0.5,
+    "initialTemperatureK": 300.0
+  },
+  "scenario": {
+    "durationS": 10.0,
+    "stepS": 0.001,
+    "heatInW": 200.0,
+    "heatOutW": 0.0
+  },
+  "expect": {
+    "steadyTemperatureK": 400.0,
+    "finalTemperatureK": 386.466507,
+    "finalTemperatureToleranceK": 0.05
+  }
+}

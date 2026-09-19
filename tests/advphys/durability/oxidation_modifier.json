@@ -1,0 +1,8 @@
+{
+  "modifier_id": "oxidation-r1",
+  "factor": 0.9,
+  "source": "generic oxidation screening factor",
+  "revision": "screening-r1",
+  "temperature_min_k": 600.0,
+  "temperature_max_k": 1200.0
+}

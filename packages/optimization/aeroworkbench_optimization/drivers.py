@@ -24,6 +24,7 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from math import isfinite
+from typing import cast
 
 from .quality import PhysicsFlags, QualityPolicy, assess_sample
 
@@ -113,6 +114,24 @@ class StudyResult:
 Study = Mapping[str, object]
 
 
+def _section(
+    design_state: Mapping[str, object], *keys: str
+) -> tuple[Mapping[str, object], ...]:
+    for key in keys:
+        value = design_state.get(key)
+        if isinstance(value, Mapping):
+            return (value,)
+        if isinstance(value, (list, tuple)):
+            return tuple(item for item in value if isinstance(item, Mapping))
+    return ()
+
+
+def _number(value: object, default: float = 0.0) -> float:
+    if isinstance(value, (int, float)):
+        return float(value)
+    return default
+
+
 def study_from_design_state(
     design_state: Mapping[str, object],
     variables: tuple[DesignVariable, ...],
@@ -120,29 +139,28 @@ def study_from_design_state(
     """Build a study whose objectives/constraints/operating points come from
     design state (DesignRevision shape), not from solver code."""
 
-    objectives: list[StudyObjective] = []
-    for entry in design_state.get("objectives", ()):  # type: ignore[union-attr]
-        item = dict(entry)  # type: ignore[arg-type]
-        objectives.append(
-            StudyObjective(
-                str(item["name"]), str(item["target"]),
-                float(item.get("weight", 1.0)), str(item.get("unit", "dimensionless")),
-            )
+    objectives = [
+        StudyObjective(
+            str(item["name"]),
+            str(item["target"]),
+            _number(item.get("weight", 1.0), 1.0),
+            str(item.get("unit", "dimensionless")),
         )
-    constraints: list[StudyConstraint] = []
-    for entry in design_state.get("constraints", ()):  # type: ignore[union-attr]
-        item = dict(entry)  # type: ignore[arg-type]
-        limit = item.get("limitSI", item.get("limit"))
-        constraints.append(
-            StudyConstraint(
-                str(item["name"]), str(item["bound"]),
-                float(limit), str(item.get("unit", "dimensionless")),  # type: ignore[arg-type]
-            )
+        for item in _section(design_state, "objectives")
+    ]
+    constraints = [
+        StudyConstraint(
+            str(item["name"]),
+            str(item["bound"]),
+            _number(item.get("limitSI", item.get("limit"))),
+            str(item.get("unit", "dimensionless")),
         )
-    operating_points: list[OperatingPointEval] = []
-    for entry in design_state.get("operatingPoints", design_state.get("operating_points", ())):  # type: ignore[union-attr]
-        item = dict(entry)  # type: ignore[arg-type]
-        operating_points.append(OperatingPointEval(str(item["name"]), 1.0))
+        for item in _section(design_state, "constraints")
+    ]
+    operating_points = [
+        OperatingPointEval(str(item["name"]), 1.0)
+        for item in _section(design_state, "operatingPoints", "operating_points")
+    ]
     if not objectives:
         raise ValueError("STUDY_NEEDS_OBJECTIVES_FROM_DESIGN_STATE")
     if not operating_points:
@@ -162,15 +180,15 @@ def _study_parts(study: Study) -> tuple[
     tuple[OperatingPointEval, ...],
 ]:
     try:
-        variables = tuple(study["variables"])  # type: ignore[index]
-        objectives = tuple(study["objectives"])  # type: ignore[index]
-        constraints = tuple(study["constraints"])  # type: ignore[index]
-        operating_points = tuple(study["operating_points"])  # type: ignore[index]
+        variables = cast("tuple[DesignVariable, ...]", study["variables"])
+        objectives = cast("tuple[StudyObjective, ...]", study["objectives"])
+        constraints = cast("tuple[StudyConstraint, ...]", study["constraints"])
+        operating_points = cast("tuple[OperatingPointEval, ...]", study["operating_points"])
     except (KeyError, TypeError) as exc:
         raise ValueError("STUDY_MISSING_SECTION") from exc
     if not variables or not objectives or not operating_points:
         raise ValueError("STUDY_NEEDS_VARIABLES_OBJECTIVES_AND_POINTS")
-    return variables, objectives, constraints, operating_points  # type: ignore[return-value]
+    return variables, objectives, constraints, operating_points
 
 
 def _cache_key(point: Mapping[str, float], operating_point: str) -> str:
@@ -188,7 +206,7 @@ def _as_float(value: object) -> float:
     item = getattr(value, "item", None)
     if callable(item):
         try:
-            return float(item())  # type: ignore[operator]
+            return float(item())
         except (ValueError, TypeError):
             pass
     if isinstance(value, (list, tuple)):
@@ -482,7 +500,7 @@ def run_optimize(
 
     safe_names = {variable.name: f"x_{index}" for index, variable in enumerate(variables)}
 
-    class _StudyComp(om.ExplicitComponent):  # type: ignore[valid-type, misc]
+    class _StudyComp(om.ExplicitComponent):  # type: ignore[misc]
         def setup(self) -> None:
             for variable in variables:
                 self.add_input(

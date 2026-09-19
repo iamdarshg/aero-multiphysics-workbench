@@ -1,0 +1,20 @@
+{
+  "discrete": {
+    "gust_id": "discrete-1cos",
+    "kind": "discrete-1cos",
+    "design_gust_velocity_m_s": 10.0,
+    "gradient_distance_m": 100.0
+  },
+  "continuous": {
+    "gust_id": "continuous-dryden",
+    "kind": "continuous-dryden",
+    "design_gust_velocity_m_s": 5.0,
+    "scale_length_m": 500.0,
+    "turbulence_sigma_m_s": 3.0
+  },
+  "airspeed_m_s": 100.0,
+  "density_kg_m3": 1.225,
+  "wing_area_m2": 30.0,
+  "lift_curve_slope_per_rad": 6.283185307179586,
+  "mass_kg": 5000.0
+}
