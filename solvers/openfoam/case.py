@@ -15,6 +15,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
+import subprocess
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -465,6 +467,11 @@ def prepare_case_files(
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text, encoding="utf-8")
         written.append(relative)
+    converted = _convert_governed_mesh(data, case_dir, governed)
+
+    from participants.commands import register_case_executable
+
+    register_case_executable(case_dir.name, application)
     return PrepareReceipt(
         participant_id=str(data.get("participant_id", "incompressible-steady-flow")),
         case_id=case_dir.name,
@@ -472,8 +479,63 @@ def prepare_case_files(
         files=tuple(sorted(written)),
         geometry_hash=governed.geometry_hash if governed else None,
         mesh_hash=governed.mesh_hash if governed else None,
-        detail=f"application={application} turbulence={turbulence}",
+        detail=(
+            f"application={application} turbulence={turbulence}"
+            + (f" mesh_conversion={converted}" if converted else "")
+        ),
     )
+
+
+_MESH_CONVERTERS = {"gmshToFoam": "gmshToFoam"}
+
+
+def _convert_governed_mesh(
+    data: Mapping[str, object], case_dir: Path, governed: GovernedMesh | None
+) -> str | None:
+    """Convert the governed Gmsh artifact into ``constant/polyMesh``.
+
+    Only allowlisted converters run, and a declared conversion that cannot be
+    performed (missing tool, missing governed mesh, or a failed conversion)
+    fails closed instead of leaving a case with no mesh.
+    """
+
+    method = data.get("mesh_conversion")
+    if method is None:
+        return None
+    if not isinstance(method, str) or method not in _MESH_CONVERTERS:
+        raise _fail(f"unsupported mesh_conversion:{method!r}")
+    tool = _MESH_CONVERTERS[method]
+    resolved = shutil.which(tool)
+    if resolved is None:
+        raise ParticipantError(
+            NativeErrorCode.CAPABILITY_UNAVAILABLE,
+            f"mesh conversion tool {tool} is not installed",
+        )
+    if governed is None:
+        raise _fail("mesh_conversion requires a governed mesh_artifact_dir")
+    target = case_dir / "constant" / "polyMesh"
+    if target.is_dir():
+        return tool
+    try:
+        completed = subprocess.run(
+            [resolved, str(governed.mesh_path)],
+            cwd=case_dir,
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ParticipantError(
+            NativeErrorCode.PREPARATION_FAILED, f"{tool} failed to start:{exc}"
+        ) from exc
+    if completed.returncode != 0 or not target.is_dir():
+        tail = (completed.stderr or completed.stdout or "")[-500:]
+        raise ParticipantError(
+            NativeErrorCode.PREPARATION_FAILED,
+            f"{tool} conversion failed rc={completed.returncode}:{tail}",
+        )
+    return tool
 
 
 def _ingest_if_declared(

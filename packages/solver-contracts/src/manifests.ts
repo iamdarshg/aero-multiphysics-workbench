@@ -30,7 +30,7 @@ export const describeManifest = (manifest: SolverManifest): string => [
 /** Registry contains only executable, version-probed native integrations. */
 export const CAPABILITY_MANIFESTS: readonly SolverManifest[] = Object.freeze([
   native("openfoam", "OpenFOAM", "solver", "foamVersion", ["simpleFoam", "pimpleFoam", "rhoSimpleFoam", "rhoPimpleFoam"], ["fields", "scalars"]),
-  native("code-aster", "Code_Aster", "solver", "as_run", ["as_run"], ["fields", "scalars"]),
+  native("code-aster", "Code_Aster", "solver", "run_aster", ["as_run", "run_aster"], ["fields", "scalars"]),
   native("precice", "preCICE", "coupling", "precice-config-visualizer", ["precice-config-visualizer"], ["coupling", "report"]),
   native("ross", "ROSS", "solver", "ross", ["ross"], ["scalars", "report"]),
   native("pybamm", "PyBaMM", "solver", "pybamm", ["pybamm"], ["scalars", "report"]),

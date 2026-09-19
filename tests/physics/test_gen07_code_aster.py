@@ -564,7 +564,9 @@ def test_gen07_parser_rejects_incomplete_or_missing_results(tmp_path: Path) -> N
     )
     with pytest.raises(ParticipantError) as failed:
         parse_comm_result(case_dir)
-    assert "width mismatch" in failed.value.detail
+    # A table with unlabelled/ragged rows is rejected; the exact reason may
+    # come from either the golden or the tolerant native-table reader.
+    assert "width mismatch" in failed.value.detail or "columns" in failed.value.detail
 
 
 def test_gen07_trusted_result_requires_successful_validity_receipt(tmp_path: Path) -> None:

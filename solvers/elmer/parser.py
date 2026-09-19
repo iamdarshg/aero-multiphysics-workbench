@@ -146,8 +146,30 @@ def _native_scalars(case_dir: Path, case_manifest: Mapping[str, object]) -> dict
         scalars["energy_balance_error_w"] = balance_error
         scalars["energy_balance_relative_error"] = abs(balance_error) / max(scale_value, 1e-30)
     else:
-        scalars["energy_balance_error_w"] = float("nan")
-        scalars["energy_balance_relative_error"] = float("nan")
+        # Derive closure from the masked per-boundary diffusive-flux tables that
+        # the native SIF writes: a steady domain with no volumetric source must
+        # have net boundary heat flow ~0 relative to the incident flow.
+        boundary_fluxes: list[float] = []
+        for boundary_file in sorted(case_dir.glob("boundary_*.dat")):
+            values = _parse_operators(boundary_file.read_text(encoding="utf-8"))
+            flux = values.get(("Temperature", "diffusive flux"))
+            if flux is None:
+                flux = values.get(("Temperature", "flux"))
+            if flux is None:
+                continue
+            tag = _sanitize(boundary_file.stem.removeprefix("boundary_"))
+            scalars[f"boundary_{tag}_heat_flow_w"] = flux
+            boundary_fluxes.append(flux)
+        if boundary_fluxes:
+            net_flux = sum(boundary_fluxes)
+            denominator = 0.5 * sum(abs(value) for value in boundary_fluxes)
+            scalars["energy_balance_error_w"] = net_flux
+            scalars["energy_balance_relative_error"] = abs(net_flux) / max(
+                denominator, 1e-30
+            )
+        else:
+            scalars["energy_balance_error_w"] = float("nan")
+            scalars["energy_balance_relative_error"] = float("nan")
 
     for region_file in sorted(case_dir.glob("region_*.dat")):
         region = _sanitize(region_file.stem.removeprefix("region_"))
@@ -165,6 +187,8 @@ def _native_scalars(case_dir: Path, case_manifest: Mapping[str, object]) -> dict
         interface_max = values.get(("Temperature", "max"))
         interface_min = values.get(("Temperature", "min"))
         interface_flux = values.get(("Temperature", "flux"))
+        if interface_flux is None:
+            interface_flux = values.get(("Temperature", "diffusive flux"))
         if interface_max is not None:
             scalars[f"interface_{interface}_max_temperature_k"] = interface_max
         if interface_min is not None:

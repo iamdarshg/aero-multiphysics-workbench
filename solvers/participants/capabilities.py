@@ -8,6 +8,8 @@ the heavy module. A missing probe yields ``unavailable``; never a substitute.
 from __future__ import annotations
 
 import dataclasses
+import os
+import re
 import shutil
 import subprocess
 from importlib import metadata
@@ -17,7 +19,7 @@ from participants.receipts import CapabilityProbe
 
 _EXECUTABLE_PROBES: dict[str, tuple[str, ...]] = {
     "openfoam": ("simpleFoam", "pimpleFoam", "rhoSimpleFoam", "rhoPimpleFoam"),
-    "code-aster": ("as_run",),
+    "code-aster": ("as_run", "run_aster"),
     "precice": ("precice-config-visualizer",),
     "elmer": ("ElmerSolver",),
     "freecad": ("FreeCADCmd",),
@@ -36,13 +38,19 @@ _LIBRARY_PROBES: dict[str, tuple[str, ...]] = {
 }
 
 
-def _probe_executable(executable: str, timeout_s: float = 10.0) -> tuple[str, str | None, str]:
+def _probe_executable(
+    executable: str,
+    timeout_s: float = 10.0,
+    *,
+    probe_args: tuple[str, ...] = ("--version",),
+    accept_output_on_nonzero: bool = False,
+) -> tuple[str, str | None, str]:
     resolved = shutil.which(executable)
     if resolved is None:
         return ("unavailable", None, f"{executable} is not installed")
     try:
         completed = subprocess.run(
-            [resolved, "--version"],
+            [resolved, *probe_args],
             capture_output=True,
             text=True,
             timeout=timeout_s,
@@ -50,11 +58,65 @@ def _probe_executable(executable: str, timeout_s: float = 10.0) -> tuple[str, st
         )
     except (OSError, subprocess.SubprocessError) as exc:
         return ("unavailable", None, f"{executable} probe failed:{exc}")
-    if completed.returncode != 0:
+    output = completed.stdout.strip() or completed.stderr.strip()
+    if completed.returncode != 0 and not (accept_output_on_nonzero and output):
         return ("unavailable", None, f"{executable} exited {completed.returncode}")
-    first_line = (completed.stdout.strip() or completed.stderr.strip()).splitlines()
+    first_line = output.splitlines()
     version = first_line[0].strip()[:160] if first_line else None
-    return ("ready", version, f"{executable} responded to --version")
+    if version is None:
+        return ("unavailable", None, f"{executable} responded with no version output")
+    return ("ready", version, f"{executable} responded to {' '.join(probe_args)}")
+
+
+_OPENFOAM_VERSION = re.compile(
+    r"(?:Version:\s*|OpenFOAM[-_ ]?(?:version)?[-_ ]?v?)([0-9][0-9A-Za-z._-]*)",
+    re.IGNORECASE,
+)
+
+
+def _openfoam_version_text(output: str) -> str | None:
+    match = _OPENFOAM_VERSION.search(output)
+    if match is not None:
+        return f"OpenFOAM {match.group(1)}"
+    env = os.environ.get("WM_PROJECT_VERSION")
+    if env:
+        return f"OpenFOAM {env}"
+    return None
+
+
+def _probe_openfoam(executable: str, timeout_s: float = 10.0) -> tuple[str, str | None, str]:
+    """Probe an OpenFOAM solver whose ``--version``/``-help`` exits nonzero.
+
+    OpenFOAM v2412 ``simpleFoam --version`` and ``-help`` exit 1 while still
+    printing the real banner. Presence plus non-empty version/usage output is
+    trusted; a genuinely missing binary or one that prints nothing is not.
+    """
+
+    resolved = shutil.which(executable)
+    if resolved is None:
+        return ("unavailable", None, f"{executable} is not installed")
+    last_detail = f"{executable} produced no probe output"
+    for probe_args in (("-help",), ("--version",), ("-version",)):
+        try:
+            completed = subprocess.run(
+                [resolved, *probe_args],
+                capture_output=True,
+                text=True,
+                timeout=timeout_s,
+                check=False,
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            last_detail = f"{executable} probe failed:{exc}"
+            continue
+        output = (completed.stdout or "") + "\n" + (completed.stderr or "")
+        if not output.strip():
+            continue
+        version = _openfoam_version_text(output) or "OpenFOAM (version banner absent)"
+        return ("ready", version[:160], f"{executable} present and reported a banner")
+    env_version = os.environ.get("WM_PROJECT_VERSION")
+    if env_version:
+        return ("ready", f"OpenFOAM {env_version}", f"{executable} present; WM_PROJECT_VERSION set")
+    return ("unavailable", None, last_detail)
 
 
 def _probe_library(distribution: str) -> tuple[str, str | None, str]:
@@ -71,7 +133,10 @@ def probe_solver(solver_id: str) -> CapabilityProbe:
     """Probe one solver family, preferring its native executable."""
 
     for executable in _EXECUTABLE_PROBES.get(solver_id, ()):
-        state, version, detail = _probe_executable(executable)
+        if solver_id == "openfoam":
+            state, version, detail = _probe_openfoam(executable)
+        else:
+            state, version, detail = _probe_executable(executable)
         if state == "ready":
             return CapabilityProbe(
                 participant_id=solver_id,
@@ -161,6 +226,40 @@ def probe_participant(participant_id: str) -> CapabilityProbe:
             "ready",
             "; ".join(versions),
             f"governed python-module execution: {'; '.join(versions)}",
+        )
+    if solver_id == "precice" and manifest.executable.run_script is not None:
+        # A native coupled-window participant is launched through its Python
+        # preCICE binding; only the real participant library counts.
+        for distribution in ("pyprecice", "precice"):
+            state, version, detail = _probe_library(distribution)
+            if state == "ready":
+                return CapabilityProbe(
+                    participant_id,
+                    solver_id,
+                    distribution,
+                    "ready",
+                    version,
+                    f"native preCICE coupling binding: {detail}",
+                )
+        state, version, detail = _probe_executable(
+            "precice-tools", probe_args=("version",), accept_output_on_nonzero=True
+        )
+        if state == "ready":
+            return CapabilityProbe(
+                participant_id,
+                solver_id,
+                "precice-tools",
+                "ready",
+                version,
+                detail,
+            )
+        return CapabilityProbe(
+            participant_id,
+            solver_id,
+            "pyprecice",
+            "unavailable",
+            None,
+            "neither pyprecice nor precice-tools is installed",
         )
     probe = probe_solver(solver_id)
     return dataclasses.replace(probe, participant_id=participant_id)

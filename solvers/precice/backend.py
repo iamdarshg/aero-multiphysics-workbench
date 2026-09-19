@@ -17,6 +17,21 @@ from participants.errors import NativeErrorCode, ParticipantError
 
 _PRECICE_LIBRARY = "precice"
 
+_RUN_SCRIPTS = (
+    Path(__file__).resolve().parent.parent / "participants" / "run_scripts"
+)
+
+
+def run_script_source(name: str) -> str:
+    """Read one allowlisted governed run script into the case directory."""
+
+    path = _RUN_SCRIPTS / name
+    if not path.is_file():
+        raise ParticipantError(
+            NativeErrorCode.PREPARATION_FAILED, f"run script missing:{name}"
+        )
+    return path.read_text(encoding="utf-8")
+
 
 @dataclass(frozen=True, slots=True)
 class PrecicePythonCapability:

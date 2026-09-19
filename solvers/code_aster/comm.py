@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -744,7 +745,7 @@ def _render_export(mesh_file: str) -> str:
         "A args \n"
         "F comm case.comm D 1\n"
         f"F mmed {mesh_file} D 20\n"
-        "R repe result.rmed R 80\n"
+        "R repe result_table.txt R 80\n"
     )
 
 
@@ -776,18 +777,24 @@ def parse_comm_result(case_dir: Path) -> ParseReceipt:
         raise ParticipantError(
             NativeErrorCode.PARSER_FAILED, f"solver.log unreadable:{exc}"
         ) from exc
-    if "FIN" not in log_text and "EXIT_CODE=0" not in log_text:
+    if not _clean_finish(log_text):
         raise ParticipantError(NativeErrorCode.PARSER_FAILED, "solver log shows no clean FIN")
-    table_path = case_dir / "result_table.txt"
-    if not table_path.is_file():
-        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "result_table.txt is missing")
+    table_path = _result_table_path(case_dir)
+    if table_path is None:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED,
+            "result table is missing (expected result_table.txt or result.rmed)",
+        )
     try:
-        table_text = table_path.read_text(encoding="utf-8")
+        table_text = table_path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:
         raise ParticipantError(
             NativeErrorCode.PARSER_FAILED, f"result table unreadable:{exc}"
         ) from exc
-    values = _parse_tableau(table_text)
+    try:
+        values = _parse_tableau(table_text)
+    except ParticipantError:
+        values = _parse_generic_tableau(table_text)
     scalars, units, detail = _compose_scalars(values)
     scalars.update(_solver_state_scalars(case_dir, scalars))
     return ParseReceipt(
@@ -879,6 +886,149 @@ def _solver_state_scalars(case_dir: Path, scalars: Mapping[str, float]) -> dict[
         )
         merged["requested_results_available"] = 1.0 if available else 0.0
     return merged
+
+
+def _clean_finish(log_text: str) -> bool:
+    if "EXIT_CODE=0" in log_text:
+        return True
+    return re.search(r"\bFIN\b", log_text) is not None
+
+
+def _result_table_path(case_dir: Path) -> Path | None:
+    for name in ("result_table.txt", "result.rmed"):
+        candidate = case_dir / name
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+_KNOWN_COLUMN_TOKENS = frozenset(
+    {
+        "DX",
+        "DY",
+        "DZ",
+        "DRX",
+        "DRY",
+        "DRZ",
+        "VMIS",
+        "SIXX",
+        "SIYY",
+        "SIZZ",
+        "SIXY",
+        "SIXZ",
+        "SIYZ",
+        "FREQ",
+        "FREQUENCE",
+        "FREQUENCY_HZ",
+        "NUME_ORDRE",
+        "NUME_MODE",
+        "INST",
+        "TEMPS",
+        "TIME",
+    }
+)
+
+
+def _split_table_row(line: str) -> list[str]:
+    return [token for token in re.split(r"[|\s]+", line.strip()) if token]
+
+
+def _parse_number(token: str) -> float | None:
+    try:
+        return float(token.replace("D", "E").replace("d", "e"))
+    except ValueError:
+        return None
+
+
+def _parse_generic_tableau(text: str) -> dict[str, list[float]]:
+    """Tolerant parser for a native Code_Aster TABLEAU/excel-style table.
+
+    Native output labels columns (DX/DY/DZ, VMIS, FREQ, ...) and may include a
+    non-numeric identifier column. Only rows whose labelled numeric columns
+    parse are used; a table with no recognisable columns/rows fails closed.
+    """
+
+    lines = text.splitlines()
+    header: list[str] | None = None
+    start = 0
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        tokens = _split_table_row(stripped.lstrip("#"))
+        upper = [token.upper() for token in tokens]
+        if len(tokens) >= 2 and any(token in _KNOWN_COLUMN_TOKENS for token in upper):
+            header = upper
+            start = index + 1
+            break
+    if header is None:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED, "result table has no recognisable columns"
+        )
+    rows: list[dict[str, float]] = []
+    for line in lines[start:]:
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        tokens = _split_table_row(stripped)
+        if len(tokens) != len(header):
+            continue
+        numbers: dict[str, float] = {}
+        for token, name in zip(tokens, header, strict=True):
+            value = _parse_number(token)
+            if value is not None:
+                numbers[name] = value
+        if numbers:
+            rows.append(numbers)
+    if not rows:
+        raise ParticipantError(NativeErrorCode.PARSER_FAILED, "result table has no numeric rows")
+
+    values: dict[str, list[float]] = {}
+    components = ("DX", "DY", "DZ")
+    if all(name in header for name in components):
+        magnitudes = [
+            (
+                row.get("DX", 0.0) ** 2
+                + row.get("DY", 0.0) ** 2
+                + row.get("DZ", 0.0) ** 2
+            )
+            ** 0.5
+            for row in rows
+            if any(name in row for name in components)
+        ]
+        if magnitudes:
+            values["DISPLACEMENT_M"] = [max(magnitudes)]
+    if "VMIS" in header:
+        stresses = [row["VMIS"] for row in rows if "VMIS" in row]
+        if stresses:
+            values["VON_MISES_PA"] = [max(stresses)]
+    elif all(name in header for name in ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")):
+        von_mises = []
+        for row in rows:
+            if not all(name in row for name in ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")):
+                continue
+            sxx, syy, szz = row["SIXX"], row["SIYY"], row["SIZZ"]
+            sxy, sxz, syz = row["SIXY"], row["SIXZ"], row["SIYZ"]
+            von_mises.append(
+                (
+                    0.5 * ((sxx - syy) ** 2 + (syy - szz) ** 2 + (szz - sxx) ** 2)
+                    + 3.0 * (sxy**2 + sxz**2 + syz**2)
+                )
+                ** 0.5
+            )
+        if von_mises:
+            values["VON_MISES_PA"] = [max(von_mises)]
+    for name in ("FREQ", "FREQUENCE", "FREQUENCY_HZ"):
+        if name in header:
+            frequencies = [row[name] for row in rows if name in row]
+            if frequencies:
+                values["FREQUENCY_HZ"] = frequencies
+            break
+    if not values:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED, "result table has no recognised quantity"
+        )
+    return values
 
 
 def _parse_tableau(text: str) -> dict[str, list[float]]:

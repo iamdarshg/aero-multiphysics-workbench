@@ -226,7 +226,7 @@
           "kind": "file",
           "path": "solvers/openfoam/case.py",
           "detail": "PARTIAL: native OpenFOAM case builders for channel/cavity/rotating-frame cases exercised by the executed ladder.",
-          "sha256": "a13643018403e1a97b68302c1c814e4a79c4dc0fd63d6eb71c503ec373668dc7"
+          "sha256": "4642b84227956b12b34736bd1cf2c808453b7992c31ba2e8d746ea08470e9ccf"
         },
         {
           "kind": "file",
@@ -295,7 +295,7 @@
           "kind": "file",
           "path": "solvers/elmer/case.py",
           "detail": "PARTIAL: Elmer case builder and fields/parser path exercised by the executed steady/transient proofs.",
-          "sha256": "f11de2498dbf5bcc6bd7c309c0ceb0892299e04f61ed6853ba77cf864cb5e9b2"
+          "sha256": "6d96c36785667b13af44315967dbfe6ee4c258205a0a5915b5867dc313466a6c"
         },
         {
           "kind": "file",
@@ -1258,7 +1258,7 @@
           "kind": "file",
           "path": "solvers/participants/manifest.py",
           "detail": "PARTIAL: typed participant manifest contract used to join the coupling graph without bypassing gates.",
-          "sha256": "ead398a509a32173bd7a7dce1fd6fc967b9c67bfbdd6146efaa8a01760aca302"
+          "sha256": "54e3dc9dfebebcaeedd685cc39c9b263c51beca75d3806181db02cedbb139153"
         }
       ],
       "lastVerifiedAt": null

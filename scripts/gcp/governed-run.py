@@ -303,7 +303,11 @@ def issue_08(driver: Driver) -> dict:
     body_order = [
         name
         for name, _ in _sorted(
-            [(name, names[name]) for name in ("material_body_a", "material_body_b") if name in names]
+            [
+                (name, names[name])
+                for name in ("material_body_a", "material_body_b")
+                if name in names
+            ]
         )
     ]
     patch_order = [
@@ -471,11 +475,20 @@ def issue_11(driver: Driver) -> dict:
     values = (7.0,) * 5
     source_integral = 7.0 * (source.coordinates[-1] - source.coordinates[0])
     results = []
-    for resolution in ((0.0, 0.5, 1.0), (0.0, 0.2, 0.4, 0.6, 0.8, 1.0), (0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0)):
+    resolutions = (
+        (0.0, 0.5, 1.0),
+        (0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
+        (0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0),
+    )
+    for resolution in resolutions:
         target = register_mesh("tgt", resolution)
         mapped, record = map_field(source, values, target, "pressure", method="conservative")
-        widths = [b - a for a, b in zip(target.coordinates, target.coordinates[1:])]
-        target_integral = sum(v * w for v, w in zip(mapped, widths))
+        widths = [
+            b - a for a, b in zip(target.coordinates, target.coordinates[1:], strict=False)
+        ]
+        target_integral = sum(
+            v * w for v, w in zip(mapped, widths, strict=True)
+        )
         results.append(
             {
                 "resolution_points": len(resolution),

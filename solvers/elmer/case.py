@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -106,10 +107,25 @@ class ElmerMesh:
     interfaces: tuple[ElmerInterface, ...]
     # (region name, material name) pairs from semantic material groups.
     material_regions: tuple[tuple[str, str], ...]
+    # Native Elmer numbering produced by the mesh converter (ElmerGrid). When
+    # absent the case uses declaration order, which is only valid for a
+    # converter that numbers in declaration order.
+    body_ids: Mapping[str, int] | None = None
+    boundary_ids: Mapping[str, int] | None = None
 
     @property
     def material_names(self) -> tuple[str, ...]:
         return tuple(dict.fromkeys(name for _, name in self.material_regions))
+
+    def body_id(self, name: str, fallback: int) -> int:
+        if self.body_ids and name in self.body_ids:
+            return int(self.body_ids[name])
+        return fallback
+
+    def boundary_id(self, name: str, fallback: int) -> int:
+        if self.boundary_ids and name in self.boundary_ids:
+            return int(self.boundary_ids[name])
+        return fallback
 
 
 def _parse_msh_physical_names(text: str) -> set[str]:
@@ -205,6 +221,8 @@ def load_elmer_mesh(inputs: Mapping[str, Any], case_dir: Path) -> ElmerMesh:
         (_require_str(entry, "name"), _require_str(entry, "material"))
         for entry in _strings(export, "materials")
     )
+    body_ids = _int_map(export, "bodyIds")
+    boundary_ids = _int_map(export, "boundaryIds")
     if not zones:
         raise _mesh_fail("mesh export declares no zones")
 
@@ -250,7 +268,23 @@ def load_elmer_mesh(inputs: Mapping[str, Any], case_dir: Path) -> ElmerMesh:
         patches=patches,
         interfaces=interfaces,
         material_regions=material_regions,
+        body_ids=body_ids,
+        boundary_ids=boundary_ids,
     )
+
+
+def _int_map(payload: Mapping[str, Any], key: str) -> dict[str, int] | None:
+    raw = payload.get(key)
+    if raw is None:
+        return None
+    if not isinstance(raw, Mapping):
+        raise _mesh_fail(f"mesh export {key} must be a mapping")
+    result: dict[str, int] = {}
+    for name, value in raw.items():
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise _mesh_fail(f"mesh export {key} values must be positive integers")
+        result[str(name)] = int(value)
+    return result
 
 
 def _observed_hash(value: Any) -> str | None:
@@ -527,15 +561,27 @@ def build_thermal_case(inputs: Mapping[str, Any], case_dir: Path) -> ThermalCase
 
 
 def _boundary_index_map(case: ThermalCase) -> dict[str, int]:
+    """Map semantic patches/interfaces to real Elmer boundary numbers.
+
+    When the mesh mapping carries the converter's native boundary ids they are
+    used verbatim; otherwise declaration order is the only available guess.
+    """
+
     index: dict[str, int] = {}
     counter = 1
     for patch in case.mesh.patches:
-        index[f"patch:{patch.name}"] = counter
+        index[f"patch:{patch.name}"] = case.mesh.boundary_id(patch.name, counter)
         counter += 1
     for interface in case.mesh.interfaces:
-        index[f"interface:{interface.name}"] = counter
+        index[f"interface:{interface.name}"] = case.mesh.boundary_id(
+            interface.name, counter
+        )
         counter += 1
     return index
+
+
+def _sanitize(name: str) -> str:
+    return re.sub(r"[^0-9A-Za-z]+", "_", name).strip("_")
 
 
 def render_thermal_sif(case: ThermalCase) -> str:
@@ -579,9 +625,11 @@ def render_thermal_sif(case: ThermalCase) -> str:
     for position, body in enumerate(case.bodies, start=1):
         material_name = case.body_materials[position - 1]
         index = material_index[material_name]
+        body_id = case.mesh.body_id(body, position)
         lines += [
             f"Body {position}",
             f'  Name = "{body}"',
+            f"  Target Bodies(1) = {body_id}",
             "  Equation = 1",
             f"  Material = {index}",
         ]
@@ -632,9 +680,11 @@ def render_thermal_sif(case: ThermalCase) -> str:
         lines.append("  Transient = True")
     lines += ["End", ""]
 
+    exec_point = "After Timestep" if case.analysis == "transient" else "After Simulation"
     lines += [
         "Solver 2",
-        "  Equation = SaveScalars",
+        f"  Exec Solver = {exec_point}",
+        '  Equation = "SaveScalarsGlobal"',
         '  Procedure = "SaveData" "SaveScalars"',
         '  Filename = "result.dat"',
         "  Variable 1 = Temperature",
@@ -651,38 +701,36 @@ def render_thermal_sif(case: ThermalCase) -> str:
         "",
     ]
 
-    solver_index = 3
-    for position, body in enumerate(case.bodies, start=1):
-        lines += [
-            f"Solver {solver_index}",
-            "  Equation = SaveScalars",
-            '  Procedure = "SaveData" "SaveScalars"',
-            f'  Filename = "region_{body}.dat"',
-            "  Variable 1 = Temperature",
-            "  Operator 1 = max",
-            "  Variable 2 = Temperature",
-            "  Operator 2 = min",
-            f"  Target Bodies(1) = {position}",
-            "End",
-            "",
-        ]
-        solver_index += 1
+    boundary_flags: dict[tuple[str, str], str] = {}
+    for patch in (bc.patch for bc in case.fixed_temperatures):
+        boundary_flags[("patch", patch)] = f"save_{_sanitize(patch)}"
+    for patch in (bc.patch for bc in case.surface_heat_fluxes):
+        boundary_flags[("patch", patch)] = f"save_{_sanitize(patch)}"
+    for patch in (bc.patch for bc in case.convections):
+        boundary_flags[("patch", patch)] = f"save_{_sanitize(patch)}"
+    for exchange in case.interface_exchanges:
+        boundary_flags[("interface", exchange.interface)] = (
+            f"save_{_sanitize(exchange.interface)}"
+        )
 
-    boundary_index = _boundary_index_map(case)
-    for interface in case.mesh.interfaces:
-        target = boundary_index[f"interface:{interface.name}"]
+    solver_index = 3
+    for (kind, name), flag in boundary_flags.items():
+        if kind == "patch":
+            filename = f"boundary_{_sanitize(name)}.dat"
+            equation = f"SaveScalarsBoundary_{_sanitize(name)}"
+        else:
+            filename = f"interface_{name}.dat"
+            equation = f"SaveScalarsInterface_{_sanitize(name)}"
         lines += [
             f"Solver {solver_index}",
-            "  Equation = SaveScalars",
+            f"  Exec Solver = {exec_point}",
+            f'  Equation = "{equation}"',
             '  Procedure = "SaveData" "SaveScalars"',
-            f'  Filename = "interface_{interface.name}.dat"',
+            f'  Filename = "{filename}"',
             "  Variable 1 = Temperature",
-            "  Operator 1 = max",
-            "  Variable 2 = Temperature",
-            "  Operator 2 = min",
-            "  Variable 3 = Temperature",
-            "  Operator 3 = flux",
-            f"  Target Boundaries(1) = {target}",
+            "  Operator 1 = diffusive flux",
+            "  Coefficient 1 = Heat Conductivity",
+            f'  Mask Name 1 = "{flag}"',
             "End",
             "",
         ]
@@ -692,43 +740,54 @@ def render_thermal_sif(case: ThermalCase) -> str:
         lines.append(case.materials[material_name].sif_block(index))
         lines.append("")
 
+    boundary_index = _boundary_index_map(case)
     bc_counter = 1
     for bc in case.fixed_temperatures:
         target = boundary_index[f"patch:{bc.patch}"]
+        flag = f"save_{_sanitize(bc.patch)}"
         lines += [
             f"Boundary Condition {bc_counter}",
             f'  Name = "fixed-temperature-{bc.patch}"',
             f"  Target Boundaries(1) = {target}",
             f"  Temperature = {bc.temperature_k:.6e}",
+            "  Save Scalars = True",
+            f"  {flag} = Logical True",
             "End",
             "",
         ]
         bc_counter += 1
     for bc in case.surface_heat_fluxes:
         target = boundary_index[f"patch:{bc.patch}"]
+        flag = f"save_{_sanitize(bc.patch)}"
         lines += [
             f"Boundary Condition {bc_counter}",
             f'  Name = "heat-flux-{bc.patch}"',
             f"  Target Boundaries(1) = {target}",
             f"  Heat Flux = {bc.heat_flux_w_m2:.6e}",
+            "  Save Scalars = True",
+            f"  {flag} = Logical True",
             "End",
             "",
         ]
         bc_counter += 1
     for bc in case.convections:
         target = boundary_index[f"patch:{bc.patch}"]
+        flag = f"save_{_sanitize(bc.patch)}"
         lines += [
             f"Boundary Condition {bc_counter}",
             f'  Name = "convection-{bc.patch}"',
             f"  Target Boundaries(1) = {target}",
             f"  Heat Transfer Coefficient = {bc.coefficient_w_m2_k:.6e}",
             f"  External Temperature = {bc.ambient_k:.6e}",
+            "  Save Scalars = True",
+            f"  {flag} = Logical True",
             "End",
             "",
         ]
         bc_counter += 1
     for exchange in case.interface_exchanges:
         target = boundary_index[f"interface:{exchange.interface}"]
+        flag = f"save_{_sanitize(exchange.interface)}"
         lines += [
             f"Boundary Condition {bc_counter}",
             f'  Name = "interface-{exchange.mode}-{exchange.interface}"',
@@ -744,6 +803,8 @@ def render_thermal_sif(case: ThermalCase) -> str:
                 f"  Heat Transfer Coefficient = {exchange.coefficient_w_m2_k:.6e}"
             )
             lines.append(f"  External Temperature = {exchange.ambient_k:.6e}")
+        lines.append("  Save Scalars = True")
+        lines.append(f"  {flag} = Logical True")
         lines += ["End", ""]
         bc_counter += 1
     return "\n".join(lines)
