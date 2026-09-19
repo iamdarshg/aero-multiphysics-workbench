@@ -1,0 +1,30 @@
+{
+  "library": "cantera",
+  "cantera_version": "3.2.0",
+  "mechanism": "gri30.yaml",
+  "reactor_mode": "equilibrium",
+  "finite_rate": false,
+  "converged": true,
+  "inlet_temperature_k": 600.0,
+  "inlet_pressure_pa": 792000.0,
+  "exit_total_temperature_k": 2621.9,
+  "exit_total_pressure_pa": 760320.0,
+  "adiabatic_flame_temperature_k": 2621.9,
+  "fuel_mass_flow_kg_s": 0.699,
+  "heat_release_w": 34251000.0,
+  "combustion_efficiency": 0.98,
+  "pressure_loss_fraction": 0.04,
+  "pattern_factor": 0.05,
+  "residence_time_s": 0.005,
+  "stability_indicator": 1.0,
+  "mole_fractions": {
+    "CH4": 0.0,
+    "O2": 0.02,
+    "N2": 0.7188,
+    "CO2": 0.0806,
+    "H2O": 0.1805,
+    "CO": 0.0,
+    "OH": 0.00001,
+    "NO": 0.00009
+  }
+}

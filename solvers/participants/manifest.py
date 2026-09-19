@@ -784,6 +784,10 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
     ),
 )
 
+from cantera.participants import combustion_participants  # noqa: E402
+
+PARTICIPANT_MANIFESTS = (*PARTICIPANT_MANIFESTS, *combustion_participants())
+
 _REGISTRY: dict[str, ParticipantManifest] = {
     manifest.participant_id: manifest for manifest in PARTICIPANT_MANIFESTS
 }

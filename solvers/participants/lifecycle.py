@@ -71,6 +71,8 @@ _ALLOWED_MODULES = frozenset(
         "precice.validate",
         "participants.mesh_case",
         "participants.cad_case",
+        "participants.combustion_case",
+        "participants.combustion_parser",
         "electrical.machine",
         "electrical.power_electronics",
     }

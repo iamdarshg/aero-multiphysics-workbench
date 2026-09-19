@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo01-multi-row-axial-compressor",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "c1", "kind": "compressor_stage" },
+    { "id": "s1", "kind": "stator_row" },
+    { "id": "c2", "kind": "compressor_stage" },
+    { "id": "s2", "kind": "stator_row" },
+    { "id": "c3", "kind": "compressor_stage" },
+    { "id": "s3", "kind": "stator_row" },
+    { "id": "outlet", "kind": "exhaust" },
+    { "id": "motor", "kind": "motor_coupling" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "c1", "kind": "flow", "station": "1" },
+    { "from": "c1", "to": "s1", "kind": "flow", "station": "2" },
+    { "from": "s1", "to": "c2", "kind": "flow", "station": "3" },
+    { "from": "c2", "to": "s2", "kind": "flow", "station": "4" },
+    { "from": "s2", "to": "c3", "kind": "flow", "station": "5" },
+    { "from": "c3", "to": "s3", "kind": "flow", "station": "6" },
+    { "from": "s3", "to": "outlet", "kind": "flow", "station": "7" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 20, "unit": "kg/s" }, "totalPressure": { "value": 100000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 130000, "unit": "Pa" }, "totalTemperature": { "value": 305, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 128000, "unit": "Pa" }, "totalTemperature": { "value": 306, "unit": "K" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 165000, "unit": "Pa" }, "totalTemperature": { "value": 324, "unit": "K" } } },
+    { "id": "5", "state": { "totalPressure": { "value": 162000, "unit": "Pa" }, "totalTemperature": { "value": 325, "unit": "K" } } },
+    { "id": "6", "state": { "totalPressure": { "value": 208000, "unit": "Pa" }, "totalTemperature": { "value": 344, "unit": "K" } } },
+    { "id": "7", "state": { "totalPressure": { "value": 205000, "unit": "Pa" }, "totalTemperature": { "value": 345, "unit": "K" } } }
+  ],
+  "rows": [
+    { "id": "rotor-1", "node": "c1", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 37, "family": "axial", "geometryRef": "comp-stage-1", "materialRef": "ti-alloy@2", "thermalRef": "comp-thermal@1" },
+    { "id": "stator-1", "node": "s1", "role": "turning_only", "frame": "stationary", "stationIn": "2", "stationOut": "3", "rowCount": 1, "periodicity": 41, "family": "axial", "geometryRef": "stator-1" },
+    { "id": "rotor-2", "node": "c2", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "3", "stationOut": "4", "rowCount": 1, "periodicity": 33, "family": "axial", "geometryRef": "comp-stage-2", "materialRef": "ti-alloy@2" },
+    { "id": "stator-2", "node": "s2", "role": "turning_only", "frame": "stationary", "stationIn": "4", "stationOut": "5", "rowCount": 1, "periodicity": 39, "family": "axial", "geometryRef": "stator-2" },
+    { "id": "rotor-3", "node": "c3", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "5", "stationOut": "6", "rowCount": 1, "periodicity": 29, "family": "axial", "geometryRef": "comp-stage-3", "materialRef": "ti-alloy@2" },
+    { "id": "stator-3", "node": "s3", "role": "turning_only", "frame": "stationary", "stationIn": "6", "stationOut": "7", "rowCount": 1, "periodicity": 35, "family": "axial", "geometryRef": "stator-3" }
+  ],
+  "shafts": [
+    {
+      "id": "hp-spool",
+      "kind": "single",
+      "members": ["rotor-1", "rotor-2", "rotor-3"],
+      "speed": { "kind": "speed", "value": { "value": 12000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.01,
+      "couplings": [
+        { "id": "motor-drive", "kind": "electric_motor", "targetNode": "motor", "efficiency": 0.94 }
+      ]
+    }
+  ]
+}

@@ -35,6 +35,7 @@ _LIBRARY_PROBES: dict[str, tuple[str, ...]] = {
     "pybamm": ("pybamm", "pybammsolvers", "casadi"),
     "gmsh": ("gmsh",),
     "cadquery": ("cadquery",),
+    "cantera": ("cantera",),
 }
 
 

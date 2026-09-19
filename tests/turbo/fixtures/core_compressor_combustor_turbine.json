@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo01-compressor-combustor-turbine-core",
+  "defaultFluid": { "identity": "combustion-gas" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "compressor", "kind": "compressor_stage" },
+    { "id": "combustor", "kind": "combustor" },
+    { "id": "turbine", "kind": "turbine_stage" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" },
+    { "id": "load", "kind": "mechanical_load" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "compressor", "kind": "flow", "station": "1" },
+    { "from": "compressor", "to": "combustor", "kind": "flow", "station": "2" },
+    { "from": "combustor", "to": "turbine", "kind": "flow", "station": "3" },
+    { "from": "turbine", "to": "nozzle", "kind": "flow", "station": "4" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "5" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 12, "unit": "kg/s" }, "totalPressure": { "value": 99000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 792000, "unit": "Pa" }, "totalTemperature": { "value": 600, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 760000, "unit": "Pa" }, "totalTemperature": { "value": 1450, "unit": "K" }, "fluid": { "identity": "combustion-gas" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 280000, "unit": "Pa" }, "totalTemperature": { "value": 1050, "unit": "K" } } },
+    { "id": "5", "state": { "totalPressure": { "value": 270000, "unit": "Pa" }, "totalTemperature": { "value": 1040, "unit": "K" } } }
+  ],
+  "rows": [
+    { "id": "comp-rotor", "node": "compressor", "role": "work_adding", "frame": "rotating", "shaft": "core-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 31, "family": "axial", "geometryRef": "core-compressor", "materialRef": "ni-alloy@1", "thermalRef": "comp-thermal@1" },
+    { "id": "turbine-rotor", "node": "turbine", "role": "work_extracting", "frame": "rotating", "shaft": "core-spool", "stationIn": "3", "stationOut": "4", "rowCount": 1, "periodicity": 47, "family": "axial", "geometryRef": "core-turbine", "clearance": { "tipClearance": { "value": 0.8, "unit": "mm" } }, "materialRef": "ni-superalloy@3", "thermalRef": "turbine-thermal@1" }
+  ],
+  "shafts": [
+    {
+      "id": "core-spool",
+      "kind": "common",
+      "members": ["comp-rotor", "turbine-rotor"],
+      "speed": null,
+      "mechanicalLossFraction": 0.02,
+      "couplings": [
+        { "id": "power-offtake", "kind": "mechanical_load", "targetNode": "load", "efficiency": 0.98 }
+      ]
+    }
+  ]
+}

@@ -1258,7 +1258,7 @@
           "kind": "file",
           "path": "solvers/participants/manifest.py",
           "detail": "PARTIAL: typed participant manifest contract used to join the coupling graph without bypassing gates.",
-          "sha256": "8b49b5bd7e21950151eeaa5c580a42e3b4b3fb06f9f9ac28a923a88c87733077"
+          "sha256": "97a8ca192b7f0670adc1df5c74bff763e71322a62747d793bebb5170aa5dcf76"
         }
       ],
       "lastVerifiedAt": null
@@ -2385,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "d14f116d7a586e10a739fec3c4f6c5ca202c8db21666b875fc30516c45933ceb"
+          "sha256": "db7a82cc2ee690bb11c3336b280bf9faf2cf230127cb94aaa348c51384614b18"
         },
         {
           "kind": "file",
@@ -3324,7 +3324,7 @@
           "kind": "file",
           "path": "services/api/pyproject.toml",
           "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
-          "sha256": "f9b7180c4ef25ec24a15e3cc575d4a4539b79d930f912435ed8c79ab08f8c201"
+          "sha256": "9e1417c284d704f8d09a78b647aea439133a9683ead4184f6d3a0ae3affe6cb1"
         },
         {
           "kind": "file",

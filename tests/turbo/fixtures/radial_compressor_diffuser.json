@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo01-radial-compressor-diffuser",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "impeller", "kind": "compressor_stage" },
+    { "id": "diffuser", "kind": "diffuser" },
+    { "id": "outlet", "kind": "exhaust" },
+    { "id": "motor", "kind": "motor_coupling" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "impeller", "kind": "flow", "station": "1" },
+    { "from": "impeller", "to": "diffuser", "kind": "flow", "station": "2" },
+    { "from": "diffuser", "to": "outlet", "kind": "flow", "station": "3" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 0.8, "unit": "kg/s" }, "totalPressure": { "value": 98000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 340000, "unit": "Pa" }, "totalTemperature": { "value": 420, "unit": "K" }, "tangentialVelocity": { "value": 120, "unit": "m/s" }, "swirlAngle": { "value": 22.5, "unit": "deg" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 330000, "unit": "Pa" }, "totalTemperature": { "value": 421, "unit": "K" }, "mach": { "value": 0.2, "unit": "dimensionless" } } }
+  ],
+  "rows": [
+    { "id": "impeller-rotor", "node": "impeller", "role": "work_adding", "frame": "rotating", "shaft": "rc-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 9, "family": "radial", "geometryRef": "impeller-geometry", "clearance": { "tipClearance": { "value": 0.3, "unit": "mm" } }, "materialRef": "al-alloy@1", "thermalRef": "rc-thermal@1" },
+    { "id": "diffuser-vanes", "node": "diffuser", "role": "diffuser_guide", "frame": "stationary", "stationIn": "2", "stationOut": "3", "rowCount": 1, "periodicity": 17, "family": "radial", "geometryRef": "diffuser-vane-geometry" }
+  ],
+  "shafts": [
+    {
+      "id": "rc-spool",
+      "kind": "single",
+      "members": ["impeller-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 45000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.0,
+      "couplings": [
+        { "id": "motor-drive", "kind": "electric_motor", "targetNode": "motor", "efficiency": 0.93 }
+      ]
+    }
+  ]
+}

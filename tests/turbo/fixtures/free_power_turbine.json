@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo01-free-power-turbine",
+  "defaultFluid": { "identity": "combustion-gas" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "compressor", "kind": "compressor_stage" },
+    { "id": "combustor", "kind": "combustor" },
+    { "id": "gas-gen-turbine", "kind": "turbine_stage" },
+    { "id": "free-turbine", "kind": "turbine_stage" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" },
+    { "id": "generator", "kind": "generator_coupling" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "compressor", "kind": "flow", "station": "1" },
+    { "from": "compressor", "to": "combustor", "kind": "flow", "station": "2" },
+    { "from": "combustor", "to": "gas-gen-turbine", "kind": "flow", "station": "3" },
+    { "from": "gas-gen-turbine", "to": "free-turbine", "kind": "flow", "station": "4" },
+    { "from": "free-turbine", "to": "nozzle", "kind": "flow", "station": "5" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "6" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 2.4, "unit": "kg/s" }, "totalPressure": { "value": 99000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 520000, "unit": "Pa" }, "totalTemperature": { "value": 560, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 500000, "unit": "Pa" }, "totalTemperature": { "value": 1300, "unit": "K" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 210000, "unit": "Pa" }, "totalTemperature": { "value": 980, "unit": "K" } } },
+    { "id": "5", "state": { "totalPressure": { "value": 110000, "unit": "Pa" }, "totalTemperature": { "value": 760, "unit": "K" } } },
+    { "id": "6", "state": { "totalPressure": { "value": 104000, "unit": "Pa" }, "totalTemperature": { "value": 700, "unit": "K" } } }
+  ],
+  "rows": [
+    { "id": "comp-rotor", "node": "compressor", "role": "work_adding", "frame": "rotating", "shaft": "gas-gen-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 27, "family": "axial", "geometryRef": "gg-compressor" },
+    { "id": "hp-turbine-rotor", "node": "gas-gen-turbine", "role": "work_extracting", "frame": "rotating", "shaft": "gas-gen-spool", "stationIn": "3", "stationOut": "4", "rowCount": 1, "periodicity": 41, "family": "axial", "geometryRef": "gg-turbine", "materialRef": "ni-superalloy@5" },
+    { "id": "free-turbine-rotor", "node": "free-turbine", "role": "work_extracting", "frame": "rotating", "shaft": "power-spool", "stationIn": "4", "stationOut": "5", "rowCount": 1, "periodicity": 49, "family": "axial", "geometryRef": "free-turbine", "materialRef": "ni-superalloy@5" }
+  ],
+  "shafts": [
+    {
+      "id": "gas-gen-spool",
+      "kind": "common",
+      "members": ["comp-rotor", "hp-turbine-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 30000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.02,
+      "couplings": []
+    },
+    {
+      "id": "power-spool",
+      "kind": "free_power",
+      "members": ["free-turbine-rotor"],
+      "speed": null,
+      "mechanicalLossFraction": 0.01,
+      "couplings": [
+        { "id": "generator-drive", "kind": "electric_generator", "targetNode": "generator", "efficiency": 0.97 }
+      ]
+    }
+  ]
+}
