@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo04-two-spool-bypass-consistent",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "fan", "kind": "fan_stage" },
+    { "id": "bypass-split", "kind": "bypass_split" },
+    { "id": "bypass-duct", "kind": "duct" },
+    { "id": "bypass-merge", "kind": "bypass_merge" },
+    { "id": "core-split", "kind": "core_split" },
+    { "id": "lpc", "kind": "compressor_stage" },
+    { "id": "hpc", "kind": "compressor_stage" },
+    { "id": "combustor", "kind": "combustor" },
+    { "id": "hpt", "kind": "turbine_stage" },
+    { "id": "lpt", "kind": "turbine_stage" },
+    { "id": "core-merge", "kind": "core_merge" },
+    { "id": "mixer", "kind": "mixer" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "fan", "kind": "flow", "station": "1" },
+    { "from": "fan", "to": "bypass-split", "kind": "flow", "station": "2" },
+    { "from": "bypass-split", "to": "bypass-duct", "kind": "bypass", "station": "3" },
+    { "from": "bypass-duct", "to": "bypass-merge", "kind": "bypass", "station": "4" },
+    { "from": "bypass-split", "to": "core-split", "kind": "core", "station": "5" },
+    { "from": "core-split", "to": "lpc", "kind": "core", "station": "5" },
+    { "from": "lpc", "to": "hpc", "kind": "core", "station": "6" },
+    { "from": "hpc", "to": "combustor", "kind": "core", "station": "7" },
+    { "from": "combustor", "to": "hpt", "kind": "core", "station": "8" },
+    { "from": "hpt", "to": "lpt", "kind": "core", "station": "9" },
+    { "from": "lpt", "to": "core-merge", "kind": "core", "station": "10" },
+    { "from": "core-merge", "to": "mixer", "kind": "flow", "station": "11" },
+    { "from": "bypass-merge", "to": "mixer", "kind": "flow", "station": "11" },
+    { "from": "mixer", "to": "nozzle", "kind": "flow", "station": "12" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "13" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 120, "unit": "kg/s" }, "totalPressure": { "value": 99000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 115000, "unit": "Pa" }, "totalTemperature": { "value": 300, "unit": "K" } } },
+    { "id": "3", "state": { "massFlow": { "value": 90, "unit": "kg/s" }, "totalPressure": { "value": 113000, "unit": "Pa" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 112000, "unit": "Pa" } } },
+    { "id": "5", "state": { "massFlow": { "value": 30, "unit": "kg/s" }, "totalPressure": { "value": 115000, "unit": "Pa" } } },
+    { "id": "6", "state": { "totalPressure": { "value": 172500, "unit": "Pa" }, "totalTemperature": { "value": 320, "unit": "K" } } },
+    { "id": "7", "state": { "totalPressure": { "value": 362250, "unit": "Pa" }, "totalTemperature": { "value": 480, "unit": "K" } } },
+    { "id": "8", "state": { "totalPressure": { "value": 344250, "unit": "Pa" }, "totalTemperature": { "value": 1200, "unit": "K" } } },
+    { "id": "9", "state": { "totalPressure": { "value": 180000, "unit": "Pa" }, "totalTemperature": { "value": 950, "unit": "K" } } },
+    { "id": "10", "state": { "totalPressure": { "value": 110000, "unit": "Pa" }, "totalTemperature": { "value": 760, "unit": "K" } } },
+    { "id": "11", "state": { "totalPressure": { "value": 108000, "unit": "Pa" }, "totalTemperature": { "value": 620, "unit": "K" } } },
+    { "id": "12", "state": { "totalPressure": { "value": 105000, "unit": "Pa" }, "totalTemperature": { "value": 615, "unit": "K" } } },
+    { "id": "13", "state": { "totalPressure": { "value": 102000, "unit": "Pa" }, "totalTemperature": { "value": 610, "unit": "K" }, "mach": { "value": 0.9, "unit": "dimensionless" } } }
+  ],
+  "rows": [
+    { "id": "fan-rotor", "node": "fan", "role": "work_adding", "frame": "rotating", "shaft": "lp-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 22, "family": "axial", "geometryRef": "fan-geometry" },
+    { "id": "lpc-rotor", "node": "lpc", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "5", "stationOut": "6", "rowCount": 1, "periodicity": 39, "family": "axial", "geometryRef": "lpc-geometry" },
+    { "id": "hpc-rotor", "node": "hpc", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "6", "stationOut": "7", "rowCount": 1, "periodicity": 45, "family": "axial", "geometryRef": "hpc-geometry" },
+    { "id": "hpt-rotor", "node": "hpt", "role": "work_extracting", "frame": "rotating", "shaft": "hp-spool", "stationIn": "8", "stationOut": "9", "rowCount": 1, "periodicity": 53, "family": "axial", "geometryRef": "hpt-geometry" },
+    { "id": "lpt-rotor", "node": "lpt", "role": "work_extracting", "frame": "rotating", "shaft": "lp-spool", "stationIn": "9", "stationOut": "10", "rowCount": 1, "periodicity": 61, "family": "axial", "geometryRef": "lpt-geometry" }
+  ],
+  "shafts": [
+    {
+      "id": "lp-spool",
+      "kind": "common",
+      "members": ["fan-rotor", "lpt-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 6000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.015,
+      "couplings": []
+    },
+    {
+      "id": "hp-spool",
+      "kind": "common",
+      "members": ["lpc-rotor", "hpc-rotor", "hpt-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 18000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.02,
+      "couplings": [
+        { "id": "hp-to-lp-gearbox", "kind": "geared", "targetShaft": "lp-spool", "ratio": 3.0, "efficiency": 0.99 }
+      ]
+    }
+  ]
+}

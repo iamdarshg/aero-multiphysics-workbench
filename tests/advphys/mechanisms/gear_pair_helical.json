@@ -1,0 +1,17 @@
+{
+  "gear_id": "fixture-gear-pair",
+  "kind": "helical",
+  "teeth_driving": 20,
+  "teeth_driven": 40,
+  "normal_module_m": 0.002,
+  "face_width_m": 0.02,
+  "pressure_angle_deg": 20.0,
+  "helix_angle_deg": 0.0,
+  "mesh_efficiency": 0.98,
+  "backlash_m": 5e-05,
+  "mesh_stiffness_n_m": 200000000.0,
+  "youngs_modulus_pa": 206000000000.0,
+  "poisson_ratio": 0.3,
+  "allowable_contact_stress_pa": 1200000000.0,
+  "allowable_torque_n_m": 200.0
+}

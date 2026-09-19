@@ -1,0 +1,44 @@
+{
+  "name": "axial-turbine-stage",
+  "gas": {"cpJkgK": 1148.0, "gamma": 1.333, "gasConstantJkgK": 287.05},
+  "inletTotalTemperatureK": 1400.0,
+  "inletTotalPressurePa": 1000000.0,
+  "massFlowKgS": 10.0,
+  "rotationalSpeedRpm": 8000.0,
+  "inletSwirlAngleDeg": 0.0,
+  "dynamicViscosityPaS": 1.8e-5,
+  "rows": [
+    {
+      "rowFamily": "axial_turbine_nozzle",
+      "meanRadiusInM": 0.25,
+      "meanRadiusOutM": 0.25,
+      "meridionalVelocityInMs": 180.0,
+      "meridionalVelocityOutMs": 180.0,
+      "inletMetalAngleDeg": 0.0,
+      "exitMetalAngleDeg": 50.0,
+      "staggerDeg": -30.0,
+      "camberDeg": 50.0,
+      "solidity": 1.2,
+      "chordM": 0.06,
+      "spanM": 0.09,
+      "bladeCount": 30,
+      "tipClearanceM": 0.0001
+    },
+    {
+      "rowFamily": "axial_turbine_rotor",
+      "meanRadiusInM": 0.25,
+      "meanRadiusOutM": 0.25,
+      "meridionalVelocityInMs": 180.0,
+      "meridionalVelocityOutMs": 180.0,
+      "inletMetalAngleDeg": 23.0,
+      "exitMetalAngleDeg": -50.0,
+      "staggerDeg": -25.0,
+      "camberDeg": 50.0,
+      "solidity": 1.3,
+      "chordM": 0.06,
+      "spanM": 0.09,
+      "bladeCount": 45,
+      "tipClearanceM": 0.0001
+    }
+  ]
+}

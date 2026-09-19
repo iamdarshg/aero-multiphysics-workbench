@@ -2385,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "db7a82cc2ee690bb11c3336b280bf9faf2cf230127cb94aaa348c51384614b18"
+          "sha256": "2bcf7377bb7f32b5f489d7fabc469b2aab0e7ffa65cff6f6a6e0883f7a805d86"
         },
         {
           "kind": "file",
@@ -3324,7 +3324,7 @@
           "kind": "file",
           "path": "services/api/pyproject.toml",
           "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
-          "sha256": "9e1417c284d704f8d09a78b647aea439133a9683ead4184f6d3a0ae3affe6cb1"
+          "sha256": "1bb2155af6e2c1263cfca440bd658acd60e5fbf4abeb32f162918061334d84d0"
         },
         {
           "kind": "file",

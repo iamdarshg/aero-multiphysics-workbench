@@ -1,0 +1,12 @@
+{
+  "caseId": "high-altitude-high-mach",
+  "description": "High-altitude, high-Mach air at the ISA tropopause.",
+  "altitudeM": 15000.0,
+  "mach": 2.0,
+  "expect": {
+    "temperatureK": 216.65,
+    "temperatureTolerance": 0.5,
+    "pressurePa": 12044.6,
+    "pressureTolerancePct": 0.5
+  }
+}

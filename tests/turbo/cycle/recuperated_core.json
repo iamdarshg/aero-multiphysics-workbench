@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo04-recuperated-core",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "compressor", "kind": "compressor_stage" },
+    { "id": "recuperator", "kind": "recuperator" },
+    { "id": "combustor", "kind": "combustor" },
+    { "id": "turbine", "kind": "turbine_stage" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" },
+    { "id": "load", "kind": "mechanical_load" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "compressor", "kind": "flow", "station": "1" },
+    { "from": "compressor", "to": "recuperator", "kind": "flow", "station": "2" },
+    { "from": "recuperator", "to": "combustor", "kind": "flow", "station": "3" },
+    { "from": "combustor", "to": "turbine", "kind": "flow", "station": "4" },
+    { "from": "turbine", "to": "nozzle", "kind": "flow", "station": "5" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "6" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 3.0, "unit": "kg/s" }, "totalPressure": { "value": 99000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 396000, "unit": "Pa" }, "totalTemperature": { "value": 500, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 392000, "unit": "Pa" }, "totalTemperature": { "value": 700, "unit": "K" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 372000, "unit": "Pa" }, "totalTemperature": { "value": 1250, "unit": "K" } } },
+    { "id": "5", "state": { "totalPressure": { "value": 140000, "unit": "Pa" }, "totalTemperature": { "value": 900, "unit": "K" } } },
+    { "id": "6", "state": { "totalPressure": { "value": 138000, "unit": "Pa" }, "totalTemperature": { "value": 895, "unit": "K" } } }
+  ],
+  "rows": [
+    { "id": "comp-rotor", "node": "compressor", "role": "work_adding", "frame": "rotating", "shaft": "core-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 31, "family": "axial", "geometryRef": "recup-compressor" },
+    { "id": "turbine-rotor", "node": "turbine", "role": "work_extracting", "frame": "rotating", "shaft": "core-spool", "stationIn": "4", "stationOut": "5", "rowCount": 1, "periodicity": 47, "family": "axial", "geometryRef": "recup-turbine" }
+  ],
+  "shafts": [
+    {
+      "id": "core-spool",
+      "kind": "common",
+      "members": ["comp-rotor", "turbine-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 26000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.02,
+      "couplings": [
+        { "id": "power-offtake", "kind": "mechanical_load", "targetNode": "load", "efficiency": 0.98 }
+      ]
+    }
+  ]
+}

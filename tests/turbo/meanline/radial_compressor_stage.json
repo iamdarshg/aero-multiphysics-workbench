@@ -1,0 +1,46 @@
+{
+  "name": "radial-compressor-stage",
+  "gas": {"cpJkgK": 1005.0, "gamma": 1.4, "gasConstantJkgK": 287.05},
+  "inletTotalTemperatureK": 288.15,
+  "inletTotalPressurePa": 101325.0,
+  "massFlowKgS": 2.0,
+  "rotationalSpeedRpm": 60000.0,
+  "inletSwirlAngleDeg": 0.0,
+  "dynamicViscosityPaS": 1.8e-5,
+  "rows": [
+    {
+      "rowFamily": "radial_compressor_impeller",
+      "meanRadiusInM": 0.05,
+      "meanRadiusOutM": 0.09,
+      "meridionalVelocityInMs": 150.0,
+      "meridionalVelocityOutMs": 120.0,
+      "inletMetalAngleDeg": -64.5,
+      "exitMetalAngleDeg": -35.0,
+      "staggerDeg": 35.0,
+      "camberDeg": 40.0,
+      "solidity": 1.6,
+      "chordM": 0.03,
+      "spanM": 0.02,
+      "bladeCount": 16,
+      "tipClearanceM": 0.0003
+    },
+    {
+      "rowFamily": "radial_compressor_diffuser",
+      "meanRadiusInM": 0.1,
+      "meanRadiusOutM": 0.14,
+      "meridionalVelocityInMs": 100.0,
+      "meridionalVelocityOutMs": 60.0,
+      "inletMetalAngleDeg": 74.9,
+      "exitMetalAngleDeg": 20.0,
+      "staggerDeg": 40.0,
+      "camberDeg": 54.0,
+      "solidity": 1.4,
+      "chordM": 0.03,
+      "spanM": 0.025,
+      "bladeCount": 20,
+      "tipClearanceM": 0.0,
+      "diffuserAreaRatio": 1.8,
+      "recoveryEfficiency": 0.85
+    }
+  ]
+}

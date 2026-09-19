@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "vehicleId": "airframe01-minimal-vehicle",
+  "architectureType": "generic-multirotor",
+  "reference": {
+    "frame": "body",
+    "area": { "value": 0.24, "unit": "m2" },
+    "span": { "value": 600.0, "unit": "mm" },
+    "chord": { "value": 400.0, "unit": "mm" },
+    "aerodynamicReferencePoint": { "x": 50.0, "y": 0.0, "z": 0.0, "unit": "mm", "frame": "body" }
+  },
+  "frames": [
+    { "id": "inertial", "kind": "inertial", "parent": null, "convention": null, "parameters": {} },
+    { "id": "ecef", "kind": "ecef", "parent": "inertial", "convention": null, "parameters": {} },
+    {
+      "id": "ned",
+      "kind": "ned",
+      "parent": "ecef",
+      "convention": "geodetic",
+      "parameters": {
+        "latitude": { "value": 45.0, "unit": "deg" },
+        "longitude": { "value": -122.0, "unit": "deg" }
+      }
+    },
+    {
+      "id": "body",
+      "kind": "body",
+      "parent": "ned",
+      "convention": "euler_321",
+      "parameters": {
+        "yaw": { "value": 10.0, "unit": "deg" },
+        "pitch": { "value": 5.0, "unit": "deg" },
+        "roll": { "value": -2.0, "unit": "deg" }
+      }
+    },
+    {
+      "id": "wind",
+      "kind": "wind",
+      "parent": "body",
+      "convention": "alpha_beta",
+      "parameters": {
+        "alpha": { "value": 5.0, "unit": "deg" },
+        "beta": { "value": 2.0, "unit": "deg" }
+      }
+    }
+  ],
+  "massProperties": {
+    "mass": { "value": 1500.0, "unit": "g" },
+    "cg": { "x": 50.0, "y": 0.0, "z": 10.0, "unit": "mm", "frame": "body" },
+    "inertia": {
+      "ixx": { "value": 0.02, "unit": "kg.m2" },
+      "iyy": { "value": 0.05, "unit": "kg.m2" },
+      "izz": { "value": 0.04, "unit": "kg.m2" },
+      "ixy": { "value": 0.0, "unit": "kg.m2" },
+      "ixz": { "value": 0.001, "unit": "kg.m2" },
+      "iyz": { "value": 0.0, "unit": "kg.m2" },
+      "frame": "body"
+    }
+  },
+  "flight": {
+    "position": { "x": 100000.0, "y": 200000.0, "z": -500000.0, "unit": "mm", "frame": "ned" },
+    "attitude": {
+      "fromFrame": "ned",
+      "toFrame": "body",
+      "convention": "euler_321",
+      "angles": {
+        "yaw": { "value": 10.0, "unit": "deg" },
+        "pitch": { "value": 5.0, "unit": "deg" },
+        "roll": { "value": -2.0, "unit": "deg" }
+      },
+      "quaternion": null
+    },
+    "velocity": { "x": 108.0, "y": 0.0, "z": 0.0, "unit": "km/h", "frame": "body" },
+    "angularRates": { "x": 0.1, "y": 0.0, "z": -0.05, "unit": "rad/s", "frame": "body" },
+    "flight": {
+      "altitude": { "value": 500000.0, "unit": "mm" },
+      "airspeed": {
+        "calibrated": null,
+        "equivalent": { "value": 108.0, "unit": "km/h" },
+        "true": { "value": 108.0, "unit": "km/h" }
+      },
+      "mach": { "value": 0.088159, "unit": "dimensionless" },
+      "dynamicPressure": { "value": 540.0, "unit": "Pa" },
+      "angleOfAttack": { "value": 5.0, "unit": "deg" },
+      "sideslip": { "value": 2.0, "unit": "deg" },
+      "loadFactor": { "value": 1.0, "unit": "dimensionless" },
+      "reynolds": { "value": 2000000.0, "unit": "dimensionless" }
+    },
+    "atmosphere": {
+      "model": "isa",
+      "referenceAltitude": { "value": 0.0, "unit": "m" },
+      "density": { "value": 1.2, "unit": "kg/m3" },
+      "temperature": { "value": 288.15, "unit": "K" },
+      "pressure": { "value": 101325.0, "unit": "Pa" },
+      "speedOfSound": { "value": 340.29, "unit": "m/s" },
+      "gasConstant": { "value": 287.05, "unit": "J/(kg.K)" },
+      "gravity": { "value": 9.80665, "unit": "m/s2" }
+    }
+  },
+  "controls": {
+    "surfaceDeflections": {
+      "elevator": { "value": 5.0, "unit": "deg" },
+      "aileron": { "value": -2.0, "unit": "deg" },
+      "rudder": { "value": 0.0, "unit": "deg" }
+    },
+    "throttle": { "value": 0.65, "unit": "dimensionless" },
+    "rpm": { "value": 50.0, "unit": "rev/s" },
+    "collective": { "value": 0.0, "unit": "deg" },
+    "cyclic": {
+      "longitudinal": { "value": 1.0, "unit": "deg" },
+      "lateral": { "value": 0.5, "unit": "deg" }
+    },
+    "tilt": {
+      "nacelle": { "value": -10.0, "unit": "deg" }
+    }
+  },
+  "loads": {
+    "force": { "x": 12.0, "y": 0.0, "z": -4.0, "unit": "N", "frame": "wind" },
+    "moment": { "x": 0.1, "y": 0.5, "z": 0.02, "unit": "N.m", "frame": "body" },
+    "referencePoint": { "x": 50.0, "y": 0.0, "z": 0.0, "unit": "mm", "frame": "body" },
+    "axesFrame": "body",
+    "signConvention": "body_axes_aerodynamic"
+  }
+}

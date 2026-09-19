@@ -1,0 +1,17 @@
+{
+  "caseId": "hot-combustion-products",
+  "description": "Frozen stoichiometric methane/air combustion products at turbine inlet conditions.",
+  "products": {
+    "co2": 0.09506,
+    "h2o": 0.19011,
+    "n2": 0.71483
+  },
+  "state": {
+    "temperatureK": 1800.0,
+    "pressurePa": 300000.0
+  },
+  "expect": {
+    "source": "analytical",
+    "fidelity": "frozen_combustion_gas"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "designation": "generic-6206",
+  "dynamic_load_rating_n": 30000.0,
+  "static_load_rating_n": 15000.0,
+  "limiting_speed_rpm": 10000.0,
+  "dn_limit_mm_rpm": 200000.0,
+  "life_exponent": 3.0,
+  "friction_coefficient": 0.0015,
+  "radial_stiffness_n_m": 100000000.0,
+  "axial_stiffness_n_m": 60000000.0,
+  "damping_n_s_m": 10000.0
+}

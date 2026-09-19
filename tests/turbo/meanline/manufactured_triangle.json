@@ -1,0 +1,14 @@
+{
+  "station_id": "manufactured-rotor-outlet",
+  "blade_speed_m_s": 300.0,
+  "meridional_velocity_m_s": 150.0,
+  "absolute_angle_deg": 45.0,
+  "expected": {
+    "tangential_velocity_m_s": 150.0,
+    "relative_tangential_velocity_m_s": -150.0,
+    "absolute_velocity_m_s": 212.13203435596427,
+    "relative_velocity_m_s": 212.13203435596427,
+    "relative_angle_deg": -45.0,
+    "flow_coefficient": 0.5
+  }
+}

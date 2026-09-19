@@ -1,0 +1,9 @@
+{
+  "name": "iso-vg46",
+  "kinematic_viscosity_40c_m2_s": 4.6e-05,
+  "kinematic_viscosity_100c_m2_s": 6.8e-06,
+  "density_kg_m3": 872.0,
+  "specific_heat_j_kg_k": 1900.0,
+  "thermal_conductivity_w_m_k": 0.14,
+  "pressure_viscosity_coefficient_inv_pa": 2.0e-08
+}

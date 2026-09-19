@@ -1,0 +1,143 @@
+"""Generic meanline / throughflow preliminary design for rotating gas machinery.
+
+Public API (downstream issues import these exact paths):
+
+    from aeroworkbench_turbomachinery.meanline import (
+        IdealGas,
+        MeanlineState,
+        MeanlineRow,
+        StageDesign,
+        RowFamilyModel,
+        ROW_FAMILY_MODELS,
+        VelocityTriangle,
+        solve_triangle,
+        triangle_from_angle,
+        triangle_from_relative_angle,
+        euler_work_j_kg,
+        degree_of_reaction,
+        LossBreakdown,
+        RowResult,
+        ThroughflowResult,
+        solve_throughflow,
+        ScreeningLimits,
+        LimitIndicator,
+        screen_row,
+        GeometrySynthesis,
+        RowGeometryTarget,
+        synthesize_geometry,
+        stage_from_payload,
+        solve_meanline,
+        native_meanline_status,
+        NativeMeanlineStatus,
+        meanline_scalars,
+        finite_difference_jacobian,
+        build_openmdao_component,
+    )
+"""
+
+from .correlations import (
+    LOSS_CORRELATIONS,
+    CorrelationSpec,
+    CorrelationValue,
+    ainley_loading_parameter,
+    ainley_mathieson_profile_loss,
+    ainley_mathieson_secondary_loss,
+    carter_deviation_deg,
+    carter_secondary_loss,
+    conrad_incidence_loss,
+    diffuser_loss_coefficient,
+    dunham_came_tip_clearance_loss,
+    lieblein_blockage,
+    lieblein_diffusion_factor,
+    lieblein_profile_loss,
+    slip_factor,
+)
+from .design import (
+    ROW_FAMILY_MODELS,
+    MeanlineRow,
+    RowFamilyModel,
+    StageDesign,
+    stage_from_payload,
+)
+from .errors import (
+    MeanlineCapabilityUnavailable,
+    MeanlineCorrelationError,
+    MeanlineError,
+    MeanlineInputError,
+)
+from .geometry import GeometrySynthesis, RowGeometryTarget, synthesize_geometry
+from .limits import LimitIndicator, ScreeningLimits, screen_row
+from .native import NativeMeanlineStatus, native_meanline_status, solve_meanline
+from .participant import (
+    DEFAULT_MEANLINE_INPUTS,
+    build_openmdao_component,
+    finite_difference_jacobian,
+    meanline_scalars,
+)
+from .properties import IdealGas, MeanlineState, mach_number, reynolds_number, state_from_total
+from .throughflow import LossBreakdown, RowResult, ThroughflowResult, solve_throughflow
+from .triangles import (
+    VelocityTriangle,
+    degree_of_reaction,
+    euler_work_j_kg,
+    solve_triangle,
+    triangle_from_angle,
+    triangle_from_relative_angle,
+)
+from .validity import Validity
+
+__all__ = [
+    "Validity",
+    "MeanlineError",
+    "MeanlineInputError",
+    "MeanlineCorrelationError",
+    "MeanlineCapabilityUnavailable",
+    "IdealGas",
+    "MeanlineState",
+    "state_from_total",
+    "mach_number",
+    "reynolds_number",
+    "VelocityTriangle",
+    "solve_triangle",
+    "triangle_from_angle",
+    "triangle_from_relative_angle",
+    "euler_work_j_kg",
+    "degree_of_reaction",
+    "CorrelationSpec",
+    "CorrelationValue",
+    "LOSS_CORRELATIONS",
+    "carter_deviation_deg",
+    "lieblein_diffusion_factor",
+    "lieblein_profile_loss",
+    "ainley_loading_parameter",
+    "ainley_mathieson_secondary_loss",
+    "carter_secondary_loss",
+    "dunham_came_tip_clearance_loss",
+    "conrad_incidence_loss",
+    "lieblein_blockage",
+    "ainley_mathieson_profile_loss",
+    "slip_factor",
+    "diffuser_loss_coefficient",
+    "RowFamilyModel",
+    "ROW_FAMILY_MODELS",
+    "MeanlineRow",
+    "StageDesign",
+    "stage_from_payload",
+    "LossBreakdown",
+    "RowResult",
+    "ThroughflowResult",
+    "solve_throughflow",
+    "LimitIndicator",
+    "ScreeningLimits",
+    "screen_row",
+    "RowGeometryTarget",
+    "GeometrySynthesis",
+    "synthesize_geometry",
+    "NativeMeanlineStatus",
+    "native_meanline_status",
+    "solve_meanline",
+    "DEFAULT_MEANLINE_INPUTS",
+    "meanline_scalars",
+    "finite_difference_jacobian",
+    "build_openmdao_component",
+]

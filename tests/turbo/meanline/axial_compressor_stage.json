@@ -1,0 +1,44 @@
+{
+  "name": "axial-compressor-stage",
+  "gas": {"cpJkgK": 1005.0, "gamma": 1.4, "gasConstantJkgK": 287.05},
+  "inletTotalTemperatureK": 288.15,
+  "inletTotalPressurePa": 101325.0,
+  "massFlowKgS": 10.0,
+  "rotationalSpeedRpm": 8000.0,
+  "inletSwirlAngleDeg": 0.0,
+  "dynamicViscosityPaS": 1.8e-5,
+  "rows": [
+    {
+      "rowFamily": "axial_compressor_rotor",
+      "meanRadiusInM": 0.25,
+      "meanRadiusOutM": 0.25,
+      "meridionalVelocityInMs": 160.0,
+      "meridionalVelocityOutMs": 160.0,
+      "inletMetalAngleDeg": -52.6,
+      "exitMetalAngleDeg": -45.0,
+      "staggerDeg": 30.0,
+      "camberDeg": 30.0,
+      "solidity": 1.2,
+      "chordM": 0.05,
+      "spanM": 0.08,
+      "bladeCount": 40,
+      "tipClearanceM": 0.0005
+    },
+    {
+      "rowFamily": "axial_compressor_stator",
+      "meanRadiusInM": 0.25,
+      "meanRadiusOutM": 0.25,
+      "meridionalVelocityInMs": 160.0,
+      "meridionalVelocityOutMs": 160.0,
+      "inletMetalAngleDeg": 29.0,
+      "exitMetalAngleDeg": 0.0,
+      "staggerDeg": 20.0,
+      "camberDeg": 28.0,
+      "solidity": 1.3,
+      "chordM": 0.045,
+      "spanM": 0.08,
+      "bladeCount": 50,
+      "tipClearanceM": 0.0
+    }
+  ]
+}

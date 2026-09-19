@@ -1,0 +1,63 @@
+{
+  "hubRadiusMm": 100.0,
+  "shroudRadiusMm": 140.0,
+  "tipClearanceMm": 0.8,
+  "axialLocationMm": 0.0,
+  "bladeCount": 4,
+  "sections": [
+    {
+      "span": 0.0,
+      "radiusMm": 100.0,
+      "chordMm": 24.0,
+      "staggerDeg": 12.0,
+      "camber": { "family": "circular_arc", "camberRatio": 0.04 },
+      "thickness": {
+        "family": "elliptic",
+        "thicknessRatio": 0.1,
+        "maxThicknessLocation": 0.3,
+        "leadingEdgeThicknessRatio": 0.006,
+        "trailingEdgeThicknessRatio": 0.004
+      },
+      "leadingEdgeRadiusMm": 0.6,
+      "trailingEdgeRadiusMm": 0.3,
+      "sweepMm": 0.0,
+      "leanMm": 0.0
+    },
+    {
+      "span": 0.5,
+      "radiusMm": 120.0,
+      "chordMm": 22.0,
+      "staggerDeg": 24.0,
+      "camber": { "family": "circular_arc", "camberRatio": 0.05 },
+      "thickness": {
+        "family": "elliptic",
+        "thicknessRatio": 0.09,
+        "maxThicknessLocation": 0.3,
+        "leadingEdgeThicknessRatio": 0.006,
+        "trailingEdgeThicknessRatio": 0.004
+      },
+      "leadingEdgeRadiusMm": 0.5,
+      "trailingEdgeRadiusMm": 0.25,
+      "sweepMm": 0.4,
+      "leanMm": 0.2
+    },
+    {
+      "span": 1.0,
+      "radiusMm": 140.0,
+      "chordMm": 18.0,
+      "staggerDeg": 38.0,
+      "camber": { "family": "circular_arc", "camberRatio": 0.06 },
+      "thickness": {
+        "family": "elliptic",
+        "thicknessRatio": 0.07,
+        "maxThicknessLocation": 0.3,
+        "leadingEdgeThicknessRatio": 0.006,
+        "trailingEdgeThicknessRatio": 0.004
+      },
+      "leadingEdgeRadiusMm": 0.4,
+      "trailingEdgeRadiusMm": 0.2,
+      "sweepMm": 0.8,
+      "leanMm": 0.4
+    }
+  ]
+}

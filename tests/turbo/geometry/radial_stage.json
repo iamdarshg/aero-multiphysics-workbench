@@ -1,0 +1,78 @@
+{
+  "bladeCount": 4,
+  "splitterCount": 2,
+  "tipClearanceMm": 0.3,
+  "hubContour": {
+    "name": "hub",
+    "points": [[0.0, 20.0], [10.0, 45.0], [25.0, 90.0]]
+  },
+  "shroudContour": {
+    "name": "shroud",
+    "points": [[0.0, 55.0], [10.0, 80.0], [25.0, 120.0]]
+  },
+  "sections": [
+    {
+      "span": 0.0,
+      "radiusMm": 40.0,
+      "chordMm": 18.0,
+      "staggerDeg": 25.0,
+      "camber": { "family": "circular_arc", "camberRatio": 0.08 },
+      "thickness": {
+        "family": "elliptic",
+        "thicknessRatio": 0.12,
+        "maxThicknessLocation": 0.3,
+        "leadingEdgeThicknessRatio": 0.008,
+        "trailingEdgeThicknessRatio": 0.006
+      },
+      "leadingEdgeRadiusMm": 0.5,
+      "trailingEdgeRadiusMm": 0.3,
+      "sweepMm": 0.0,
+      "leanMm": 0.0
+    },
+    {
+      "span": 1.0,
+      "radiusMm": 60.0,
+      "chordMm": 14.0,
+      "staggerDeg": 55.0,
+      "camber": { "family": "circular_arc", "camberRatio": 0.1 },
+      "thickness": {
+        "family": "elliptic",
+        "thicknessRatio": 0.09,
+        "maxThicknessLocation": 0.3,
+        "leadingEdgeThicknessRatio": 0.008,
+        "trailingEdgeThicknessRatio": 0.006
+      },
+      "leadingEdgeRadiusMm": 0.4,
+      "trailingEdgeRadiusMm": 0.25,
+      "sweepMm": 0.5,
+      "leanMm": 0.3
+    }
+  ],
+  "diffuser": {
+    "hubContour": {
+      "name": "diffuser-hub",
+      "points": [[0.0, 90.0], [20.0, 150.0]]
+    },
+    "shroudContour": {
+      "name": "diffuser-shroud",
+      "points": [[0.0, 120.0], [20.0, 190.0]]
+    }
+  },
+  "returnChannel": {
+    "hubContour": {
+      "name": "return-hub",
+      "points": [[0.0, 150.0], [10.0, 150.0], [20.0, 90.0]]
+    },
+    "shroudContour": {
+      "name": "return-shroud",
+      "points": [[0.0, 190.0], [10.0, 190.0], [20.0, 130.0]]
+    }
+  },
+  "volute": {
+    "interfaceId": "volute",
+    "inletRadiusMm": 150.0,
+    "inletWidthMm": 40.0,
+    "outletDiameterMm": 200.0,
+    "tongueAngleDeg": 25.0
+  }
+}

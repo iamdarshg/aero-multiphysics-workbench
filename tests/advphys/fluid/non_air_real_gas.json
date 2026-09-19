@@ -1,0 +1,17 @@
+{
+  "caseId": "non-air-real-gas",
+  "description": "Compressed carbon dioxide that must use a native real-gas backend.",
+  "species": "co2",
+  "state": {
+    "temperatureK": 300.0,
+    "pressurePa": 5000000.0
+  },
+  "expect": {
+    "source": "native_solver",
+    "fidelity": "real_gas",
+    "backend": "coolprop",
+    "compressibilityFactor": 0.687,
+    "compressibilityTolerance": 0.05,
+    "failClosedWhenBackendAbsent": true
+  }
+}

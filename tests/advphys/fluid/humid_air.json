@@ -1,0 +1,21 @@
+{
+  "caseId": "humid-air",
+  "description": "Humid air at 50 percent relative humidity, room conditions.",
+  "dryAir": {
+    "n2": 0.78084,
+    "o2": 0.209476,
+    "ar": 0.00934,
+    "co2": 0.000412
+  },
+  "state": {
+    "temperatureK": 298.15,
+    "pressurePa": 101325.0,
+    "relativeHumidity": 0.5
+  },
+  "expect": {
+    "waterVapourMoleFraction": 0.0156,
+    "waterVapourTolerance": 0.0005,
+    "saturationPressurePa": 3161.9,
+    "saturationTolerancePa": 4.0
+  }
+}

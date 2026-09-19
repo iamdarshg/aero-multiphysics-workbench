@@ -1,0 +1,46 @@
+{
+  "caseId": "temperature-dependent-mixture",
+  "description": "Deterministic synthetic polynomial species; proves the temperature-dependent ideal-mixture path without claiming physical data.",
+  "species": [
+    {
+      "speciesId": "syn-a",
+      "name": "Synthetic species A (fixture)",
+      "molarMassKgPerMol": 0.02,
+      "polynomials": [
+        {
+          "coefficients": [3.2, 0.0005],
+          "temperatureMinK": 200.0,
+          "temperatureMaxK": 1200.0,
+          "referenceTemperatureK": 298.15
+        }
+      ],
+      "source": "advphys01 deterministic fixture (synthetic)"
+    },
+    {
+      "speciesId": "syn-b",
+      "name": "Synthetic species B (fixture)",
+      "molarMassKgPerMol": 0.04,
+      "polynomials": [
+        {
+          "coefficients": [3.6, -0.0002],
+          "temperatureMinK": 200.0,
+          "temperatureMaxK": 1200.0,
+          "referenceTemperatureK": 298.15
+        }
+      ],
+      "source": "advphys01 deterministic fixture (synthetic)"
+    }
+  ],
+  "composition": {
+    "syn-a": 0.7,
+    "syn-b": 0.3
+  },
+  "state": {
+    "temperatureK": 900.0,
+    "pressurePa": 200000.0
+  },
+  "expect": {
+    "fidelity": "temperature_dependent_ideal_mixture",
+    "outOfRangeTemperatureK": 1500.0
+  }
+}

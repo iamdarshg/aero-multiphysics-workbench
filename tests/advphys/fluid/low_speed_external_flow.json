@@ -1,0 +1,20 @@
+{
+  "caseId": "low-speed-external-flow",
+  "description": "Low-speed external aerodynamics at sea-level ISA air.",
+  "fluid": "dry-air",
+  "state": {
+    "temperatureK": 288.15,
+    "pressurePa": 101325.0,
+    "velocityMS": 30.0
+  },
+  "expect": {
+    "source": "analytical",
+    "fidelity": "constant_ideal_gas",
+    "gamma": 1.4,
+    "gammaTolerance": 0.01,
+    "speedOfSoundMS": 340.29,
+    "speedToleranceMS": 0.6,
+    "densityKgM3": 1.225,
+    "densityTolerance": 0.005
+  }
+}
