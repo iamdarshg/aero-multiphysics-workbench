@@ -1,0 +1,1353 @@
+=== BLOCKER RUN START 2026-09-19T17:21:44Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T17:21:45Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T17:22:01Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+Cloning into '/opt/repo'...
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T17:22:03Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T17:22:04Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "interpreter": null,
+  "attempts": [
+    "discovery failed:ModuleNotFoundError:No module named 'precice'"
+  ]
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T17:25:22Z ===
+install rc=0
+[2026-09-19T17:25:22Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00279973s, CPU 0.002799s)
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.836438 (nodes removed 0 0)
+Info    : 3D refinement terminated (212 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 260 tetrahedra created in 1.8322e-05 sec. (14190590 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.0100488s, CPU 0.009997s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.697528:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         7 elements
+Info    : 0.60 < quality < 0.70 :       128 elements
+Info    : 0.70 < quality < 0.80 :        60 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.56105 / average = 0.729988 (Wall 0.000306177s, CPU 0.000306s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         7 elements
+Info    : 0.60 < quality < 0.70 :       121 elements
+Info    : 0.70 < quality < 0.80 :        67 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.693132:
+Info    : 0.00 < quality < 0.10 :         6 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       125 elements
+Info    : 0.70 < quality < 0.80 :        63 elements
+Info    : 0.80 < quality < 0.90 :        16 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 14 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.730874 (Wall 0.000332146s, CPU 0.000339s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        71 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Done optimizing mesh (Wall 0.00127349s, CPU 0.001244s)
+Info    : 212 nodes 1028 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+[native] job 2698753f01a348b58fa52563763ddf35 FAILED PARSER_FAILED:result.dat has no Temperature max row
+[native] job ac3687c4dc4e41a1b7b5b091ce4858c2 FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stderr.log: PRECICE_NATIVE_BLOCKED:participant exit codes A=1 B=1
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T17:25:39Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T17:25:40Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T17:25:42Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T17:39:49Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T17:39:49Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T17:40:03Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T17:40:06Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T17:40:07Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T17:42:23Z ===
+install rc=0
+[2026-09-19T17:42:23Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00316605s, CPU 0.003165s)
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.836438 (nodes removed 0 0)
+Info    : 3D refinement terminated (212 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 260 tetrahedra created in 2.2082e-05 sec. (11774295 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.010549s, CPU 0.009516s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.697528:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         7 elements
+Info    : 0.60 < quality < 0.70 :       128 elements
+Info    : 0.70 < quality < 0.80 :        60 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.56105 / average = 0.729988 (Wall 0.000286369s, CPU 0.000287s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         7 elements
+Info    : 0.60 < quality < 0.70 :       121 elements
+Info    : 0.70 < quality < 0.80 :        67 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.693132:
+Info    : 0.00 < quality < 0.10 :         6 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       125 elements
+Info    : 0.70 < quality < 0.80 :        63 elements
+Info    : 0.80 < quality < 0.90 :        16 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 14 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.730874 (Wall 0.000323731s, CPU 0.000325s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        71 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Done optimizing mesh (Wall 0.00132953s, CPU 0.0013s)
+Info    : 212 nodes 1028 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+[native] job fb6243c101864fd1b0a866cd52af9ddb FAILED PARSER_FAILED:result.dat has no Temperature max row
+[native] job 792ccdcca95b477f9b28c1f006a93a24 FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stderr.log: PRECICE_NATIVE_BLOCKED:participant exit codes A=1 B=1
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T17:43:01Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T17:43:02Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T17:43:05Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T18:15:09Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T18:15:09Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T18:15:23Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T18:15:24Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T18:15:25Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:17:52Z ===
+install rc=0
+[2026-09-19T18:17:52Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.9736e-05 sec. (17520850 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00947781s, CPU 0.009476s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000340521s, CPU 0.00034s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000423948s, CPU 0.000425s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000578097s, CPU 0.000579s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00165351s, CPU 0.001654s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+[native] job ec9b5859065f44c58a107e5297632344 FAILED RESULT_INVALID:missing expected artifacts:result.json
+[native] job 773b2ef73fdc44738157a5e0cd38bc81 FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stderr.log: PRECICE_NATIVE_BLOCKED:participant exit codes A=1 B=1
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T18:18:33Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T18:18:34Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T18:18:37Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T18:27:07Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T18:27:07Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T18:27:20Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T18:27:21Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T18:27:22Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:29:49Z ===
+install rc=0
+[2026-09-19T18:29:49Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    : Done reconstructing mesh (Wall 0.00576199s, CPU 0.005759s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.4074e-05 sec. (21641605 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00954428s, CPU 0.009543s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000262713s, CPU 0.000262s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000434332s, CPU 0.000399s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000566492s, CPU 0.000539s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00146834s, CPU 0.001441s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+[native] job 4c9d32e1b8fa406dbed42652c5b88eee FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stderr.log: PRECICE_NATIVE_BLOCKED:participant exit codes A=1 B=1
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T18:30:29Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T18:30:29Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T18:30:32Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T18:39:08Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T18:39:08Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T18:39:21Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T18:39:22Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T18:39:23Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:41:44Z ===
+install rc=0
+[2026-09-19T18:41:44Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    : Done reconstructing mesh (Wall 0.00614572s, CPU 0.005224s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.3947e-05 sec. (21756378 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00980491s, CPU 0.008796s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000262289s, CPU 0.000263s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000419128s, CPU 0.000419s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000534856s, CPU 0.000534s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00141418s, CPU 0.001414s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+[native] job c17e04a0addd4915a7ea45324d051272 FAILED QUALITY_GATE_FAILED:native implicit coupling residual 0.000e+00 and conservation 1.429e-01 within 1e-06
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T18:42:23Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T18:42:24Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T18:42:27Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T18:50:02Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T18:50:02Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T18:50:15Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T18:50:16Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T18:50:17Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:52:42Z ===
+install rc=0
+[2026-09-19T18:52:42Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.0183935s, CPU 0.013875s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 5.2689e-05 sec. (9888211 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.0292938s, CPU 0.023382s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.00036118s, CPU 0.000361s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.00161354s, CPU 0.001613s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.00217197s, CPU 0.002166s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00380523s, CPU 0.003769s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T18:53:26Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T18:53:27Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T18:53:30Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T19:03:51Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T19:03:51Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T19:04:10Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T19:04:11Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T19:04:12Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T19:06:40Z ===
+install rc=0
+[2026-09-19T19:06:40Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00595007s, CPU 0.005912s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.4785e-05 sec. (21020778 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00960598s, CPU 0.009496s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000270739s, CPU 0.000271s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000454978s, CPU 0.000455s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000584281s, CPU 0.000585s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00150408s, CPU 0.001504s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T19:07:23Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T19:07:23Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T19:07:26Z overall=0 ===
+gs_put DONE http=200
+gs_put blocker-startup.log http=200
+=== BLOCKER RUN START 2026-09-19T19:13:23Z ===
+token 1024 chars; bucket=aero-governed-blockers-988177451335-20260919 commit=679dcccdb10c83809955ffca552e7f9fd0930627
+[2026-09-19T19:13:23Z] STEP 1: token acquired
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apt prerequisites ---
+[2026-09-19T19:13:37Z] STEP 2: apt prerequisites
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- clone https://github.com/iamdarshg/aero-multiphysics-workbench.git @ 679dcccdb10c83809955ffca552e7f9fd0930627 ---
+From https://github.com/iamdarshg/aero-multiphysics-workbench
+ * branch            679dcccdb10c83809955ffca552e7f9fd0930627 -> FETCH_HEAD
+HEAD is now at 679dccc test: governed blocker-run diagnostics on current main
+[2026-09-19T19:13:39Z] STEP 3: repo checkout
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- apply fix patch fixes.patch ---
+patch applied
+[2026-09-19T19:13:39Z] STEP 4: patch applied
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- install (pinned uv env + native prefixes) ---
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T19:16:11Z ===
+install rc=0
+[2026-09-19T19:16:11Z] STEP 5: install finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- governed blocker driver ---
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00583713s, CPU 0.005807s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.4047e-05 sec. (21665904 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00949463s, CPU 0.009466s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000254269s, CPU 0.000254s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000420258s, CPU 0.000421s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000534721s, CPU 0.000535s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00141214s, CPU 0.001412s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run
+driver rc=0
+[2026-09-19T19:16:54Z] STEP 6: driver finished rc=0
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- package evidence ---
+[2026-09-19T19:16:55Z] STEP 7: evidence packaged
+gs_put heartbeat.txt http=200
+gs_put blocker-startup.log http=200
+--- upload ---
+gs_put evidence.tgz http=200
+gs_put proofs.tgz http=200
+gs_put versions.json http=200
+gs_put capabilities.json http=200
+gs_put precice-interpreters.json http=200
+gs_put governed-install.log http=200
+gs_put governed-install.done http=200
+gs_put repo_head.txt http=200
+gs_put blocker-startup.log http=200
+gs_put heartbeat.txt http=200
+=== BLOCKER RUN END 2026-09-19T19:16:57Z overall=0 ===
+gs_put DONE http=200

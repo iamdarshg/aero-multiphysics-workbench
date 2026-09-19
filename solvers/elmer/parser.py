@@ -56,6 +56,110 @@ def _parse_operators(text: str) -> dict[tuple[str, str], float]:
     return values
 
 
+# Elmer's SaveScalars writes an unlabeled numeric row to ``<file>`` and the
+# column names to ``<file>.names``. This is the fixed operator order declared
+# by the native thermal SIF's global SaveScalars solver.
+_GLOBAL_SCALAR_OPERATORS: tuple[tuple[str, str], ...] = (
+    ("Temperature", "max"),
+    ("Temperature", "min"),
+    ("Temperature", "mean"),
+    ("Heat Flux", "max"),
+    ("Heat Flux", "min"),
+)
+_BOUNDARY_SCALAR_OPERATORS: tuple[tuple[str, str], ...] = (
+    ("Temperature", "diffusive flux"),
+)
+
+
+def _last_data_row(text: str) -> list[float]:
+    """Last whitespace/comma separated numeric row in a SaveScalars data file."""
+
+    last: list[float] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        numbers: list[float] = []
+        for token in re.split(r"[,\s]+", stripped):
+            try:
+                numbers.append(float(token.replace("D", "E").replace("d", "e")))
+            except ValueError:
+                continue
+        if numbers:
+            last = numbers
+    return last
+
+
+def _canonical_variable(label: str) -> str:
+    lowered = label.lower()
+    if "temperature" in lowered:
+        return "Temperature"
+    if "flux" in lowered:
+        return "Heat Flux"
+    return label
+
+
+def _parse_names(case_dir: Path, name: str) -> list[tuple[str, str | None]]:
+    """``(variable, operator)`` per column from an Elmer ``<file>.names`` file.
+
+    Elmer lines look like ``   1: max: temperature`` or
+    ``   1: diffusive flux: temperature over bc 1``. Metadata preamble lines
+    (no leading column index) are ignored.
+    """
+
+    path = case_dir / f"{name}.names"
+    if not path.is_file():
+        return []
+    entries: list[tuple[str, str | None]] = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        match = re.match(r"^\s*\d+\s*:\s*(.*)$", line)
+        if match is None:
+            continue
+        rest = match.group(1).strip()
+        operator: str | None = None
+        variable = rest
+        if ":" in rest:
+            head, _, tail = rest.partition(":")
+            operator = head.strip().lower() or None
+            variable = tail.strip()
+        entries.append((_canonical_variable(variable), operator))
+    return entries
+
+
+def _parse_save_scalars(
+    case_dir: Path,
+    name: str,
+    default_operators: tuple[tuple[str, str], ...],
+) -> dict[tuple[str, str], float]:
+    """Parse a SaveScalars data file, labeled or bare-with-.names."""
+
+    path = case_dir / name
+    if not path.is_file():
+        return {}
+    text = path.read_text(encoding="utf-8", errors="replace")
+    labeled = _parse_operators(text)
+    if labeled:
+        return labeled
+    row = _last_data_row(text)
+    if not row:
+        return {}
+    names = _parse_names(case_dir, name)
+    values: dict[tuple[str, str], float] = {}
+    for index, value in enumerate(row):
+        variable: str | None = None
+        operator: str | None = None
+        if index < len(names):
+            variable, operator = names[index]
+        if variable is None:
+            variable = default_operators[index][0] if index < len(default_operators) else None
+        if operator in (None, "res") and index < len(default_operators):
+            operator = default_operators[index][1]
+        if variable is None or operator is None:
+            continue
+        values[(variable, operator)] = value
+    return values
+
+
 def _load_case_manifest(case_dir: Path) -> dict[str, object] | None:
     target = case_dir / "case.json"
     if not target.is_file():
@@ -114,7 +218,7 @@ def _native_scalars(case_dir: Path, case_manifest: Mapping[str, object]) -> dict
     table_path = case_dir / "result.dat"
     if not table_path.is_file():
         raise _fail("result.dat is missing")
-    global_values = _parse_operators(table_path.read_text(encoding="utf-8"))
+    global_values = _parse_save_scalars(case_dir, "result.dat", _GLOBAL_SCALAR_OPERATORS)
     if ("Temperature", "max") not in global_values:
         raise _fail("result.dat has no Temperature max row")
 
@@ -151,7 +255,9 @@ def _native_scalars(case_dir: Path, case_manifest: Mapping[str, object]) -> dict
         # have net boundary heat flow ~0 relative to the incident flow.
         boundary_fluxes: list[float] = []
         for boundary_file in sorted(case_dir.glob("boundary_*.dat")):
-            values = _parse_operators(boundary_file.read_text(encoding="utf-8"))
+            values = _parse_save_scalars(
+                case_dir, boundary_file.name, _BOUNDARY_SCALAR_OPERATORS
+            )
             flux = values.get(("Temperature", "diffusive flux"))
             if flux is None:
                 flux = values.get(("Temperature", "flux"))

@@ -329,6 +329,26 @@ def _render_governed_comm(request: StructuralRequest) -> str:
             )
         lines += ["    ),", ");", ""]
 
+    nodal_surfaces = sorted(
+        {
+            str(load.parameters["group"])
+            for load in request.loads
+            if load.kind == "nodal_force" and load.group_kind == "surface"
+        }
+    )
+    if nodal_surfaces:
+        lines += [
+            "mesh = DEFI_GROUP(",
+            "    reuse=mesh,",
+            "    MAILLAGE=mesh,",
+            "    CREA_GROUP_NO=(",
+        ]
+        for group in nodal_surfaces:
+            # A node group created from an element group keeps the element
+            # group's name (Code_Aster forbids naming it here).
+            lines.append(f"        _F(GROUP_MA=('{group}',)),")
+        lines += ["    ),", ");", ""]
+
     if request.contact is not None:
         lines += [
             "contact = DEFI_CONTACT(",
@@ -391,9 +411,23 @@ def _render_governed_comm(request: StructuralRequest) -> str:
         result_name = "result"
     elif analysis == "modal":
         block = [
-            "modes = CALC_MODES(",
+            "rigi = ASSEMBLAGE(",
             "    MODELE=model,",
             "    CHAM_MATER=fieldmat,",
+            "    NUME_DDL=CO('nume'),",
+            "    MATR_ASSE=(_F(MATRICE=CO('RIGI'), OPTION='RIGI_MECA'),),",
+            ");",
+            "",
+            "mass = ASSEMBLAGE(",
+            "    MODELE=model,",
+            "    CHAM_MATER=fieldmat,",
+            "    NUME_DDL=nume,",
+            "    MATR_ASSE=(_F(MATRICE=CO('MASS'), OPTION='MASS_MECA'),),",
+            ");",
+            "",
+            "modes = CALC_MODES(",
+            "    MATR_RIGI=rigi,",
+            "    MATR_MASS=mass,",
         ]
         if request.prestress:
             block.append("    PREC_CONTRAINTE=prestress_field,")
@@ -453,9 +487,13 @@ def _render_governed_comm(request: StructuralRequest) -> str:
 
     lines += [
         "IMPR_RESU(",
-        "    FORMAT='TABLEAU',",
+        "    FORMAT='RESULTAT',",
         "    UNITE=80,",
-        f"    RESU=_F(RESULTAT={result_name}),",
+        "    RESU=_F(",
+        f"        RESULTAT={result_name},",
+        "        NOM_CHAM='DEPL',",
+        "        FORM_TABL='OUI',",
+        "    ),",
         ");",
         "",
         "FIN();",
@@ -524,14 +562,14 @@ def _render_constraint(variable: str, constraint: ConstraintIngestion) -> list[s
 def _render_load(variable: str, load: LoadIngestion, request: StructuralRequest) -> list[str]:
     params = load.parameters
     if load.kind == "nodal_force":
-        group_kw = "GROUP_NO" if load.group_kind == "node" else "GROUP_MA"
+        group = str(params["group"])
         components = ", ".join(
             f"{component}={value:.6e}" for component, value in sorted(params["components"].items())
         )
         return [
             f"{variable} = AFFE_CHAR_MECA(",
             "    MODELE=model,",
-            f"    FORCE_NODALE=_F({group_kw}='{params['group']}', {components}),",
+            f"    FORCE_NODALE=_F(GROUP_NO='{group}', {components}),",
             ");",
             "",
         ]
@@ -794,9 +832,30 @@ def parse_comm_result(case_dir: Path) -> ParseReceipt:
     try:
         values = _parse_tableau(table_text)
     except ParticipantError:
-        values = _parse_generic_tableau(table_text)
+        try:
+            values = _parse_resultat_listing(table_text)
+        except ParticipantError:
+            values = _parse_generic_tableau(table_text)
+    if "FREQUENCY_HZ" not in values:
+        modal_frequencies = _parse_modal_log_frequencies(log_text)
+        if modal_frequencies:
+            values["FREQUENCY_HZ"] = modal_frequencies
     scalars, units, detail = _compose_scalars(values)
     scalars.update(_solver_state_scalars(case_dir, scalars))
+    (case_dir / "result.json").write_text(
+        json.dumps(
+            {
+                "participant_id": "code-aster",
+                "parser": "code_aster.comm:parse_comm_result",
+                "detail": detail,
+                "scalars": dict(sorted(scalars.items())),
+                "units": dict(sorted(units.items())),
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
     return ParseReceipt(
         participant_id="code-aster",
         parser="code_aster.comm:parse_comm_result",
@@ -1029,6 +1088,141 @@ def _parse_generic_tableau(text: str) -> dict[str, list[float]]:
             NativeErrorCode.PARSER_FAILED, "result table has no recognised quantity"
         )
     return values
+
+
+def _parse_modal_log_frequencies(log_text: str) -> list[float]:
+    """Native modal-solver frequency table from the message/log listing.
+
+    ``CALC_MODES`` prints a table ``numéro fréquence (HZ) norme d'erreur``.
+    Only rows inside that table are read; no value is invented.
+    """
+
+    frequencies: list[float] = []
+    in_table = False
+    for line in log_text.splitlines():
+        lowered = line.lower()
+        if ("fréquence" in lowered or "frequence" in lowered) and (
+            "norme" in lowered or "error" in lowered
+        ):
+            in_table = True
+            continue
+        if not in_table:
+            continue
+        stripped = line.strip()
+        if not stripped:
+            if frequencies:
+                break
+            continue
+        tokens = stripped.split()
+        if len(tokens) < 2:
+            continue
+        if not tokens[0].isdigit():
+            if frequencies:
+                break
+            in_table = False
+            continue
+        value = _parse_number(tokens[1])
+        if value is None:
+            break
+        frequencies.append(value)
+    return frequencies
+
+
+def _merge_sign_tokens(tokens: list[str]) -> list[str]:
+    """Join a separated sign (``- 2.63E-06``) with the following number."""
+
+    merged: list[str] = []
+    index = 0
+    while index < len(tokens):
+        token = tokens[index]
+        if token in {"-", "+"} and index + 1 < len(tokens):
+            merged.append(token + tokens[index + 1])
+            index += 2
+            continue
+        merged.append(token)
+        index += 1
+    return merged
+
+
+def _parse_resultat_listing(text: str) -> dict[str, list[float]]:
+    """Parse the native ``IMPR_RESU(FORMAT='RESULTAT')`` listing.
+
+    The listing prints one block per field/order with a ``NODE DX DY DZ``
+    header followed by numeric rows (blank lines and separated negative signs
+    are tolerated); modal results print a ``FREQUENCY ... NORM`` table. Only
+    recognised quantities are returned; an unparseable listing raises.
+    """
+
+    displacements: list[float] = []
+    frequencies: list[float] = []
+    lines = text.splitlines()
+    index = 0
+    while index < len(lines):
+        tokens = _merge_sign_tokens(_split_table_row(lines[index].lstrip("#")))
+        upper = [token.upper() for token in tokens]
+        if "NODE" in upper and any(name in upper for name in ("DX", "DY", "DZ")):
+            components = {name: position for position, name in enumerate(upper)}
+            index += 1
+            while index < len(lines):
+                stripped = lines[index].strip()
+                if not stripped:
+                    index += 1
+                    continue
+                row = _merge_sign_tokens(_split_table_row(stripped))
+                if not row or row[0].upper() in {"NODE", "FIELD", "GROUP_MA", "SEQUENCE"}:
+                    break
+                values: dict[str, float] = {}
+                for name in ("DX", "DY", "DZ"):
+                    position = components.get(name)
+                    if position is not None and position < len(row):
+                        value = _parse_number(row[position])
+                        if value is not None:
+                            values[name] = value
+                if any(name in values for name in ("DX", "DY", "DZ")):
+                    magnitude = (
+                        values.get("DX", 0.0) ** 2
+                        + values.get("DY", 0.0) ** 2
+                        + values.get("DZ", 0.0) ** 2
+                    ) ** 0.5
+                    displacements.append(magnitude)
+                index += 1
+            continue
+        if "FREQ" in upper and any("NORM" in token or "ERROR" in token for token in upper):
+            freq_position = next(
+                position
+                for position, token in enumerate(upper)
+                if token.startswith("FREQ") or token.startswith("FREQUENCE")
+            )
+            index += 1
+            while index < len(lines):
+                stripped = lines[index].strip()
+                if not stripped:
+                    index += 1
+                    continue
+                row = _merge_sign_tokens(_split_table_row(stripped))
+                if not row or row[0].upper() in {"NODE", "FREQ"}:
+                    break
+                numbers = [
+                    number for number in (_parse_number(t) for t in row) if number is not None
+                ]
+                if len(numbers) > freq_position:
+                    frequencies.append(numbers[freq_position])
+                elif len(numbers) >= 2:
+                    frequencies.append(numbers[1])
+                index += 1
+            continue
+        index += 1
+
+    parsed: dict[str, list[float]] = {}
+    if displacements:
+        parsed["DISPLACEMENT_M"] = displacements
+    if frequencies:
+        parsed["FREQUENCY_HZ"] = frequencies
+    if not parsed:
+        raise ParticipantError(
+            NativeErrorCode.PARSER_FAILED, "result listing has no recognised quantity"
+        )
+    return parsed
 
 
 def _parse_tableau(text: str) -> dict[str, list[float]]:

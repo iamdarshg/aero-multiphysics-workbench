@@ -158,8 +158,48 @@ class Driver:
             record["solver_log_tail"] = read_text(case_dir / "solver.log")[-4000:]
             record["stdout_tail"] = read_text(case_dir / "stdout.log")[-2000:]
             record["stderr_tail"] = read_text(case_dir / "stderr.log")[-2000:]
+            self._copy_case_evidence(issue, case_dir)
         self.receipts[issue] = record
         return record
+
+    def _copy_case_evidence(self, issue: str, case_dir: Path) -> None:
+        """Copy full solver logs and case dictionaries for a failed job."""
+
+        names = (
+            "solver.log",
+            "stdout.log",
+            "stderr.log",
+            "A.log",
+            "B.log",
+            "A_result.json",
+            "B_result.json",
+            "result.json",
+            "case.sif",
+            "case.comm",
+            "case.export",
+            "result_table.txt",
+            "fort.80",
+            "fort.6",
+            "case_manifest.json",
+            "mesh_mapping.json",
+            "constant/dynamicMeshDict",
+            "constant/polyMesh/boundary",
+            "0/U",
+            "0/p",
+        )
+        for name in names:
+            source = case_dir / name
+            try:
+                if source.is_file() and source.stat().st_size <= 2_000_000:
+                    shutil.copyfile(source, self.out / f"{issue}_{Path(name).name}")
+            except OSError:
+                continue
+        for sidecar in sorted(case_dir.glob("*.names")):
+            try:
+                if sidecar.stat().st_size <= 200_000:
+                    shutil.copyfile(sidecar, self.out / f"{issue}_{sidecar.name}")
+            except OSError:
+                continue
 
     def _artifact_hashes(self, job_id: str, case_dir: Path) -> dict:
         hashes: dict = {}
@@ -208,7 +248,7 @@ _OPENFOAM_TEMPLATE_INPUTS = {
 
 
 def _openfoam_duct_mesh(work: Path, name: str) -> dict:
-    """Build a governed 2D duct mesh artifact (domain.msh + mapping)."""
+    """Build a governed 3D duct mesh artifact (MSH 2.2, domain.msh + mapping)."""
 
     import gmsh  # type: ignore
 
@@ -217,21 +257,29 @@ def _openfoam_duct_mesh(work: Path, name: str) -> dict:
     gmsh.initialize()
     try:
         gmsh.model.add(name)
-        gmsh.model.occ.addRectangle(0.0, 0.0, 0.0, 0.5, 0.1, tag=1)
+        # x in [-0.5, 0.5], y/z in [-0.05, 0.05] so the legacy probe points
+        # (-0.45 0 0)/(0.45 0 0) fall inside real cells of a genuine 3D volume.
+        gmsh.model.occ.addBox(-0.5, -0.05, -0.05, 1.0, 0.1, 0.1, tag=1)
         gmsh.model.occ.synchronize()
-        gmsh.model.addPhysicalGroup(2, [1], name="fluid")
-        for dim, tag in gmsh.model.getEntities(1):
-            xmin, ymin, _, xmax, ymax, _ = gmsh.model.getBoundingBox(dim, tag)
-            if abs(xmin) < 1e-9:
-                label = "inlet"
-            elif abs(xmax - 0.5) < 1e-9:
-                label = "outlet"
+        gmsh.model.addPhysicalGroup(3, [1], name="fluid")
+        face_groups: dict[str, list[int]] = {"inlet": [], "outlet": [], "walls": []}
+        for dim, tag in gmsh.model.getEntities(2):
+            xmin, ymin, zmin, xmax, ymax, zmax = gmsh.model.getBoundingBox(dim, tag)
+            x_span = abs(xmax - xmin)
+            if x_span < 1e-6 and abs(xmin + 0.5) < 1e-6:
+                face_groups["inlet"].append(tag)
+            elif x_span < 1e-6 and abs(xmin - 0.5) < 1e-6:
+                face_groups["outlet"].append(tag)
             else:
-                label = "walls"
-            gmsh.model.addPhysicalGroup(dim, [tag], name=label)
-        gmsh.option.setNumber("Mesh.MeshSizeMin", 0.01)
-        gmsh.option.setNumber("Mesh.MeshSizeMax", 0.02)
-        gmsh.model.mesh.generate(2)
+                face_groups["walls"].append(tag)
+        for label, tags in face_groups.items():
+            if tags:
+                gmsh.model.addPhysicalGroup(2, tags, name=label)
+        gmsh.option.setNumber("Mesh.MeshSizeMin", 0.02)
+        gmsh.option.setNumber("Mesh.MeshSizeMax", 0.04)
+        gmsh.model.mesh.generate(3)
+        gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+        gmsh.option.setNumber("Mesh.Binary", 0)
         gmsh.write(str(msh_path))
     finally:
         gmsh.finalize()
@@ -279,7 +327,14 @@ def issue_06_openfoam(driver: Driver) -> dict:
 
 
 def _openfoam_ami_mesh(work: Path) -> dict:
-    """Build a two-region rotor/stator mesh with a non-conformal AMI gap."""
+    """Build a 3D two-region rotor/stator mesh with non-conformal seal faces.
+
+    A rotor cylinder and a stator annulus are created from independent OCC
+    volumes (the boolean tool is a copy) so their coincident cylindrical faces
+    mesh independently and ``gmshToFoam`` emits two distinct ``cyclicAMI``
+    patches. The outer radius is 0.5 m so the legacy probe points remain inside
+    the stator volume.
+    """
 
     import gmsh  # type: ignore
 
@@ -288,28 +343,91 @@ def _openfoam_ami_mesh(work: Path) -> dict:
     gmsh.initialize()
     try:
         gmsh.model.add("ami")
-        rotor = gmsh.model.occ.addDisk(0.0, 0.0, 0.0, 0.049, 0.049)
-        outer = gmsh.model.occ.addDisk(0.0, 0.0, 0.0, 0.12, 0.12)
+        rotor = gmsh.model.occ.addCylinder(0.0, 0.0, -0.01, 0.0, 0.0, 0.02, 0.05)
+        rotor_copy = gmsh.model.occ.copy([(3, rotor)])
+        outer = gmsh.model.occ.addCylinder(0.0, 0.0, -0.01, 0.0, 0.0, 0.02, 0.5)
         gmsh.model.occ.synchronize()
-        stator, _ = gmsh.model.occ.cut([(2, outer)], [(2, rotor)])
+        stator, _ = gmsh.model.occ.cut([(3, outer)], list(rotor_copy))
         gmsh.model.occ.synchronize()
-        gmsh.model.addPhysicalGroup(2, [rotor], name="rotor")
-        gmsh.model.addPhysicalGroup(2, stator, name="stator")
-        # Interface curves: closest to r=0.049 -> seal_master; r=0.12 -> walls.
-        for dim, tag in gmsh.model.getEntities(1):
+
+        def radius(dim: int, tag: int) -> float:
             xmin, ymin, _, xmax, ymax, _ = gmsh.model.getBoundingBox(dim, tag)
-            radius = max(abs(xmin), abs(xmax), abs(ymin), abs(ymax))
-            if abs(radius - 0.049) < 1e-4:
-                gmsh.model.addPhysicalGroup(dim, [tag], name="seal_master")
-            elif abs(radius - 0.12) < 1e-4:
-                gmsh.model.addPhysicalGroup(dim, [tag], name="seal_slave")
-        gmsh.option.setNumber("Mesh.MeshSizeMin", 0.006)
-        gmsh.option.setNumber("Mesh.MeshSizeMax", 0.012)
-        gmsh.model.mesh.generate(2)
+            return max(abs(xmin), abs(xmax), abs(ymin), abs(ymax))
+
+        def z_extent(dim: int, tag: int) -> float:
+            _, _, zmin, _, _, zmax = gmsh.model.getBoundingBox(dim, tag)
+            return abs(zmax - zmin)
+
+        rotor_faces = gmsh.model.getBoundary([(3, rotor)], oriented=False)
+        stator_faces = gmsh.model.getBoundary(stator, oriented=False, recursive=False)
+        seal_master = [
+            tag
+            for dim, tag in rotor_faces
+            if dim == 2 and abs(radius(2, tag) - 0.05) < 1e-6 and z_extent(2, tag) > 1e-9
+        ]
+        seal_slave = [
+            tag
+            for dim, tag in stator_faces
+            if dim == 2 and abs(radius(2, tag) - 0.05) < 1e-6 and z_extent(2, tag) > 1e-9
+        ]
+        wall_faces = [
+            tag
+            for dim, tag in rotor_faces
+            if dim == 2 and tag not in seal_master
+        ] + [
+            tag
+            for dim, tag in stator_faces
+            if dim == 2 and tag not in seal_slave
+        ]
+        gmsh.model.addPhysicalGroup(3, [rotor], name="rotor")
+        gmsh.model.addPhysicalGroup(3, [dim_tag[1] for dim_tag in stator], name="stator")
+        if seal_master:
+            gmsh.model.addPhysicalGroup(2, seal_master, name="seal_master")
+        if seal_slave:
+            gmsh.model.addPhysicalGroup(2, seal_slave, name="seal_slave")
+        if wall_faces:
+            gmsh.model.addPhysicalGroup(2, wall_faces, name="walls")
+        gmsh.option.setNumber("Mesh.MeshSizeMin", 0.02)
+        gmsh.option.setNumber("Mesh.MeshSizeMax", 0.06)
+        gmsh.model.mesh.generate(3)
+        gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+        gmsh.option.setNumber("Mesh.Binary", 0)
         gmsh.write(str(msh_path))
     finally:
         gmsh.finalize()
-    return {"dir": work, "msh": msh_path, "mesh_hash": sha256_file(msh_path)}
+    mesh_hash = sha256_file(msh_path)
+    mapping = {
+        "provenance": {
+            "geometryHash": "a" * 64,
+            "meshHash": mesh_hash,
+            "topologyDigest": sha256_bytes(b"openfoam-ami"),
+        },
+        "exports": [
+            {
+                "participant": "openfoam",
+                "zones": [
+                    {"name": "rotor", "motion": "rotating", "domain": "fluid"},
+                    {"name": "stator", "motion": "stationary", "domain": "fluid"},
+                ],
+                "patches": [
+                    {"name": "seal_master", "kind": "interface", "nativeType": "cyclicAMI"},
+                    {"name": "seal_slave", "kind": "interface", "nativeType": "cyclicAMI"},
+                    {"name": "walls", "kind": "wall", "nativeType": "wall"},
+                ],
+                "interfaces": [
+                    {
+                        "name": "seal",
+                        "kind": "sliding",
+                        "zoneA": "rotor",
+                        "zoneB": "stator",
+                        "conformalRequested": False,
+                    }
+                ],
+            }
+        ],
+    }
+    (work / "mesh_mapping.json").write_text(json.dumps(mapping, indent=2), encoding="utf-8")
+    return {"dir": work, "msh": msh_path, "mesh_hash": mesh_hash}
 
 
 def issue_06_ami(driver: Driver) -> dict:
@@ -334,7 +452,7 @@ def issue_06_ami(driver: Driver) -> dict:
             "mesh_conversion": "gmshToFoam",
             "geometry_hash": "a" * 64,
             "mesh_hash": built["mesh_hash"],
-            "required_patch_kinds": ["inlet", "outlet"],
+            "required_patch_kinds": ["interface", "wall"],
             "rotating_zones": [{"name": "rotor", "rotation_rate_rpm": 500.0}],
             "ami_pairs": [
                 {
@@ -358,8 +476,9 @@ def _aster_mesh(work: Path) -> dict:
     import gmsh  # type: ignore
 
     work.mkdir(parents=True, exist_ok=True)
-    msh_path = work / "mesh.msh"
+    med_path = work / "mesh.med"
     gmsh.initialize()
+    tip_nodes = 1
     try:
         gmsh.model.add("cantilever")
         gmsh.model.occ.addBox(0.0, 0.0, 0.0, 0.4, 0.05, 0.05, tag=1)
@@ -367,29 +486,33 @@ def _aster_mesh(work: Path) -> dict:
         gmsh.model.addPhysicalGroup(3, [1], name="solid")
         for dim, tag in gmsh.model.getEntities(2):
             xmin, _, _, xmax, _, _ = gmsh.model.getBoundingBox(dim, tag)
-            if abs(xmin) < 1e-9:
+            if abs(xmin) < 1e-6:
                 gmsh.model.addPhysicalGroup(dim, [tag], name="clamp-face")
-            elif abs(xmax - 0.4) < 1e-9:
+            elif abs(xmax - 0.4) < 1e-6:
                 gmsh.model.addPhysicalGroup(dim, [tag], name="tip-face")
         gmsh.option.setNumber("Mesh.MeshSizeMin", 0.02)
         gmsh.option.setNumber("Mesh.MeshSizeMax", 0.04)
         gmsh.model.mesh.generate(3)
-        gmsh.write(str(msh_path))
+        for dim, tag in gmsh.model.getPhysicalGroups(2):
+            if gmsh.model.getPhysicalName(dim, tag) == "tip-face":
+                node_tags, _ = gmsh.model.mesh.getNodesForPhysicalGroup(dim, tag)
+                tip_nodes = max(1, len(node_tags))
+        gmsh.write(str(med_path))
     finally:
         gmsh.finalize()
-    return {"msh": msh_path, "mesh_hash": sha256_file(msh_path)}
+    return {"mesh": med_path, "mesh_hash": sha256_file(med_path), "tip_nodes": tip_nodes}
 
 
 def _aster_inputs(built: dict, analysis: str) -> dict:
     return {
         "analysis": analysis,
         "mesh": {
-            "file": "mesh.msh",
-            "format": "GMSH",
+            "file": "mesh.med",
+            "format": "MED",
             "volumes": ["solid"],
             "surfaces": ["clamp-face", "tip-face"],
             "nodes": [],
-            "material_groups": {"solid": "material_solid"},
+            "material_groups": {"solid": "solid"},
             "interfaces": [],
             "frames": {},
             "geometry_hash": "a" * 64,
@@ -409,9 +532,9 @@ def _aster_inputs(built: dict, analysis: str) -> dict:
         "loads": [
             {
                 "name": "tip-load",
-                "kind": "traction",
+                "kind": "nodal_force",
                 "target": "tip-face",
-                "FZ": -1.0e6,
+                "FZ": -1.0e6 / built["tip_nodes"],
             }
         ],
         "n_modes": 4,
@@ -421,11 +544,11 @@ def _aster_inputs(built: dict, analysis: str) -> dict:
 def issue_07_aster(driver: Driver, analysis: str) -> dict:
     work = driver.out / "gen07_work"
     built = _aster_mesh(work)
-    mesh_source = built["msh"]
+    mesh_source = built["mesh"]
 
     def pre(case_dir: Path) -> None:
         case_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(mesh_source, case_dir / "mesh.msh")
+        shutil.copyfile(mesh_source, case_dir / "mesh.med")
 
     return driver.governed(
         f"07_code_aster_{analysis}",
@@ -451,8 +574,15 @@ def _elmer_two_material_mesh(work: Path) -> dict:
         a = gmsh.model.occ.addBox(0.0, 0.0, 0.0, 0.3, 0.1, 0.05)
         b = gmsh.model.occ.addBox(0.3, 0.0, 0.0, 0.3, 0.1, 0.05)
         gmsh.model.occ.synchronize()
-        gmsh.model.addPhysicalGroup(3, [a], name="material_body_a")
-        gmsh.model.addPhysicalGroup(3, [b], name="material_body_b")
+        # Fragment so the two material volumes share a conformal internal face;
+        # without this Elmer sees two disconnected bodies and no heat flows.
+        fragments, _ = gmsh.model.occ.fragment([(3, a)], [(3, b)])
+        gmsh.model.occ.synchronize()
+        volume_tags = sorted(tag for dim, tag in fragments if dim == 3)
+        if len(volume_tags) < 2:
+            volume_tags = [a, b]
+        gmsh.model.addPhysicalGroup(3, [volume_tags[0]], name="material_body_a")
+        gmsh.model.addPhysicalGroup(3, [volume_tags[1]], name="material_body_b")
         for dim, tag in gmsh.model.getEntities(2):
             xmin, _, _, xmax, _, _ = gmsh.model.getBoundingBox(dim, tag)
             centre = 0.5 * (xmin + xmax)

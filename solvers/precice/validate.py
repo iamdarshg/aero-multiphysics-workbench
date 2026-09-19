@@ -341,6 +341,8 @@ def render_native_window_config(
         f'    <receive-mesh name="{second}-Mesh" from="{second}"/>\n'
         f'    <write-data name="{a_to_b}" mesh="{first}-Mesh"/>\n'
         f'    <read-data name="{b_to_a}" mesh="{first}-Mesh"/>\n'
+        f'    <mapping:nearest-neighbor direction="read" from="{second}-Mesh" '
+        f'to="{first}-Mesh" constraint="conservative"/>\n'
         "  </participant>\n"
         f'  <participant name="{second}">\n'
         f'    <provide-mesh name="{second}-Mesh"/>\n'
@@ -349,8 +351,6 @@ def render_native_window_config(
         f'    <write-data name="{b_to_a}" mesh="{second}-Mesh"/>\n'
         f'    <mapping:nearest-neighbor direction="read" from="{first}-Mesh" '
         f'to="{second}-Mesh" constraint="consistent"/>\n'
-        f'    <mapping:nearest-neighbor direction="write" from="{second}-Mesh" '
-        f'to="{first}-Mesh" constraint="conservative"/>\n'
         "  </participant>\n"
         f'  <m2n:sockets exchange-directory="." acceptor="{first}" connector="{second}"/>\n'
         "  <coupling-scheme:serial-implicit>\n"
@@ -359,7 +359,7 @@ def render_native_window_config(
         f'    <time-window-size value="{coupling_dt!r}"/>\n'
         f'    <max-iterations value="{max_iterations}"/>\n'
         f'    <relative-convergence-measure limit="{tolerance!r}" data="{a_to_b}" '
-        f'mesh="{second}-Mesh"/>\n'
+        f'mesh="{first}-Mesh"/>\n'
         f'    <exchange data="{a_to_b}" mesh="{first}-Mesh" from="{first}" to="{second}"/>\n'
         f'    <exchange data="{b_to_a}" mesh="{second}-Mesh" from="{second}" to="{first}"/>\n'
         "  </coupling-scheme:serial-implicit>\n"

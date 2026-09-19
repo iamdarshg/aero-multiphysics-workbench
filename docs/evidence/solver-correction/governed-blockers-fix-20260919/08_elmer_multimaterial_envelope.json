@@ -1,0 +1,68 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2666,
+      "name": "case.sif",
+      "sha256": "cb0b83bb8857e875126f233f825cb976fe3b86c8018c6af2ebae7ae209ad3299"
+    },
+    {
+      "bytes": 810,
+      "name": "result.json",
+      "sha256": "87e068e0e3586b1c452b7febf1604ad6df4c23e0f33cd8ddbbd8dc0f638952d7"
+    },
+    {
+      "bytes": 5823,
+      "name": "solver.log",
+      "sha256": "29b16c6d2820db71ede235c592ce194a5f272ebe671cc862f098cd37045c769e"
+    },
+    {
+      "bytes": 0,
+      "name": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5823,
+      "name": "stdout.log",
+      "sha256": "29b16c6d2820db71ede235c592ce194a5f272ebe671cc862f098cd37045c769e"
+    }
+  ],
+  "fidelity": "steady-conduction",
+  "input_hash": "4eb94ea3cf3fbeb6b073f58f4aac2430a21ba6463f8ac3b6f3a86535fc907ce9",
+  "provenance_id": "122d25dc5391449c9e3b4283df556281",
+  "run_id": "b92af5ef0adb450a9b4d5638e0b7d559",
+  "scalars": {
+    "boundary_left_heat_flow_w": 0.6666666666666,
+    "boundary_right_heat_flow_w": -0.6666666666667,
+    "converged": 1.0,
+    "energy_balance_error_w": -1.000310945187266e-13,
+    "energy_balance_relative_error": 1.5004664177809364e-13,
+    "max_temperature_k": 400.0,
+    "mean_temperature_k": 364.0185744075,
+    "min_temperature_k": 300.0
+  },
+  "solver_identity": "elmer",
+  "solver_version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:16:50",
+  "source": "native_solver",
+  "units": {
+    "boundary_left_heat_flow_w": "W",
+    "boundary_right_heat_flow_w": "W",
+    "converged": "dimensionless",
+    "energy_balance_error_w": "W",
+    "energy_balance_relative_error": "dimensionless",
+    "max_temperature_k": "K",
+    "mean_temperature_k": "K",
+    "min_temperature_k": "K"
+  },
+  "validity": {
+    "checks": {
+      "converged": true,
+      "energy_closure": true,
+      "heating_consistent": true,
+      "temperature_finite": true
+    },
+    "detail": "native run converged and energy balance closed within 0.001 relative",
+    "participant_id": "thermal-conduction",
+    "passed": true
+  },
+  "warnings": []
+}

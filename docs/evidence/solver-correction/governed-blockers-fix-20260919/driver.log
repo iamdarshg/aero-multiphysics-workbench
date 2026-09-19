@@ -1,0 +1,498 @@
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 30%] Meshing curve 4 (Line)
+Info    : [ 40%] Meshing curve 5 (Line)
+Info    : [ 50%] Meshing curve 6 (Line)
+Info    : [ 60%] Meshing curve 7 (Line)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Line)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Line)
+Info    : [100%] Meshing curve 12 (Line)
+Info    : Done meshing 1D (Wall 0.00319894s, CPU 0.001872s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0612205s, CPU 0.017294s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 350 nodes...
+Info    : Done tetrahedrizing 358 nodes (Wall 0.00759688s, CPU 0.005278s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.0136272s, CPU 0.011196s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 1.32527 (nodes removed 0 0)
+Info    : 3D refinement terminated (369 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 989 tetrahedra created in 0.00181796 sec. (544016 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.0283036s, CPU 0.020232s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.01) with worst = 0.032333 / average = 0.772402:
+Info    : 0.00 < quality < 0.10 :        13 elements
+Info    : 0.10 < quality < 0.20 :         6 elements
+Info    : 0.20 < quality < 0.30 :         7 elements
+Info    : 0.30 < quality < 0.40 :         1 elements
+Info    : 0.40 < quality < 0.50 :         1 elements
+Info    : 0.50 < quality < 0.60 :        12 elements
+Info    : 0.60 < quality < 0.70 :       223 elements
+Info    : 0.70 < quality < 0.80 :       261 elements
+Info    : 0.80 < quality < 0.90 :       278 elements
+Info    : 0.90 < quality < 1.00 :       187 elements
+Info    : 26 edge swaps, 0 node relocations (volume = 0.01): worst = 0.317388 / average = 0.791679 (Wall 0.000575525s, CPU 0.000576s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         1 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       224 elements
+Info    : 0.70 < quality < 0.80 :       264 elements
+Info    : 0.80 < quality < 0.90 :       281 elements
+Info    : 0.90 < quality < 1.00 :       187 elements
+Info    : Done optimizing mesh (Wall 0.00172744s, CPU 0.001727s)
+Info    : 369 nodes 1791 elements
+Info    : Writing '/opt/governed-run/gen06_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen06_work/domain.msh'
+Info    : [  0%] Difference                                                                                  Info    : [ 10%] Difference                                                                                  Info    : [ 20%] Difference                                                                                  Info    : [ 30%] Difference                                                                                  Info    : [ 40%] Difference                                                                                  Info    : [ 50%] Difference                                                                                  Info    : [ 60%] Difference                                                                                  Info    : [ 70%] Difference - Filling splits of edges                                                                                Info    : [ 80%] Difference - Making faces                                                                                Info    : [ 90%] Difference - Classify solids                                                                                Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Circle)
+Info    : [ 20%] Meshing curve 2 (Line)
+Info    : [ 30%] Meshing curve 3 (Circle)
+Info    : [ 40%] Meshing curve 4 (Circle)
+Info    : [ 50%] Meshing curve 5 (Line)
+Info    : [ 60%] Meshing curve 6 (Circle)
+Info    : [ 70%] Meshing curve 7 (Circle)
+Info    : [ 80%] Meshing curve 8 (Line)
+Info    : [ 90%] Meshing curve 9 (Circle)
+Info    : Done meshing 1D (Wall 0.00176875s, CPU 0.001772s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Cylinder, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 30%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Cylinder, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 5 (Cylinder, Frontal-Delaunay)
+Info    : [ 80%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 7 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0328802s, CPU 0.031669s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 2 volumes with 2 connected components
+Info    : Tetrahedrizing 23 nodes...
+Info    : Done tetrahedrizing 31 nodes (Wall 0.000272255s, CPU 0.000272s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.000853764s, CPU 0.000851s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 0.66981 (nodes removed 0 0)
+Info    : 3D refinement terminated (760 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 42 tetrahedra created in 2.2259e-05 sec. (1886877 tets/s)
+Info    : 0 node relocations
+Info    : Tetrahedrizing 737 nodes...
+Info    : Done tetrahedrizing 745 nodes (Wall 0.0132007s, CPU 0.011295s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    :  - Added 13 Steiner points
+Info    : Done reconstructing mesh (Wall 0.0494755s, CPU 0.045738s)
+Info    : Found volume 3
+Info    : It. 0 - 0 nodes created - worst tet radius 1.10309 (nodes removed 0 0)
+Info    : 3D refinement terminated (773 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 15 nodes could not be inserted
+Info    :  - 2101 tetrahedra created in 0.000206989 sec. (10150297 tets/s)
+Info    : 12 node relocations
+Info    : Done meshing 3D (Wall 0.0726691s, CPU 0.068881s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.000146845) with worst = 0.408197 / average = 0.525939:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :        14 elements
+Info    : 0.50 < quality < 0.60 :        14 elements
+Info    : 0.60 < quality < 0.70 :        14 elements
+Info    : 0.70 < quality < 0.80 :         0 elements
+Info    : 0.80 < quality < 0.90 :         0 elements
+Info    : 0.90 < quality < 1.00 :         0 elements
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :        14 elements
+Info    : 0.50 < quality < 0.60 :        14 elements
+Info    : 0.60 < quality < 0.70 :        14 elements
+Info    : 0.70 < quality < 0.80 :         0 elements
+Info    : 0.80 < quality < 0.90 :         0 elements
+Info    : 0.90 < quality < 1.00 :         0 elements
+Info    : Optimizing volume 3
+Info    : Optimization starts (volume = 0.0155244) with worst = 0.217118 / average = 0.60837:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :        20 elements
+Info    : 0.30 < quality < 0.40 :        53 elements
+Info    : 0.40 < quality < 0.50 :        54 elements
+Info    : 0.50 < quality < 0.60 :       393 elements
+Info    : 0.60 < quality < 0.70 :      1535 elements
+Info    : 0.70 < quality < 0.80 :        46 elements
+Info    : 0.80 < quality < 0.90 :         0 elements
+Info    : 0.90 < quality < 1.00 :         0 elements
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :        20 elements
+Info    : 0.30 < quality < 0.40 :        53 elements
+Info    : 0.40 < quality < 0.50 :        54 elements
+Info    : 0.50 < quality < 0.60 :       393 elements
+Info    : 0.60 < quality < 0.70 :      1535 elements
+Info    : 0.70 < quality < 0.80 :        46 elements
+Info    : 0.80 < quality < 0.90 :         0 elements
+Info    : 0.90 < quality < 1.00 :         0 elements
+Info    : Done optimizing mesh (Wall 0.0037371s, CPU 0.003702s)
+Info    : 773 nodes 3802 elements
+Info    : Writing '/opt/governed-run/gen06_ami_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen06_ami_work/domain.msh'
+[native] job 0abf1335dcaa442c8dc1b26add4b3a96 FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stderr.log: r::smooth(Foam::word const&, Foam::Field<double>&, Foam::lduMatrix const&, Foam::Field<double> const&, Foam::FieldField<Foam::Field, double> const&, Foam::UPtrList<Foam::lduInterfaceField const> const&, unsigned char, int) in /opt/solvers/bin/../lib/libOpenFOAM.so
+#4  Foam::GaussSeidelSmoother::smooth(Foam::Field<double>&, Foam::Field<double> const&, unsigned char, int) const in /opt/solvers/bin/../lib/libOpenFOAM.so
+#5  Foam::smoothSolver::solve(Foam::Field<double>&, Foam::Field<double> const&, unsigned char) const in /opt/solvers/bin/../lib/libOpenFOAM.so
+#6  Foam::fvMatrix<Foam::Vector<double> >::solveSegregated(Foam::dictionary const&) in /opt/solvers/bin/../lib/libfiniteVolume.so
+#7  Foam::fvMatrix<Foam::Vector<double> >::solveSegregatedOrCoupled(Foam::dictionary const&) in /opt/solvers/bin/../lib/libfiniteVolume.so
+#8  Foam::fvMesh::solve(Foam::fvMatrix<Foam::Vector<double> >&, Foam::dictionary const&) const in /opt/solvers/bin/../lib/libfiniteVolume.so
+#9  ? in /opt/solvers/bin/pimpleFoam
+#10  ? in /opt/solvers/bin/pimpleFoam
+#11  ? in /lib/x86_64-linux-gnu/libc.so.6
+#12  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+#13  ? in /opt/solvers/bin/pimpleFoam
+============= | stdout.log: M Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 30%] Meshing curve 4 (Line)
+Info    : [ 40%] Meshing curve 5 (Line)
+Info    : [ 50%] Meshing curve 6 (Line)
+Info    : [ 60%] Meshing curve 7 (Line)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Line)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Line)
+Info    : [100%] Meshing curve 12 (Line)
+Info    : Done meshing 1D (Wall 0.00156749s, CPU 0.001569s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.00495218s, CPU 0.00495s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 100 nodes...
+Info    : Done tetrahedrizing 108 nodes (Wall 0.00134037s, CPU 0.001339s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00283316s, CPU 0.002832s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 0.838193 (nodes removed 0 0)
+Info    : 3D refinement terminated (100 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 209 tetrahedra created in 1.6538e-05 sec. (12637561 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00432791s, CPU 0.004328s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.001) with worst = 0.51708 / average = 0.72504:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         4 elements
+Info    : 0.60 < quality < 0.70 :        85 elements
+Info    : 0.70 < quality < 0.80 :        69 elements
+Info    : 0.80 < quality < 0.90 :         4 elements
+Info    : 0.90 < quality < 1.00 :        47 elements
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         4 elements
+Info    : 0.60 < quality < 0.70 :        85 elements
+Info    : 0.70 < quality < 0.80 :        69 elements
+Info    : 0.80 < quality < 0.90 :         4 elements
+Info    : 0.90 < quality < 1.00 :        47 elements
+Info    : Done optimizing mesh (Wall 0.000348892s, CPU 0.000346s)
+Info    : 100 nodes 469 elements
+Info    : Writing '/opt/governed-run/gen07_work/mesh.med'...
+Info    : Done writing '/opt/governed-run/gen07_work/mesh.med'
+[native] job 241bc668d59b4d8a84740ef32133cb19 FAILED PARSER_FAILED:result table is missing (expected result_table.txt or result.rmed)
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 30%] Meshing curve 4 (Line)
+Info    : [ 40%] Meshing curve 5 (Line)
+Info    : [ 50%] Meshing curve 6 (Line)
+Info    : [ 60%] Meshing curve 7 (Line)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Line)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Line)
+Info    : [100%] Meshing curve 12 (Line)
+Info    : Done meshing 1D (Wall 0.0015937s, CPU 0.001595s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.00518139s, CPU 0.005175s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 100 nodes...
+Info    : Done tetrahedrizing 108 nodes (Wall 0.00137537s, CPU 0.001374s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00285904s, CPU 0.002858s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 0.838193 (nodes removed 0 0)
+Info    : 3D refinement terminated (100 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 209 tetrahedra created in 1.704e-05 sec. (12265258 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00442442s, CPU 0.004389s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.001) with worst = 0.51708 / average = 0.72504:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         4 elements
+Info    : 0.60 < quality < 0.70 :        85 elements
+Info    : 0.70 < quality < 0.80 :        69 elements
+Info    : 0.80 < quality < 0.90 :         4 elements
+Info    : 0.90 < quality < 1.00 :        47 elements
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         4 elements
+Info    : 0.60 < quality < 0.70 :        85 elements
+Info    : 0.70 < quality < 0.80 :        69 elements
+Info    : 0.80 < quality < 0.90 :         4 elements
+Info    : 0.90 < quality < 1.00 :        47 elements
+Info    : Done optimizing mesh (Wall 0.000355516s, CPU 0.000355s)
+Info    : 100 nodes 469 elements
+Info    : Writing '/opt/governed-run/gen07_work/mesh.med'...
+Info    : Done writing '/opt/governed-run/gen07_work/mesh.med'
+[native] job e09ce82a2c184823bbbb62a85421e3e3 FAILED PROCESS_EXIT_NONZERO:native process failed:PROCESS_EXIT_NONZERO:stdout.log: oot 37075 Sep 19 19:16 fort.20
+-rw-r--r-- 1 root root 30692 Sep 19 19:16 fort.6
+-rw-r--r-- 1 root root     0 Sep 19 19:16 fort.8
+-rw-r--r-- 1 root root     0 Sep 19 19:16 fort.9
+
+REPE_OUT:
+total 0
+
+
+# ------------------------------------------------------------------------------
+Copying results
+WARNING: file not found: fort.80
+
+# ------------------------------------------------------------------------------
+Execution summary
+                                      cpu     system    cpu+sys    elapsed
+--------------------------------------------------------------------------------
+Preparation of environment           0.00       0.00       0.00       0.00
+Execution of code_aster              1.28       0.43       1.71       2.34
+Copying results                      0.00       0.01       0.01       0.00
+--------------------------------------------------------------------------------
+Total                                1.28       0.44       1.72       2.34
+--------------------------------------------------------------------------------
+
+------------------------------------------------------------
+--- DIAGNOSTIC JOB : <S>_ERROR
+------------------------------------------------------------
+Info    : [  0%] Fragments                                                                                  Info    : [ 10%] Fragments                                                                                  Info    : [ 20%] Fragments                                                                                  Info    : [ 30%] Fragments                                                                                  Info    : [ 40%] Fragments                                                                                  Info    : [ 50%] Fragments                                                                                  Info    : [ 60%] Fragments                                                                                  Info    : [ 70%] Fragments                                                                                  Info    : [ 80%] Fragments - Splitting faces                                                                                Info    : [ 90%] Fragments                                                                                                                                                                                                                                                  Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 20%] Meshing curve 4 (Line)
+Info    : [ 30%] Meshing curve 5 (Line)
+Info    : [ 30%] Meshing curve 6 (Line)
+Info    : [ 40%] Meshing curve 7 (Line)
+Info    : [ 40%] Meshing curve 8 (Line)
+Info    : [ 50%] Meshing curve 9 (Line)
+Info    : [ 50%] Meshing curve 10 (Line)
+Info    : [ 60%] Meshing curve 11 (Line)
+Info    : [ 60%] Meshing curve 12 (Line)
+Info    : [ 70%] Meshing curve 13 (Line)
+Info    : [ 70%] Meshing curve 14 (Line)
+Info    : [ 80%] Meshing curve 15 (Line)
+Info    : [ 80%] Meshing curve 16 (Line)
+Info    : [ 90%] Meshing curve 17 (Line)
+Info    : [ 90%] Meshing curve 18 (Line)
+Info    : [100%] Meshing curve 19 (Line)
+Info    : [100%] Meshing curve 20 (Line)
+Info    : Done meshing 1D (Wall 0.00210721s, CPU 0.002072s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 10%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 30%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 7 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 8 (Plane, Frontal-Delaunay)
+Info    : [ 80%] Meshing surface 9 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 10 (Plane, Frontal-Delaunay)
+Info    : [100%] Meshing surface 11 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0110334s, CPU 0.01101s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 2 volumes with 1 connected component
+Info    : Tetrahedrizing 199 nodes...
+Info    : Done tetrahedrizing 207 nodes (Wall 0.00282455s, CPU 0.002823s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00583713s, CPU 0.005807s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.4047e-05 sec. (21665904 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00949463s, CPU 0.009466s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.000254269s, CPU 0.000254s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000420258s, CPU 0.000421s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000534721s, CPU 0.000535s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00141214s, CPU 0.001412s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/opt/governed-run/gen08_work/domain.msh'...
+Info    : Done writing '/opt/governed-run/gen08_work/domain.msh'
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /aero-jobs
+PROBE incompressible-steady-flow ready simpleFoam present and reported a banner
+PROBE rotating-flow-mrf ready simpleFoam present and reported a banner
+PROBE structural-static ready run_aster responded to --version
+PROBE structural-modal ready run_aster responded to --version
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE native-coupled-window ready native precice binding importable by /opt/precice/bin/python
+== GEN 06 governed OpenFOAM transient (converted mesh) ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 07 governed Code_Aster modal ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 11 governed native preCICE window ==
+GOVERNED BLOCKER RUN DONE -> /opt/governed-run

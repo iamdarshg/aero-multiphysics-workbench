@@ -1,0 +1,69 @@
+{
+  "artifacts": [
+    {
+      "bytes": 290,
+      "name": "case.json",
+      "sha256": "9ae03f1e54184f258c6a41b7be66f2718785f6a5941ada6fb6fe7b83a79ae8e3"
+    },
+    {
+      "bytes": 1575,
+      "name": "precice-config.xml",
+      "sha256": "9e0dd64fea43c2928c216a45d967156d751c655d7149f245731f8ffdab57f2b2"
+    },
+    {
+      "bytes": 393,
+      "name": "result.json",
+      "sha256": "b7b8beb1d70fd51b6f14e718a8cf6f944b29581219acbb9cdae71b6c4b1fdff3"
+    },
+    {
+      "bytes": 200011,
+      "name": "solver.log",
+      "sha256": "45a28595f4ddace78189e38bbfb74d414a7c8e1e25e7235ad95eab6dd5db7dd0"
+    },
+    {
+      "bytes": 0,
+      "name": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 75,
+      "name": "stdout.log",
+      "sha256": "316a188b3e17119cf4a511e92563b955ba0b4e8d850df6de3329e4099713e15e"
+    }
+  ],
+  "fidelity": "implicit-iqn",
+  "input_hash": "e2ead5f64e2847aa3295092785887b4cd015ddd12579d444763a343823e59906",
+  "provenance_id": "3eb3c06bf7854fb3881dc73e88553795",
+  "run_id": "cd5176ffb8be43e29809065c36b1c478",
+  "scalars": {
+    "checkpoints": 6.0,
+    "conservation_error": 0.0,
+    "coupled_converged": 1.0,
+    "coupling_iterations": 5.0,
+    "interface_residual": 0.0,
+    "rollbacks": 4.0
+  },
+  "solver_identity": "precice",
+  "solver_version": "pyprecice",
+  "source": "native_solver",
+  "units": {
+    "checkpoints": "dimensionless",
+    "conservation_error": "dimensionless",
+    "coupled_converged": "dimensionless",
+    "coupling_iterations": "dimensionless",
+    "interface_residual": "dimensionless",
+    "rollbacks": "dimensionless"
+  },
+  "validity": {
+    "checks": {
+      "completed": true,
+      "converged": true,
+      "interface_conservation": true,
+      "residual_within_tolerance": true
+    },
+    "detail": "native implicit coupling residual 0.000e+00 and conservation 0.000e+00 within 1e-06",
+    "participant_id": "native-coupled-window",
+    "passed": true
+  },
+  "warnings": []
+}

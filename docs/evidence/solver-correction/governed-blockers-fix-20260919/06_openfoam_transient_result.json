@@ -1,0 +1,9 @@
+{
+  "application": "pimpleFoam",
+  "case_manifest": "case_manifest.json",
+  "geometry_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "mesh_hash": "e7e49048c08d2e51ff2d997f212095a73f4980ad0713d1acc5a0c2052799d8e2",
+  "mesh_mapping_hash": "73a58551b767eb72cefbb0520c9e31519c19cb57d8188d71d0e9d66477d9bea2",
+  "rotating_model": "none",
+  "steady": false
+}

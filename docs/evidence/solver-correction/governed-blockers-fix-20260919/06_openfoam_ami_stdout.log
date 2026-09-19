@@ -1,0 +1,290 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v2412 OPENFOAM=2412 version=v2412
+Arch   : "LSB;label=32;scalar=64"
+Exec   : pimpleFoam
+Date   : Sep 19 2026
+Time   : 19:16:28
+Host   : aero-governed-blockers-20260919
+PID    : 3842
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+I/O    : uncollated
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+Case   : /aero-jobs/case-0abf1335dcaa
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Selecting dynamicFvMesh dynamicMultiMotionSolverFvMesh
+Selecting motion solver: solidBody
+Applying motion to entire mesh
+Selecting solid-body motion function rotatingMotion
+Applying motionSolver solidBody to 23 points of cellZone rotor
+
+PIMPLE: Operating solver in PISO mode
+
+Reading field p
+
+AMI: Creating AMI for source:seal_master and target:seal_slave
+AMI: Patch source faces: 42
+AMI: Patch target faces: 28
+AMI: Patch source sum(weights) min:0 max:1.005 average:0.667187
+AMI: Patch target sum(weights) min:0.998694 max:1.005 average:1.0008
+Reading field U
+
+Reading/calculating face flux field phi
+
+Selecting incompressible transport model Newtonian
+Selecting turbulence model type laminar
+Selecting laminar stress model Stokes
+No MRF models present
+
+No finite volume options present
+Constructing face velocity Uf
+
+Courant Number mean: 0.00345928 max: 0.0158158
+Courant Number mean: 0.00345928 max: 0.0158158
+
+Starting time loop
+
+surfaceFieldValue areaAverage_p_walls:
+    operation     = areaAverage
+
+
+--> FOAM Warning : 
+Unknown function type residuals
+
+Valid function types :
+
+117
+(
+AMIWeights
+BilgerMixtureFraction
+CourantNo
+Curle
+DESModelRegions
+DMD
+LambVector
+Lambda2
+MachNo
+ObukhovLength
+PecletNo
+Q
+XiReactionRate
+abort
+add
+age
+areaWrite
+binField
+blendingFactor
+caseInfo
+cellDecomposer
+coded
+columnAverage
+comfort
+components
+continuityError
+ddt
+ddt2
+derivedFields
+div
+ensightWrite
+enstrophy
+exprField
+externalCoupled
+extractEulerianParticles
+fieldAverage
+fieldCoordinateSystemTransform
+fieldExtents
+fieldMinMax
+flowType
+flux
+fluxSummary
+foamReport
+grad
+graphFunctionObject
+heatTransferCoeff
+histogram
+interfaceHeight
+limitFields
+log
+mag
+magSqr
+mapFields
+momentum
+momentumError
+multiFieldValue
+multiRegion
+multiphaseInterHtcModel
+multiply
+nearWallFields
+norm
+parProfiling
+particleDistribution
+patchProbes
+pow
+pressure
+probes
+processorField
+proudmanAcousticPower
+psiReactionThermoMoleFractions
+psiReactionsSensitivityAnalysis
+psiSpecieReactionRates
+randomise
+reactingEulerHtcModel
+readFields
+reference
+regionSizeDistribution
+removeRegisteredObject
+resolutionIndex
+rhoReactionThermoMoleFractions
+rhoReactionsSensitivityAnalysis
+rhoSpecieReactionRates
+runTimeControl
+setFlow
+setTimeStep
+setTimeStepFaRegion
+sets
+solverInfo
+stabilityBlendingFactor
+streamFunction
+streamLine
+subtract
+surfaceCourantNumber
+surfaceDistance
+surfaceFieldValue
+surfaceInterpolate
+surfaces
+syncObjects
+systemCall
+thermoCoupleProbes
+timeActivatedFileUpdate
+timeInfo
+turbulenceFields
+valueAverage
+viewFactorHeatFlux
+volFieldValue
+vorticity
+vtkWrite
+wallBoundedStreamLine
+wallHeatFlux
+wallShearStress
+writeCellCentres
+writeCellVolumes
+writeDictionary
+writeObjects
+yPlus
+zeroGradient
+)
+
+
+
+    From static Foam::autoPtr<Foam::functionObject> Foam::functionObject::New(const Foam::word&, const Foam::Time&, const Foam::dictionary&)
+    in file db/functionObjects/functionObject/functionObject.C at line 129.
+--> loading function object 'residuals'
+
+Courant Number mean: 0.00345928 max: 0.0158158
+Time = 0.0001
+
+PIMPLE: iteration 1
+AMI: Creating AMI for source:seal_master and target:seal_slave
+AMI: Patch source faces: 42
+AMI: Patch target faces: 28
+AMI: Patch source sum(weights) min:0.00125233 max:1.00448 average:0.66728
+AMI: Patch target sum(weights) min:0.997704 max:1.00817 average:1.00284
+DICPCG:  Solving for pcorr, Initial residual = 1, Final residual = 0.000201115, No Iterations 1000
+time step continuity errors : sum local = 1.4086e-05, global = -1.40629e-05, cumulative = -1.40629e-05
+smoothSolver:  Solving for Ux, Initial residual = 1, Final residual = 4.46193e-06, No Iterations 2
+smoothSolver:  Solving for Uy, Initial residual = 1, Final residual = 1.35397e-08, No Iterations 2
+smoothSolver:  Solving for Uz, Initial residual = 1, Final residual = 1.05749e-07, No Iterations 2
+GAMG:  Solving for p, Initial residual = 1, Final residual = 0.0499569, No Iterations 6
+time step continuity errors : sum local = 2.03786e-05, global = -1.41038e-05, cumulative = -2.81668e-05
+GAMG:  Solving for p, Initial residual = 0.0258741, Final residual = 9.55785e-07, No Iterations 29
+time step continuity errors : sum local = 1.4722e-05, global = -1.47218e-05, cumulative = -4.28886e-05
+ExecutionTime = 0.1 s  ClockTime = 0 s
+
+continuityError continuityError write:
+    local = 1.4722e-05
+    global = -1.47218e-05
+    cumulative = -1.47218e-05
+
+Courant Number mean: 0.000595349 max: 0.0485469
+Time = 0.0002
+
+PIMPLE: iteration 1
+AMI: Creating AMI for source:seal_master and target:seal_slave
+AMI: Patch source faces: 42
+AMI: Patch target faces: 28
+AMI: Patch source sum(weights) min:0.00248785 max:1.00445 average:0.667445
+AMI: Patch target sum(weights) min:0.996887 max:1.01181 average:1.00497
+DICPCG:  Solving for pcorr, Initial residual = 1, Final residual = 10375.2, No Iterations 1000
+time step continuity errors : sum local = 0.170471, global = -0.0706581, cumulative = -0.070701
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+--> FOAM Warning : 
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description

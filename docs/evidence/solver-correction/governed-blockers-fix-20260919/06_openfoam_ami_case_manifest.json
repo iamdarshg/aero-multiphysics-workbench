@@ -1,0 +1,62 @@
+{
+  "application": "pimpleFoam",
+  "compressibility": "incompressible",
+  "end_time": 0.01,
+  "geometry_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "governed_mesh": true,
+  "input_hash": "e89c622d5dd6dbed98787d69070e66e06d7b81be7b7675929a2eb3c1e784dfa8",
+  "interfaces": [
+    {
+      "master_patch": "seal_master",
+      "name": "seal",
+      "slave_patch": "seal_slave",
+      "zone_a": "rotor",
+      "zone_b": "stator"
+    }
+  ],
+  "mesh_hash": "76e4e46c177786c9cca76d3342d8de5fe3f4feee826c64bbd7fd901c8ccbccda",
+  "mesh_mapping_hash": "ae8f7c04d09c691aed8aa1e0f74c1d9cbe55be8caec6b335f22790951d87d65b",
+  "participant_id": "incompressible-steady-flow",
+  "patches": [
+    {
+      "kind": "interface",
+      "name": "seal_master"
+    },
+    {
+      "kind": "interface",
+      "name": "seal_slave"
+    },
+    {
+      "kind": "wall",
+      "name": "walls"
+    }
+  ],
+  "result_requests": [
+    "mass_flow",
+    "residuals",
+    "continuity",
+    "pressure"
+  ],
+  "rotating_model": "AMI",
+  "steady": false,
+  "thermal_model": "isothermal",
+  "topology_digest": "2e8933ed8ef3e0437abf343be73f80eab87c6b7aead8ca72d45351d8f141d6fe",
+  "turbulence": "laminar",
+  "zones": [
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "motion": "rotating",
+      "name": "rotor",
+      "origin": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_rate_rpm": 500.0
+    }
+  ]
+}

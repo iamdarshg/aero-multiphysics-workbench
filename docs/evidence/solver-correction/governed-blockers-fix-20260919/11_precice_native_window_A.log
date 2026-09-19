@@ -1,0 +1,2612 @@
+(0) 18:42:22 [logging::config::LogConfiguration]:79 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == waveform-degree
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "waveform-degree" value = 1
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == lower-bound
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "lower-bound" value = -inf
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == upper-bound
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "upper-bound" value = inf
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == waveform-degree
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == lower-bound
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == upper-bound
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == waveform-degree
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "waveform-degree" value = 1
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == lower-bound
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "lower-bound" value = -inf
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == upper-bound
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "upper-bound" value = inf
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == waveform-degree
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == lower-bound
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == upper-bound
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == dimensions
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "dimensions" value = 2
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == dimensions
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == use-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mEntering createData
+  0: name == Temperature
+  1: dimension == 1
+
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mLeaving createData
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == use-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mEntering createData
+  0: name == HeatFlux
+  1: dimension == 1
+
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mLeaving createData
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == dimensions
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "dimensions" value = 2
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == dimensions
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == use-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mEntering createData
+  0: name == Temperature
+  1: dimension == 1
+
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mLeaving createData
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == use-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mEntering createData
+  0: name == HeatFlux
+  1: dimension == 1
+
+(0) 18:42:22 [mesh::Mesh]:181 in createData: [0mLeaving createData
+(0) 18:42:22 [mesh::MeshConfiguration]:64 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == participant
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == provide-mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [impl::ParticipantState]:65 in provideMesh: [0mEntering provideMesh
+  0: _name == A
+  1: meshName == A-Mesh
+
+(0) 18:42:22 [impl::ParticipantState]:65 in provideMesh: [0mLeaving provideMesh
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == api-access
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "api-access" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == direct-access
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "direct-access" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == geometric-filter
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "geometric-filter" value = on-secondary-ranks
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == safety-factor
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "safety-factor" value = 0.5
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == receive-mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == safety-factor
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == geometric-filter
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == api-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == direct-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == direct-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [impl::ParticipantState]:81 in receiveMesh: [0mEntering receiveMesh
+  0: _name == A
+  1: meshName == B-Mesh
+
+(0) 18:42:22 [impl::ParticipantState]:81 in receiveMesh: [0mLeaving receiveMesh
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == write-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == read-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == to
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "to" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == direction
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "direction" value = read
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == constraint
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "constraint" value = conservative
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config:MappingConfiguration]:416 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == nearest-neighbor
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == direction
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == to
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == constraint
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == x-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == y-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == z-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == radius
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == solver-rtol
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == polynomial
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-dimension
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-type
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-axis
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == multiscale-radius
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-cross-section-profile
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-cross-section
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == vertices-per-cluster
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == relative-overlap
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == project-to-input
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [config:MappingConfiguration]:623 in createMapping: [0mEntering createMapping
+  0: direction == read
+  1: type == nearest-neighbor
+
+(0) 18:42:22 [config:MappingConfiguration]:623 in createMapping: [0mLeaving createMapping
+(0) 18:42:22 [config:MappingConfiguration]:416 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [config::ParticipantConfiguration]:428 in finishParticipantConfiguration: [0mEntering finishParticipantConfiguration
+  0: participant->getName() == A
+
+(0) 18:42:22 [config::ParticipantConfiguration]:801 in checkIllDefinedMappings: [0mEntering checkIllDefinedMappings
+(0) 18:42:22 [config::ParticipantConfiguration]:801 in checkIllDefinedMappings: [0mLeaving checkIllDefinedMappings
+(0) 18:42:22 [config::ParticipantConfiguration]:515 in finishParticipantConfiguration: [0mConfigure mapping for input=B-Mesh, output=A-Mesh
+(0) 18:42:22 [config::ParticipantConfiguration]:428 in finishParticipantConfiguration: [0mLeaving finishParticipantConfiguration
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == participant
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == provide-mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [impl::ParticipantState]:65 in provideMesh: [0mEntering provideMesh
+  0: _name == B
+  1: meshName == B-Mesh
+
+(0) 18:42:22 [impl::ParticipantState]:65 in provideMesh: [0mLeaving provideMesh
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == api-access
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "api-access" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == direct-access
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "direct-access" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == geometric-filter
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "geometric-filter" value = on-secondary-ranks
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == safety-factor
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "safety-factor" value = 0.5
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == receive-mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == safety-factor
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == geometric-filter
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == api-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == direct-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == direct-access
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [impl::ParticipantState]:81 in receiveMesh: [0mEntering receiveMesh
+  0: _name == B
+  1: meshName == A-Mesh
+
+(0) 18:42:22 [impl::ParticipantState]:81 in receiveMesh: [0mLeaving receiveMesh
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == read-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == name
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "name" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == write-data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == name
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [config::ParticipantConfiguration]:260 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == to
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "to" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == direction
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "direction" value = read
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == constraint
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "constraint" value = consistent
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [config:MappingConfiguration]:416 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getName() == nearest-neighbor
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == direction
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == to
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == constraint
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == x-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == y-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == z-dead
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == radius
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == solver-rtol
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == polynomial
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-dimension
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-type
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-axis
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == multiscale-radius
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-cross-section-profile
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == multiscale-cross-section
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == vertices-per-cluster
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == relative-overlap
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == project-to-input
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [config:MappingConfiguration]:623 in createMapping: [0mEntering createMapping
+  0: direction == read
+  1: type == nearest-neighbor
+
+(0) 18:42:22 [config:MappingConfiguration]:623 in createMapping: [0mLeaving createMapping
+(0) 18:42:22 [config:MappingConfiguration]:416 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [config::ParticipantConfiguration]:428 in finishParticipantConfiguration: [0mEntering finishParticipantConfiguration
+  0: participant->getName() == B
+
+(0) 18:42:22 [config::ParticipantConfiguration]:801 in checkIllDefinedMappings: [0mEntering checkIllDefinedMappings
+(0) 18:42:22 [config::ParticipantConfiguration]:801 in checkIllDefinedMappings: [0mLeaving checkIllDefinedMappings
+(0) 18:42:22 [config::ParticipantConfiguration]:515 in finishParticipantConfiguration: [0mConfigure mapping for input=A-Mesh, output=B-Mesh
+(0) 18:42:22 [config::ParticipantConfiguration]:428 in finishParticipantConfiguration: [0mLeaving finishParticipantConfiguration
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == port
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "port" value = 0
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == network
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "network" value = lo
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == exchange-directory
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "exchange-directory" value = .
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == acceptor
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "acceptor" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == connector
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "connector" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == enforce-gather-scatter
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "enforce-gather-scatter" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == use-two-level-initialization
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "use-two-level-initialization" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == acceptor
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == connector
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == enforce-gather-scatter
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == use-two-level-initialization
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == network
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == port
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == exchange-directory
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == coupling-scheme:serial-implicit
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == first
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "first" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == second
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "second" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == participants
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == first
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == second
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == participants
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == value
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "value" value = 3
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == max-time-windows
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == value
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == max-time-windows
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == value
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "value" value = 1
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == method
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "method" value = fixed
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == time-window-size
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == value
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == method
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:964 in getTimesteppingMethod: [0mEntering getTimesteppingMethod
+  0: method == fixed
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:964 in getTimesteppingMethod: [0mLeaving getTimesteppingMethod
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == time-window-size
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == value
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "value" value = 8
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == max-iterations
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mEntering getIntAttributeValue
+  0: name == value
+
+(0) 18:42:22 [xml::XMLTag]:133 in getIntAttributeValue: [0mLeaving getIntAttributeValue
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == max-iterations
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == data
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "data" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == suffices
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "suffices" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == strict
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "strict" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == limit
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "limit" value = 1e-06
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == relative-convergence-measure
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mEntering getDoubleAttributeValue
+  0: name == limit
+
+(0) 18:42:22 [xml::XMLTag]:119 in getDoubleAttributeValue: [0mLeaving getDoubleAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == suffices
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == strict
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:742 in addRelativeConvergenceMeasure: [0mEntering addRelativeConvergenceMeasure
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:742 in addRelativeConvergenceMeasure: [0mLeaving addRelativeConvergenceMeasure
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == relative-convergence-measure
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == data
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "data" value = Temperature
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = A-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == to
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "to" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == initialize
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "initialize" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == substeps
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "substeps" value = true
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == exchange
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == to
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == initialize
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == substeps
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == A
+  1: mesh == A-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == B
+  1: mesh == A-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == exchange
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mEntering readAttributes
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == data
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "data" value = HeatFlux
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == mesh
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "mesh" value = B-Mesh
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == from
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "from" value = B
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == to
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "to" value = A
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == initialize
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "initialize" value = false
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mEntering readValue
+  0: _name == substeps
+
+(0) 18:42:22 [xml::XMLAttribute]:194 in readValue: [0mRead valid attribute "substeps" value = true
+(0) 18:42:22 [xml::XMLAttribute]:163 in readValue: [0mLeaving readValue
+(0) 18:42:22 [xml::XMLTag]:186 in readAttributes: [0mLeaving readAttributes
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mEntering xmlTagCallback
+  0: tag.getFullName() == exchange
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == data
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == mesh
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == from
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mEntering getStringAttributeValue
+  0: name == to
+
+(0) 18:42:22 [xml::XMLTag]:147 in getStringAttributeValue: [0mLeaving getStringAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == initialize
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mEntering getBooleanAttributeValue
+  0: name == substeps
+
+(0) 18:42:22 [xml::XMLTag]:161 in getBooleanAttributeValue: [0mLeaving getBooleanAttributeValue
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == B
+  1: mesh == B-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == A
+  1: mesh == B-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:160 in xmlTagCallback: [0mLeaving xmlTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == exchange
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getFullName() == coupling-scheme:serial-implicit
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:856 in createSerialImplicitCouplingScheme: [0mEntering createSerialImplicitCouplingScheme
+  0: accessor == A
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:1027 in addDataToBeExchanged: [0mEntering addDataToBeExchanged
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:56 in addDataToSend: [0mEntering addDataToSend
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:56 in addDataToSend: [0mLeaving addDataToSend
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:73 in addDataToReceive: [0mEntering addDataToReceive
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:73 in addDataToReceive: [0mLeaving addDataToReceive
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:1027 in addDataToBeExchanged: [0mLeaving addDataToBeExchanged
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == B
+  1: mesh == A-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:856 in createSerialImplicitCouplingScheme: [0mLeaving createSerialImplicitCouplingScheme
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:398 in addCouplingScheme: [0mEntering addCouplingScheme
+  0: participantName == A
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:400 in addCouplingScheme: [0mNo coupling scheme exists for the participant
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:398 in addCouplingScheme: [0mLeaving addCouplingScheme
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:856 in createSerialImplicitCouplingScheme: [0mEntering createSerialImplicitCouplingScheme
+  0: accessor == B
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:1027 in addDataToBeExchanged: [0mEntering addDataToBeExchanged
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:73 in addDataToReceive: [0mEntering addDataToReceive
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:73 in addDataToReceive: [0mLeaving addDataToReceive
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:56 in addDataToSend: [0mEntering addDataToSend
+(0) 18:42:22 [cplscheme::BiCouplingScheme]:56 in addDataToSend: [0mLeaving addDataToSend
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:1027 in addDataToBeExchanged: [0mLeaving addDataToBeExchanged
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mEntering addNeededMesh
+  0: participant == B
+  1: mesh == A-Mesh
+
+(0) 18:42:22 [mesh::MeshConfiguration]:158 in addNeededMesh: [0mLeaving addNeededMesh
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:856 in createSerialImplicitCouplingScheme: [0mLeaving createSerialImplicitCouplingScheme
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:398 in addCouplingScheme: [0mEntering addCouplingScheme
+  0: participantName == B
+
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:400 in addCouplingScheme: [0mNo coupling scheme exists for the participant
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:398 in addCouplingScheme: [0mLeaving addCouplingScheme
+(0) 18:42:22 [cplscheme::CouplingSchemeConfiguration]:322 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [config::Configuration]:91 in xmlEndTagCallback: [0mEntering xmlEndTagCallback
+  0: tag.getName() == precice-configuration
+
+(0) 18:42:22 [config::Configuration]:91 in xmlEndTagCallback: [0mLeaving xmlEndTagCallback
+(0) 18:42:22 [xml::XMLTag]:43 in addSubtag: [0mEntering addSubtag
+  0: tag._fullName == precice-configuration
+
+(0) 18:42:22 [xml::XMLTag]:43 in addSubtag: [0mLeaving addSubtag
+(0) 18:42:22 [xml]:290 in configure: [0mLeaving configure
+(0) 18:42:22 [impl::ParticipantImpl]:185 in configure: [0mThis is preCICE version 3.4.0
+(0) 18:42:22 [impl::ParticipantImpl]:186 in configure: [0mRevision info: no-info [git failed to run]
+(0) 18:42:22 [impl::ParticipantImpl]:205 in configure: [0mBuild type: Debug
+(0) 18:42:22 [impl::ParticipantImpl]:207 in configure: [0mWorking directory "/aero-jobs/case-c17e04a0addd"
+(0) 18:42:22 [impl::ParticipantImpl]:211 in configure: [0mConfiguring preCICE with configuration "precice-config.xml"
+(0) 18:42:22 [impl::ParticipantImpl]:212 in configure: [0mI am participant "A"
+(0) 18:42:22 [impl::ParticipantImpl]:215 in configure: [0mEntering configure
+(0) 18:42:22 [config::Configuration]:172 in configurePartitionsFor: [0mEntering configurePartitionsFor
+(0) 18:42:22 [m2n::M2N]:258 in createDistributedCommunication: [0mEntering createDistributedCommunication
+(0) 18:42:22 [m2n::M2N]:258 in createDistributedCommunication: [0mLeaving createDistributedCommunication
+(0) 18:42:22 [config::Configuration]:205 in configurePartitionsFor: [0mReceiving mesh from B
+(0) 18:42:22 [m2n::M2N]:258 in createDistributedCommunication: [0mEntering createDistributedCommunication
+(0) 18:42:22 [m2n::M2N]:258 in createDistributedCommunication: [0mLeaving createDistributedCommunication
+(0) 18:42:22 [config::Configuration]:172 in configurePartitionsFor: [0mLeaving configurePartitionsFor
+(0) 18:42:22 [utils::IntraComm]:33 in configure: [0mEntering configure
+  0: rank == 0
+  1: size == 1
+
+(0) 18:42:22 [utils::IntraComm]:39 in configure: [0misSecondaryRank: false, isPrimaryRank: false
+(0) 18:42:22 [utils::IntraComm]:33 in configure: [0mLeaving configure
+(0) 18:42:22 [impl::ParticipantImpl]:215 in configure: [0mLeaving configure
+(0) 18:42:22 [Events]:141 in startBackend: [0mStarting backend with events-file: "./precice-profiling/A-0-1.txt"
+(0) 18:42:22 [impl::ParticipantImpl]:156 in ParticipantImpl: [0mInitialize intra-participant communication
+(0) 18:42:22 [impl::ParticipantImpl]:641 in getMeshDimensions: [0mEntering getMeshDimensions
+  0: meshName == A-Mesh
+
+(0) 18:42:22 [impl::ParticipantImpl]:641 in getMeshDimensions: [0mLeaving getMeshDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:821 in setMeshVertices: [0mEntering setMeshVertices
+  0: meshName == A-Mesh
+  1: positions.size() == 16
+  2: ids.size() == 8
+
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mEntering allocateDataValues
+  0: _vertices.size() == 8
+
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData Temperature now has 8 values
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData HeatFlux now has 8 values
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mLeaving allocateDataValues
+(0) 18:42:22 [impl::WriteDataContext]:106 in resizeBufferTo: [0mData Temperature now has 8 values
+(0) 18:42:22 [impl::ParticipantImpl]:821 in setMeshVertices: [0mLeaving setMeshVertices
+(0) 18:42:22 [impl::ParticipantImpl]:250 in initialize: [0mEntering initialize
+(0) 18:42:22 [impl::ParticipantImpl]:323 in setupCommunication: [0mEntering setupCommunication
+(0) 18:42:22 [impl::ParticipantImpl]:326 in setupCommunication: [0mPreprocessing provided meshes
+(0) 18:42:22 [mesh::Mesh]:446 in removeDuplicates: [0mCompression removed 0 tetrahedra (0 to 0), 0 triangles (0 to 0), and 0 edges (0 to 0)
+(0) 18:42:22 [mesh::Mesh]:480 in generateImplictPrimitives: [0mNo implicit primitives required
+(0) 18:42:22 [impl::ParticipantImpl]:335 in setupCommunication: [0mSetting up primary communication to coupling partner/s
+(0) 18:42:22 [impl::ParticipantImpl]:343 in setupCommunication: [0mAwaiting primary connection from B
+(0) 18:42:22 [m2n::M2N]:107 in requestPrimaryRankConnection: [0mEntering requestPrimaryRankConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [m2n::M2N]:113 in requestPrimaryRankConnection: [0mRequest primary connection
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mEntering requestConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [com::ConnectionInfoPublisher]:56 in read: [0mWaiting for connection file "./precice-run/B-A/3f/5cb13d27d15071ad239719492355fd"
+(0) 18:42:22 [com::ConnectionInfoPublisher]:62 in read: [0mFound connection file "./precice-run/B-A/3f/5cb13d27d15071ad239719492355fd"
+(0) 18:42:22 [com::SocketCommunication]:217 in requestConnection: [0mRequest connection to 127.0.0.1:45567
+(0) 18:42:22 [com::SocketCommunication]:248 in requestConnection: [0mRequested connection to 127.0.0.1:45567
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 1
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mLeaving requestConnection
+(0) 18:42:22 [com::SocketCommunication]:545 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:545 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:354 in send: [0mEntering send
+  0: itemToSend == 3.4.0;7f9fd23c618559de8bd40b1f578160af
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:354 in send: [0mLeaving send
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:107 in requestPrimaryRankConnection: [0mLeaving requestPrimaryRankConnection
+(0) 18:42:22 [impl::ParticipantImpl]:346 in setupCommunication: [0mEstablished primary connection from  B
+(0) 18:42:22 [impl::ParticipantImpl]:351 in setupCommunication: [0mPrimary ranks are connected
+(0) 18:42:22 [mesh::Mesh]:268 in computeBoundingBox: [0mEntering computeBoundingBox
+  0: _name == A-Mesh
+
+(0) 18:42:22 [mesh::Mesh]:277 in computeBoundingBox: [0mBounding Box, ( [0 1], [0 0], )
+(0) 18:42:22 [mesh::Mesh]:268 in computeBoundingBox: [0mLeaving computeBoundingBox
+(0) 18:42:22 [mapping::NearestNeighborMapping]:88 in clear: [0mEntering clear
+(0) 18:42:22 [mapping::NearestNeighborMapping]:88 in clear: [0mLeaving clear
+(0) 18:42:22 [mapping::NearestNeighborMapping]:88 in clear: [0mEntering clear
+(0) 18:42:22 [mapping::NearestNeighborMapping]:88 in clear: [0mLeaving clear
+(0) 18:42:22 [partition::ProvidedPartition]:247 in compareBoundingBoxes: [0mEntering compareBoundingBoxes
+(0) 18:42:22 [partition::ProvidedPartition]:247 in compareBoundingBoxes: [0mLeaving compareBoundingBoxes
+(0) 18:42:22 [partition::ReceivedPartition]:384 in compareBoundingBoxes: [0mEntering compareBoundingBoxes
+(0) 18:42:22 [partition::ReceivedPartition]:384 in compareBoundingBoxes: [0mLeaving compareBoundingBoxes
+(0) 18:42:22 [impl::ParticipantImpl]:357 in setupCommunication: [0mSetting up preliminary secondary communication to coupling partner/s
+(0) 18:42:22 [partition::ProvidedPartition]:37 in communicate: [0mEntering communicate
+(0) 18:42:22 [partition::ProvidedPartition]:119 in prepare: [0mEntering prepare
+(0) 18:42:22 [partition::ProvidedPartition]:120 in prepare: [0mPrepare partition for mesh A-Mesh
+(0) 18:42:22 [partition::ProvidedPartition]:223 in prepare: [0mSet owner information
+(0) 18:42:22 [partition::ProvidedPartition]:119 in prepare: [0mLeaving prepare
+(0) 18:42:22 [mesh::Mesh]:357 in addMesh: [0mEntering addMesh
+(0) 18:42:22 [mesh::Mesh]:357 in addMesh: [0mLeaving addMesh
+(0) 18:42:22 [partition::ProvidedPartition]:87 in communicate: [0mGather mesh A-Mesh
+(0) 18:42:22 [partition::ProvidedPartition]:104 in communicate: [0mSend global mesh A-Mesh
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 5
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mEntering send
+  0: itemsToSend.size() == 5
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mEntering send
+  0: itemsToSend.size() == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mLeaving send
+(0) 18:42:22 [partition::ProvidedPartition]:37 in communicate: [0mLeaving communicate
+(0) 18:42:22 [partition::ReceivedPartition]:46 in communicate: [0mEntering communicate
+(0) 18:42:22 [partition::ReceivedPartition]:69 in communicate: [0mReceive global mesh B-Mesh
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 5
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 8
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mLeaving receive
+(0) 18:42:22 [partition::ReceivedPartition]:46 in communicate: [0mLeaving communicate
+(0) 18:42:22 [partition::ProvidedPartition]:234 in compute: [0mEntering compute
+(0) 18:42:22 [partition::ProvidedPartition]:234 in compute: [0mLeaving compute
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mEntering allocateDataValues
+  0: _vertices.size() == 8
+
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData Temperature now has 8 values
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData HeatFlux now has 8 values
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mLeaving allocateDataValues
+(0) 18:42:22 [impl::WriteDataContext]:106 in resizeBufferTo: [0mData Temperature now has 8 values
+(0) 18:42:22 [partition::ReceivedPartition]:95 in compute: [0mEntering compute
+(0) 18:42:22 [partition::ReceivedPartition]:99 in compute: [0mHandle partition data structures for serial participant
+(0) 18:42:22 [partition::ReceivedPartition]:95 in compute: [0mLeaving compute
+(0) 18:42:22 [mesh::Mesh]:268 in computeBoundingBox: [0mEntering computeBoundingBox
+  0: _name == B-Mesh
+
+(0) 18:42:22 [mesh::Mesh]:277 in computeBoundingBox: [0mBounding Box, ( [0.0625 0.9375], [0 0], )
+(0) 18:42:22 [mesh::Mesh]:268 in computeBoundingBox: [0mLeaving computeBoundingBox
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mEntering allocateDataValues
+  0: _vertices.size() == 8
+
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData Temperature now has 8 values
+(0) 18:42:22 [mesh::Data]:184 in allocateValues: [0mData HeatFlux now has 8 values
+(0) 18:42:22 [mesh::Mesh]:259 in allocateDataValues: [0mLeaving allocateDataValues
+(0) 18:42:22 [impl::ParticipantImpl]:366 in setupCommunication: [0mSetting up secondary communication to coupling partner/s
+(0) 18:42:22 [impl::ParticipantImpl]:41 in connectSecondaryRanks: [0mAwaiting secondary connections from B
+(0) 18:42:22 [m2n::M2N]:153 in requestSecondaryRanksConnection: [0mEntering requestSecondaryRanksConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [m2n::M2N]:159 in requestSecondaryRanksConnection: [0mRequest secondary connections
+(0) 18:42:22 [m2n::PointToPointCommunication]:457 in requestConnection: [0mEntering requestConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:464 in requestConnection: [0mExchange vertex distribution between both primary ranks
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mEntering requestConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [com::ConnectionInfoPublisher]:56 in read: [0mWaiting for connection file "./precice-run/B-A/0c/d2821a56da56e48d29cea03fabf0ba"
+(0) 18:42:22 [com::ConnectionInfoPublisher]:62 in read: [0mFound connection file "./precice-run/B-A/0c/d2821a56da56e48d29cea03fabf0ba"
+(0) 18:42:22 [com::SocketCommunication]:217 in requestConnection: [0mRequest connection to 127.0.0.1:35711
+(0) 18:42:22 [com::SocketCommunication]:248 in requestConnection: [0mRequested connection to 127.0.0.1:35711
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 1
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mLeaving requestConnection
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 8
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 1
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 0
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mEntering send
+  0: itemsToSend.size() == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mEntering ~SocketCommunication
+  0: _isConnected == true
+
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mLeaving ~SocketCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:477 in requestConnection: [0mBroadcast vertex distributions
+(0) 18:42:22 [m2n::PointToPointCommunication]:535 in requestConnection: [0mCreate and connect communication
+(0) 18:42:22 [com::SocketCommunication]:274 in requestConnectionAsClient: [0mEntering requestConnectionAsClient
+  0: acceptorName == B
+  1: requesterName == A
+  2: acceptorRanks == {0}
+  3: requesterRank == 0
+
+(0) 18:42:22 [com::ConnectionInfoPublisher]:56 in read: [0mWaiting for connection file "./precice-run/B-A/48/d57ce616ec5d0f8f0e8b4e3416df78"
+(0) 18:42:22 [com::ConnectionInfoPublisher]:62 in read: [0mFound connection file "./precice-run/B-A/48/d57ce616ec5d0f8f0e8b4e3416df78"
+(0) 18:42:22 [com::SocketCommunication]:291 in requestConnectionAsClient: [0mRequesting connection to 127.0.0.1, port 36239
+(0) 18:42:22 [com::SocketCommunication]:312 in requestConnectionAsClient: [0mRequested connection to 127.0.0.1:36239, rank = 0
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 0
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:274 in requestConnectionAsClient: [0mLeaving requestConnectionAsClient
+(0) 18:42:22 [m2n::PointToPointCommunication]:545 in requestConnection: [0mStore communication map
+(0) 18:42:22 [m2n::PointToPointCommunication]:457 in requestConnection: [0mLeaving requestConnection
+(0) 18:42:22 [m2n::M2N]:159 in requestSecondaryRanksConnection: [0mRequest secondary connections
+(0) 18:42:22 [m2n::PointToPointCommunication]:457 in requestConnection: [0mEntering requestConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:464 in requestConnection: [0mExchange vertex distribution between both primary ranks
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mEntering requestConnection
+  0: acceptorName == B
+  1: requesterName == A
+
+(0) 18:42:22 [com::ConnectionInfoPublisher]:56 in read: [0mWaiting for connection file "./precice-run/B-A/80/10ebf1a17c5c9db8d83e988482e1b0"
+(0) 18:42:22 [com::ConnectionInfoPublisher]:62 in read: [0mFound connection file "./precice-run/B-A/80/10ebf1a17c5c9db8d83e988482e1b0"
+(0) 18:42:22 [com::SocketCommunication]:217 in requestConnection: [0mRequest connection to 127.0.0.1:58527
+(0) 18:42:22 [com::SocketCommunication]:248 in requestConnection: [0mRequested connection to 127.0.0.1:58527
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 1
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:212 in requestConnection: [0mLeaving requestConnection
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 8
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:566 in receive: [0mLeaving receive
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 1
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 0
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mEntering send
+  0: itemsToSend.size() == 8
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:372 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mEntering ~SocketCommunication
+  0: _isConnected == true
+
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mLeaving ~SocketCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:477 in requestConnection: [0mBroadcast vertex distributions
+(0) 18:42:22 [m2n::PointToPointCommunication]:535 in requestConnection: [0mCreate and connect communication
+(0) 18:42:22 [com::SocketCommunication]:274 in requestConnectionAsClient: [0mEntering requestConnectionAsClient
+  0: acceptorName == B
+  1: requesterName == A
+  2: acceptorRanks == {0}
+  3: requesterRank == 0
+
+(0) 18:42:22 [com::ConnectionInfoPublisher]:56 in read: [0mWaiting for connection file "./precice-run/B-A/3b/3ab593232e55e2a385c6edb856cc2d"
+(0) 18:42:22 [com::ConnectionInfoPublisher]:62 in read: [0mFound connection file "./precice-run/B-A/3b/3ab593232e55e2a385c6edb856cc2d"
+(0) 18:42:22 [com::SocketCommunication]:291 in requestConnectionAsClient: [0mRequesting connection to 127.0.0.1, port 45831
+(0) 18:42:22 [com::SocketCommunication]:312 in requestConnectionAsClient: [0mRequested connection to 127.0.0.1:45831, rank = 0
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 0
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [com::SocketCommunication]:274 in requestConnectionAsClient: [0mLeaving requestConnectionAsClient
+(0) 18:42:22 [m2n::PointToPointCommunication]:545 in requestConnection: [0mStore communication map
+(0) 18:42:22 [m2n::PointToPointCommunication]:457 in requestConnection: [0mLeaving requestConnection
+(0) 18:42:22 [m2n::M2N]:153 in requestSecondaryRanksConnection: [0mLeaving requestSecondaryRanksConnection
+(0) 18:42:22 [impl::ParticipantImpl]:43 in connectSecondaryRanks: [0mEstablished secondary connections from B
+(0) 18:42:22 [impl::ParticipantImpl]:371 in setupCommunication: [0mEstablished secondary connection from  B
+(0) 18:42:22 [impl::ParticipantImpl]:373 in setupCommunication: [0mSecondary ranks are connected
+(0) 18:42:22 [impl::ParticipantImpl]:323 in setupCommunication: [0mLeaving setupCommunication
+(0) 18:42:22 [impl::ParticipantImpl]:382 in setupWatcher: [0mEntering setupWatcher
+(0) 18:42:22 [impl::ParticipantImpl]:383 in setupWatcher: [0mInitialize watchpoints
+(0) 18:42:22 [impl::ParticipantImpl]:382 in setupWatcher: [0mLeaving setupWatcher
+(0) 18:42:22 [impl::ParticipantImpl]:1646 in mapInitialWrittenData: [0mEntering mapInitialWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1646 in mapInitialWrittenData: [0mLeaving mapInitialWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:283 in initialize: [0mInitialize coupling schemes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:222 in initializeWithZeroInitialData: [0mInitialize HeatFlux as zero.
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:280 in initialize: [0mEntering initialize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:639 in checkCouplingDataAvailable: [0mEntering checkCouplingDataAvailable
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:639 in checkCouplingDataAvailable: [0mLeaving checkCouplingDataAvailable
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:222 in initializeWithZeroInitialData: [0mInitialize HeatFlux as zero.
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:280 in initialize: [0mLeaving initialize
+(0) 18:42:22 [impl::ParticipantImpl]:1697 in mapInitialReadData: [0mEntering mapInitialReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1633 in computeMappings: [0mComputing "nearest-neighbor" mapping from mesh "B-Mesh" to mesh "A-Mesh" in "read" direction.
+(0) 18:42:22 [mapping::NearestNeighborMapping]:32 in computeMapping: [0mEntering computeMapping
+  0: input()->nVertices() == 8
+
+(0) 18:42:22 [mapping::NearestNeighborMapping]:43 in computeMapping: [0mCompute conservative mapping
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mEntering getClosestVertex
+(0) 18:42:22 [query::Index]:173 in getClosestVertex: [0mLeaving getClosestVertex
+(0) 18:42:22 [mapping::NearestNeighborMapping]:80 in computeMapping: [0mMapping distance min:0.00892857 max:0.0625 avg: 0.0357143 var: 0.000398597 cnt: 8
+(0) 18:42:22 [mapping::NearestNeighborMapping]:32 in computeMapping: [0mLeaving computeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1706 in mapInitialReadData: [0mMap initial read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [utils::IntraComm]:69 in l2norm: [0mEntering l2norm
+(0) 18:42:22 [utils::IntraComm]:69 in l2norm: [0mLeaving l2norm
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=0 from "B-Mesh" to "A-Mesh" (skipped zero sample)
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1697 in mapInitialReadData: [0mLeaving mapInitialReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:298 in initialize: [0mit 1 (min: 1, max: 8), time-window 1 (max: 3), t 0, Dt 1, max-dt 1
+(0) 18:42:22 [impl::ParticipantImpl]:250 in initialize: [0mLeaving initialize
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mEntering requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mLeaving requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mEntering writeData
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+  2: vertices.size() == 8
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mLeaving writeData
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mEntering advance
+  0: computedTimeStepSize == 1
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:421 in advance: [0mSynchronize time step size
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mEntering addComputedTime
+  0: timeToAdd == 1
+  1: getTime() == 0
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mLeaving addComputedTime
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mEntering completeJustInTimeMapping
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mLeaving completeJustInTimeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mEntering mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mLeaving mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1816 in advanceCouplingScheme: [0mAdvance coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mEntering firstExchange
+  0: _timeWindows == 1
+  1: getTime() == 1
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:138 in exchangeFirstData: [0mSending data...
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mEntering sendTimeWindowSize
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mLeaving sendTimeWindowSize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mEntering sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mEntering sendTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:106 in sendTimes: [0mSending number or time steps 2...
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:108 in sendTimes: [0mSending times...
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mLeaving sendTimes
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mEntering aSend
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mLeaving aSend
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 1
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mLeaving sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mLeaving firstExchange
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mEntering secondExchange
+  0: _timeWindows == 2
+  1: getTime() == 1
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:180 in exchangeSecondData: [0mReceiving convergence data...
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:387 in receive: [0mreceive(bool): false
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mLeaving receive
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:182 in exchangeSecondData: [0mReceiving data...
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mEntering receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mEntering receiveTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:155 in receiveTimes: [0mReceiving number of time steps...
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:161 in receiveTimes: [0mReceiving times....
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 2
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:411 in receive: [0mreceive(span<double>) .size() = 2
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:163 in receiveTimes: [0mReceived times [0, 1]
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mLeaving receiveTimes
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mEntering aReceive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mLeaving aReceive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mLeaving receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:380 in secondExchange: [0mNo convergence achieved
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mLeaving secondExchange
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mEntering trimReadMappedData
+(0) 18:42:22 [impl::ReadDataContext]:86 in trimToDataAfterFor: [0mEntering trimToDataAfterFor
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+  2: t == 0
+
+(0) 18:42:22 [impl::ReadDataContext]:86 in trimToDataAfterFor: [0mLeaving trimToDataAfterFor
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mLeaving trimReadMappedData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mEntering mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1724 in mapReadData: [0mMap read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::DataContext]:144 in mapData: [0mSkipping stample t=0 (exists)
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=1 from "B-Mesh" to "A-Mesh"
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mEntering mapConservative
+(0) 18:42:22 [mapping::NearestNeighborMapping]:54 in mapConservative: [0mMap conservative using nearest-neighbor
+(0) 18:42:22 [mapping::NearestNeighborMapping]:67 in mapConservative: [0mMapped values = [0, 0, 0, ... , 0, 0, 0] min:0 max:0
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mLeaving mapConservative
+(0) 18:42:22 [impl::DataContext]:165 in mapData: [0mMapped values (t=1) = [0, 0, 0, ... , 0, 0, 0] min:0 max:0
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mLeaving mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:457 in advance: [0mit 2 (min: 1, max: 8), time-window 1 (max: 3), t 0, Dt 1, max-dt 1
+(0) 18:42:22 [impl::ParticipantImpl]:459 in advance: [0mMapped 0 samples in write mappings and 1 samples in read mappings
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mLeaving advance
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mEntering requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mLeaving requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mEntering readData
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+  2: vertices.size() == 8
+  3: relativeReadTime == 0
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mLeaving readData
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mEntering requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mLeaving requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mEntering writeData
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+  2: vertices.size() == 8
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mLeaving writeData
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mEntering advance
+  0: computedTimeStepSize == 1
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:421 in advance: [0mSynchronize time step size
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mEntering addComputedTime
+  0: timeToAdd == 1
+  1: getTime() == 0
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mLeaving addComputedTime
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mEntering completeJustInTimeMapping
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mLeaving completeJustInTimeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mEntering mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mLeaving mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1816 in advanceCouplingScheme: [0mAdvance coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mEntering firstExchange
+  0: _timeWindows == 1
+  1: getTime() == 1
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:138 in exchangeFirstData: [0mSending data...
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mEntering sendTimeWindowSize
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mLeaving sendTimeWindowSize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mEntering sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mEntering sendTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:106 in sendTimes: [0mSending number or time steps 2...
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:108 in sendTimes: [0mSending times...
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mLeaving sendTimes
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mEntering aSend
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mLeaving aSend
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 2
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mLeaving sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mLeaving firstExchange
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mEntering secondExchange
+  0: _timeWindows == 2
+  1: getTime() == 1
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:180 in exchangeSecondData: [0mReceiving convergence data...
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:387 in receive: [0mreceive(bool): true
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mLeaving receive
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:182 in exchangeSecondData: [0mReceiving data...
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mEntering receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mEntering receiveTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:155 in receiveTimes: [0mReceiving number of time steps...
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:161 in receiveTimes: [0mReceiving times....
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 2
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:411 in receive: [0mreceive(span<double>) .size() = 2
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:163 in receiveTimes: [0mReceived times [0, 1]
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mLeaving receiveTimes
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mEntering aReceive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mLeaving aReceive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mLeaving receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mEntering moveToNextWindow
+  0: _timeWindows == 2
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mLeaving moveToNextWindow
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:389 in secondExchange: [0mConvergence achieved
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:391 in secondExchange: [0mTime window completed
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:394 in secondExchange: [0mSetting require create checkpoint
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mLeaving secondExchange
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mEntering trimReadMappedData
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mEntering clearToDataFor
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mLeaving clearToDataFor
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mLeaving trimReadMappedData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mEntering mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1724 in mapReadData: [0mMap read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=1 from "B-Mesh" to "A-Mesh"
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mEntering mapConservative
+(0) 18:42:22 [mapping::NearestNeighborMapping]:54 in mapConservative: [0mMap conservative using nearest-neighbor
+(0) 18:42:22 [mapping::NearestNeighborMapping]:67 in mapConservative: [0mMapped values = [0, 0, 0, ... , 0, 0, 0] min:0 max:0
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mLeaving mapConservative
+(0) 18:42:22 [impl::DataContext]:165 in mapData: [0mMapped values (t=1) = [0, 0, 0, ... , 0, 0, 0] min:0 max:0
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mLeaving mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:457 in advance: [0mit 1 (min: 1, max: 8), time-window 2 (max: 3), t 1, Dt 1, max-dt 1
+(0) 18:42:22 [impl::ParticipantImpl]:459 in advance: [0mMapped 0 samples in write mappings and 1 samples in read mappings
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mLeaving advance
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mEntering requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mLeaving requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mEntering readData
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+  2: vertices.size() == 8
+  3: relativeReadTime == 0
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mEntering getSampleAtOrAfter
+  0: before == 1
+
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mLeaving getSampleAtOrAfter
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mLeaving readData
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mEntering requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mLeaving requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mEntering writeData
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+  2: vertices.size() == 8
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mLeaving writeData
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mEntering advance
+  0: computedTimeStepSize == 1
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:421 in advance: [0mSynchronize time step size
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mEntering addComputedTime
+  0: timeToAdd == 1
+  1: getTime() == 1
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mLeaving addComputedTime
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mEntering completeJustInTimeMapping
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mLeaving completeJustInTimeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mEntering mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mLeaving mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1816 in advanceCouplingScheme: [0mAdvance coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mEntering firstExchange
+  0: _timeWindows == 2
+  1: getTime() == 2
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:138 in exchangeFirstData: [0mSending data...
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mEntering sendTimeWindowSize
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mLeaving sendTimeWindowSize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mEntering sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mEntering sendTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:106 in sendTimes: [0mSending number or time steps 2...
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:108 in sendTimes: [0mSending times...
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mLeaving sendTimes
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mEntering aSend
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mLeaving aSend
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 1
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mLeaving sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mLeaving firstExchange
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mEntering secondExchange
+  0: _timeWindows == 3
+  1: getTime() == 2
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:180 in exchangeSecondData: [0mReceiving convergence data...
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:387 in receive: [0mreceive(bool): true
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mLeaving receive
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:182 in exchangeSecondData: [0mReceiving data...
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mEntering receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mEntering receiveTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:155 in receiveTimes: [0mReceiving number of time steps...
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:161 in receiveTimes: [0mReceiving times....
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 2
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:411 in receive: [0mreceive(span<double>) .size() = 2
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:163 in receiveTimes: [0mReceived times [1, 2]
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mLeaving receiveTimes
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mEntering aReceive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mLeaving aReceive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mLeaving receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mEntering moveToNextWindow
+  0: _timeWindows == 3
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mLeaving moveToNextWindow
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:389 in secondExchange: [0mConvergence achieved
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:391 in secondExchange: [0mTime window completed
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:394 in secondExchange: [0mSetting require create checkpoint
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mLeaving secondExchange
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mEntering trimReadMappedData
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mEntering clearToDataFor
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mLeaving clearToDataFor
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mLeaving trimReadMappedData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mEntering mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1724 in mapReadData: [0mMap read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=2 from "B-Mesh" to "A-Mesh"
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mEntering mapConservative
+(0) 18:42:22 [mapping::NearestNeighborMapping]:54 in mapConservative: [0mMap conservative using nearest-neighbor
+(0) 18:42:22 [mapping::NearestNeighborMapping]:67 in mapConservative: [0mMapped values = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mLeaving mapConservative
+(0) 18:42:22 [impl::DataContext]:165 in mapData: [0mMapped values (t=2) = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mLeaving mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:457 in advance: [0mit 1 (min: 1, max: 8), time-window 3 (max: 3), t 2, Dt 1, max-dt 1
+(0) 18:42:22 [impl::ParticipantImpl]:459 in advance: [0mMapped 0 samples in write mappings and 1 samples in read mappings
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mLeaving advance
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mEntering requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mLeaving requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mEntering readData
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+  2: vertices.size() == 8
+  3: relativeReadTime == 0
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mEntering getSampleAtOrAfter
+  0: before == 2
+
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mLeaving getSampleAtOrAfter
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mLeaving readData
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mEntering requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mLeaving requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mEntering writeData
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+  2: vertices.size() == 8
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mLeaving writeData
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mEntering advance
+  0: computedTimeStepSize == 1
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:421 in advance: [0mSynchronize time step size
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mEntering addComputedTime
+  0: timeToAdd == 1
+  1: getTime() == 2
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mLeaving addComputedTime
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mEntering completeJustInTimeMapping
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mLeaving completeJustInTimeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mEntering mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mLeaving mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1816 in advanceCouplingScheme: [0mAdvance coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mEntering firstExchange
+  0: _timeWindows == 3
+  1: getTime() == 3
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:138 in exchangeFirstData: [0mSending data...
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mEntering sendTimeWindowSize
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mLeaving sendTimeWindowSize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mEntering sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mEntering sendTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:106 in sendTimes: [0mSending number or time steps 2...
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:108 in sendTimes: [0mSending times...
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mLeaving sendTimes
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mEntering aSend
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mLeaving aSend
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 1
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mLeaving sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mLeaving firstExchange
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mEntering secondExchange
+  0: _timeWindows == 4
+  1: getTime() == 3
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:180 in exchangeSecondData: [0mReceiving convergence data...
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:387 in receive: [0mreceive(bool): false
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mLeaving receive
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:182 in exchangeSecondData: [0mReceiving data...
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mEntering receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mEntering receiveTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:155 in receiveTimes: [0mReceiving number of time steps...
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:161 in receiveTimes: [0mReceiving times....
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 2
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:411 in receive: [0mreceive(span<double>) .size() = 2
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:163 in receiveTimes: [0mReceived times [2, 3]
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mLeaving receiveTimes
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mEntering aReceive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mLeaving aReceive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mLeaving receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:380 in secondExchange: [0mNo convergence achieved
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mLeaving secondExchange
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mEntering trimReadMappedData
+(0) 18:42:22 [impl::ReadDataContext]:86 in trimToDataAfterFor: [0mEntering trimToDataAfterFor
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+  2: t == 2
+
+(0) 18:42:22 [impl::ReadDataContext]:86 in trimToDataAfterFor: [0mLeaving trimToDataAfterFor
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mLeaving trimReadMappedData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mEntering mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1724 in mapReadData: [0mMap read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::DataContext]:144 in mapData: [0mSkipping stample t=2 (exists)
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=3 from "B-Mesh" to "A-Mesh"
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mEntering mapConservative
+(0) 18:42:22 [mapping::NearestNeighborMapping]:54 in mapConservative: [0mMap conservative using nearest-neighbor
+(0) 18:42:22 [mapping::NearestNeighborMapping]:67 in mapConservative: [0mMapped values = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mLeaving mapConservative
+(0) 18:42:22 [impl::DataContext]:165 in mapData: [0mMapped values (t=3) = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mLeaving mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:457 in advance: [0mit 2 (min: 1, max: 8), time-window 3 (max: 3), t 2, Dt 1, max-dt 1
+(0) 18:42:22 [impl::ParticipantImpl]:459 in advance: [0mMapped 0 samples in write mappings and 1 samples in read mappings
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mLeaving advance
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mEntering requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mLeaving requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mEntering readData
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+  2: vertices.size() == 8
+  3: relativeReadTime == 0
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mLeaving readData
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mEntering requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:700 in requiresWritingCheckpoint: [0mLeaving requiresWritingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mEntering writeData
+  0: meshName == A-Mesh
+  1: dataName == Temperature
+  2: vertices.size() == 8
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:1175 in writeData: [0mLeaving writeData
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mEntering advance
+  0: computedTimeStepSize == 1
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:421 in advance: [0mSynchronize time step size
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mEntering addComputedTime
+  0: timeToAdd == 1
+  1: getTime() == 2
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:456 in addComputedTime: [0mLeaving addComputedTime
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mEntering completeJustInTimeMapping
+(0) 18:42:22 [impl::WriteDataContext]:34 in completeJustInTimeMapping: [0mLeaving completeJustInTimeMapping
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mEntering resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1766 in resetWrittenData: [0mLeaving resetWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mEntering mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1663 in mapWrittenData: [0mLeaving mapWrittenData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1816 in advanceCouplingScheme: [0mAdvance coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mEntering firstExchange
+  0: _timeWindows == 3
+  1: getTime() == 3
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:138 in exchangeFirstData: [0mSending data...
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mEntering sendTimeWindowSize
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:63 in sendTimeWindowSize: [0mLeaving sendTimeWindowSize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mEntering sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mEntering sendTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:106 in sendTimes: [0mSending number or time steps 2...
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mEntering send
+  0: itemToSend == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:489 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:316 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:108 in sendTimes: [0mSending times...
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mEntering send
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mEntering send
+  0: itemsToSend.size() == 2
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:433 in send: [0mLeaving send
+(0) 18:42:22 [m2n::M2N]:308 in send: [0mLeaving send
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:105 in sendTimes: [0mLeaving sendTimes
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mEntering aSend
+  0: itemsToSend.size() == 16
+  1: rankReceiver == 0
+
+(0) 18:42:22 [com::SocketCommunication]:449 in aSend: [0mLeaving aSend
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 1
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:114 in sendData: [0mLeaving sendData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:343 in firstExchange: [0mLeaving firstExchange
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mEntering secondExchange
+  0: _timeWindows == 4
+  1: getTime() == 3
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mEntering checkCompletenessRequiredActions
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:623 in checkCompletenessRequiredActions: [0mLeaving checkCompletenessRequiredActions
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:180 in exchangeSecondData: [0mReceiving convergence data...
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:685 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:387 in receive: [0mreceive(bool): true
+(0) 18:42:22 [m2n::M2N]:380 in receive: [0mLeaving receive
+(0) 18:42:22 [cplschemes::SerialCouplingSchemes]:182 in exchangeSecondData: [0mReceiving data...
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mEntering receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mEntering receiveTimes
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:155 in receiveTimes: [0mReceiving number of time steps...
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mEntering receive
+  0: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:644 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:339 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:416 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:161 in receiveTimes: [0mReceiving times....
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mEntering receive
+  0: utils::IntraComm::getRank() == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mEntering receive
+  0: itemsToReceive.size() == 2
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:582 in receive: [0mLeaving receive
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:273 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:411 in receive: [0mreceive(span<double>) .size() = 2
+(0) 18:42:22 [m2n::M2N]:404 in receive: [0mLeaving receive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:163 in receiveTimes: [0mReceived times [2, 3]
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:154 in receiveTimes: [0mLeaving receiveTimes
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mEntering aReceive
+  0: itemsToReceive.size() == 16
+  1: rankSender == 0
+
+(0) 18:42:22 [com::SocketCommunication]:599 in aReceive: [0mLeaving aReceive
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:169 in receiveData: [0mLeaving receiveData
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mEntering moveToNextWindow
+  0: _timeWindows == 4
+
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:426 in moveToNextWindow: [0mLeaving moveToNextWindow
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:389 in secondExchange: [0mConvergence achieved
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:391 in secondExchange: [0mTime window completed
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:366 in secondExchange: [0mLeaving secondExchange
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mEntering trimReadMappedData
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mEntering clearToDataFor
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::ReadDataContext]:70 in clearToDataFor: [0mLeaving clearToDataFor
+(0) 18:42:22 [impl::ParticipantImpl]:1680 in trimReadMappedData: [0mLeaving trimReadMappedData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mEntering mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mEntering computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1626 in computeMappings: [0mLeaving computeMappings
+(0) 18:42:22 [impl::ParticipantImpl]:1724 in mapReadData: [0mMap read data "HeatFlux" to mesh "A-Mesh"
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mEntering mapData
+  0: getMeshName() == A-Mesh
+  1: getDataName() == HeatFlux
+
+(0) 18:42:22 [impl::DataContext]:155 in mapData: [0mMapping "HeatFlux" for t=3 from "B-Mesh" to "A-Mesh"
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mEntering mapConservative
+(0) 18:42:22 [mapping::NearestNeighborMapping]:54 in mapConservative: [0mMap conservative using nearest-neighbor
+(0) 18:42:22 [mapping::NearestNeighborMapping]:67 in mapConservative: [0mMapped values = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [mapping::NearestNeighborMapping]:52 in mapConservative: [0mLeaving mapConservative
+(0) 18:42:22 [impl::DataContext]:165 in mapData: [0mMapped values (t=3) = [0, 2.85714, 5.71429, ... , 14.2857, 17.1429, 20] min:0 max:20
+(0) 18:42:22 [impl::DataContext]:112 in mapData: [0mLeaving mapData
+(0) 18:42:22 [impl::ParticipantImpl]:1715 in mapReadData: [0mLeaving mapReadData
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mEntering performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1733 in performDataActions: [0mLeaving performDataActions
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mEntering handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:1743 in handleExports: [0mLeaving handleExports
+(0) 18:42:22 [impl::ParticipantImpl]:457 in advance: [0mReached end at: final time-window: 3, final time: 3
+(0) 18:42:22 [impl::ParticipantImpl]:459 in advance: [0mMapped 0 samples in write mappings and 1 samples in read mappings
+(0) 18:42:22 [impl::ParticipantImpl]:396 in advance: [0mLeaving advance
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mEntering requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:711 in requiresReadingCheckpoint: [0mLeaving requiresReadingCheckpoint
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mEntering readData
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+  2: vertices.size() == 8
+  3: relativeReadTime == 0
+
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mEntering getSampleAtOrAfter
+  0: before == 3
+
+(0) 18:42:22 [time::Storage]:159 in getSampleAtOrAfter: [0mLeaving getSampleAtOrAfter
+(0) 18:42:22 [impl::ParticipantImpl]:1213 in readData: [0mLeaving readData
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mEntering getDataDimensions
+  0: meshName == A-Mesh
+  1: dataName == HeatFlux
+
+(0) 18:42:22 [impl::ParticipantImpl]:648 in getDataDimensions: [0mLeaving getDataDimensions
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mEntering isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:656 in isCouplingOngoing: [0mLeaving isCouplingOngoing
+(0) 18:42:22 [impl::ParticipantImpl]:589 in finalize: [0mEntering finalize
+(0) 18:42:22 [impl::ParticipantImpl]:604 in finalize: [0mFinalize coupling scheme
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:271 in finalize: [0mEntering finalize
+(0) 18:42:22 [cplscheme::BaseCouplingScheme]:271 in finalize: [0mLeaving finalize
+(0) 18:42:22 [impl::ParticipantImpl]:1832 in closeCommunicationChannels: [0mClose communication channels
+(0) 18:42:22 [impl::ParticipantImpl]:1862 in closeCommunicationChannels: [0mClosing communication with B
+(0) 18:42:22 [m2n::M2N]:218 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [m2n::M2N]:225 in closePrimaryRankConnection: [0mEntering closePrimaryRankConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mEntering broadcast
+(0) 18:42:22 [utils::IntraComm]:295 in broadcast: [0mLeaving broadcast
+(0) 18:42:22 [m2n::M2N]:225 in closePrimaryRankConnection: [0mLeaving closePrimaryRankConnection
+(0) 18:42:22 [m2n::M2N]:237 in closeDistributedConnections: [0mEntering closeDistributedConnections
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 0
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mEntering ~SocketCommunication
+  0: _isConnected == true
+
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mLeaving ~SocketCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mEntering checkBufferedRequests
+  0: bufferedRequests.size() == 0
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:704 in checkBufferedRequests: [0mLeaving checkBufferedRequests
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mEntering ~SocketCommunication
+  0: _isConnected == true
+
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mLeaving ~SocketCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [m2n::M2N]:237 in closeDistributedConnections: [0mLeaving closeDistributedConnections
+(0) 18:42:22 [m2n::M2N]:218 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [impl::ParticipantImpl]:616 in finalize: [0mClose intra-participant communication
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mEntering ~SocketCommunication
+  0: _isConnected == false
+
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [com::SocketCommunication]:327 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [com::SocketCommunication]:46 in ~SocketCommunication: [0mLeaving ~SocketCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: [0mEntering ~PointToPointCommunication
+  0: _isConnected == false
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: [0mLeaving ~PointToPointCommunication
+(0) 18:42:22 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: [0mEntering ~PointToPointCommunication
+  0: _isConnected == false
+
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mEntering closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:597 in closeConnection: [0mLeaving closeConnection
+(0) 18:42:22 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: [0mLeaving ~PointToPointCommunication
+(0) 18:42:22 [impl::ParticipantImpl]:589 in finalize: [0mLeaving finalize
+A_DONE 5

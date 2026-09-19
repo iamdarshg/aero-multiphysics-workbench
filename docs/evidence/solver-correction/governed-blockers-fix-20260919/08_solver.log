@@ -1,0 +1,115 @@
+ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:16:50
+ Started inside library code
+ Going parallel initialization
+ParCommInit: Initialize #PEs: 1
+ Back from parallel initialization
+MAIN: OMP_NUM_THREADS not set. Using only 1 thread per task.
+MAIN: 
+MAIN: =============================================================
+MAIN: ElmerSolver finite element software, Welcome!
+MAIN: This program is free software licensed under (L)GPL
+MAIN: Copyright April 1st 1995 -> , CSC - IT Center for Science Ltd.
+MAIN: Repository https://www.github.org/elmerCSC/elmerfem
+MAIN: Homepage https://www.elmerfem.org/,  Email elmeradm@csc.fi
+MAIN: Version: 26.2-unknown (Rev: unknown, Compiled: 2026-09-19)
+MAIN:  Running one task without MPI parallelization.
+MAIN:  Running with just one thread per task.
+MAIN:  HYPRE library linked in.
+MAIN:  MUMPS library linked in.
+MAIN:  Lua interpreter linked in.
+MAIN: =============================================================
+MAIN: 
+MAIN: 
+MAIN: -------------------------------------
+MAIN: Reading Model: case.sif
+LoadInputFile: Scanning input file: case.sif
+LoadInputFile: Scanning only size info
+LoadInputFile: First time visiting
+LoadInputFile: Reading base load of sif file
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 2
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 2
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 2
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 2
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 3
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 3
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 3
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 3
+LoadInputFile: Loading input file: case.sif
+LoadInputFile: Reading base load of sif file
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 2
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 2
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 2
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 2
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 3
+CheckKeyword: Found keyword type assuming suffix 1 for: variable 3
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 3
+CheckKeyword: Found keyword type assuming suffix 1 for: operator 3
+CheckKeyword:  Unlisted keyword: [save_left] in section: [boundary condition 1]
+CheckKeyword:  Unlisted keyword: [save_right] in section: [boundary condition 2]
+LoadInputFile: Number of BCs: 2
+LoadInputFile: Number of Body Forces: 0
+LoadInputFile: Number of Initial Conditions: 0
+LoadInputFile: Number of Materials: 2
+LoadInputFile: Number of Equations: 1
+LoadInputFile: Number of Solvers: 4
+LoadInputFile: Number of Bodies: 2
+ElmerMeshReader: Base mesh name: ./domain
+PrepareMesh: Preparing mesh for the future
+MAIN: -------------------------------------
+AddVtuOutputSolverHack: Adding ResultOutputSolver to write VTU output in file: case
+OptimizeBandwidth: Initial bandwidth for heat equation: 192
+OptimizeBandwidth: Optimized bandwidth for heat equation: 20
+MAIN: Number of timesteps to be saved: 50
+MAIN: 
+MAIN: -------------------------------------
+MAIN:  Steady state iteration:            1
+MAIN: -------------------------------------
+MAIN: 
+HeatSolver: ------------------------------------------------
+HeatSolver: Solving energy equation for temperature
+HeatSolver: Heat solver iteration: 1
+       1 0.4534E-15
+ComputeChange: NS (ITER=1) (NRM,RELC): (  365.50172      2.0000000     ) :: heat equation
+HeatSolver: Heat solver iteration: 2
+       1 0.3805E-15
+ComputeChange: NS (ITER=2) (NRM,RELC): (  365.50172     0.24883459E-14 ) :: heat equation
+ComputeChange: SS (ITER=1) (NRM,RELC): (  365.50172      2.0000000     ) :: heat equation
+SaveResult: Saving results to file: domain/case.result
+ResultOutputSolver: -------------------------------------
+ResultOutputSolver: Saving with prefix: case
+CreateListForSaving: Field Variables for Saving
+ResultOutputSolver: Saving in unstructured VTK XML (.vtu) format
+VtuOutputSolver: Saving results in VTK XML format with prefix: case
+VtuOutputSolver: Saving number of partitions: 1
+ResultOutputSolver: -------------------------------------
+MAIN: 
+MAIN: -------------------------------------
+MAIN:  Steady state iteration:            2
+MAIN: -------------------------------------
+MAIN: 
+HeatSolver: ------------------------------------------------
+HeatSolver: Solving energy equation for temperature
+HeatSolver: Heat solver iteration: 1
+       1 0.4240E-15
+ComputeChange: NS (ITER=1) (NRM,RELC): (  365.50172     0.62208648E-15 ) :: heat equation
+ComputeChange: SS (ITER=2) (NRM,RELC): (  365.50172     0.62208648E-15 ) :: heat equation
+SaveResult: Saving results to file: domain/case.result
+ResultOutputSolver: -------------------------------------
+ResultOutputSolver: Saving in unstructured VTK XML (.vtu) format
+ResultOutputSolver: -------------------------------------
+SaveScalars: -----------------------------------------
+SaveScalars: Saving scalar values of various kinds
+SaveScalars: Saving names of values to file: ./result.dat.names
+SaveScalars: Saving values to file: ./result.dat
+SaveScalars: -----------------------------------------
+SaveScalars: Saving scalar values of various kinds
+SaveScalars: Saving names of values to file: ./boundary_left.dat.names
+SaveScalars: Saving values to file: ./boundary_left.dat
+SaveScalars: -----------------------------------------
+SaveScalars: Saving scalar values of various kinds
+SaveScalars: Saving names of values to file: ./boundary_right.dat.names
+SaveScalars: Saving values to file: ./boundary_right.dat
+MAIN: *** Elmer Solver: ALL DONE ***
+MAIN: The end
+SOLVER TOTAL TIME(CPU,REAL):         0.17        0.98
+ELMER SOLVER FINISHED AT: 2026/09/19 19:16:51

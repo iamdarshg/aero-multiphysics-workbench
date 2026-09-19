@@ -1,0 +1,7 @@
+P actions make_etude
+P mode batch
+P version stable
+A args 
+F comm case.comm D 1
+F mmed mesh.med D 20
+R repe result_table.txt R 80

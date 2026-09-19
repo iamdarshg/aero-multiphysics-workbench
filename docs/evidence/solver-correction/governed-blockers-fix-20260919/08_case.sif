@@ -1,0 +1,121 @@
+Header
+  CHECK KEYWORDS Warn
+  Mesh DB "." "domain"
+  Include Path ""
+  Results Directory ""
+End
+
+Simulation
+  Max Output Level = 4
+  Coordinate System = Cartesian 3D
+  Simulation Type = Steady State
+  Steady State Max Iterations = 50
+  Output File = "case.result"
+  Post File = "case.vtu"
+End
+
+Body 1
+  Name = "body_a"
+  Target Bodies(1) = 1
+  Equation = 1
+  Material = 1
+End
+
+Body 2
+  Name = "body_b"
+  Target Bodies(1) = 2
+  Equation = 1
+  Material = 2
+End
+
+Equation 1
+  Name = "HeatEquation"
+  Active Solvers(1) = 1
+End
+
+Solver 1
+  Equation = Heat Equation
+  Procedure = "HeatSolve" "HeatSolver"
+  Variable = Temperature
+  Exec Solver = Always
+  Stabilize = True
+  Bubbles = False
+  Lumped Mass Matrix = False
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-6
+  Nonlinear System Convergence Tolerance = 1.0e-6
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStab
+  Linear System Preconditioning = ILUT
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-7
+End
+
+Solver 2
+  Exec Solver = After Simulation
+  Equation = "SaveScalarsGlobal"
+  Procedure = "SaveData" "SaveScalars"
+  Filename = "result.dat"
+  Variable 1 = Temperature
+  Operator 1 = max
+  Variable 2 = Temperature
+  Operator 2 = min
+  Variable 3 = Temperature
+  Operator 3 = mean
+End
+
+Solver 3
+  Exec Solver = After Simulation
+  Equation = "SaveScalarsBoundary_left"
+  Procedure = "SaveData" "SaveScalars"
+  Filename = "boundary_left.dat"
+  Variable 1 = Temperature
+  Operator 1 = diffusive flux
+  Coefficient 1 = Heat Conductivity
+  Mask Name 1 = "save_left"
+End
+
+Solver 4
+  Exec Solver = After Simulation
+  Equation = "SaveScalarsBoundary_right"
+  Procedure = "SaveData" "SaveScalars"
+  Filename = "boundary_right.dat"
+  Variable 1 = Temperature
+  Operator 1 = diffusive flux
+  Coefficient 1 = Heat Conductivity
+  Mask Name 1 = "save_right"
+End
+
+Material 1
+  Name = "steel-high-k"
+  Heat Conductivity = 2.000000e+00
+  Heat Capacity = 1.000000e+00
+  Density = 1.000000e+00
+End
+
+Material 2
+  Name = "insulator-low-k"
+  Heat Conductivity = 5.000000e-01
+  Heat Capacity = 1.000000e+00
+  Density = 1.000000e+00
+End
+
+Boundary Condition 1
+  Name = "fixed-temperature-left"
+  Target Boundaries(1) = 3
+  Temperature = 4.000000e+02
+  Save Scalars = True
+  save_left = Logical True
+End
+
+Boundary Condition 2
+  Name = "fixed-temperature-right"
+  Target Boundaries(1) = 4
+  Temperature = 3.000000e+02
+  Save Scalars = True
+  save_right = Logical True
+End

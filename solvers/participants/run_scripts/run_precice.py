@@ -22,39 +22,85 @@ from pathlib import Path
 CASE_DIR = Path.cwd()
 CONFIG_NAME = "precice-config.xml"
 
+DEFAULT_PRECICE_PREFIXES = ("/opt/precice", "/opt/precice-env", "/opt/pyprecice")
+
 
 def _fail(detail: str, code: int = 3) -> int:
     sys.stderr.write(f"PRECICE_NATIVE_BLOCKED:{detail}\n")
     return code
 
 
-def find_precice_python() -> str | None:
+def _precice_prefixes() -> tuple[str, ...]:
+    raw = os.environ.get("PRECICE_PREFIXES", "")
+    extra = tuple(item for item in raw.split(os.pathsep) if item.strip()) if raw else ()
+    ordered: list[str] = []
+    for prefix in (*extra, *DEFAULT_PRECICE_PREFIXES):
+        if prefix not in ordered:
+            ordered.append(prefix)
+    return tuple(ordered)
+
+
+def _precice_library_path() -> str:
+    parts = [Path(prefix, "lib").as_posix() for prefix in _precice_prefixes()]
+    existing = os.environ.get("LD_LIBRARY_PATH", "")
+    if existing:
+        parts.append(existing)
+    return os.pathsep.join(parts)
+
+
+def _candidate_interpreters() -> list[str]:
     candidates: list[str] = []
-    env = os.environ.get("PRECICE_PYTHON")
-    if env:
-        candidates.append(env)
-    candidates.extend(
-        [
-            "/opt/precice/bin/python",
-            shutil.which("python3") or "",
-            shutil.which("python") or "",
-            sys.executable,
-        ]
-    )
-    seen: set[str] = set()
+    explicit = os.environ.get("PRECICE_PYTHON")
+    if explicit:
+        candidates.append(explicit)
+    for prefix in _precice_prefixes():
+        candidates.append(str(Path(prefix, "bin", "python")))
+        candidates.append(str(Path(prefix, "bin", "python3")))
+    for name in ("python3", "python"):
+        resolved = shutil.which(name)
+        if resolved:
+            candidates.append(resolved)
+    candidates.append(sys.executable)
+    ordered: list[str] = []
     for candidate in candidates:
-        if not candidate or candidate in seen:
-            continue
-        seen.add(candidate)
+        if candidate and candidate not in ordered:
+            ordered.append(candidate)
+    return ordered
+
+
+def find_precice_python() -> tuple[str | None, list[str]]:
+    """Return the first interpreter that imports the native binding and the
+    exact list of attempts (interpreter plus failure reason)."""
+
+    attempts: list[str] = []
+    probe_env = {key: value for key, value in os.environ.items() if key != "PYTHONPATH"}
+    probe_env["LD_LIBRARY_PATH"] = _precice_library_path()
+    for candidate in _candidate_interpreters():
         try:
             probe = subprocess.run(
-                [candidate, "-c", "import precice"], capture_output=True, timeout=120
+                [
+                    candidate,
+                    "-c",
+                    "import precice; print(getattr(precice, '__version__', 'unknown'))",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                env=probe_env,
+                check=False,
             )
-        except (OSError, subprocess.SubprocessError):
+        except (OSError, subprocess.SubprocessError) as exc:
+            attempts.append(f"{candidate}: probe failed:{type(exc).__name__}")
             continue
         if probe.returncode == 0:
-            return candidate
-    return None
+            version = (probe.stdout or "").strip().splitlines()
+            attempts.append(f"{candidate}: {version[0] if version else 'precice'}")
+            return candidate, attempts
+        detail = (probe.stderr or probe.stdout or "").strip().splitlines()
+        attempts.append(
+            f"{candidate}: {detail[-1][:200] if detail else f'exit {probe.returncode}'}"
+        )
+    return None, attempts
 
 
 PARTICIPANT_A = """
@@ -83,9 +129,21 @@ def read_data(p, mesh, name, ids):
             return p.read_data(name, ids)
 
 
+def set_vertices(p, mesh_name, coords):
+    try:
+        mesh = p.get_mesh(mesh_name)
+        try:
+            return mesh.set_vertices(coords)
+        except TypeError:
+            pass
+    except Exception:
+        pass
+    return p.set_mesh_vertices(mesh_name, coords)
+
+
 p = precice.Participant("A", cfg, 0, 1)
 coords = [[i / (n - 1), 0.0] for i in range(n)]
-ids = p.set_mesh_vertices("A-Mesh", coords)
+ids = set_vertices(p, "A-Mesh", coords)
 base = [10.0 * c[0] for c in coords]
 state = list(base)
 p.initialize()
@@ -145,9 +203,21 @@ def read_data(p, mesh, name, ids):
             return p.read_data(name, ids)
 
 
+def set_vertices(p, mesh_name, coords):
+    try:
+        mesh = p.get_mesh(mesh_name)
+        try:
+            return mesh.set_vertices(coords)
+        except TypeError:
+            pass
+    except Exception:
+        pass
+    return p.set_mesh_vertices(mesh_name, coords)
+
+
 p = precice.Participant("B", cfg, 0, 1)
-coords = [[(i + 0.5) / n, 0.0] for i in range(n)]
-ids = p.set_mesh_vertices("B-Mesh", coords)
+coords = [[i / (n - 1), 0.0] for i in range(n)]
+ids = set_vertices(p, "B-Mesh", coords)
 p.initialize()
 events = []
 it = 0
@@ -207,13 +277,17 @@ def main() -> int:
     tolerance = float(case.get("tolerance", 1e-6))
     dt = float(case.get("coupling_dt_s", 1.0))
 
-    interpreter = find_precice_python()
+    interpreter, attempts = find_precice_python()
     if interpreter is None:
-        return _fail("no python interpreter can import the native precice binding")
+        return _fail(
+            "no python interpreter can import the native precice binding; tried: "
+            + "; ".join(attempts)
+        )
 
     (CASE_DIR / "A.py").write_text(PARTICIPANT_A, encoding="utf-8")
     (CASE_DIR / "B.py").write_text(PARTICIPANT_B, encoding="utf-8")
     clean_env = {key: value for key, value in os.environ.items() if key != "PYTHONPATH"}
+    clean_env["LD_LIBRARY_PATH"] = _precice_library_path()
     argv = [interpreter, "A.py", field_a, field_b, str(n_points), CONFIG_NAME, repr(dt)]
     argv_b = [interpreter, "B.py", field_a, field_b, str(n_points), CONFIG_NAME, repr(dt)]
     with open(CASE_DIR / "A.log", "w") as log_a, open(CASE_DIR / "B.log", "w") as log_b:

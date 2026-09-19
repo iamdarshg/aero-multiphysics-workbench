@@ -1,0 +1,68 @@
+DEBUT();
+
+mesh = LIRE_MAILLAGE(FORMAT='MED', UNITE=20);
+
+solid_groups = ('solid',);
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(
+        GROUP_MA=solid_groups,
+        PHENOMENE='MECANIQUE',
+        MODELISATION='3D',
+    ),
+);
+
+mat_solid = DEFI_MATERIAU(
+    ELAS=_F(
+        E=2.100000e+11,
+        NU=0.300000,
+        RHO=7.800000e+03,
+    ),
+);
+
+fieldmat = AFFE_MATERIAU(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(GROUP_MA='solid', MATER=(mat_solid,)),
+    ),
+);
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA=('tip-face',)),
+    ),
+);
+
+char_clamp = AFFE_CHAR_MECA(
+    MODELE=model,
+    DDL_IMPO=_F(GROUP_MA='clamp-face', DX=0.000000e+00, DY=0.000000e+00, DZ=0.000000e+00),
+);
+
+load_tip_load = AFFE_CHAR_MECA(
+    MODELE=model,
+    FORCE_NODALE=_F(GROUP_NO='tip-face', FZ=-8.333333e+04),
+);
+
+result = MECA_STATIQUE(
+    MODELE=model,
+    CHAM_MATER=fieldmat,
+    EXCIT=(
+        _F(CHARGE=char_clamp),
+        _F(CHARGE=load_tip_load),
+    ),
+);
+
+IMPR_RESU(
+    FORMAT='RESULTAT',
+    UNITE=80,
+    RESU=_F(
+        RESULTAT=result,
+        NOM_CHAM='DEPL',
+        FORM_TABL='OUI',
+    ),
+);
+
+FIN();

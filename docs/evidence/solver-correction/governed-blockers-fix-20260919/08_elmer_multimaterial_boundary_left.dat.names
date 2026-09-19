@@ -1,0 +1,10 @@
+Metadata for SaveScalars file: ./boundary_left.dat
+Elmer version: 26.2
+Elmer compilation date: 2026-09-19
+Solver input file: case.sif
+File started at: 2026/09/19 18:18:28
+ 
+Variables in columns of matrix: 
+   1: diffusive flux: temperature over bc 1
+   2: min diffusive flux:
+   3: max diffusive flux:

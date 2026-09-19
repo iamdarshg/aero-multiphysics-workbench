@@ -1,0 +1,50 @@
+{
+  "provenance": {
+    "geometryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "meshHash": "76e4e46c177786c9cca76d3342d8de5fe3f4feee826c64bbd7fd901c8ccbccda",
+    "topologyDigest": "2e8933ed8ef3e0437abf343be73f80eab87c6b7aead8ca72d45351d8f141d6fe"
+  },
+  "exports": [
+    {
+      "participant": "openfoam",
+      "zones": [
+        {
+          "name": "rotor",
+          "motion": "rotating",
+          "domain": "fluid"
+        },
+        {
+          "name": "stator",
+          "motion": "stationary",
+          "domain": "fluid"
+        }
+      ],
+      "patches": [
+        {
+          "name": "seal_master",
+          "kind": "interface",
+          "nativeType": "cyclicAMI"
+        },
+        {
+          "name": "seal_slave",
+          "kind": "interface",
+          "nativeType": "cyclicAMI"
+        },
+        {
+          "name": "walls",
+          "kind": "wall",
+          "nativeType": "wall"
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "seal",
+          "kind": "sliding",
+          "zoneA": "rotor",
+          "zoneB": "stator",
+          "conformalRequested": false
+        }
+      ]
+    }
+  ]
+}

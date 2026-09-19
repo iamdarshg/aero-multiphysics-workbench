@@ -1,0 +1,6 @@
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}

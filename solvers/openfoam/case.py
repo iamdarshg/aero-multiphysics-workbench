@@ -387,7 +387,14 @@ def prepare_case_files(
             application, end_time, steady, result_requests, patches, density
         ),
         "system/fvSchemes": _fv_schemes(ddt_line),
-        "system/fvSolution": _fv_solution(application, steady, thermal_model),
+        "system/fvSolution": _fv_solution(
+            application,
+            steady,
+            thermal_model,
+            needs_pressure_reference=not any(
+                kind in {"outlet", "pressure"} for _, kind in patches
+            ),
+        ),
         "constant/turbulenceProperties": _turbulence_properties(turbulence),
         "0/U": _field_u(inlet_velocity, patches, ami_pairs),
         "0/p": _field_p(outlet_pressure, patches, ami_pairs),
@@ -396,6 +403,7 @@ def prepare_case_files(
         files["constant/transportProperties"] = (
             "FoamFile\n{\n    version     2.0;\n    format      ascii;\n"
             "    class       dictionary;\n    object      transportProperties;\n}\n"
+            "transportModel  Newtonian;\n"
             f"nu              [0 2 -1 0 0 0 0] {nu:.6e};\n"
         )
     else:
@@ -467,7 +475,7 @@ def prepare_case_files(
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text, encoding="utf-8")
         written.append(relative)
-    converted = _convert_governed_mesh(data, case_dir, governed)
+    converted = _convert_governed_mesh(data, case_dir, governed, ami_pairs)
 
     from participants.commands import register_case_executable
 
@@ -488,15 +496,198 @@ def prepare_case_files(
 
 _MESH_CONVERTERS = {"gmshToFoam": "gmshToFoam"}
 
+# Gmsh element-type ids that denote a three-dimensional cell. MSH 2.2 and MSH
+# 4.1 share the same numbering for the linear and common high-order cells.
+_MSH_3D_ELEMENT_TYPES = frozenset({4, 5, 6, 7, 11, 12, 13, 14, 17})
+
+
+def _mesh_format_version(path: Path) -> str | None:
+    """Return the ``$MeshFormat`` version (``2.2``, ``4.1``, ...) or ``None``."""
+
+    try:
+        with path.open("r", encoding="utf-8", errors="replace") as stream:
+            for line in stream:
+                if line.strip() != "$MeshFormat":
+                    continue
+                header = stream.readline().split()
+                return header[0] if header else None
+    except OSError:
+        return None
+    return None
+
+
+def _mesh_has_3d_cells(path: Path) -> bool:
+    """Return True when the mesh declares at least one 3D cell block.
+
+    Handles both the MSH 2.2 block header (``count type``) and the MSH 4.1
+    entity-block header (``entityDim entityTag type count``). Malformed or
+    truncated files report ``False`` so the caller fails closed or converts.
+    """
+
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return False
+    version = None
+    index = 0
+    while index < len(lines):
+        stripped = lines[index].strip()
+        index += 1
+        if stripped == "$MeshFormat":
+            if index < len(lines):
+                tokens = lines[index].split()
+                version = tokens[0] if tokens else None
+            continue
+        if stripped == "$EndElements":
+            continue
+        if stripped != "$Elements":
+            continue
+        if index >= len(lines):
+            break
+        if version is not None and version.startswith("2"):
+            count = _int_token(lines[index])
+            index += 1
+            remaining = count if count is not None else 0
+            while remaining > 0 and index < len(lines):
+                header = lines[index].split()
+                index += 1
+                block_count = _int_token(header[0]) if header else None
+                element_type = _int_token(header[1]) if len(header) > 1 else None
+                if block_count is None:
+                    break
+                if element_type in _MSH_3D_ELEMENT_TYPES and block_count > 0:
+                    return True
+                remaining -= block_count
+                index += block_count
+        else:
+            header_tokens = lines[index].split()
+            blocks = _int_token(header_tokens[0]) if header_tokens else None
+            index += 1
+            for _ in range(blocks if blocks is not None else 0):
+                if index >= len(lines):
+                    break
+                header = lines[index].split()
+                index += 1
+                entity_dim = _int_token(header[0]) if header else None
+                element_type = _int_token(header[2]) if len(header) > 2 else None
+                block_count = _int_token(header[3]) if len(header) > 3 else None
+                if block_count:
+                    if entity_dim == 3 or element_type in _MSH_3D_ELEMENT_TYPES:
+                        return True
+                    index += block_count
+    return False
+
+
+def _int_token(token: str) -> int | None:
+    try:
+        return int(token)
+    except (TypeError, ValueError):
+        return None
+
+
+def _to_openfoam_msh2(case_dir: Path, mesh_path: Path) -> Path:
+    """Return an MSH 2.2 3D mesh, converting with Gmsh when needed.
+
+    OpenFOAM's ``gmshToFoam`` only consumes MSH 2.2 ASCII with 3D cells; a raw
+    MSH 4.1 or 2D artifact is converted through the single allowlisted ``gmsh``
+    binary (``gmsh <in> -3 -format msh2 -o <out>``) and the result is verified
+    to carry 3D cells before it is handed to ``gmshToFoam``.
+    """
+
+    version = _mesh_format_version(mesh_path)
+    if version is not None and version.startswith("2") and _mesh_has_3d_cells(mesh_path):
+        return mesh_path
+    gmsh = shutil.which("gmsh")
+    if gmsh is None:
+        raise ParticipantError(
+            NativeErrorCode.CAPABILITY_UNAVAILABLE,
+            "gmsh is required to convert the governed mesh to MSH 2.2 3D",
+        )
+    converted = case_dir / "governed_msh2.msh"
+    try:
+        completed = subprocess.run(
+            [gmsh, str(mesh_path), "-3", "-format", "msh2", "-o", str(converted)],
+            cwd=case_dir,
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ParticipantError(
+            NativeErrorCode.PREPARATION_FAILED, f"gmsh mesh conversion failed to start:{exc}"
+        ) from exc
+    if completed.returncode != 0 or not converted.is_file():
+        tail = (completed.stderr or completed.stdout or "")[-500:]
+        raise ParticipantError(
+            NativeErrorCode.MESH_INVALID,
+            f"gmsh mesh conversion failed rc={completed.returncode}:{tail}",
+        )
+    if not _mesh_has_3d_cells(converted):
+        raise ParticipantError(
+            NativeErrorCode.MESH_INVALID,
+            "governed mesh has no 3D cells after gmsh -3 -format msh2 conversion",
+        )
+    return converted
+
+
+def _patch_cyclic_ami_boundary(case_dir: Path, ami_pairs: tuple[AmiPair, ...]) -> None:
+    """Mark explicit AMI interface patches as ``cyclicAMI`` in polyMesh.
+
+    ``gmshToFoam`` emits every physical surface as a plain ``patch``; a field
+    boundary condition of type ``cyclicAMI`` requires the underlying polyMesh
+    patch to be ``cyclicAMI`` with a declared neighbour. Only the declared
+    pairings are rewritten and a missing patch fails closed.
+    """
+
+    if not ami_pairs:
+        return
+    boundary = case_dir / "constant" / "polyMesh" / "boundary"
+    if not boundary.is_file():
+        raise ParticipantError(
+            NativeErrorCode.MESH_INVALID, "gmshToFoam produced no polyMesh/boundary"
+        )
+    text = boundary.read_text(encoding="utf-8", errors="replace")
+    pairs: dict[str, str] = {}
+    for pair in ami_pairs:
+        pairs[pair.master_patch] = pair.slave_patch
+        pairs[pair.slave_patch] = pair.master_patch
+    for name, neighbour in pairs.items():
+        pattern = re.compile(
+            r"(?ms)^(\s*" + re.escape(name) + r"\s*)\n(\s*\{)(.*?)(\n\s*\})"
+        )
+        match = pattern.search(text)
+        if match is None:
+            raise ParticipantError(
+                NativeErrorCode.MESH_INVALID,
+                f"AMI patch not present in polyMesh boundary:{name}",
+            )
+        body = match.group(3)
+        if re.search(r"(?m)^\s*type\s+\S+;", body):
+            body = re.sub(r"(?m)^\s*type\s+\S+;", "        type            cyclicAMI;", body)
+        else:
+            body += "\n        type            cyclicAMI;"
+        if not re.search(r"(?m)^\s*neighbourPatch\s", body):
+            body += f"\n        neighbourPatch  {neighbour};"
+        if not re.search(r"(?m)^\s*matchTolerance\s", body):
+            body += "\n        matchTolerance  0.001;"
+        text = text[: match.start(3)] + body + text[match.end(3) :]
+    boundary.write_text(text, encoding="utf-8")
+
 
 def _convert_governed_mesh(
-    data: Mapping[str, object], case_dir: Path, governed: GovernedMesh | None
+    data: Mapping[str, object],
+    case_dir: Path,
+    governed: GovernedMesh | None,
+    ami_pairs: tuple[AmiPair, ...] = (),
 ) -> str | None:
     """Convert the governed Gmsh artifact into ``constant/polyMesh``.
 
-    Only allowlisted converters run, and a declared conversion that cannot be
-    performed (missing tool, missing governed mesh, or a failed conversion)
-    fails closed instead of leaving a case with no mesh.
+    Only allowlisted converters run. The governed mesh is first normalized to
+    MSH 2.2 with 3D cells (Gmsh, bounded) because ``gmshToFoam`` rejects MSH 4.x
+    and 2D artifacts; a declared conversion that cannot be performed (missing
+    tool, missing governed mesh, or a failed conversion) fails closed instead
+    of leaving a case with no mesh.
     """
 
     method = data.get("mesh_conversion")
@@ -516,9 +707,10 @@ def _convert_governed_mesh(
     target = case_dir / "constant" / "polyMesh"
     if target.is_dir():
         return tool
+    source = _to_openfoam_msh2(case_dir, governed.mesh_path)
     try:
         completed = subprocess.run(
-            [resolved, str(governed.mesh_path)],
+            [resolved, str(source)],
             cwd=case_dir,
             capture_output=True,
             text=True,
@@ -535,6 +727,7 @@ def _convert_governed_mesh(
             NativeErrorCode.PREPARATION_FAILED,
             f"{tool} conversion failed rc={completed.returncode}:{tail}",
         )
+    _patch_cyclic_ami_boundary(case_dir, ami_pairs)
     return tool
 
 
@@ -891,6 +1084,7 @@ def _surface_value_object(name: str, patch: str, field: str, operation: str) -> 
         "        type            surfaceFieldValue;\n"
         '        libs            ("libfieldFunctionObjects.so");\n'
         "        writeControl    writeTime;\n"
+        "        writeFields     false;\n"
         "        surfaceFormat   none;\n"
         "        regionType      patch;\n"
         f"        name            {patch};\n"
@@ -917,14 +1111,37 @@ def _fv_schemes(ddt_line: str) -> str:
     )
 
 
-def _fv_solution(application: str, steady: bool, thermal_model: str) -> str:
+def _fv_solution(
+    application: str,
+    steady: bool,
+    thermal_model: str,
+    *,
+    needs_pressure_reference: bool = False,
+) -> str:
+    reference = (
+        "        pRefCell        0;\n        pRefValue       0;\n"
+        if needs_pressure_reference
+        else ""
+    )
     solvers = (
         "    solvers\n    {\n        p\n        {\n"
         "            solver          GAMG;\n            tolerance       1e-06;\n"
         "            relTol          0.1;\n            smoother        GaussSeidel;\n        }\n\n"
+        "        pFinal\n        {\n"
+        "            solver          GAMG;\n            tolerance       1e-06;\n"
+        "            relTol          0;\n            smoother        GaussSeidel;\n        }\n\n"
         '        "(U|k|omega|epsilon)"\n        {\n'
         "            solver          smoothSolver;\n            smoother        GaussSeidel;\n"
-        "            tolerance       1e-05;\n            relTol          0.1;\n        }\n"
+        "            tolerance       1e-05;\n            relTol          0.1;\n        }\n\n"
+        '        "(U|k|omega|epsilon)Final"\n        {\n'
+        "            solver          smoothSolver;\n            smoother        GaussSeidel;\n"
+        "            tolerance       1e-05;\n            relTol          0;\n        }\n\n"
+        "        pcorr\n        {\n"
+        "            solver          PCG;\n            preconditioner  DIC;\n"
+        "            tolerance       1e-05;\n            relTol          0;\n        }\n\n"
+        "        pcorrFinal\n        {\n"
+        "            solver          PCG;\n            preconditioner  DIC;\n"
+        "            tolerance       1e-05;\n            relTol          0;\n        }\n"
     )
     if thermal_model == "CHT":
         solvers += (
@@ -936,13 +1153,16 @@ def _fv_solution(application: str, steady: bool, thermal_model: str) -> str:
     if steady:
         algorithm = (
             "    SIMPLE\n    {\n        nNonOrthogonalCorrectors 0;\n"
+            f"{reference}"
             "        residualControl\n        {\n            p               1e-4;\n"
             "            U               1e-4;\n"
             '            "(k|omega|epsilon)" 1e-4;\n        }\n    }\n'
         )
     else:
         algorithm = (
-            "    PISO\n    {\n        nCorrectors     2;\n        nNonOrthogonalCorrectors 0;\n"
+            "    PIMPLE\n    {\n        nOuterCorrectors 1;\n        nCorrectors     2;\n"
+            "        nNonOrthogonalCorrectors 0;\n"
+            f"{reference}"
             "    }\n"
         )
     return (
@@ -1012,12 +1232,18 @@ def _mrf_properties(
 
 
 def _dynamic_mesh_dict(zone_specs: Sequence[RotatingZone]) -> str:
+    motion_solver_lib = "libfvMotionSolvers.so"
     motions = "".join(
         f"    {zone.name}\n    {{\n"
-        "        solidBodyMotionFunction rotatingMotion;\n"
-        f"        origin          ({zone.origin[0]:g} {zone.origin[1]:g} {zone.origin[2]:g});\n"
-        f"        axis            ({zone.axis[0]:g} {zone.axis[1]:g} {zone.axis[2]:g});\n"
-        f"        omega           {zone.omega_rad_s:.6f};\n"
+        f"        cellZone        {zone.name};\n"
+        "        motionSolver    solidBody;\n"
+        "        solidBodyCoeffs\n"
+        "        {\n"
+        "            solidBodyMotionFunction rotatingMotion;\n"
+        f"            origin          ({zone.origin[0]:g} {zone.origin[1]:g} {zone.origin[2]:g});\n"
+        f"            axis            ({zone.axis[0]:g} {zone.axis[1]:g} {zone.axis[2]:g});\n"
+        f"            omega           {zone.omega_rad_s:.6f};\n"
+        "        }\n"
         "    }\n"
         for zone in zone_specs
     )
@@ -1025,8 +1251,8 @@ def _dynamic_mesh_dict(zone_specs: Sequence[RotatingZone]) -> str:
         "FoamFile\n{\n    version     2.0;\n    format      ascii;\n"
         "    class       dictionary;\n    object      dynamicMeshDict;\n}\n"
         "dynamicFvMesh   dynamicMultiMotionSolverFvMesh;\n"
-        'motionSolverLibs ("libfvMotionSolvers.so");\n'
-        "solidBodyMotionSolver\n{\n" + motions + "}\n"
+        f'motionSolverLibs ("{motion_solver_lib}");\n'
+        "dynamicMultiMotionSolverFvMeshCoeffs\n{\n" + motions + "}\n"
     )
 
 

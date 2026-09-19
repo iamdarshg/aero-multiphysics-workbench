@@ -257,10 +257,26 @@ def parse_sif_result(case_dir: Path) -> ParseReceipt:
 
     Native cases additionally publish canonical interface field artifacts
     (Temperature / Heat-Flux / interface heat flow) when native values exist.
+    A ``result.json`` canonical artifact is always written from the parsed
+    native scalars so the manifested artifact set is complete.
     """
 
     parsed = parse_elmer_output(case_dir)
     publish_case_fields(case_dir, parsed)
+    (case_dir / "result.json").write_text(
+        json.dumps(
+            {
+                "participant_id": "elmer",
+                "parser": parsed.parser,
+                "detail": parsed.detail,
+                "scalars": dict(sorted(parsed.scalars.items())),
+                "units": dict(sorted(parsed.units.items())),
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
     return parsed
 
 

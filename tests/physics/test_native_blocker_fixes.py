@@ -9,6 +9,7 @@ golden files. No solver output is fabricated.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -16,8 +17,7 @@ import pytest
 from code_aster.comm import parse_comm_result, prepare_comm
 from elmer.parser import parse_elmer_output
 from elmer.sif import prepare_sif
-from participants import capabilities
-from participants import commands
+from participants import capabilities, commands
 from participants.commands import build_command, register_case_executable, run_script_path
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.manifest import get_participant
@@ -101,25 +101,148 @@ def test_register_case_executable_rejects_path_escape() -> None:
 def test_convert_governed_mesh_runs_allowlisted_tool(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    from openfoam.case import _convert_governed_mesh, _mesh_has_3d_cells
+
+    case_dir = tmp_path / "case"
+    case_dir.mkdir()
+    mesh = tmp_path / "artifact"
+    mesh.mkdir()
+    msh_text = "\n".join(
+        [
+            "$MeshFormat",
+            "2.2 0 8",
+            "$EndMeshFormat",
+            "$PhysicalNames",
+            "1",
+            '3 1 "fluid"',
+            "$EndPhysicalNames",
+            "$Elements",
+            "1",
+            "1 4 2 99 1 1 2 3 4",
+            "$EndElements",
+        ]
+    )
+    (mesh / "domain.msh").write_text(msh_text + "\n", encoding="utf-8")
+    assert _mesh_has_3d_cells(mesh / "domain.msh") is True
+    governed = SimpleNamespace(mesh_path=mesh / "domain.msh")
+
+    monkeypatch.setattr("openfoam.case.shutil.which", lambda name: f"/opt/solvers/bin/{name}")
+
+    def fake_run(argv, **kwargs):
+        assert argv[0].endswith("gmshToFoam"), argv
+        (case_dir / "constant" / "polyMesh").mkdir(parents=True)
+        return SimpleNamespace(returncode=0, stdout="Mesh stats\n", stderr="")
+
+    monkeypatch.setattr("openfoam.case.subprocess.run", fake_run)
+    assert (
+        _convert_governed_mesh({"mesh_conversion": "gmshToFoam"}, case_dir, governed)
+        == "gmshToFoam"
+    )
+    assert (case_dir / "constant" / "polyMesh").is_dir()
+
+
+def test_mesh_has_3d_cells_detects_msh41_and_rejects_2d(tmp_path: Path) -> None:
+    from openfoam.case import _mesh_has_3d_cells
+
+    msh4 = tmp_path / "v4.msh"
+    msh4.write_text(
+        "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n"
+        "$Elements\n1 1 1 1\n3 1 4 1\n1 2 3 4\n$EndElements\n",
+        encoding="utf-8",
+    )
+    assert _mesh_has_3d_cells(msh4) is True
+
+    msh2_2d = tmp_path / "v2d.msh"
+    msh2_2d.write_text(
+        "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n"
+        "$Elements\n1\n1 2 2 99 1 1 2 3\n$EndElements\n",
+        encoding="utf-8",
+    )
+    assert _mesh_has_3d_cells(msh2_2d) is False
+
+
+def test_convert_governed_mesh_normalizes_to_msh2_3d(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     from openfoam.case import _convert_governed_mesh
 
     case_dir = tmp_path / "case"
     case_dir.mkdir()
     mesh = tmp_path / "artifact"
     mesh.mkdir()
-    (mesh / "domain.msh").write_text("$MeshFormat\n4.1 0 8\n$EndMeshFormat\n", encoding="utf-8")
+    # MSH 4.1 2D artifact: gmshToFoam would reject this without conversion.
+    (mesh / "domain.msh").write_text(
+        "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n"
+        "$Elements\n1 1 1 1\n2 1 2 1\n1 2\n$EndElements\n",
+        encoding="utf-8",
+    )
     governed = SimpleNamespace(mesh_path=mesh / "domain.msh")
-
-    monkeypatch.setattr("openfoam.case.shutil.which", lambda name: f"/opt/solvers/bin/{name}")
+    monkeypatch.setattr("openfoam.case.shutil.which", lambda name: f"/opt/bin/{name}")
+    calls: list[list[str]] = []
 
     def fake_run(argv, **kwargs):
-        assert argv[0].endswith("gmshToFoam")
-        (case_dir / "constant" / "polyMesh").mkdir(parents=True)
-        return SimpleNamespace(returncode=0, stdout="Mesh stats\n", stderr="")
+        calls.append(list(argv))
+        if argv[0].endswith("gmsh") and not argv[0].endswith("gmshToFoam"):
+            (case_dir / "governed_msh2.msh").write_text(
+                "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n"
+                "$Elements\n1\n1 4 2 99 1 1 2 3 4\n$EndElements\n",
+                encoding="utf-8",
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+        (case_dir / "constant" / "polyMesh").mkdir(parents=True, exist_ok=True)
+        (case_dir / "constant" / "polyMesh" / "boundary").write_text(
+            "FoamFile\n{\n}\n0\n(\n)\n", encoding="utf-8"
+        )
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
 
     monkeypatch.setattr("openfoam.case.subprocess.run", fake_run)
-    assert _convert_governed_mesh({"mesh_conversion": "gmshToFoam"}, case_dir, governed) == "gmshToFoam"
-    assert (case_dir / "constant" / "polyMesh").is_dir()
+    assert (
+        _convert_governed_mesh({"mesh_conversion": "gmshToFoam"}, case_dir, governed)
+        == "gmshToFoam"
+    )
+    gmsh_calls = [
+        call
+        for call in calls
+        if call[0].endswith("gmsh") and not call[0].endswith("gmshToFoam")
+    ]
+    assert gmsh_calls, calls
+    assert "-format" in gmsh_calls[0] and "msh2" in gmsh_calls[0]
+    assert "-3" in gmsh_calls[0]
+
+
+def test_patch_cyclic_ami_boundary_marks_pair(tmp_path: Path) -> None:
+    from openfoam.case import AmiPair, _patch_cyclic_ami_boundary
+
+    case_dir = tmp_path / "case"
+    boundary = case_dir / "constant" / "polyMesh" / "boundary"
+    boundary.parent.mkdir(parents=True)
+    boundary.write_text(
+        "FoamFile\n{\n    version 2.0;\n}\n2\n(\n"
+        "    seal_master\n    {\n        type            patch;\n"
+        "        nFaces          10;\n        startFace       100;\n    }\n"
+        "    seal_slave\n    {\n        type            patch;\n"
+        "        nFaces          10;\n        startFace       110;\n    }\n)\n",
+        encoding="utf-8",
+    )
+    pair = AmiPair("seal", "rotor", "stator", "seal_master", "seal_slave")
+    _patch_cyclic_ami_boundary(case_dir, (pair,))
+    text = boundary.read_text(encoding="utf-8")
+    assert text.count("type            cyclicAMI;") == 2
+    assert "neighbourPatch  seal_slave;" in text
+    assert "neighbourPatch  seal_master;" in text
+
+
+def test_patch_cyclic_ami_boundary_fails_closed_on_missing_patch(tmp_path: Path) -> None:
+    from openfoam.case import AmiPair, _patch_cyclic_ami_boundary
+
+    case_dir = tmp_path / "case"
+    boundary = case_dir / "constant" / "polyMesh" / "boundary"
+    boundary.parent.mkdir(parents=True)
+    boundary.write_text("FoamFile\n{\n}\n0\n(\n)\n", encoding="utf-8")
+    pair = AmiPair("seal", "rotor", "stator", "seal_master", "seal_slave")
+    with pytest.raises(ParticipantError) as failed:
+        _patch_cyclic_ami_boundary(case_dir, (pair,))
+    assert failed.value.code is NativeErrorCode.MESH_INVALID
 
 
 def test_convert_governed_mesh_fails_closed_without_tool(
@@ -130,7 +253,9 @@ def test_convert_governed_mesh_fails_closed_without_tool(
     monkeypatch.setattr("openfoam.case.shutil.which", lambda name: None)
     with pytest.raises(ParticipantError) as failed:
         _convert_governed_mesh(
-            {"mesh_conversion": "gmshToFoam"}, tmp_path, SimpleNamespace(mesh_path=tmp_path / "x.msh")
+            {"mesh_conversion": "gmshToFoam"},
+            tmp_path,
+            SimpleNamespace(mesh_path=tmp_path / "x.msh"),
         )
     assert failed.value.code is NativeErrorCode.CAPABILITY_UNAVAILABLE
 
@@ -306,7 +431,9 @@ def test_code_aster_export_names_the_parsed_table(tmp_path: Path) -> None:
 
 def test_build_command_prefers_available_run_aster(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        commands.shutil, "which", lambda name: "/opt/aster/bin/run_aster" if name == "run_aster" else None
+        commands.shutil,
+        "which",
+        lambda name: "/opt/aster/bin/run_aster" if name == "run_aster" else None,
     )
     assert build_command("structural-static", "case-aster01") == ("run_aster", "case.export")
 
@@ -323,6 +450,62 @@ def test_code_aster_generic_tableau_is_parsed(tmp_path: Path) -> None:
     )
     parsed = parse_comm_result(case_dir)
     assert parsed.scalars["max_displacement_m"] == pytest.approx(2.0e-3)
+
+
+def test_code_aster_resultat_listing_is_parsed() -> None:
+    from code_aster.comm import _parse_resultat_listing
+
+    listing = "\n".join(
+        [
+            "GROUP_MA: ALL",
+            "FIELD WITH THE NODES OF REFERENCE SYMBOL DEPL",
+            "SEQUENCE NUMBER: 1 INST: 0.00000E+00",
+            "NODE DX DY DZ",
+            "",
+            "N1 1.0e-03 0.0 0.0",
+            "N2 0.0 2.0e-03 - 1.0e-03",
+            "",
+        ]
+    )
+    values = _parse_resultat_listing(listing)
+    assert values["DISPLACEMENT_M"] == pytest.approx([1.0e-3, (5.0e-6) ** 0.5])
+
+
+def test_code_aster_modal_log_frequencies_are_parsed() -> None:
+    from code_aster.comm import _parse_modal_log_frequencies
+
+    log = "\n".join(
+        [
+            "  Calcul modal : Methode globale de type QR",
+            "   numero    frequence (HZ)     norme d'erreur",
+            "      1       1.67638E+02        3.57918E-11",
+            "      2       1.05060E+03        1.32150E-12",
+            "      3       2.59704E+03        5.70995E-14",
+            "",
+            "other text",
+        ]
+    )
+    assert _parse_modal_log_frequencies(log) == pytest.approx([167.638, 1050.60, 2597.04])
+
+
+def test_code_aster_modal_result_reads_frequencies_from_log(tmp_path: Path) -> None:
+    case_dir = tmp_path / "run"
+    case_dir.mkdir()
+    (case_dir / "solver.log").write_text(
+        "   numero    frequence (HZ)     norme d'erreur\n"
+        "      1       1.67638E+02        3.57918E-11\n"
+        "      2       1.05060E+03        1.32150E-12\n"
+        "FIN\n",
+        encoding="utf-8",
+    )
+    (case_dir / "result_table.txt").write_text(
+        "NODE DX DY DZ\n"
+        "N1 1.0e-03 0.0 0.0\n",
+        encoding="utf-8",
+    )
+    parsed = parse_comm_result(case_dir)
+    assert parsed.scalars["first_frequency_hz"] == pytest.approx(167.638)
+    assert parsed.scalars["max_displacement_m"] == pytest.approx(1.0e-3)
 
 
 # -- preCICE: governed native coupled window ---------------------------------
@@ -421,3 +604,226 @@ def test_native_window_nonconvergence_cannot_validate(tmp_path: Path) -> None:
     report = validate_native_window_result(dict(parsed.scalars), {"tolerance": 1.0e-6})
     assert report.passed is False
     assert report.checks["residual_within_tolerance"] is False
+
+
+# -- Elmer: material_<name> physical-group alias ----------------------------
+
+
+def test_elmer_missing_physical_names_accepts_material_alias() -> None:
+    from elmer.case import (
+        ElmerPatch,
+        ElmerZone,
+        _missing_physical_names,
+    )
+
+    zones = (ElmerZone("body_a", "stationary", "solid"),)
+    patches = (ElmerPatch("left", "wall"), ElmerPatch("right", "wall"))
+    material_regions = (("body_a", "steel"),)
+    physical = {"material_body_a", "left", "right"}
+    assert _missing_physical_names(physical, zones, patches, (), material_regions) == []
+    # Without either spelling the group is still reported missing.
+    assert "body_a" in _missing_physical_names(
+        {"left", "right"}, zones, patches, (), material_regions
+    )
+
+
+def test_elmer_sif_accepts_material_prefixed_volume_group(tmp_path: Path) -> None:
+    from elmer.sif import prepare_sif
+
+    mesh = tmp_path / "domain.msh"
+    mesh.write_text(
+        "\n".join(
+            [
+                "$MeshFormat",
+                "4.1 0 8",
+                "$EndMeshFormat",
+                "$PhysicalNames",
+                "3",
+                '3 1 "material_body-a"',
+                '2 3 "left"',
+                '2 4 "right"',
+                "$EndPhysicalNames",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    prepare_sif(_elmer_inputs(mesh), tmp_path / "case")
+    assert (tmp_path / "case" / "case.sif").is_file()
+
+
+# -- preCICE: interpreter discovery and capability agreement -----------------
+
+
+def test_precice_candidate_interpreters_include_prefix_and_env() -> None:
+    from precice.interpreter import candidate_interpreters
+
+    env = {
+        "PRECICE_PYTHON": "/custom/py",
+        "PRECICE_PREFIXES": "/opt/other",
+        "PATH": "/usr/bin",
+    }
+    candidates = candidate_interpreters(env)
+    assert candidates[0] == "/custom/py"
+    assert os.path.join("/opt/other", "bin", "python") in candidates
+    assert os.path.join("/opt/precice", "bin", "python") in candidates
+
+
+def test_precice_probe_interpreter_fails_closed() -> None:
+    from precice.interpreter import probe_interpreter
+
+    ok, detail = probe_interpreter("/nonexistent/interpreter")
+    assert ok is False
+    assert "probe failed" in detail
+
+
+def test_precice_capability_requires_binding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        capabilities,
+        "_probe_library",
+        lambda distribution: ("unavailable", None, f"{distribution} missing"),
+    )
+    monkeypatch.setattr(
+        capabilities,
+        "_probe_precice_interpreter",
+        lambda: (None, ["/opt/precice/bin/python: No module named 'precice'"]),
+    )
+    probe = capabilities.probe_participant("native-coupled-window")
+    assert probe.state == "unavailable"
+    assert "native precice binding" in probe.detail
+
+
+# -- Elmer: bare SaveScalars values with a .names sidecar -------------------
+
+
+def test_elmer_parser_reads_bare_save_scalars_with_names(tmp_path: Path) -> None:
+    case_dir = tmp_path / "case"
+    case_dir.mkdir()
+    (case_dir / "case.json").write_text(
+        json.dumps(
+            {
+                "native": True,
+                "analysis": "steady",
+                "mesh": {"meshHash": _MESH_HASH, "geometryHash": _GEOMETRY_HASH},
+                "totalHeatInputW": 0.0,
+                "interfaces": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (case_dir / "solver.log").write_text("ElmerSolver: ALL DONE\n", encoding="utf-8")
+    (case_dir / "result.dat").write_text(
+        "4.000000e+02 3.000000e+02 3.500000e+02\n", encoding="utf-8"
+    )
+    (case_dir / "result.dat.names").write_text(
+        "1: res: Temperature\n2: res: Temperature\n3: res: Temperature\n", encoding="utf-8"
+    )
+    (case_dir / "boundary_left.dat").write_text("1.333333e+02\n", encoding="utf-8")
+    (case_dir / "boundary_left.dat.names").write_text(
+        "1: res: Temperature diffusive flux\n", encoding="utf-8"
+    )
+    (case_dir / "boundary_right.dat").write_text("-1.333333e+02\n", encoding="utf-8")
+    (case_dir / "boundary_right.dat.names").write_text(
+        "1: res: Temperature diffusive flux\n", encoding="utf-8"
+    )
+    parsed = parse_elmer_output(case_dir)
+    assert parsed.scalars["max_temperature_k"] == pytest.approx(400.0)
+    assert parsed.scalars["min_temperature_k"] == pytest.approx(300.0)
+    assert parsed.scalars["energy_balance_relative_error"] == pytest.approx(0.0, abs=1e-9)
+
+
+# -- OpenFOAM: OF2412 dynamic mesh dictionary shape -------------------------
+
+
+def test_dynamic_mesh_dict_uses_of2412_coeffs() -> None:
+    from openfoam.case import RotatingZone, _dynamic_mesh_dict
+
+    text = _dynamic_mesh_dict([RotatingZone("rotor", 500.0)])
+    assert "dynamicMultiMotionSolverFvMeshCoeffs" in text
+    assert "motionSolver    solidBody;" in text
+    assert "solidBodyCoeffs" in text
+    assert "solidBodyMotionFunction rotatingMotion;" in text
+    assert "rotor" in text
+
+
+# -- Code_Aster: governed result deck is a real RESULTAT listing ------------
+
+
+def test_governed_aster_deck_writes_resultat_listing() -> None:
+    from code_aster.comm import _render_governed_comm
+    from code_aster.structure import ingest_structural_request
+
+    request = ingest_structural_request(
+        {
+            "analysis": "static",
+            "mesh": {
+                "file": "mesh.med",
+                "format": "MED",
+                "volumes": ["solid"],
+                "surfaces": ["clamp"],
+                "nodes": [],
+                "material_groups": {"solid": "solid"},
+                "interfaces": [],
+                "frames": {},
+            },
+            "materials": [
+                {
+                    "region": "solid",
+                    "identity": "steel",
+                    "symmetry": "isotropic",
+                    "youngs_modulus_pa": 2.1e11,
+                    "poisson_ratio": 0.3,
+                    "density_kg_m3": 7800.0,
+                }
+            ],
+            "constraints": [{"name": "clamp", "mode": "fixed", "group": "clamp"}],
+            "loads": [{"name": "tip", "kind": "traction", "target": "clamp", "FZ": -1.0e6}],
+            "n_modes": 4,
+        }
+    )
+    text = _render_governed_comm(request)
+    assert "FORMAT='RESULTAT'" in text
+    assert "NOM_CHAM='DEPL'" in text
+    assert "FORMAT='TABLEAU'" not in text
+
+
+def test_governed_aster_nodal_surface_load_creates_node_group() -> None:
+    from code_aster.comm import _render_governed_comm
+    from code_aster.structure import ingest_structural_request
+
+    request = ingest_structural_request(
+        {
+            "analysis": "static",
+            "mesh": {
+                "file": "mesh.med",
+                "format": "MED",
+                "volumes": ["solid"],
+                "surfaces": ["clamp-face", "tip-face"],
+                "nodes": [],
+                "material_groups": {"solid": "solid"},
+                "interfaces": [],
+                "frames": {},
+            },
+            "materials": [
+                {
+                    "region": "solid",
+                    "identity": "steel",
+                    "symmetry": "isotropic",
+                    "youngs_modulus_pa": 2.1e11,
+                    "poisson_ratio": 0.3,
+                    "density_kg_m3": 7800.0,
+                }
+            ],
+            "constraints": [{"name": "clamp", "mode": "fixed", "group": "clamp-face"}],
+            "loads": [
+                {"name": "tip", "kind": "nodal_force", "target": "tip-face", "FZ": -8.3e4}
+            ],
+            "n_modes": 4,
+        }
+    )
+    text = _render_governed_comm(request)
+    assert "DEFI_GROUP(" in text
+    assert "CREA_GROUP_NO=" in text
+    assert "FORCE_NODALE=_F(GROUP_NO='tip-face'" in text

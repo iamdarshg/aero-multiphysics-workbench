@@ -1,0 +1,77 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1032,
+      "name": "case_manifest.json",
+      "sha256": "b9d2e4168a4246a17992e63fb42109972693beccf3d6b9c5a193e1604ef3edba"
+    },
+    {
+      "bytes": 382,
+      "name": "result.json",
+      "sha256": "3518ebec11caf8cfe28fa59c34b6ac32d88c062c37dcb1b63654f0ea415e4a22"
+    },
+    {
+      "bytes": 102376,
+      "name": "solver.log",
+      "sha256": "d5556e58eb96b0e89d5d369077f37fbf1a28f5b904f42200dab93b007af6f08e"
+    },
+    {
+      "bytes": 0,
+      "name": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 102376,
+      "name": "stdout.log",
+      "sha256": "d5556e58eb96b0e89d5d369077f37fbf1a28f5b904f42200dab93b007af6f08e"
+    }
+  ],
+  "fidelity": "rans-steady",
+  "input_hash": "1ab7a4170b57b53227d04dd907e50481cb4e1502679b28f55d08a535863d8210",
+  "provenance_id": "b266da163a1242dab1fbcc6dc8289516",
+  "run_id": "4796d1255a064370baae98989dab9205",
+  "scalars": {
+    "area_average_p_inlet": 0.003224533,
+    "area_average_p_outlet": 0.0,
+    "area_average_p_walls": 0.001631613,
+    "continuity_error": -5.07895e-16,
+    "mass_flow_inlet": -0.005,
+    "mass_flow_outlet": 0.005,
+    "residual_Ux": 5.27667e-06,
+    "residual_Uy": 8.30156e-06,
+    "residual_Uz": 8.59345e-06,
+    "residual_p": 6.22707e-07,
+    "simulation_time_s": 0.01,
+    "solver_completed": 1.0
+  },
+  "solver_identity": "openfoam",
+  "solver_version": "OpenFOAM 2412",
+  "source": "native_solver",
+  "units": {
+    "area_average_p_inlet": "Pa",
+    "area_average_p_outlet": "Pa",
+    "area_average_p_walls": "Pa",
+    "continuity_error": "dimensionless",
+    "mass_flow_inlet": "kg/s",
+    "mass_flow_outlet": "kg/s",
+    "residual_Ux": "dimensionless",
+    "residual_Uy": "dimensionless",
+    "residual_Uz": "dimensionless",
+    "residual_p": "dimensionless",
+    "simulation_time_s": "s",
+    "solver_completed": "dimensionless"
+  },
+  "validity": {
+    "checks": {
+      "continuity": true,
+      "mass_flow_extracted": true,
+      "residuals_stabilized": true,
+      "solver_completed": true,
+      "time_coverage": true
+    },
+    "detail": "completed + residual stabilization + bounded continuity + time coverage",
+    "participant_id": "incompressible-steady-flow",
+    "passed": true
+  },
+  "warnings": []
+}

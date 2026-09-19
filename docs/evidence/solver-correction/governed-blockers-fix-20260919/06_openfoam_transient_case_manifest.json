@@ -1,0 +1,38 @@
+{
+  "application": "pimpleFoam",
+  "compressibility": "incompressible",
+  "end_time": 0.01,
+  "geometry_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "governed_mesh": true,
+  "input_hash": "1ab7a4170b57b53227d04dd907e50481cb4e1502679b28f55d08a535863d8210",
+  "interfaces": [],
+  "mesh_hash": "e7e49048c08d2e51ff2d997f212095a73f4980ad0713d1acc5a0c2052799d8e2",
+  "mesh_mapping_hash": "73a58551b767eb72cefbb0520c9e31519c19cb57d8188d71d0e9d66477d9bea2",
+  "participant_id": "incompressible-steady-flow",
+  "patches": [
+    {
+      "kind": "inlet",
+      "name": "inlet"
+    },
+    {
+      "kind": "outlet",
+      "name": "outlet"
+    },
+    {
+      "kind": "wall",
+      "name": "walls"
+    }
+  ],
+  "result_requests": [
+    "mass_flow",
+    "residuals",
+    "continuity",
+    "pressure"
+  ],
+  "rotating_model": "none",
+  "steady": false,
+  "thermal_model": "isothermal",
+  "topology_digest": "2b954d92a26629190d57d6640649dc51e1f0fb87571311e472c965648c5dbbc9",
+  "turbulence": "laminar",
+  "zones": []
+}

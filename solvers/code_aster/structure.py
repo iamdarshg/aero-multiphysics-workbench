@@ -490,10 +490,15 @@ def _ingest_loads(
         parameters: dict[str, Any] = {}
 
         if kind == "nodal_force":
-            group = mesh.resolves_node(target)
-            parameters["group"] = group
+            if target in mesh.nodes:
+                parameters["group"] = mesh.resolves_node(target)
+                group_kind = "node"
+            elif target in mesh.surfaces:
+                parameters["group"] = target
+                group_kind = "surface"
+            else:
+                raise _fail(f"UNKNOWN_NODE_GROUP:{name}:{target}")
             parameters["components"] = _force_components(raw, name)
-            group_kind = "node"
         elif kind in {"distributed_force", "traction"}:
             parameters["group"] = mesh.resolves_surface(target)
             parameters["components"] = _force_components(raw, name)

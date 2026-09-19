@@ -24,7 +24,7 @@ from code_aster.comm import parse_comm_result, prepare_comm, validate_comm_resul
 from participants.errors import NativeErrorCode, ParticipantError
 from participants.lifecycle import NativeJobManager
 
-GOLDEN_STATIC_SHA256 = "f1a750391008d209d8d8ba2e4822654b92e156588c728694e1f8f4682bef657e"
+GOLDEN_STATIC_SHA256 = "7b418724797e275f7a88af6cac2715df2a65b474327814e38eae1dd368414313"
 GOLDEN_STATIC = """\
 DEBUT();
 
@@ -128,9 +128,13 @@ result = MECA_STATIQUE(
 );
 
 IMPR_RESU(
-    FORMAT='TABLEAU',
+    FORMAT='RESULTAT',
     UNITE=80,
-    RESU=_F(RESULTAT=result),
+    RESU=_F(
+        RESULTAT=result,
+        NOM_CHAM='DEPL',
+        FORM_TABL='OUI',
+    ),
 );
 
 FIN();
@@ -457,7 +461,7 @@ def test_gen07_modal_prestressed_and_dynamic_decks(tmp_path: Path) -> None:
     modal_text = (tmp_path / "modal" / "case.comm").read_text(encoding="utf-8")
     assert "CALC_MODES(" in modal_text
     assert "PREC_CONTRAINTE=prestress_field," in modal_text
-    assert "RESU=_F(RESULTAT=modes)" in modal_text
+    assert "RESULTAT=modes" in modal_text
 
     spectrum = {
         "name": "spec",

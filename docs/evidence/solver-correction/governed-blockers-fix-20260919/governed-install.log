@@ -1,0 +1,1006 @@
+=== GOVERNED INSTALL START 2026-09-19T17:22:04Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 17:23:44
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+ + wslink==2.5.7
+ + xarray==2026.7.0
+ + xlrd==2.0.2
+ + xlsxwriter==3.2.9
+ + yarl==1.24.5
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 17:25:14"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "interpreter": null,
+  "attempts": [
+    "discovery failed:ModuleNotFoundError:No module named 'precice'"
+  ]
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T17:25:22Z ===
+=== GOVERNED INSTALL START 2026-09-19T17:40:07Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 17:40:43
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.01s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 17:42:04"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T17:42:23Z ===
+=== GOVERNED INSTALL START 2026-09-19T18:15:25Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:16:02
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.52s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:17:34"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:17:52Z ===
+=== GOVERNED INSTALL START 2026-09-19T18:27:22Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:28:01
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.45s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:29:30"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:29:49Z ===
+=== GOVERNED INSTALL START 2026-09-19T18:39:23Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:39:59
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.14s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:41:25"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:41:44Z ===
+=== GOVERNED INSTALL START 2026-09-19T18:50:17Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:50:53
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.17s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 18:52:24"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T18:52:42Z ===
+=== GOVERNED INSTALL START 2026-09-19T19:04:12Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:04:50
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.47s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:06:22"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T19:06:40Z ===
+=== GOVERNED INSTALL START 2026-09-19T19:13:39Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:14:18
+A py312: Python 3.12.13
+--- B: micromamba openfoam + precice + code_aster (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+B precice rc=0
+
+    micromamba run -p /opt/aster mycommand
+
+B code_aster rc=0
+--- C: pinned repo python env via uv (services/api/uv.lock) ---
+  uvx
+everything's installed!
+uv 0.12.17 (x86_64-unknown-linux-gnu)
+Checked 132 packages in 2.62s
+C uv sync rc=0
+Python 3.12.13
+--- D: pyprecice into the repo interpreter (best-effort, bounded) ---
+/opt/py312/bin/python: No module named pip
+D py312 pyprecice pip rc=0
+--- E: version capture (repo interpreter; capability probes must agree) ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 19:15:52"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/opt/py312/bin/gmsh",
+    "present": true,
+    "version": "Traceback (most recent call last):"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "present": true,
+    "version": "2.8.0"
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "present": true,
+    "version": "0.141.1"
+  },
+  "py:gmsh": {
+    "present": true,
+    "version": "4.15.2"
+  },
+  "py:meshio": {
+    "detail": "No package metadata was found for meshio",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "present": true,
+    "version": "3.45.1"
+  },
+  "py:pybamm": {
+    "present": true,
+    "version": "26.8.0.0"
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "python": {
+    "path": "/opt/py312/bin/python",
+    "present": true,
+    "version": "3.12.13"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice binding interpreter attempts ---
+{
+  "attempts": [
+    "/opt/precice/bin/python: 0.0.0"
+  ],
+  "interpreter": "/opt/precice/bin/python"
+}
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+--- H: readiness preflight (requested participants) ---
+READINESS OK
+=== GOVERNED INSTALL DONE 2026-09-19T19:16:11Z ===

@@ -149,6 +149,42 @@ def _parse_msh_physical_names(text: str) -> set[str]:
     return names
 
 
+def _group_aliases(name: str) -> frozenset[str]:
+    """Physical-group spellings that may denote the semantic group ``name``.
+
+    Mesh generators commonly prefix solid material regions with ``material_``
+    (``material_body_a``) while the solver mapping names the region ``body_a``.
+    Both spellings are accepted generically; no demo name is hard-coded.
+    """
+
+    return frozenset({name, f"material_{name}"})
+
+
+def _missing_physical_names(
+    physical_names: set[str],
+    zones: tuple[ElmerZone, ...],
+    patches: tuple[ElmerPatch, ...],
+    interfaces: tuple[ElmerInterface, ...],
+    material_regions: tuple[tuple[str, str], ...],
+) -> list[str]:
+    """Semantic groups the mesh must expose, allowing the material_ alias."""
+
+    missing: set[str] = set()
+    for zone in zones:
+        if not (_group_aliases(zone.name) & physical_names):
+            missing.add(zone.name)
+    for patch in patches:
+        if patch.name not in physical_names:
+            missing.add(patch.name)
+    for interface in interfaces:
+        if interface.name not in physical_names:
+            missing.add(interface.name)
+    for region_name, _ in material_regions:
+        if not (_group_aliases(region_name) & physical_names):
+            missing.add(region_name)
+    return sorted(missing)
+
+
 def _extract_elmer_export(payload: Mapping[str, Any]) -> Mapping[str, Any]:
     if "exports" in payload:
         exports = payload.get("exports")
@@ -242,11 +278,9 @@ def load_elmer_mesh(inputs: Mapping[str, Any], case_dir: Path) -> ElmerMesh:
     )
     if not physical_names:
         raise _mesh_fail("mesh has no $PhysicalNames section")
-    required = {zone.name for zone in zones}
-    required |= {patch.name for patch in patches}
-    required |= {interface.name for interface in interfaces}
-    required |= {f"material_{name}" for name, _ in material_regions}
-    missing = sorted(required - physical_names)
+    missing = _missing_physical_names(
+        physical_names, zones, patches, interfaces, material_regions
+    )
     if missing:
         raise _mesh_fail(f"MESH_GROUP_MISSING:{','.join(missing)}")
 
@@ -693,10 +727,6 @@ def render_thermal_sif(case: ThermalCase) -> str:
         "  Operator 2 = min",
         "  Variable 3 = Temperature",
         "  Operator 3 = mean",
-        "  Variable 4 = Heat Flux",
-        "  Operator 4 = max",
-        "  Variable 5 = Heat Flux",
-        "  Operator 5 = min",
         "End",
         "",
     ]

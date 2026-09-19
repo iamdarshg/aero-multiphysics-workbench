@@ -129,6 +129,16 @@ def _probe_library(distribution: str) -> tuple[str, str | None, str]:
     return ("ready", version, f"{distribution} {version} installed")
 
 
+def _probe_precice_interpreter() -> tuple[str | None, list[str]]:
+    """Find a python interpreter that imports the native ``precice`` binding."""
+
+    try:
+        from precice.interpreter import find_precice_interpreter
+    except Exception as exc:  # noqa: BLE001
+        return None, [f"interpreter discovery unavailable:{type(exc).__name__}:{exc}"]
+    return find_precice_interpreter()
+
+
 def probe_solver(solver_id: str) -> CapabilityProbe:
     """Probe one solver family, preferring its native executable."""
 
@@ -229,29 +239,19 @@ def probe_participant(participant_id: str) -> CapabilityProbe:
         )
     if solver_id == "precice" and manifest.executable.run_script is not None:
         # A native coupled-window participant is launched through its Python
-        # preCICE binding; only the real participant library counts.
-        for distribution in ("pyprecice", "precice"):
-            state, version, detail = _probe_library(distribution)
-            if state == "ready":
-                return CapabilityProbe(
-                    participant_id,
-                    solver_id,
-                    distribution,
-                    "ready",
-                    version,
-                    f"native preCICE coupling binding: {detail}",
-                )
-        state, version, detail = _probe_executable(
-            "precice-tools", probe_args=("version",), accept_output_on_nonzero=True
-        )
-        if state == "ready":
+        # preCICE binding: a python interpreter that can actually import the
+        # native ``precice`` module is the only valid capability. Package
+        # metadata alone (and a bare ``precice-tools`` executable) is not
+        # sufficient, so probing agrees exactly with run_precice.py.
+        interpreter, attempts = _probe_precice_interpreter()
+        if interpreter is not None:
             return CapabilityProbe(
                 participant_id,
                 solver_id,
-                "precice-tools",
+                interpreter,
                 "ready",
-                version,
-                detail,
+                "pyprecice",
+                f"native precice binding importable by {interpreter}",
             )
         return CapabilityProbe(
             participant_id,
@@ -259,7 +259,8 @@ def probe_participant(participant_id: str) -> CapabilityProbe:
             "pyprecice",
             "unavailable",
             None,
-            "neither pyprecice nor precice-tools is installed",
+            "no python interpreter can import the native precice binding; "
+            + "; ".join(attempts),
         )
     probe = probe_solver(solver_id)
     return dataclasses.replace(probe, participant_id=participant_id)

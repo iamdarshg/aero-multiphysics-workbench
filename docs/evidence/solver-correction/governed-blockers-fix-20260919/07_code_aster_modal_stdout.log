@@ -1,0 +1,690 @@
+
+# ------------------------------------------------------------------------------
+Execution of code_aster
+
+# ------------------------------------------------------------------------------
+Prepare environment in /tmp/run_aster_x6ybhl_x
+
+# ------------------------------------------------------------------------------
+Command file #1 / 1
+
+Content of the file to execute:
+# coding=utf-8
+# original filename
+__file__ = r"/aero-jobs/case-e09ce82a2c18/case.comm"
+
+
+# temporarly added for compatibility with code_aster legacy
+from math import *
+
+import code_aster
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT();
+
+mesh = LIRE_MAILLAGE(FORMAT='MED', UNITE=20);
+
+solid_groups = ('solid',);
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(
+        GROUP_MA=solid_groups,
+        PHENOMENE='MECANIQUE',
+        MODELISATION='3D',
+    ),
+);
+
+mat_solid = DEFI_MATERIAU(
+    ELAS=_F(
+        E=2.100000e+11,
+        NU=0.300000,
+        RHO=7.800000e+03,
+    ),
+);
+
+fieldmat = AFFE_MATERIAU(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(GROUP_MA='solid', MATER=(mat_solid,)),
+    ),
+);
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA=('tip-face',)),
+    ),
+);
+
+char_clamp = AFFE_CHAR_MECA(
+    MODELE=model,
+    DDL_IMPO=_F(GROUP_MA='clamp-face', DX=0.000000e+00, DY=0.000000e+00, DZ=0.000000e+00),
+);
+
+load_tip_load = AFFE_CHAR_MECA(
+    MODELE=model,
+    FORCE_NODALE=_F(GROUP_NO='tip-face', FZ=-8.333333e+04),
+);
+
+rigi = ASSEMBLAGE(
+    MODELE=model,
+    CHAM_MATER=fieldmat,
+    NUME_DDL=CO('nume'),
+    MATR_ASSE=(_F(MATRICE=CO('RIGI'), OPTION='RIGI_MECA'),),
+);
+
+mass = ASSEMBLAGE(
+    MODELE=model,
+    CHAM_MATER=fieldmat,
+    NUME_DDL=nume,
+    MATR_ASSE=(_F(MATRICE=CO('MASS'), OPTION='MASS_MECA'),),
+);
+
+modes = CALC_MODES(
+    MATR_RIGI=rigi,
+    MATR_MASS=mass,
+    CALC_FREQ=_F(
+        OPTION='PLUS_PETITE',
+        NMAX_FREQ=4,
+    ),
+);
+
+IMPR_RESU(
+    FORMAT='RESULTAT',
+    UNITE=80,
+    RESU=_F(
+        RESULTAT=modes,
+        NOM_CHAM='DEPL',
+        FORM_TABL='OUI',
+    ),
+);
+
+FIN();
+
+
+
+# ------------------------------------------------------------------------------
+Command line #1:
+    ulimit -c unlimited ; ulimit -t 108000 ; ( /opt/aster/bin/python3 "case.comm.changed.py" --last --link="F::mmed::/aero-jobs/case-e09ce82a2c18/mesh.med::D::20" --tpmax 86400 ; echo $? > _exit_code_ ) 2>&1 | tee -a fort.6
+setting '--memory' value to 3686.40 MB (keyword RESERVE_MEMOIRE)
+copying (shutil) '/aero-jobs/case-e09ce82a2c18/mesh.med' to 'fort.20'...
+Ouverture en écriture du fichier ./vola.1
+
+<INFO> Démarrage de l'exécution.
+
+                       -- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --                       
+                               Version 18.1.6 modifiée le 14/09/2026                                
+                                    révision n/a - branche 'n/a'                                    
+                                     Copyright EDF 1991 - 2026                                      
+                                                                                                    
+                              Exécution du : Sat Sep 19 19:16:48 2026                               
+                        Nom de la machine : aero-governed-blockers-20260919                         
+                                        Architecture : 64bit                                        
+                                    Type de processeur : x86_64                                     
+                Système d'exploitation : Linux-6.8.0-1067-gcp-x86_64-with-glibc2.35                 
+                                  Langue des messages : C (UTF-8)                                   
+                                     Version de Python : 3.14.7                                     
+                                      Version de NumPy : 2.5.3                                      
+                                  Version de MEDCoupling : 9.16.0                                   
+                                     Parallélisme MPI : inactif                                     
+                                    Parallélisme OpenMP : actif                                     
+                              Nombre de processus OpenMP utilisés : 1                               
+                                Version de la librairie HDF5 : 2.1.0                                
+                                Version de la librairie MED : 4.2.0                                 
+                               Version de la librairie MFront : 5.1.0                               
+                               Version de la librairie MUMPS : 5.8.2                                
+                                  Librairie PETSc : non disponible                                  
+                              Version de la librairie SCOTCH : 7.0.11                               
+
+starting the execution...
+Valeur initiale du temps CPU maximum =   86400 secondes
+  Valeur du temps CPU maximum passé aux commandes =   77760 secondes
+  Réserve CPU prévue = 8640 secondes
+
+Ouverture en écriture du fichier ./glob.1
+
+Ouverture en écriture du fichier ./vola.1
+
+Ouverture en lecture du fichier /opt/aster/lib/elem.1
+
+Nom de la base                          :  ELEMBASE
+     Créée avec la version                   :  18.01.06
+     Nombre d'enregistrements utilisés       :  54
+     Nombre d'enregistrements maximum        :  512
+     Nombre d'enregistrements par fichier    :  512
+     Longueur d'enregistrement (octets)      :  819200
+     Nombre d'identificateurs utilisés       :  123
+     Taille maximum du répertoire            :  300
+     Pourcentage d'utilisation du répertoire :  41 %
+
+Ouverture en lecture du fichier /opt/aster/lib/elem.1
+
+Nom de la base                          :  ELEMBASE
+     Nombre d'enregistrements utilisés       :  54
+     Nombre d'enregistrements maximum        :  512
+     Nombre d'enregistrements par fichier    :  512
+     Longueur d'enregistrement (octets)      :  819200
+     Nombre total d'accès en lecture         :  72
+     Volume des accès en lecture             :         56.25 Mo.
+     Nombre total d'accès en écriture        :  0
+     Volume des accès en écriture            :          0.00 Mo.
+     Nombre d'identificateurs utilisés       :  123
+     Taille maximum du répertoire            :  300
+     Pourcentage d'utilisation du répertoire :  41 %
+
+Relecture des catalogues des éléments faite.
+
+Fin de lecture (durée  0.058677  s.) 
+
+                      Mémoire limite pour l'allocation dynamique : 4198.46 Mo                       
+                         ajouté à l'initialisation du processus : 628.70 Mo                         
+                               Limite cible du processus : 4827.16 Mo                               
+                         Taille limite des fichiers d'échange : 2048.00 Go                          
+# Mémoire (Mo) :   628.70 /   619.35 /   216.07 /   186.93 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0001   user+syst:        0.07s (syst:        0.25s, elaps:        0.32s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt15
+# ----------------------------------------------------------------------------------------------
+# Commande #0002 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 15
+mesh = LIRE_MAILLAGE(FORMAT='MED',
+                     INFO=1,
+                     INFO_MED=0,
+                     PARTITIONNEUR='SANS',
+                     UNITE=20,
+                     VERI_MAIL=_F(APLAT=0.001,
+                                  VERIF='OUI'))
+
+Nom MED du maillage : cantilever
+
+
+------------ MAILLAGE 00000001 - IMPRESSIONS NIVEAU  1 ------------
+
+
+NOMBRE DE NOEUDS                         100
+
+NOMBRE DE MAILLES                        405
+                              TRIA3                 196
+                              TETRA4                209
+
+NOMBRE DE GROUPES DE MAILLES               7
+
+--------------------------------------------------------------------------------
+
+Vérification du maillage.
+
+# Résultat commande #0002 (LIRE_MAILLAGE): mesh ('<00000001>') de type <Mesh>
+# Mémoire (Mo) :   628.70 /   620.46 /   216.07 /   186.93 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0002   user+syst:        0.01s (syst:        0.01s, elaps:        0.02s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt19
+# ----------------------------------------------------------------------------------------------
+# Commande #0003 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 19
+model = AFFE_MODELE(AFFE=_F(GROUP_MA='solid',
+                            MODELISATION='3D',
+                            PHENOMENE='MECANIQUE'),
+                    DISTRIBUTION=_F(METHODE='SOUS_DOMAINE',
+                                    PARTITIONNEUR='METIS'),
+                    INFO=1,
+                    MAILLAGE=mesh,
+                    VERI_FORMULATION_IFS='OUI',
+                    VERI_JACOBIEN='OUI',
+                    VERI_NORM_IFS='OUI',
+                    VERI_PLAN='OUI')
+
+Sur les 405 mailles du maillage 00000001, on a demandé l'affectation de 209, on a pu en affecter
+209.
+Modélisation     Formulation      Type maille  Élément fini     Nombre
+3D               _                TETRA4       MECA_TETRA4      209
+#2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):      0.00      0.00      0.00
+# Résultat commande #0003 (AFFE_MODELE): model ('<00000002>') de type <Model>
+# Mémoire (Mo) :   749.86 /   749.47 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0003   user+syst:        0.01s (syst:        0.00s, elaps:        0.01s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt28
+# ----------------------------------------------------------------------------------------------
+# Commande #0004 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 28
+mat_solid = DEFI_MATERIAU(ELAS=_F(B_ENDOGE=0.0,
+                                  COEF_AMOR=1.0,
+                                  E=210000000000.0,
+                                  K_DESSIC=0.0,
+                                  NU=0.3,
+                                  RHO=7800.0),
+                          INFO=1)
+
+# Résultat commande #0004 (DEFI_MATERIAU): mat_solid ('<00000003>') de type <Material>
+# Mémoire (Mo) :   749.86 /   749.47 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0004   user+syst:        0.01s (syst:        0.00s, elaps:        0.01s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt36
+# ----------------------------------------------------------------------------------------------
+# Commande #0005 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 36
+fieldmat = AFFE_MATERIAU(AFFE=_F(GROUP_MA='solid',
+                                 MATER=mat_solid),
+                         INFO=1,
+                         MAILLAGE=mesh)
+
+# Résultat commande #0005 (AFFE_MATERIAU): fieldmat ('<00000004>') de type <MaterialField>
+# Mémoire (Mo) :   749.86 /   749.47 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0005   user+syst:        0.01s (syst:        0.00s, elaps:        0.00s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt43
+# ----------------------------------------------------------------------------------------------
+# Commande #0006 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 43
+mesh = DEFI_GROUP(ALARME='OUI',
+                  CREA_GROUP_NO=_F(CRIT_NOEUD='TOUS',
+                                   GROUP_MA='tip-face'),
+                  MAILLAGE=mesh,
+                  reuse=mesh)
+
+
+
+NOMBRE  DE GROUPES DE NOEUDS CREES :      1
+=======================================
+
+               ------------------------------------------------------
+               !         NOM DU GROUPE         ! NBRE DE NOEUDS DU  !
+               !            NOEUDS             !      GROUPE_NO     !
+               ------------------------------------------------------
+               !  tip-face                     !        12          !
+               ------------------------------------------------------
+
+# Résultat commande #0006 (DEFI_GROUP): mesh ('<00000001>') de type <Mesh>
+# Mémoire (Mo) :   749.86 /   749.47 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0006   user+syst:        0.00s (syst:        0.00s, elaps:        0.01s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt51
+# ----------------------------------------------------------------------------------------------
+# Commande #0007 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 51
+char_clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0,
+                                        DY=0.0,
+                                        DZ=0.0,
+                                        GROUP_MA='clamp-face'),
+                            DOUBLE_LAGRANGE='OUI',
+                            INFO=1,
+                            MODELE=model,
+                            SYNTAXE='NON',
+                            VERI_AFFE='OUI',
+                            VERI_NORM='OUI')
+
+# Résultat commande #0007 (AFFE_CHAR_MECA): char_clamp ('<00000005>') de type <MechanicalLoadReal>
+# Mémoire (Mo) :   749.86 /   749.60 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0007   user+syst:        0.01s (syst:        0.00s, elaps:        0.01s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt56
+# ----------------------------------------------------------------------------------------------
+# Commande #0008 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 56
+load_tip_load = AFFE_CHAR_MECA(DOUBLE_LAGRANGE='OUI',
+                               FORCE_NODALE=_F(FZ=-83333.33,
+                                               GROUP_NO='tip-face'),
+                               INFO=1,
+                               MODELE=model,
+                               SYNTAXE='NON',
+                               VERI_AFFE='OUI',
+                               VERI_NORM='OUI')
+
+# Résultat commande #0008 (AFFE_CHAR_MECA): load_tip_load ('<00000006>') de type
+<MechanicalLoadReal>
+# Mémoire (Mo) :   749.86 /   749.60 /   216.07 /   204.24 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0008   user+syst:        0.00s (syst:        0.00s, elaps:        0.00s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt61
+# ----------------------------------------------------------------------------------------------
+# Commande #0009 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 61
+rigi = ASSEMBLAGE(CHAM_MATER=fieldmat,
+                  INFO=1,
+                  INST=0.0,
+                  MATR_ASSE=_F(MATRICE=CO('RIGI'),
+                               MODE_FOURIER=0,
+                               OPTION='RIGI_MECA'),
+                  MODELE=model,
+                  NUME_DDL=CO('nume'))
+
+Le système linéaire à résoudre a 300 degrés de liberté:
+   - 300 sont des degrés de liberté physiques
+     (ils sont portés par 100 noeuds du maillage)
+   - 0 sont les couples de paramètres de Lagrange associés
+     aux 0 relations linéaires dualisées.
+La matrice est de taille 300 équations.
+  Elle contient 4254 termes non nuls si elle est symétrique et 8208 termes non nuls si elle n'est
+pas symétrique.
+  Soit un taux de remplissage de   9.120 %.
+# Résultat commande #0009 (ASSEMBLAGE): nume ('<0000000e>') de type <DOFNumbering>
+# Résultat commande #0009 (ASSEMBLAGE): RIGI ('<00000010>') de type <AssemblyMatrixDisplacementReal>
+# Mémoire (Mo) :   750.54 /   750.02 /   216.07 /   204.27 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0009   user+syst:        0.02s (syst:        0.00s, elaps:        0.03s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt68
+# ----------------------------------------------------------------------------------------------
+# Commande #0013 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 68
+mass = ASSEMBLAGE(CHAM_MATER=fieldmat,
+                  INFO=1,
+                  INST=0.0,
+                  MATR_ASSE=_F(MATRICE=CO('MASS'),
+                               OPTION='MASS_MECA'),
+                  MODELE=model,
+                  NUME_DDL=nume)
+
+# Résultat commande #0013 (ASSEMBLAGE): MASS ('<00000016>') de type <AssemblyMatrixDisplacementReal>
+# Mémoire (Mo) :   750.66 /   750.02 /   216.07 /   204.28 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0013   user+syst:        0.01s (syst:        0.00s, elaps:        0.02s)
+# ----------------------------------------------------------------------------------------------
+
+.. _stg1_txt75
+# ----------------------------------------------------------------------------------------------
+# Commande #0016 de /tmp/run_aster_x6ybhl_x/case.comm.changed.py, ligne 75
+modes = CALC_MODES(AMELIORATION='NON',
+                   CALC_FREQ=_F(NMAX_FREQ=4,
+                                NMAX_ITER_SHIFT=3,
+                                OPTION='PLUS_PETITE',
+                                PREC_SHIFT=0.05,
+                                SEUIL_FREQ=0.01),
+                   INFO=1,
+                   OPTION='PLUS_PETITE',
+                   SOLVEUR=_F(ACCELERATION='FR',
+                              ELIM_LAGR='LAGR2',
+                              GESTION_MEMOIRE='AUTO',
+                              LOW_RANK_SEUIL=0.0,
+                              METHODE='MUMPS',
+                              NB_RHS=1,
+                              NPREC=8,
+                              PCENT_PIVOT=35,
+                              POSTTRAITEMENTS='AUTO',
+                              PRETRAITEMENTS='AUTO',
+                              RENUM='AUTO',
+                              RESI_RELA=-1.0,
+                              TYPE_RESOL='AUTO'),
+                   SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                    METHODE='SORENSEN',
+                                    NMAX_ITER_SOREN=20,
+                                    PARA_ORTHO_SOREN=0.717,
+                                    PREC_SOREN=0.0),
+                   STOP_BANDE_VIDE='OUI',
+                   TYPE_RESU='DYNAMIQUE',
+                   VERI_MODE=_F(PREC_SHIFT=0.005,
+                                SEUIL=1e-06,
+                                STOP_ERREUR='OUI',
+                                STURM='OUI'))
+
+
+ ╔================================================================================================╗
+ ║ <EXCEPTION> <SUPERVIS_4>                                                                       ║
+ ║                                                                                                ║
+ ║ Erreur de syntaxe dans CALC_MODES                                                              ║
+ ║                                                                                                ║
+ ║ 'Keyword MATR_RIGI is mandatory'                                                               ║
+ ║                                                                                                ║
+ ║ Exception détaillée ci-dessous.                                                                ║
+ ╚================================================================================================╝
+
+Traceback (most recent call last):
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 460, in check_syntax
+    checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 482, in checkCommandSyntax
+    command.accept(checker, keywords)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 754, in accept
+    visitor.visitMacro(self, syntax)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 213, in visitMacro
+    self.visitCommand(step, userDict)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 199, in visitCommand
+    self._visitComposite(step, userDict)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 423, in _visitComposite
+    step.checkMandatory(userOcc, self._stack, ctxt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 420, in checkMandatory
+    kwd.checkMandatory(userSyntax, stack, ctxt)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 417, in checkMandatory
+    raise KeyError("Keyword {0} is mandatory".format(key))
+KeyError: 'Keyword MATR_RIGI is mandatory'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/run_aster_x6ybhl_x/case.comm.changed.py", line 75, in <module>
+    modes = CALC_MODES(
+        MATR_RIGI=rigi,
+    ...<4 lines>...
+        ),
+    );
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 184, in run
+    return cmd.run_(**kwargs)
+           ~~~~~~~~^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 207, in run_
+    self.check_syntax(keywords)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 476, in check_syntax
+    UTMESS("F", "SUPERVIS_4", valk=(self.command_name, msg))
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 708, in UTMESS
+    MessageLog(
+    ~~~~~~~~~~^
+        code,
+        ^^^^^
+    ...<8 lines>...
+        cc=cc,
+        ^^^^^^
+    )
+    ^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 135, in __call__
+    self.print_message(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 211, in print_message
+    raise libaster.AsterError(id0, valk, vali, valr)
+libaster.AsterError: 
+ ╔================================================================================================╗
+ ║ <EXCEPTION> <SUPERVIS_4>                                                                       ║
+ ║                                                                                                ║
+ ║ Erreur de syntaxe dans CALC_MODES                                                              ║
+ ║                                                                                                ║
+ ║ 'Keyword MATR_RIGI is mandatory'                                                               ║
+ ║                                                                                                ║
+ ║ Exception détaillée ci-dessous.                                                                ║
+ ╚================================================================================================╝
+
+Traceback (most recent call last):
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 460, in check_syntax
+    checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 482, in checkCommandSyntax
+    command.accept(checker, keywords)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 754, in accept
+    visitor.visitMacro(self, syntax)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 213, in visitMacro
+    self.visitCommand(step, userDict)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 199, in visitCommand
+    self._visitComposite(step, userDict)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxChecker.py", line 423, in _visitComposite
+    step.checkMandatory(userOcc, self._stack, ctxt)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 420, in checkMandatory
+    kwd.checkMandatory(userSyntax, stack, ctxt)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Cata/Language/SyntaxObjects.py", line 417, in checkMandatory
+    raise KeyError("Keyword {0} is mandatory".format(key))
+KeyError: 'Keyword MATR_RIGI is mandatory'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/run_aster_x6ybhl_x/case.comm.changed.py", line 75, in <module>
+    modes = CALC_MODES(
+        MATR_RIGI=rigi,
+    ...<4 lines>...
+        ),
+    );
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 184, in run
+    return cmd.run_(**kwargs)
+           ~~~~~~~~^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 207, in run_
+    self.check_syntax(keywords)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Supervis/ExecuteCommand.py", line 476, in check_syntax
+    UTMESS("F", "SUPERVIS_4", valk=(self.command_name, msg))
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 708, in UTMESS
+    MessageLog(
+    ~~~~~~~~~~^
+        code,
+        ^^^^^
+    ...<8 lines>...
+        cc=cc,
+        ^^^^^^
+    )
+    ^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 135, in __call__
+    self.print_message(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/aster/lib/python3.14/site-packages/code_aster/Messages/Utmess.py", line 211, in print_message
+    raise libaster.AsterError(id0, valk, vali, valr)
+libaster.AsterError: 
+ ╔================================================================================================╗
+ ║ <EXCEPTION> <SUPERVIS_4>                                                                       ║
+ ║                                                                                                ║
+ ║ Erreur de syntaxe dans CALC_MODES                                                              ║
+ ║                                                                                                ║
+ ║ 'Keyword MATR_RIGI is mandatory'                                                               ║
+ ║                                                                                                ║
+ ║ Exception détaillée ci-dessous.                                                                ║
+ ╚================================================================================================╝
+
+
+.. _stg1_txt76
+# ----------------------------------------------------------------------------------------------
+# Commande #0017 de /opt/aster/lib/python3.14/site-packages/code_aster/CodeCommands/fin.py, ligne 76
+FIN(INFO_RESU='NON',
+    RETASSAGE='NON')
+
+
+ ╔================================================================================================╗
+ ║ <I> <CATAMESS_89>                                                                              ║
+ ║                                                                                                ║
+ ║ Liste des alarmes émises lors de l'exécution du calcul.                                        ║
+ ║                                                                                                ║
+ ║     Les alarmes que vous avez choisies d'ignorer sont précédées de (*).                        ║
+ ║     Nombre d'occurrences pour chacune des alarmes :                                            ║
+ ║            aucune alarme                                                                       ║
+ ╚================================================================================================╝
+
+  
+ <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR L'EXECUTION :                     204.28 Mo
+ <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR L'EXECUTION :                     216.07 Mo
+ <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS LORS DE L'EXECUTION :     751.77 Mo
+  
+ <I>       FERMETURE DES BASES EFFECTUEE
+  
+   STATISTIQUES CONCERNANT L'ALLOCATION DYNAMIQUE :
+     TAILLE CUMULEE MAXIMUM            :                  216  Mo.
+     TAILLE CUMULEE LIBEREE            :                    2  Mo.
+     NOMBRE TOTAL D'ALLOCATIONS        :                 7977
+     NOMBRE TOTAL DE LIBERATIONS       :                 7527
+     APPELS AU MECANISME DE LIBERATION :                    0
+     TAILLE MEMOIRE CUMULEE RECUPEREE  :                    0  Mo.
+     VOLUME DES LECTURES               :                    0  Mo.
+     VOLUME DES ECRITURES              :                    0  Mo.
+  
+   MEMOIRE JEVEUX MINIMALE REQUISE POUR L'EXECUTION :     204.28 Mo
+     - IMPOSE DE NOMBREUX ACCES DISQUE
+     - RALENTIT LA VITESSE D'EXECUTION
+   MEMOIRE JEVEUX OPTIMALE REQUISE POUR L'EXECUTION :     216.07 Mo
+     - LIMITE LES ACCES DISQUE
+     - AMELIORE LA VITESSE D'EXECUTION
+   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :     751.77 Mo
+     - COMPREND LA MEMOIRE CONSOMMEE PAR  JEVEUX, 
+       LE SUPERVISEUR PYTHON, LES LIBRAIRIES EXTERNES
+  
+ <I>       FIN D'EXECUTION LE : SA-19-SEPT-2026 19:16:49
+INFO './glob.1' deleted
+Deleting './glob.2': No such file or directory
+INFO './vola.1' deleted
+Deleting './vola.2': No such file or directory
+
+ ********************************************************************************
+ * COMMAND                  :       USER :     SYSTEM :   USER+SYS :    ELAPSED *
+ ********************************************************************************
+ * DEBUT                    :       0.07 :       0.25 :       0.32 :       0.32 *
+ * LIRE_MAILLAGE            :       0.01 :       0.01 :       0.02 :       0.02 *
+ * AFFE_MODELE              :       0.01 :       0.00 :       0.01 :       0.01 *
+ * DEFI_MATERIAU            :       0.01 :       0.00 :       0.01 :       0.01 *
+ * AFFE_MATERIAU            :       0.01 :       0.00 :       0.01 :       0.00 *
+ * DEFI_GROUP               :       0.00 :       0.00 :       0.00 :       0.01 *
+ * AFFE_CHAR_MECA           :       0.01 :       0.00 :       0.01 :       0.01 *
+ * AFFE_CHAR_MECA           :       0.00 :       0.00 :       0.00 :       0.00 *
+ * ASSEMBLAGE               :       0.02 :       0.00 :       0.02 :       0.03 *
+ * ASSEMBLAGE               :       0.01 :       0.00 :       0.01 :       0.02 *
+ * CALC_MODES               :       0.07 :       0.00 :       0.07 :       0.07 *
+ * FIN                      :       0.00 :       0.00 :       0.00 :       0.00 *
+ *  . sdveri                :       0.00 :       0.00 :       0.00 :       0.00 *
+ *  . check syntax          :       0.03 :       0.00 :       0.03 :       0.03 *
+ *  . fortran               :       0.07 :       0.25 :       0.32 :       0.34 *
+ *  . cleanup               :       0.00 :       0.00 :       0.00 :       0.01 *
+ ********************************************************************************
+ * TOTAL_JOB                :       0.31 :       0.27 :       0.58 :       0.70 *
+ ********************************************************************************
+
+# Mémoire (Mo) :   751.77 /   751.77 /   216.07 /   204.28 (VmPeak / VmSize / Optimum / Minimum)
+# Fin commande #0017   user+syst:        0.00s (syst:        0.00s, elaps:        0.00s)
+# ----------------------------------------------------------------------------------------------
+
+EXECUTION_CODE_ASTER_EXIT_3905=1
+
+
+execution ended (command file #1): <S>_ERROR
+
+# ------------------------------------------------------------------------------
+Content of /tmp/run_aster_x6ybhl_x after execution:
+.:
+total 92
+-rw-r--r-- 1 root root   242 Sep 19 19:16 3905.export
+drwxr-xr-x 2 root root  4096 Sep 19 19:16 REPE_IN
+drwxr-xr-x 2 root root  4096 Sep 19 19:16 REPE_OUT
+-rw-r--r-- 1 root root  1694 Sep 19 19:16 case.comm.changed.py
+-rw-r--r-- 1 root root   246 Sep 19 19:16 fort.15
+-rw-r--r-- 1 root root 37075 Sep 19 19:16 fort.20
+-rw-r--r-- 1 root root 30692 Sep 19 19:16 fort.6
+-rw-r--r-- 1 root root     0 Sep 19 19:16 fort.8
+-rw-r--r-- 1 root root     0 Sep 19 19:16 fort.9
+
+REPE_OUT:
+total 0
+
+
+# ------------------------------------------------------------------------------
+Copying results
+WARNING: file not found: fort.80
+
+# ------------------------------------------------------------------------------
+Execution summary
+                                      cpu     system    cpu+sys    elapsed
+--------------------------------------------------------------------------------
+Preparation of environment           0.00       0.00       0.00       0.00
+Execution of code_aster              1.28       0.43       1.71       2.34
+Copying results                      0.00       0.01       0.01       0.00
+--------------------------------------------------------------------------------
+Total                                1.28       0.44       1.72       2.34
+--------------------------------------------------------------------------------
+
+------------------------------------------------------------
+--- DIAGNOSTIC JOB : <S>_ERROR
+------------------------------------------------------------
+
