@@ -1,5 +1,32 @@
-"""Physical convergence and closure policy."""
+"""Physical convergence, closure, numerical independence, and promotion policy."""
 
+from .closure import (
+    CLOSURE_FAMILIES,
+    ClearanceAssessment,
+    ClosureAssessment,
+    FieldConservationAssessment,
+    ResonanceMargin,
+    assess_closure,
+    assess_field_interface_conservation,
+    assess_geometry_clearance,
+    assess_resonance_margin,
+    closure_measure_names,
+)
+from .independence import (
+    DEFAULT_GCI_SAFETY_FACTOR,
+    MESH,
+    TIMESTEP,
+    IndependenceError,
+    IndependenceReport,
+    LadderExecutor,
+    QoITrend,
+    QuantityOfInterest,
+    RefinementLevel,
+    StudyRun,
+    run_independence_study,
+    run_mesh_independence,
+    run_timestep_independence,
+)
 from .manager import ConvergenceManager, ConvergencePolicy
 from .measures import (
     DEFAULT_MEASURES,
@@ -10,15 +37,48 @@ from .measures import (
     assess_measure,
     declared_measures,
 )
+from .promotion import (
+    PromotionGateResult,
+    PromotionParticipantEvidence,
+    assess_promotion,
+    blocking_order,
+)
 
 __all__ = [
+    "CLOSURE_FAMILIES",
+    "ClearanceAssessment",
+    "ClosureAssessment",
     "ClosureMeasure",
     "ConvergenceManager",
     "ConvergencePolicy",
+    "DEFAULT_GCI_SAFETY_FACTOR",
     "DEFAULT_MEASURES",
+    "FieldConservationAssessment",
     "GlobalConvergenceReport",
+    "IndependenceError",
+    "IndependenceReport",
+    "LadderExecutor",
+    "MESH",
     "MeasureAssessment",
+    "PromotionGateResult",
+    "PromotionParticipantEvidence",
+    "QuantityOfInterest",
+    "QoITrend",
+    "RefinementLevel",
+    "ResonanceMargin",
+    "StudyRun",
+    "TIMESTEP",
+    "assess_closure",
+    "assess_field_interface_conservation",
+    "assess_geometry_clearance",
     "assess_global",
     "assess_measure",
+    "assess_promotion",
+    "assess_resonance_margin",
+    "blocking_order",
+    "closure_measure_names",
     "declared_measures",
+    "run_independence_study",
+    "run_mesh_independence",
+    "run_timestep_independence",
 ]

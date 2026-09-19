@@ -8,6 +8,7 @@ results publish only through the evidence-gated envelope path.
 
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import hashlib
 import importlib
@@ -15,8 +16,10 @@ import json
 import os
 import sys
 import threading
+import time
 import uuid
-from collections.abc import Callable, Mapping
+from collections import OrderedDict
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path
@@ -181,8 +184,363 @@ def _inputs_hash(inputs: Mapping[str, object]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+class _DigestCache:
+    """Bounded LRU cache of verified file digests keyed by (path, size, mtime).
+
+    PERF 06 digest reuse: within one publication path the same artifact can be
+    hashed more than once (registration, listing, manifest). The cache avoids
+    rereading unchanged bytes while a stat change (size or mtime) always forces
+    a fresh streaming hash. Retrieval verification deliberately bypasses this
+    cache so tampered bytes can never be served.
+    """
+
+    def __init__(self, limit: int = 512) -> None:
+        self._entries: OrderedDict[tuple[str, int, int], str] = OrderedDict()
+        self._lock = threading.Lock()
+        self._limit = max(1, int(limit))
+        self.hits = 0
+        self.misses = 0
+
+    def get(self, key: tuple[str, int, int]) -> str | None:
+        with self._lock:
+            value = self._entries.get(key)
+            if value is None:
+                self.misses += 1
+                return None
+            self._entries.move_to_end(key)
+            self.hits += 1
+            return value
+
+    def put(self, key: tuple[str, int, int], digest: str) -> None:
+        with self._lock:
+            self._entries[key] = digest
+            self._entries.move_to_end(key)
+            while len(self._entries) > self._limit:
+                self._entries.popitem(last=False)
+
+    def metrics(self) -> dict[str, int]:
+        with self._lock:
+            return {"hits": self.hits, "misses": self.misses, "entries": len(self._entries)}
+
+
+_DIGEST_CACHE = _DigestCache()
+
+
+def _sha256_file_cached(path: Path) -> tuple[str, int]:
+    """Streaming SHA-256 with bounded reuse for an unchanged file."""
+
+    stat = path.stat()
+    key = (str(path), stat.st_size, stat.st_mtime_ns)
+    cached = _DIGEST_CACHE.get(key)
+    if cached is not None:
+        return cached, stat.st_size
+    digest, size = _sha256_file(path)
+    _DIGEST_CACHE.put(key, digest)
+    return digest, size
+
+
+class _InfeasibleProfile(ValueError):
+    """The declared reservation cannot be hosted under the aggregate ceiling."""
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class SolverResourcePolicy:
+    """Per-solver-family concurrency, memory, thread, and priority policy."""
+
+    max_concurrency: int = 1
+    memory_mib: float = 256.0
+    exclusive: bool = False
+    priority: int = 0
+    threads: int = 1
+
+    def __post_init__(self) -> None:
+        if self.max_concurrency < 1:
+            raise ValueError("INVALID_CONCURRENCY_POLICY")
+        if not 0 < self.memory_mib <= _RSS_CEILING_MIB:
+            raise ValueError("INVALID_MEMORY_POLICY")
+        if self.threads < 1:
+            raise ValueError("INVALID_THREAD_HINT")
+
+
+# Conservative defaults: heavyweight native executables stay at concurrency 1
+# (each reserves a large slice of the 896 MiB aggregate budget), governed
+# Python solvers may overlap two-up, and cheap in-process analytical
+# participants may run four-up. Nothing here raises the hard memory ceiling.
+_DEFAULT_SOLVER_POLICIES: dict[str, SolverResourcePolicy] = {
+    "openfoam": SolverResourcePolicy(max_concurrency=1, memory_mib=512.0),
+    "code-aster": SolverResourcePolicy(max_concurrency=1, memory_mib=512.0),
+    "elmer": SolverResourcePolicy(max_concurrency=1, memory_mib=384.0),
+    "precice": SolverResourcePolicy(max_concurrency=1, memory_mib=128.0),
+    "gmsh": SolverResourcePolicy(max_concurrency=1, memory_mib=256.0),
+    "freecad": SolverResourcePolicy(max_concurrency=1, memory_mib=256.0),
+    "ross": SolverResourcePolicy(max_concurrency=2, memory_mib=256.0),
+    "pybamm": SolverResourcePolicy(max_concurrency=2, memory_mib=256.0),
+    "aeroworkbench-electrical": SolverResourcePolicy(
+        max_concurrency=4, memory_mib=64.0
+    ),
+}
+
+DEFAULT_SOLVER_POLICY = SolverResourcePolicy(max_concurrency=2, memory_mib=128.0)
+
+
+@dataclasses.dataclass(slots=True)
+class JobProfile:
+    """One queued job's declared resource envelope."""
+
+    job_id: str
+    participant_id: str
+    solver_id: str
+    execution_mode: str
+    memory_mib: float
+    threads: int = 1
+    max_concurrency: int = 1
+    exclusive: bool = False
+    priority: int = 0
+    sequence: int = 0
+    effective_tier: int = 0
+    skips: int = 0
+    enqueued_at: float = 0.0
+    admitted_at: float | None = None
+    finished_at: float | None = None
+
+
+class ResourceScheduler:
+    """Bounded, resource-aware admission that replaces the global worker lock.
+
+    Admission accounts for: declared/requested memory, solver-family
+    concurrency policy, CPU/thread hints, exclusive-resource flags, and the
+    896 MiB project aggregate reservation. Independent safe jobs overlap; a
+    solver that declares ``exclusive`` (or a cap) is honored; memory is never
+    oversubscribed to chase throughput.
+
+    Fairness is deterministic: waiters are ordered by effective priority tier
+    then admission sequence. Each admission ages every remaining waiter one
+    ``skip``; once a waiter crosses ``aging_after_skips`` its tier is boosted,
+    so a stream of cheap jobs cannot starve a promoted high-fidelity job. A
+    higher-tier waiter blocked on memory or an exclusive slot holds the line
+    (head-of-line reservation) so later jobs cannot consume its capacity.
+    """
+
+    def __init__(
+        self,
+        *,
+        aggregate_memory_mib: float = _RSS_CEILING_MIB,
+        max_active_jobs: int = 4,
+        max_threads: int | None = None,
+        aging_after_skips: int = 4,
+        poll_s: float = 0.05,
+    ) -> None:
+        if not 0 < aggregate_memory_mib <= _RSS_CEILING_MIB:
+            raise ValueError("INVALID_AGGREGATE_MEMORY")
+        if max_active_jobs < 1:
+            raise ValueError("INVALID_MAX_ACTIVE_JOBS")
+        if aging_after_skips < 1:
+            raise ValueError("INVALID_AGING_POLICY")
+        self._aggregate = float(aggregate_memory_mib)
+        self._max_active = int(max_active_jobs)
+        self._max_threads = int(max_threads) if max_threads is not None else max(
+            os.cpu_count() or 1, 1
+        )
+        self._aging_after_skips = int(aging_after_skips)
+        self._poll_s = float(poll_s)
+        self._lock = threading.Lock()
+        self._cond = threading.Condition(self._lock)
+        self._waiters: dict[str, JobProfile] = {}
+        self._active: dict[str, JobProfile] = {}
+        self._active_reserved = 0.0
+        self._active_threads = 0
+        self._active_by_solver: dict[str, int] = {}
+        self._sequence = 0
+        self._admitted_total = 0
+        self._queue_delay_ms: list[float] = []
+        self._peak_active = 0
+        self._peak_reserved = 0.0
+        self._busy_ms = 0.0
+        self._busy_by_solver: dict[str, float] = {}
+        self._started_at = time.perf_counter()
+
+    # -- admission -------------------------------------------------------
+
+    def acquire(self, profile: JobProfile, cancel: Event | None = None) -> bool:
+        """Block until ``profile`` may run; ``False`` means it was cancelled."""
+
+        profile.enqueued_at = time.perf_counter()
+        with self._cond:
+            profile.sequence = self._sequence
+            self._sequence += 1
+            profile.effective_tier = profile.priority
+            self._waiters[profile.job_id] = profile
+            try:
+                while True:
+                    if cancel is not None and cancel.is_set():
+                        return False
+                    if self._should_admit(profile):
+                        self._waiters.pop(profile.job_id, None)
+                        self._activate(profile)
+                        return True
+                    self._cond.wait(self._poll_s)
+            finally:
+                self._waiters.pop(profile.job_id, None)
+
+    def release(self, job_id: str) -> None:
+        with self._cond:
+            profile = self._active.pop(job_id, None)
+            if profile is not None:
+                profile.finished_at = time.perf_counter()
+                self._active_reserved = max(
+                    0.0, self._active_reserved - profile.memory_mib
+                )
+                self._active_threads = max(0, self._active_threads - profile.threads)
+                remaining = self._active_by_solver.get(profile.solver_id, 0) - 1
+                if remaining > 0:
+                    self._active_by_solver[profile.solver_id] = remaining
+                else:
+                    self._active_by_solver.pop(profile.solver_id, None)
+                if profile.admitted_at is not None:
+                    elapsed = (profile.finished_at - profile.admitted_at) * 1000.0
+                    self._busy_ms += elapsed
+                    self._busy_by_solver[profile.solver_id] = (
+                        self._busy_by_solver.get(profile.solver_id, 0.0) + elapsed
+                    )
+            else:
+                self._waiters.pop(job_id, None)
+            self._cond.notify_all()
+
+    def _activate(self, profile: JobProfile) -> None:
+        profile.admitted_at = time.perf_counter()
+        self._active[profile.job_id] = profile
+        self._active_reserved += profile.memory_mib
+        self._active_threads += profile.threads
+        self._active_by_solver[profile.solver_id] = (
+            self._active_by_solver.get(profile.solver_id, 0) + 1
+        )
+        self._admitted_total += 1
+        self._queue_delay_ms.append((profile.admitted_at - profile.enqueued_at) * 1000.0)
+        if len(self._queue_delay_ms) > 4096:
+            self._queue_delay_ms = self._queue_delay_ms[-2048:]
+        self._peak_active = max(self._peak_active, len(self._active))
+        self._peak_reserved = max(self._peak_reserved, self._active_reserved)
+        for waiter in self._waiters.values():
+            waiter.skips += 1
+            if waiter.skips >= self._aging_after_skips:
+                waiter.effective_tier = max(waiter.effective_tier, waiter.priority + 1)
+        self._cond.notify_all()
+
+    def _fits(
+        self,
+        profile: JobProfile,
+        active: Mapping[str, JobProfile],
+        reserved: float,
+        threads: int,
+        by_solver: Mapping[str, int],
+    ) -> bool:
+        if not 0 < profile.memory_mib <= self._aggregate:
+            return False
+        if profile.exclusive:
+            if active:
+                return False
+        elif any(item.exclusive for item in active.values()):
+            return False
+        if by_solver.get(profile.solver_id, 0) >= profile.max_concurrency:
+            return False
+        if len(active) >= self._max_active:
+            return False
+        if reserved + profile.memory_mib > self._aggregate + 1e-9:
+            return False
+        return threads + profile.threads <= self._max_threads
+
+    def _blocked_on_reservation(self, profile: JobProfile, reserved: float) -> bool:
+        if not 0 < profile.memory_mib <= self._aggregate:
+            # An infeasible declaration can never be satisfied; it must not
+            # block the queue (callers fail it closed through admission).
+            return False
+        if profile.exclusive:
+            return True
+        return reserved + profile.memory_mib > self._aggregate + 1e-9
+
+    def _should_admit(self, profile: JobProfile) -> bool:
+        order = sorted(
+            self._waiters.values(),
+            key=lambda item: (-item.effective_tier, item.sequence),
+        )
+        active: dict[str, JobProfile] = dict(self._active)
+        reserved = self._active_reserved
+        threads = self._active_threads
+        by_solver = dict(self._active_by_solver)
+        for waiter in order:
+            if self._fits(waiter, active, reserved, threads, by_solver):
+                if waiter.job_id == profile.job_id:
+                    return True
+                active[waiter.job_id] = waiter
+                reserved += waiter.memory_mib
+                threads += waiter.threads
+                by_solver[waiter.solver_id] = by_solver.get(waiter.solver_id, 0) + 1
+            elif self._blocked_on_reservation(waiter, reserved):
+                break
+        return False
+
+    # -- observability ---------------------------------------------------
+
+    def active_jobs(self) -> tuple[str, ...]:
+        with self._lock:
+            return tuple(sorted(self._active))
+
+    def waiting_jobs(self) -> tuple[str, ...]:
+        with self._lock:
+            return tuple(sorted(self._waiters))
+
+    def metrics(self) -> dict[str, Any]:
+        with self._lock:
+            elapsed_ms = (time.perf_counter() - self._started_at) * 1000.0
+            samples = sorted(self._queue_delay_ms)
+            count = len(samples)
+            median = samples[count // 2] if count else 0.0
+            p95 = samples[min(count - 1, int(0.95 * (count - 1)))] if count else 0.0
+            latest = samples[-1] if count else 0.0
+            return {
+                "aggregate_memory_mib": self._aggregate,
+                "max_active_jobs": self._max_active,
+                "max_threads": self._max_threads,
+                "active_jobs": len(self._active),
+                "waiting_jobs": len(self._waiters),
+                "active_reservation_mib": round(self._active_reserved, 6),
+                "peak_reservation_mib": round(self._peak_reserved, 6),
+                "peak_active_jobs": self._peak_active,
+                "admitted_total": self._admitted_total,
+                "queue_delay_samples": count,
+                "queue_delay_median_ms": round(median, 6),
+                "queue_delay_p95_ms": round(p95, 6),
+                "queue_delay_max_ms": round(latest, 6),
+                "busy_ms": round(self._busy_ms, 6),
+                "elapsed_ms": round(elapsed_ms, 6),
+                "utilization": (
+                    round(self._busy_ms / elapsed_ms, 6) if elapsed_ms > 0 else 0.0
+                ),
+                "active_by_solver": dict(sorted(self._active_by_solver.items())),
+                "busy_by_solver_ms": {
+                    key: round(value, 6)
+                    for key, value in sorted(self._busy_by_solver.items())
+                },
+            }
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class JobRequest:
+    """One batch submission entry (campaign integration seam)."""
+
+    participant_id: str
+    inputs: Mapping[str, object]
+    design_id: str = "generic-design"
+    owner_id: str | None = None
+    revision_id: str | None = None
+    analysis: str | None = None
+    fidelity: str | None = None
+    requested_memory_mib: float | None = None
+    requested_threads: int | None = None
+
+
 class NativeJobManager:
-    """Single-worker governed execution for every native participant."""
+    """Resource-aware, governed execution for every native participant."""
 
     def __init__(
         self,
@@ -193,6 +551,12 @@ class NativeJobManager:
         rss_limit_mib: float = 352.0,
         supervisor_rss_limit_mib: float = SUPERVISOR_RSS_LIMIT_MIB,
         timeout_s: float = 900.0,
+        solver_policies: Mapping[str, SolverResourcePolicy] | None = None,
+        default_policy: SolverResourcePolicy | None = None,
+        aggregate_memory_mib: float = _RSS_CEILING_MIB,
+        max_active_jobs: int = 4,
+        max_threads: int | None = None,
+        aging_after_skips: int = 4,
     ) -> None:
         if not 0 < rss_limit_mib <= 896.0:
             raise ValueError("INVALID_RSS_LIMIT")
@@ -207,10 +571,25 @@ class NativeJobManager:
         self._rss_limit_mib = rss_limit_mib
         self._supervisor_rss_limit_mib = supervisor_rss_limit_mib
         self._timeout_s = timeout_s
-        self._worker_lock = threading.Lock()
+        self._solver_policies = dict(_DEFAULT_SOLVER_POLICIES)
+        if solver_policies:
+            self._solver_policies.update(solver_policies)
+        self._default_policy = default_policy or DEFAULT_SOLVER_POLICY
+        self._scheduler = ResourceScheduler(
+            aggregate_memory_mib=aggregate_memory_mib,
+            max_active_jobs=max_active_jobs,
+            max_threads=max_threads,
+            aging_after_skips=aging_after_skips,
+        )
         self._state_lock = threading.Lock()
+        self._claims_lock = threading.Lock()
+        self._claimed: set[str] = set()
         self._cancel_flags: dict[str, Event] = {}
         self._supervisor_cancels: dict[str, Event] = {}
+        self._hash_bytes = 0
+        self._hash_ms = 0.0
+        self._artifact_read_bytes = 0
+        self._artifact_read_ms = 0.0
         self.recover()
 
     def close(self) -> None:
@@ -258,6 +637,7 @@ class NativeJobManager:
         analysis: str | None = None,
         fidelity: str | None = None,
         requested_memory_mib: float | None = None,
+        requested_threads: int | None = None,
     ) -> str:
         manifest = get_participant(participant_id)  # raises ValueError if unknown
         if not isinstance(inputs, dict):
@@ -281,11 +661,17 @@ class NativeJobManager:
             or not isinstance(requested_memory_mib, (int, float))
         ):
             raise ValueError("INVALID_JOB_INPUTS:requested memory must be a number")
+        if requested_threads is not None and (
+            isinstance(requested_threads, bool)
+            or not isinstance(requested_threads, int)
+            or requested_threads < 1
+        ):
+            raise ValueError("INVALID_JOB_INPUTS:requested threads must be a positive integer")
         digest = _inputs_hash(inputs)
         job_id = uuid.uuid4().hex
         case_id = f"case-{job_id[:12]}"
         created = _now()
-        self._ledger.create(
+        self._ledger.create_with_event(
             job_id=job_id,
             participant_id=participant_id,
             design_id=design_id,
@@ -297,12 +683,11 @@ class NativeJobManager:
                 "analysis": analysis,
                 "fidelity": fidelity,
                 "requested_memory_mib": requested_memory_mib,
+                "requested_threads": requested_threads,
             },
+            detail=f"input_hash={digest}",
             owner_id=owner_id,
             revision_id=revision_id,
-        )
-        self._ledger.append_event(
-            job_id=job_id, state=JobState.QUEUED.value, at=created, detail=f"input_hash={digest}"
         )
         with self._state_lock:
             self._cancel_flags[job_id] = Event()
@@ -316,11 +701,75 @@ class NativeJobManager:
             artifacts=[],
         )
         if not deferred:
-            thread = threading.Thread(
-                target=self.run, args=(job_id,), name=f"native-{job_id[:8]}", daemon=True
-            )
-            thread.start()
+            self._spawn(job_id)
         return job_id
+
+    def submit_batch(self, requests: Iterable[JobRequest]) -> tuple[str, ...]:
+        """Submit many candidates in one call and start them concurrently.
+
+        Validation is fail-closed: if any request is invalid, every job already
+        created by this call is cancelled before the error propagates, so a
+        campaign never observes a partially-admitted batch.
+        """
+
+        items = list(requests)
+        created: list[str] = []
+        try:
+            for item in items:
+                created.append(
+                    self.submit(
+                        item.participant_id,
+                        dict(item.inputs),
+                        design_id=item.design_id,
+                        deferred=True,
+                        owner_id=item.owner_id,
+                        revision_id=item.revision_id,
+                        analysis=item.analysis,
+                        fidelity=item.fidelity,
+                        requested_memory_mib=item.requested_memory_mib,
+                        requested_threads=item.requested_threads,
+                    )
+                )
+        except Exception:
+            for job_id in created:
+                with contextlib.suppress(KeyError, ParticipantError):
+                    self.cancel(job_id)
+            raise
+        for job_id in created:
+            self._spawn(job_id)
+        return tuple(created)
+
+    def completions_since(
+        self, cursor: int = 0, *, limit: int = 0
+    ) -> tuple[dict[str, Any], ...]:
+        """Terminal jobs strictly after a ledger cursor (campaign consumption).
+
+        The cursor is the event sequence of the terminal transition, so a
+        campaign can drain completions in batches instead of polling every job.
+        Terminal rows stay terminal; this read never mutates state.
+        """
+
+        entries: list[dict[str, Any]] = []
+        for event in self._ledger.terminal_events_since(cursor, limit=limit):
+            row = self._ledger.get(event.job_id)
+            if row is None:
+                continue
+            entries.append(
+                {
+                    "sequence": event.sequence,
+                    "job_id": event.job_id,
+                    "participant_id": row.participant_id,
+                    "design_id": row.design_id,
+                    "state": event.state,
+                    "run_id": row.run_id,
+                    "result_id": row.result_id,
+                    "provenance_id": row.provenance_id,
+                    "error_code": row.error_code,
+                    "created_at": row.created_at,
+                    "updated_at": row.updated_at,
+                }
+            )
+        return tuple(entries)
 
     def cancel(self, job_id: str) -> str:
         row = self._ledger.get(job_id)
@@ -345,11 +794,107 @@ class NativeJobManager:
             flag = self._cancel_flags.get(job_id)
             return flag is not None and flag.is_set()
 
+    def _cancel_event(self, job_id: str) -> Event:
+        with self._state_lock:
+            flag = self._cancel_flags.get(job_id)
+            if flag is None:
+                flag = Event()
+                self._cancel_flags[job_id] = flag
+            return flag
+
+    def _spawn(self, job_id: str) -> bool:
+        """Start exactly one worker thread for a still-QUEUED job."""
+
+        row = self._ledger.get(job_id)
+        if row is None:
+            raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+        if row.state != JobState.QUEUED.value:
+            return False
+        thread = threading.Thread(
+            target=self.run, args=(job_id,), name=f"native-{job_id[:8]}", daemon=True
+        )
+        thread.start()
+        return True
+
+    def start(self, job_id: str) -> bool:
+        """Begin a queued job (idempotent; returns False if not QUEUED)."""
+
+        return self._spawn(job_id)
+
     # -- execution -------------------------------------------------------
 
     def run(self, job_id: str) -> str:
-        with self._worker_lock:
-            return self._run_guarded(job_id)
+        """Claim a QUEUED job, wait for a resource reservation, then execute.
+
+        The claim set is the no-duplicate-execution guard: two concurrent
+        ``run`` calls for the same admitted job proceed at most once. A job
+        cancelled while queued never commits worker resources.
+        """
+
+        with self._claims_lock:
+            row = self._ledger.get(job_id)
+            if row is None:
+                raise KeyError(f"JOB_NOT_FOUND:{job_id}")
+            if row.state != JobState.QUEUED.value or job_id in self._claimed:
+                return row.state
+            self._claimed.add(job_id)
+        try:
+            try:
+                profile = self._profile_for(row)
+            except _InfeasibleProfile:
+                # Fail closed through the normal admission path so the job
+                # records ADMISSION_REJECTED (never a silent success).
+                return self._run_guarded(job_id)
+            admitted = self._scheduler.acquire(profile, self._cancel_event(job_id))
+            if not admitted:
+                current = self._ledger.get(job_id)
+                return current.state if current is not None else JobState.CANCELLED.value
+            try:
+                return self._run_guarded(job_id)
+            finally:
+                self._scheduler.release(job_id)
+        finally:
+            with self._claims_lock:
+                self._claimed.discard(job_id)
+
+    def _profile_for(self, row: Any) -> JobProfile:
+        manifest = get_participant(row.participant_id)
+        solver_id = manifest.executable.solver_id
+        policy = self._solver_policies.get(solver_id, self._default_policy)
+        meta = self._request_meta(row.job_id)
+        requested = meta.get("requested_memory_mib")
+        if requested is None:
+            memory = policy.memory_mib
+        else:
+            try:
+                memory = float(requested)
+            except (TypeError, ValueError) as exc:
+                raise _InfeasibleProfile(str(requested)) from exc
+            if not 0 < memory <= _RSS_CEILING_MIB:
+                raise _InfeasibleProfile(str(requested))
+        threads = policy.threads
+        requested_threads = meta.get("requested_threads")
+        if (
+            isinstance(requested_threads, int)
+            and not isinstance(requested_threads, bool)
+            and requested_threads >= 1
+        ):
+            threads = min(requested_threads, policy.max_concurrency * policy.threads)
+        priority = policy.priority
+        fidelity = meta.get("fidelity")
+        if isinstance(fidelity, str) and fidelity in manifest.fidelity_levels:
+            priority += manifest.fidelity_levels.index(fidelity)
+        return JobProfile(
+            job_id=row.job_id,
+            participant_id=row.participant_id,
+            solver_id=solver_id,
+            execution_mode=manifest.executable.execution_mode,
+            memory_mib=memory,
+            threads=max(1, threads),
+            max_concurrency=policy.max_concurrency,
+            exclusive=policy.exclusive,
+            priority=priority,
+        )
 
     def _admit(self, job_id: str) -> None:
         """Scheduler admission before any worker resources are committed.
@@ -413,9 +958,8 @@ class NativeJobManager:
                 )
             if self._cancelled(job_id):
                 return self._transition(job_id, JobState.CANCELLED, "cancelled before run")
-            self._transition(job_id, JobState.RUNNING, f"run_id={run_id}")
-            self._ledger.update(
-                job_id, state=JobState.RUNNING.value, updated_at=_now(), run_id=run_id
+            self._transition(
+                job_id, JobState.RUNNING, f"run_id={run_id}", {"run_id": run_id}
             )
             process_receipt = self._execute(manifest, job_id, case_dir)
             if self._cancelled(job_id):
@@ -555,7 +1099,10 @@ class NativeJobManager:
             stderr_hash = process_receipt.stderr_sha256
             peak_rss = process_receipt.peak_rss_mib
             exit_code = process_receipt.exit_code or 0
+        hash_start = time.perf_counter()
         output_files = self._hash_artifacts(case_dir, manifest.artifacts)
+        self._hash_ms += (time.perf_counter() - hash_start) * 1000.0
+        self._hash_bytes += sum(artifact.bytes for artifact in output_files)
         warnings = self._warnings(manifest, probe)
         evidence = EvidenceBundle(
             capability_state="ready",
@@ -681,13 +1228,18 @@ class NativeJobManager:
         manifest_names = list(manifest.artifacts)
         extra = ["stdout.log", "stderr.log"] if (case_dir / "stdout.log").exists() else []
         entries: list[dict[str, Any]] = []
+        start = time.perf_counter()
+        total_bytes = 0
         for name in manifest_names + extra:
             target = case_dir / name
             if target.is_file():
-                digest, size = _sha256_file(target)
+                digest, size = _sha256_file_cached(target)
+                total_bytes += size
                 entries.append(
                     {"name": name, "sha256": digest, "bytes": size, "uri": f"jobs/{job_id}/{name}"}
                 )
+        self._artifact_read_ms += (time.perf_counter() - start) * 1000.0
+        self._artifact_read_bytes += total_bytes
         return entries
 
     def artifact_metadata(self, job_id: str) -> list[dict[str, Any]]:
@@ -723,14 +1275,12 @@ class NativeJobManager:
             )
         return enriched
 
-    def read_artifact(self, job_id: str, artifact_name: str) -> tuple[bytes, str, dict[str, Any]]:
-        """Return the bytes of one registered artifact after containment+hash checks.
+    def _artifact_target(self, job_id: str, artifact_name: str) -> tuple[Any, Path]:
+        """Resolve one declared artifact without listing or arbitrary paths.
 
-        Resolution goes only through repository metadata: the name must match
-        a declared output exactly (which rejects every traversal spelling),
-        the resolved path must stay inside the job case directory, and for a
-        completed job the on-disk bytes must still match the digest recorded
-        in the published envelope.
+        The name must match a declared output exactly (rejecting every
+        traversal spelling) and the resolved path must stay inside the job case
+        directory. Raises the same KeyError codes the API maps to 404s.
         """
 
         row = self._ledger.get(job_id)
@@ -748,24 +1298,123 @@ class NativeJobManager:
         target = (case_dir / artifact_name).resolve()
         if target.parent != case_dir.resolve() or not target.is_file():
             raise KeyError(f"ARTIFACT_UNAVAILABLE:{job_id}:{artifact_name}")
+        return row, target
+
+    @staticmethod
+    def _artifact_baseline(row: Any, artifact_name: str) -> str | None:
+        """The envelope-recorded digest for a completed job, or None."""
+
+        if row.state != JobState.COMPLETED.value or not row.envelope_json:
+            return None
+        baseline = {
+            str(item.get("name")): str(item.get("sha256"))
+            for item in cast("dict[str, Any]", json.loads(row.envelope_json)).get(
+                "artifacts", []
+            )
+            if isinstance(item, dict)
+        }
+        expected = baseline.get(artifact_name)
+        if expected is None:
+            raise KeyError(f"ARTIFACT_NOT_FOUND:{row.job_id}:{artifact_name}")
+        return expected
+
+    def read_artifact(self, job_id: str, artifact_name: str) -> tuple[bytes, str, dict[str, Any]]:
+        """Return the bytes of one registered artifact after containment+hash checks.
+
+        Resolution goes only through repository metadata: the name must match
+        a declared output exactly (which rejects every traversal spelling),
+        the resolved path must stay inside the job case directory, and for a
+        completed job the on-disk bytes must still match the digest recorded
+        in the published envelope.
+        """
+
+        row, target = self._artifact_target(job_id, artifact_name)
         payload = target.read_bytes()
-        if row.state == JobState.COMPLETED.value and row.envelope_json:
-            baseline = {
-                str(item.get("name")): str(item.get("sha256"))
-                for item in cast("dict[str, Any]", json.loads(row.envelope_json)).get(
-                    "artifacts", []
-                )
-                if isinstance(item, dict)
-            }
-            expected = baseline.get(artifact_name)
-            if expected is None:
-                raise KeyError(f"ARTIFACT_NOT_FOUND:{job_id}:{artifact_name}")
-            if hashlib.sha256(payload).hexdigest() != expected:
-                raise ValueError(f"ARTIFACT_HASH_MISMATCH:{job_id}:{artifact_name}")
+        expected = self._artifact_baseline(row, artifact_name)
+        if expected is not None and hashlib.sha256(payload).hexdigest() != expected:
+            raise ValueError(f"ARTIFACT_HASH_MISMATCH:{job_id}:{artifact_name}")
         metadata = next(
             item for item in self.artifact_metadata(job_id) if item["id"] == artifact_name
         )
         return payload, artifact_mime_for(artifact_name), metadata
+
+    def verify_artifact(
+        self, job_id: str, artifact_name: str
+    ) -> tuple[Path, str, int, dict[str, Any]]:
+        """Verify one artifact by streaming its bytes, then return its descriptor.
+
+        Hash verification remains mandatory: for a completed job the file is
+        streamed through SHA-256 in bounded chunks and compared to the
+        published envelope digest. The artifact is never loaded whole into
+        memory, and retrieval serves ids/ranges rather than blobs.
+        """
+
+        row, target = self._artifact_target(job_id, artifact_name)
+        expected = self._artifact_baseline(row, artifact_name)
+        start = time.perf_counter()
+        if expected is not None:
+            actual, size = _sha256_file(target)
+            if actual != expected:
+                raise ValueError(f"ARTIFACT_HASH_MISMATCH:{job_id}:{artifact_name}")
+        else:
+            size = target.stat().st_size
+        self._artifact_read_ms += (time.perf_counter() - start) * 1000.0
+        self._artifact_read_bytes += size
+        metadata = next(
+            item for item in self.artifact_metadata(job_id) if item["id"] == artifact_name
+        )
+        return target, artifact_mime_for(artifact_name), size, metadata
+
+    @staticmethod
+    def stream_file(
+        target: Path,
+        *,
+        offset: int = 0,
+        length: int | None = None,
+        chunk_size: int = 1024 * 1024,
+    ) -> Iterator[bytes]:
+        """Yield a verified file (or byte range) in bounded chunks."""
+
+        size = target.stat().st_size
+        if offset < 0 or offset > size:
+            raise ValueError("ARTIFACT_RANGE_INVALID")
+        if length is None:
+            remaining = size - offset
+        else:
+            if length < 0:
+                raise ValueError("ARTIFACT_RANGE_INVALID")
+            remaining = min(length, size - offset)
+
+        def _stream() -> Iterator[bytes]:
+            nonlocal remaining
+            with target.open("rb") as stream:
+                stream.seek(offset)
+                while remaining > 0:
+                    chunk = stream.read(min(chunk_size, remaining))
+                    if not chunk:
+                        break
+                    remaining -= len(chunk)
+                    yield chunk
+
+        return _stream()
+
+    def iter_artifact(
+        self,
+        job_id: str,
+        artifact_name: str,
+        *,
+        offset: int = 0,
+        length: int | None = None,
+        chunk_size: int = 1024 * 1024,
+    ) -> tuple[Iterator[bytes], str, int]:
+        """Stream one verified artifact (optionally a byte range), bounded memory."""
+
+        target, mime, size, _metadata = self.verify_artifact(job_id, artifact_name)
+        return (
+            self.stream_file(target, offset=offset, length=length, chunk_size=chunk_size),
+            mime,
+            size,
+        )
 
     def result_manifest(self, job_id: str) -> dict[str, Any]:
         """Small machine-readable manifest: lineage and hashes, never blobs."""
@@ -829,6 +1478,26 @@ class NativeJobManager:
                 merged[event.event_id] = event.model_dump(mode="json")
         return [merged[key] for key in sorted(merged, key=lambda key: merged[key]["sequence"])]
 
+    # -- metrics (PERF 01 / PERF 02 / PERF 06 reporting) -----------------
+
+    def scheduler_metrics(self) -> dict[str, Any]:
+        """Queue delay, occupancy, active reservation, and utilization."""
+
+        return self._scheduler.metrics()
+
+    def persistence_metrics(self) -> dict[str, Any]:
+        """DB commit time, bytes hashed, artifact read time, and digest reuse."""
+
+        return {
+            "ledger": self._ledger.metrics(),
+            "repository": self._repository.metrics(),
+            "hash_bytes": self._hash_bytes,
+            "hash_ms": round(self._hash_ms, 6),
+            "artifact_read_bytes": self._artifact_read_bytes,
+            "artifact_read_ms": round(self._artifact_read_ms, 6),
+            "digest_cache": _DIGEST_CACHE.metrics(),
+        }
+
     # -- internals -------------------------------------------------------
 
     def _stored_inputs(self, job_id: str) -> dict[str, object]:
@@ -841,7 +1510,7 @@ class NativeJobManager:
 
     def _request_meta(self, job_id: str) -> dict[str, Any]:
         blob = self._request_blob(job_id)
-        keys = ("analysis", "fidelity", "requested_memory_mib")
+        keys = ("analysis", "fidelity", "requested_memory_mib", "requested_threads")
         return {key: blob[key] for key in keys if key in blob}
 
     def _request_blob(self, job_id: str) -> dict[str, Any]:
@@ -878,13 +1547,17 @@ class NativeJobManager:
             raise ValueError(f"ILLEGAL_JOB_TRANSITION:unknown stored state:{row.state}") from exc
         if state not in _LEGAL_TRANSITIONS[current]:
             raise ValueError(f"ILLEGAL_JOB_TRANSITION:{current.value}->{state.value}")
-        # Terminal metadata (result/error ids) is written in the SAME update as
-        # the state so a concurrent poller can never observe a terminal state
-        # before its metadata (e.g. FAILED with a missing error_code).
-        self._ledger.update(
-            job_id, state=state.value, updated_at=_now(), **(dict(fields) if fields else {})
+        # Terminal metadata (result/error ids) and the event row commit in ONE
+        # transaction, so a concurrent poller can never observe a terminal
+        # state before its metadata (e.g. FAILED with a missing error_code) and
+        # the persisted event stream can never drift from the job row.
+        self._ledger.transition(
+            job_id,
+            state=state.value,
+            updated_at=_now(),
+            detail=detail,
+            fields=dict(fields) if fields else None,
         )
-        self._ledger.append_event(job_id=job_id, state=state.value, at=_now(), detail=detail)
         return state.value
 
     @staticmethod
@@ -916,7 +1589,7 @@ class NativeJobManager:
             target = case_dir / name
             if "/" in name or "\\" in name or not target.is_file():
                 continue
-            digest, size = _sha256_file(target)
+            digest, size = _sha256_file_cached(target)
             produced.append(ArtifactFile(name=name, sha256=digest, bytes=size))
         return produced
 

@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import json
 import os
-import threading
 import time
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi.responses import StreamingResponse
 from participants.capabilities import probe_all
 from participants.errors import ParticipantError
 from participants.lifecycle import NativeJobManager
@@ -29,6 +29,7 @@ class SubmitRequest(BaseModel):
     analysis: str | None = Field(default=None, min_length=1)
     fidelity: str | None = Field(default=None, min_length=1)
     requested_memory_mib: float | None = None
+    requested_threads: int | None = Field(default=None, ge=1)
 
 
 def default_job_root() -> Path:
@@ -59,6 +60,37 @@ def _cancel_job(manager: NativeJobManager, job_id: str) -> dict[str, Any]:
             detail={"code": exc.code.value, "message": exc.detail},
         ) from exc
     return {"job_id": job_id, "state": state}
+
+
+def _parse_byte_range(header: str | None, size: int) -> tuple[int, int] | None:
+    """Parse one HTTP ``bytes=start-end`` range; ``None`` serves the whole file.
+
+    Malformed or multi-range requests fall back to a full 200 response rather
+    than guessing. A valid range yields ``(offset, length)`` for a 206.
+    """
+
+    if not header or size <= 0:
+        return None
+    value = header.strip().lower()
+    if not value.startswith("bytes=") or "," in value:
+        return None
+    spec = value[len("bytes="):].strip()
+    start_text, _, end_text = spec.partition("-")
+    try:
+        if start_text == "":
+            suffix = int(end_text)
+            if suffix <= 0:
+                return None
+            offset = max(0, size - suffix)
+            return offset, size - offset
+        offset = int(start_text)
+        end = size - 1 if end_text == "" else int(end_text)
+    except ValueError:
+        return None
+    if offset < 0 or offset >= size or end < offset:
+        return None
+    end = min(end, size - 1)
+    return offset, end - offset + 1
 
 
 def _sse_body(events: list[dict[str, Any]]) -> str:
@@ -147,6 +179,7 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
                 analysis=request.analysis,
                 fidelity=request.fidelity,
                 requested_memory_mib=request.requested_memory_mib,
+                requested_threads=request.requested_threads,
             )
         except ValueError as exc:
             message = str(exc)
@@ -191,10 +224,7 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
                 status_code=409,
                 detail={"code": "JOB_ALREADY_STARTED", "state": current["state"]},
             )
-        thread = threading.Thread(
-            target=manager.run, args=(job_id,), name=f"native-{job_id[:8]}", daemon=True
-        )
-        thread.start()
+        manager.start(job_id)
         return {"job_id": job_id, "state": "QUEUED"}
 
     @router.post("/v1/native/analyses/{job_id}/cancel")
@@ -229,9 +259,14 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
             ) from exc
 
     @router.get("/v1/native/artifacts/{job_id}/{artifact_name}")
-    def job_artifact_download(job_id: str, artifact_name: str) -> Response:
+    def job_artifact_download(
+        job_id: str, artifact_name: str, request: Request
+    ) -> Response:
         try:
-            payload, mime, _metadata = manager.read_artifact(job_id, artifact_name)
+            # verify_artifact streams the file through SHA-256 in bounded chunks
+            # and rejects tampered bytes *before* any payload is served; the
+            # response then streams ids/ranges instead of a giant JSON value.
+            target, mime, size, _metadata = manager.verify_artifact(job_id, artifact_name)
         except KeyError as exc:
             # NOTE: str(KeyError) wraps the message in quotes; match on args.
             message = str(exc.args[0]) if exc.args else ""
@@ -250,10 +285,24 @@ def build_native_router(job_root: Path | None = None) -> tuple[APIRouter, Native
             raise HTTPException(
                 status_code=409, detail={"code": "ARTIFACT_HASH_MISMATCH"}
             ) from exc
-        return Response(
-            content=payload,
-            media_type=mime,
-            headers={"Content-Disposition": f'attachment; filename="{artifact_name}"'},
+        headers = {
+            "Content-Disposition": f'attachment; filename="{artifact_name}"',
+            "Accept-Ranges": "bytes",
+        }
+        byte_range = _parse_byte_range(request.headers.get("range"), size)
+        if byte_range is not None:
+            offset, length = byte_range
+            headers["Content-Length"] = str(length)
+            headers["Content-Range"] = f"bytes {offset}-{offset + length - 1}/{size}"
+            return StreamingResponse(
+                manager.stream_file(target, offset=offset, length=length),
+                status_code=206,
+                media_type=mime,
+                headers=headers,
+            )
+        headers["Content-Length"] = str(size)
+        return StreamingResponse(
+            manager.stream_file(target), media_type=mime, headers=headers
         )
 
     @router.get("/v1/native/results/{job_id}/manifest")

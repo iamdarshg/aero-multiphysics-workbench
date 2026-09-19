@@ -1,0 +1,75 @@
+# GEN 12 regression gate template.
+#
+# This file is owned by the GEN 12 benchmark workstream and is NOT installed
+# under .github/workflows by that workstream. A maintainer must copy it there:
+#
+#     copy benchmarks/independence/full-science-ci.yml .github/workflows/gen12-full-science.yml
+#
+# It is deliberately split so a lightweight hosted runner can run the bounded
+# solver-free gates, while the full native campaign only runs on a
+# solver-equipped runner and fails loudly when a required capability is absent.
+# Neither path ever reports success without doing the work.
+
+name: gen12-independence-full-science
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_full_science:
+        description: "Run the full native generative campaign"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 4 * * 1"
+
+jobs:
+  bounded-gates:
+    name: Bounded independence/closure gates (no heavy native binaries)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Install API environment
+        working-directory: services/api
+        run: uv sync --frozen
+      - name: Run focused GEN 12 gates
+        working-directory: services/api
+        run: uv run pytest -q -k "gen12 or independence" --timeout=300 -p no:cacheprovider
+
+  full-science:
+    name: Native receipts + generic campaign (solver-equipped runner)
+    # Only a runner that actually has the native solvers may claim native science.
+    runs-on: [self-hosted, solver-equipped]
+    needs: bounded-gates
+    if: ${{ github.event_name == 'schedule' || inputs.run_full_science }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Install API environment
+        working-directory: services/api
+        run: uv sync --frozen
+      - name: Participant native receipts (real solver executions)
+        working-directory: services/api
+        run: |
+          uv run pytest -q -p no:cacheprovider \
+            tests/physics/test_gen06_openfoam.py \
+            tests/physics/test_gen07_code_aster.py \
+            tests/physics/test_gen08_elmer.py \
+            tests/physics/test_gen11_precice_native.py
+      - name: Generic campaign with capability audit
+        working-directory: services/api
+        run: |
+          uv run python ../../benchmarks/independence/run.py \
+            --execute-native --require-native \
+            --output ../../docs/evidence/gen12-full-science.json
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gen12-full-science
+          path: docs/evidence/gen12-full-science.json
+          if-no-files-found: error

@@ -13,6 +13,20 @@ const native = (id: SolverManifest["id"], displayName: string, category: SolverM
   execution: { trustModel: "native-only", checkpoint: true },
 });
 
+/**
+ * Stable descriptor of every probe-relevant manifest field. The capability
+ * probe cache hashes this so a registry edit (executable, args, allowlist, or
+ * result kinds) invalidates a cached probe without any process spawn.
+ */
+export const describeManifest = (manifest: SolverManifest): string => [
+  manifest.id,
+  manifest.category,
+  manifest.versionProbe.executable,
+  manifest.versionProbe.args.join("\u0000"),
+  manifest.allowedExecutables.join("\u0000"),
+  manifest.resultKinds.join("\u0000"),
+].join("\u0001");
+
 /** Registry contains only executable, version-probed native integrations. */
 export const CAPABILITY_MANIFESTS: readonly SolverManifest[] = Object.freeze([
   native("openfoam", "OpenFOAM", "solver", "foamVersion", ["simpleFoam", "pimpleFoam", "rhoSimpleFoam", "rhoPimpleFoam"], ["fields", "scalars"]),

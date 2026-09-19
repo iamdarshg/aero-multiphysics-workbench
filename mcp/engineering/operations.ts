@@ -34,6 +34,103 @@ export const isToolName = (value: unknown): value is EngineeringToolName =>
 
 const asString = (value: unknown): string | null => (typeof value === "string" ? value : null);
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+// Thin-edge bounds: MCP passes compact identity/status/artifact refs, never an
+// unbounded engineering payload. The Python engine stays the owner of the
+// scientific arrays; the edge caps what it forwards over the protocol.
+const MAX_RESULT_ARTIFACTS = 256;
+const MAX_RESULT_SCALARS = 256;
+const MAX_PROVENANCE_EVENTS = 200;
+const MAX_WARNINGS = 64;
+
+const asArray = (value: unknown): readonly unknown[] => (Array.isArray(value) ? value : []);
+
+const compactNumberMap = (value: unknown): Record<string, number> => {
+  if (!isRecord(value)) return {};
+  const bounded: Record<string, number> = {};
+  let count = 0;
+  for (const [key, entry] of Object.entries(value)) {
+    if (count >= MAX_RESULT_SCALARS) break;
+    if (typeof entry === "number" && Number.isFinite(entry)) { bounded[key] = entry; count += 1; }
+  }
+  return bounded;
+};
+
+const compactStringMap = (value: unknown): Record<string, string> => {
+  if (!isRecord(value)) return {};
+  const bounded: Record<string, string> = {};
+  let count = 0;
+  for (const [key, entry] of Object.entries(value)) {
+    if (count >= MAX_RESULT_SCALARS) break;
+    if (typeof entry === "string") { bounded[key] = entry; count += 1; }
+  }
+  return bounded;
+};
+
+/** Artifact references only (name/digest/bytes) — never artifact contents. */
+const compactArtifactRefs = (value: unknown): readonly Record<string, unknown>[] =>
+  asArray(value)
+    .slice(0, MAX_RESULT_ARTIFACTS)
+    .filter(isRecord)
+    .map((entry) => ({
+      name: asString(entry.name) ?? asString(entry.file),
+      sha256: asString(entry.sha256),
+      bytes: typeof entry.bytes === "number" && Number.isInteger(entry.bytes) ? entry.bytes : null,
+    }));
+
+const compactValidity = (value: unknown): Record<string, unknown> => {
+  if (!isRecord(value)) return { passed: false };
+  const detail = asString(value.detail);
+  return detail === null ? { passed: value.passed === true } : { passed: value.passed === true, detail };
+};
+
+const compactResult = (result: Record<string, unknown>): Record<string, unknown> => ({
+  source: asString(result.source),
+  fidelity: asString(result.fidelity),
+  solverIdentity: asString(result.solver_identity) ?? asString(result.solverIdentity),
+  solverVersion: asString(result.solver_version) ?? asString(result.solverVersion),
+  runId: asString(result.run_id) ?? asString(result.runId),
+  resultId: asString(result.result_id) ?? asString(result.resultId),
+  provenanceId: asString(result.provenance_id) ?? asString(result.provenanceId),
+  inputHash: asString(result.input_hash) ?? asString(result.inputHash),
+  validity: compactValidity(result.validity),
+  warnings: asArray(result.warnings).filter((warning): warning is string => typeof warning === "string").slice(0, MAX_WARNINGS),
+  scalars: compactNumberMap(result.scalars),
+  units: compactStringMap(result.units),
+  artifacts: compactArtifactRefs(result.artifacts),
+});
+
+const compactResultManifest = (manifest: Record<string, unknown>): Record<string, unknown> => ({
+  jobId: asString(manifest.job_id) ?? asString(manifest.jobId),
+  designId: asString(manifest.design_id) ?? asString(manifest.designId),
+  revisionId: asString(manifest.revision_id) ?? asString(manifest.revisionId),
+  resultId: asString(manifest.result_id) ?? asString(manifest.resultId),
+  runId: asString(manifest.run_id) ?? asString(manifest.runId),
+  provenanceId: asString(manifest.provenance_id) ?? asString(manifest.provenanceId),
+  source: asString(manifest.source),
+  fidelity: asString(manifest.fidelity),
+  solverIdentity: asString(manifest.solver_identity) ?? asString(manifest.solverIdentity),
+  solverVersion: asString(manifest.solver_version) ?? asString(manifest.solverVersion),
+  inputHash: asString(manifest.input_hash) ?? asString(manifest.inputHash),
+  validity: compactValidity(manifest.validity),
+  artifacts: compactArtifactRefs(manifest.artifacts),
+});
+
+const compactProvenance = (provenance: Record<string, unknown>): Record<string, unknown> => ({
+  jobId: asString(provenance.job_id) ?? asString(provenance.jobId),
+  events: asArray(provenance.events)
+    .slice(0, MAX_PROVENANCE_EVENTS)
+    .filter(isRecord)
+    .map((event) => ({
+      id: asString(event.id),
+      at: asString(event.at),
+      type: asString(event.type),
+      detail: asString(event.detail),
+    })),
+});
+
 const mapStatus = (status: Record<string, unknown>): Record<string, unknown> => ({
   jobId: asString(status.job_id),
   participantId: asString(status.participant_id),
@@ -131,7 +228,13 @@ export class EngineeringOperations {
       this.api.jobResultManifest(jobId),
       this.api.jobProvenance(jobId),
     ]);
-    return { jobId, source: "product-api", result, manifest, provenance };
+    return {
+      jobId,
+      source: "product-api",
+      result: compactResult(result),
+      manifest: compactResultManifest(manifest),
+      provenance: compactProvenance(provenance),
+    };
   }
 
   private async variantCreate(input: Record<string, unknown>): Promise<Record<string, unknown>> {

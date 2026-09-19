@@ -1,6 +1,8 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
-import { CAPABILITY_MANIFESTS } from "./manifests.ts";
+import { stat } from "node:fs/promises";
+import { join } from "node:path";
+import { CAPABILITY_MANIFESTS, describeManifest } from "./manifests.ts";
 import { findParticipant } from "./participants.ts";
 import { isPathContained } from "./scheduler.ts";
 import type { Capability, CapabilityReport, LaunchRequest, ProvenanceEvent, ResultRecord, RunRecord, SolverId, SolverManifest } from "./contracts.ts";
@@ -60,6 +62,264 @@ export class CapabilityDetector {
     const checkedAt = new Date().toISOString();
     const entries = await Promise.all(manifests.map(async (manifest) => ({ id: manifest.id, ...(await this.probe(manifest)), checkedAt })));
     return { checkedAt, ready: entries.filter((entry) => entry.available), unavailable: entries.filter((entry) => !entry.available) };
+  }
+}
+
+const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
+
+/** Environment keys always folded into a cache fingerprint. */
+const DEFAULT_ENVIRONMENT_KEYS: readonly string[] = Object.freeze([
+  "PATH", "Path", "PATHEXT", "SystemRoot", "windir", "HOME", "USERPROFILE",
+]);
+
+/** Prefixes for solver-runtime environment that changes a resolved capability. */
+const RELEVANT_ENVIRONMENT_PREFIXES: readonly string[] = Object.freeze([
+  "AERO", "SOLVER", "OPENFOAM", "ELMER", "ASTER", "CODE_ASTER", "ROSS", "PYBAMM",
+  "CANTERA", "PYCYCLE", "CADQUERY", "GMSH", "VSP", "FREECAD", "CONDA", "VIRTUAL_ENV",
+]);
+
+const environmentDigest = (
+  environment: Readonly<Record<string, string | undefined>>,
+  keys: readonly string[],
+): string => {
+  const selected = new Map<string, string>();
+  for (const key of keys) {
+    const value = environment[key];
+    if (value !== undefined) selected.set(key, value);
+  }
+  for (const key of Object.keys(environment).sort()) {
+    if (selected.has(key)) continue;
+    const upper = key.toUpperCase();
+    if (RELEVANT_ENVIRONMENT_PREFIXES.some((prefix) => upper.startsWith(prefix))) {
+      const value = environment[key];
+      if (value !== undefined) selected.set(key, value);
+    }
+  }
+  const canonical = [...selected.entries()]
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+    .map(([key, value]) => `${key}=${value}`)
+    .join("\u0001");
+  return sha256(canonical);
+};
+
+const isPathLikeCommand = (command: string): boolean =>
+  command.includes("/") || command.includes("\\") || /^[A-Za-z]:/.test(command);
+
+/**
+ * Resolves an executable's current on-disk identity without spawning. This is
+ * a bounded filesystem lookup (PATH directories × PATHEXT extensions), far
+ * cheaper than a process spawn, and it detects an in-place binary replacement.
+ */
+export const resolveExecutableIdentity = async (
+  command: string,
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): Promise<string | null> => {
+  if (!command) return null;
+  const platform = process.platform;
+  const candidates: string[] = [];
+  if (isPathLikeCommand(command)) {
+    candidates.push(command);
+  } else {
+    const pathValue = environment.PATH ?? environment.Path ?? "";
+    const extensions = platform === "win32"
+      ? (environment.PATHEXT ?? ".COM;.EXE;.BAT;.CMD").split(";").filter((entry) => entry.length > 0)
+      : [""];
+    for (const directory of pathValue.split(platform === "win32" ? ";" : ":")) {
+      if (!directory) continue;
+      for (const extension of extensions) candidates.push(join(directory, `${command}${extension}`));
+      if (platform !== "win32") candidates.push(join(directory, command));
+    }
+  }
+  for (const candidate of candidates) {
+    try {
+      const info = await stat(candidate);
+      if (info.isFile()) return `${candidate}|${info.size}|${Math.floor(info.mtimeMs)}`;
+    } catch {
+      // Keep searching; a missing candidate simply moves the resolution on.
+    }
+  }
+  return null;
+};
+
+export interface CapabilityProbeCacheOptions {
+  /** The probe to cache; defaults to the immutable registry's {@link commandProbe}. */
+  readonly probe?: Probe;
+  /** Process-lifetime by default; supply a positive TTL to expire entries. */
+  readonly ttlMs?: number;
+  /** Injectable clock (epoch ms) for deterministic tests. */
+  readonly now?: () => number;
+  /** Environment snapshot used for invalidation; defaults to `process.env`. */
+  readonly environment?: Readonly<Record<string, string | undefined>>;
+  /** Extra environment keys folded into the fingerprint. */
+  readonly environmentKeys?: readonly string[];
+  /**
+   * Optional on-disk executable identity resolver. Off by default because a
+   * PATH filesystem scan per executable is not free; when supplied it detects
+   * an in-place binary replacement at the bounded identity refresh interval.
+   * Without it, executable changes are handled by explicit {@link CapabilityProbeCache.invalidate}.
+   */
+  readonly executableIdentity?: (command: string) => Promise<string | null> | string | null;
+  /** How often an injected executable identity may be re-resolved; default 30s. */
+  readonly executableTtlMs?: number;
+}
+
+export interface CapabilityProbeCacheStats {
+  readonly hits: number;
+  readonly misses: number;
+  readonly probes: number;
+  readonly invalidations: number;
+  readonly entries: number;
+}
+
+interface CapabilityCacheEntry {
+  readonly fingerprint: string;
+  readonly capability: Capability;
+  readonly probedAtMs: number;
+  readonly executableIdentity: string | null;
+  readonly identityAtMs: number;
+}
+
+/**
+ * Process-lifetime cache of native capability/version probes.
+ *
+ * A cached entry is reused while its fingerprint (manifest descriptor +
+ * relevant environment) is unchanged and within TTL. The fingerprint is a
+ * cheap synchronous hash, so a warm query never touches the filesystem or
+ * spawns a process. Concurrent probes for the same fingerprint are
+ * single-flighted. {@link CapabilityProbeCache.invalidate} is the explicit
+ * refresh path; an injected executable-identity resolver additionally detects
+ * an in-place binary replacement at the bounded refresh interval.
+ */
+export class CapabilityProbeCache {
+  private readonly probe: Probe;
+  private readonly now: () => number;
+  private readonly ttlMs: number | undefined;
+  private readonly environment: Readonly<Record<string, string | undefined>>;
+  private readonly environmentKeys: readonly string[];
+  private readonly identityResolver: ((command: string) => Promise<string | null>) | null;
+  private readonly executableTtlMs: number;
+  private readonly entries = new Map<SolverId, CapabilityCacheEntry>();
+  private readonly identities = new Map<string, { identity: string | null; atMs: number }>();
+  private readonly inflight = new Map<string, Promise<Capability>>();
+  private counters = { hits: 0, misses: 0, probes: 0, invalidations: 0 };
+
+  constructor(options: CapabilityProbeCacheOptions = {}) {
+    this.probe = options.probe ?? commandProbe;
+    this.now = options.now ?? (() => Date.now());
+    this.ttlMs = options.ttlMs;
+    if (this.ttlMs !== undefined && (!Number.isFinite(this.ttlMs) || this.ttlMs <= 0)) {
+      throw new Error("INVALID_CAPABILITY_CACHE_TTL");
+    }
+    this.environment = options.environment ?? process.env;
+    this.environmentKeys = options.environmentKeys ?? DEFAULT_ENVIRONMENT_KEYS;
+    const identity = options.executableIdentity;
+    this.identityResolver = identity ? async (command: string) => identity(command) : null;
+    this.executableTtlMs = options.executableTtlMs ?? 30_000;
+    if (!Number.isFinite(this.executableTtlMs) || this.executableTtlMs < 0) {
+      throw new Error("INVALID_EXECUTABLE_TTL");
+    }
+  }
+
+  /** Resolves (and briefly caches) the on-disk identity of a probe executable. */
+  async resolveIdentity(command: string): Promise<string | null> {
+    if (!this.identityResolver) return resolveExecutableIdentity(command, this.environment);
+    const cached = this.identities.get(command);
+    const now = this.now();
+    if (cached && now - cached.atMs < this.executableTtlMs) return cached.identity;
+    const identity = await this.identityResolver(command);
+    this.identities.set(command, { identity, atMs: now });
+    return identity;
+  }
+
+  /** Cheap synchronous fingerprint of the manifest and relevant environment. */
+  fingerprint(manifest: SolverManifest): string {
+    return sha256([
+      describeManifest(manifest),
+      environmentDigest(this.environment, this.environmentKeys),
+    ].join("\u0002"));
+  }
+
+  private withinTtl(probedAtMs: number): boolean {
+    return this.ttlMs === undefined || this.now() - probedAtMs < this.ttlMs;
+  }
+
+  /**
+   * True when the entry can be reused. When an identity resolver is installed,
+   * the identity is re-resolved at most once per `executableTtlMs`; a changed
+   * identity misses and triggers a fresh probe.
+   */
+  private async reusable(entry: CapabilityCacheEntry | undefined, fingerprint: string, command: string): Promise<CapabilityCacheEntry | undefined> {
+    if (!entry || entry.fingerprint !== fingerprint || !this.withinTtl(entry.probedAtMs)) return undefined;
+    if (!this.identityResolver) return entry;
+    if (this.now() - entry.identityAtMs < this.executableTtlMs) return entry;
+    const identity = await this.resolveIdentity(command);
+    if (identity === entry.executableIdentity) return entry;
+    return undefined;
+  }
+
+  /** Returns a cached capability or performs exactly one probe on a miss. */
+  async capability(manifest: SolverManifest): Promise<Capability> {
+    const fingerprint = this.fingerprint(manifest);
+    const entry = this.entries.get(manifest.id);
+    const reusable = await this.reusable(entry, fingerprint, manifest.versionProbe.executable);
+    if (reusable) {
+      this.counters.hits += 1;
+      return reusable.capability;
+    }
+    const pending = this.inflight.get(fingerprint);
+    if (pending) return pending;
+    this.counters.misses += 1;
+    const promise = (async (): Promise<Capability> => {
+      const capability = await this.probe(manifest);
+      this.counters.probes += 1;
+      const identity = this.identityResolver
+        ? await this.resolveIdentity(manifest.versionProbe.executable)
+        : null;
+      this.entries.set(manifest.id, {
+        fingerprint,
+        capability,
+        probedAtMs: this.now(),
+        executableIdentity: identity,
+        identityAtMs: this.now(),
+      });
+      return capability;
+    })();
+    this.inflight.set(fingerprint, promise);
+    try {
+      return await promise;
+    } finally {
+      this.inflight.delete(fingerprint);
+    }
+  }
+
+  /** Cache-aware replacement for {@link CapabilityDetector.detect}. */
+  async detect(manifests: readonly SolverManifest[] = CAPABILITY_MANIFESTS): Promise<CapabilityReport> {
+    const checkedAt = new Date().toISOString();
+    const entries = await Promise.all(manifests.map(async (manifest) => ({
+      id: manifest.id,
+      ...(await this.capability(manifest)),
+      checkedAt,
+    })));
+    return {
+      checkedAt,
+      ready: entries.filter((entry) => entry.available),
+      unavailable: entries.filter((entry) => !entry.available),
+    };
+  }
+
+  /** Explicit invalidation, e.g. on user refresh or a reported environment change. */
+  invalidate(solverId?: SolverId): void {
+    this.counters.invalidations += 1;
+    if (solverId === undefined) {
+      this.entries.clear();
+      this.identities.clear();
+      return;
+    }
+    this.entries.delete(solverId);
+  }
+
+  stats(): CapabilityProbeCacheStats {
+    return { ...this.counters, entries: this.entries.size };
   }
 }
 

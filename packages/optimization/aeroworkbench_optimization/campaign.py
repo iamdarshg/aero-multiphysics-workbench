@@ -25,8 +25,15 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
 from math import ceil, isfinite, sqrt
+from time import perf_counter
 from typing import Any, Protocol, runtime_checkable
 
+from .batch_eval import (
+    BatchEvaluator,
+    BatchRequest,
+    BatchRow,
+    plan_batch_size,
+)
 from .design_space import content_digest
 from .drivers import StudyConstraint, StudyObjective
 from .generation import Candidate, CandidateGenerator, GenerationRequest
@@ -733,6 +740,72 @@ def _build_signals(
     )
 
 
+def _candidate_batch_inputs(candidate: Candidate) -> dict[str, float]:
+    """Scalar batch inputs for a candidate, keyed by variable id."""
+    values: dict[str, float] = {}
+    for item in candidate.assignment:
+        if (
+            item.point_id is None
+            and isinstance(item.value, (int, float))
+            and not isinstance(item.value, bool)
+        ):
+            values[str(item.variable_id)] = float(item.value)
+    return values
+
+
+def _record_from_evaluation(
+    candidate: Candidate,
+    result: EvaluationResult,
+    rung: FidelityImplementation,
+    spec: CampaignSpec,
+    *,
+    extra_reasons: Sequence[str] = (),
+) -> EvaluationRecord:
+    verdict = assess_sample(result.flags, spec.quality)
+    reasons: list[str] = list(extra_reasons) + list(verdict.reasons)
+    if result.detail:
+        reasons.append(result.detail)
+    state = "valid" if verdict.state == "valid" else "invalid"
+    if state == "invalid" and not reasons:
+        reasons.append("evaluation reported invalid")
+    signals = dict(result.signals or {})
+    return EvaluationRecord(
+        candidate_hash=candidate.candidate_hash,
+        fidelity=rung.name,
+        state=state,
+        reasons=tuple(reasons),
+        outputs=tuple(sorted((name, float(value)) for name, value in result.outputs.items())),
+        cost=result.cost,
+        source=result.source,
+        geometry_hash=result.geometry_hash,
+        signal_digest=content_digest(signals),
+        detail=result.detail,
+        signals=tuple(sorted((name, float(value)) for name, value in signals.items())),
+    )
+
+
+def _record_from_batch_row(
+    candidate: Candidate,
+    rung: FidelityImplementation,
+    row: BatchRow,
+    spec: CampaignSpec,
+) -> EvaluationRecord:
+    flags = row.flags
+    if row.state != "valid":
+        flags = PhysicsFlags(converged=False, closure_passed=False, validity_ok=False)
+    result = EvaluationResult(
+        outputs=row.output_dict,
+        flags=flags,
+        fidelity=rung.name,
+        source=row.source,
+        cost=row.cost,
+        detail=row.detail,
+        signals=row.signal_dict,
+    )
+    extra = () if row.state == "valid" else (row.reasons or ("batch marked row invalid",))
+    return _record_from_evaluation(candidate, result, rung, spec, extra_reasons=extra)
+
+
 def _evaluate_one(
     candidate: Candidate,
     rung: FidelityImplementation,
@@ -756,31 +829,156 @@ def _evaluate_one(
             fidelity=rung.name,
             detail=f"EVALUATION_ERROR:{type(exc).__name__}:{exc}",
         )
-    verdict = assess_sample(result.flags, spec.quality)
-    reasons: list[str] = list(verdict.reasons)
-    if result.detail:
-        reasons.append(result.detail)
-    state = "valid" if verdict.state == "valid" else "invalid"
-    if state == "invalid" and not reasons:
-        reasons.append("evaluation reported invalid")
-    signals = dict(result.signals or {})
-    record = EvaluationRecord(
-        candidate_hash=candidate.candidate_hash,
-        fidelity=rung.name,
-        state=state,
-        reasons=tuple(reasons),
-        outputs=tuple(sorted((name, float(value)) for name, value in result.outputs.items())),
-        cost=result.cost,
-        source=result.source,
-        geometry_hash=result.geometry_hash,
-        signal_digest=content_digest(signals),
-        detail=result.detail,
-        signals=tuple(sorted((name, float(value)) for name, value in signals.items())),
-    )
+    record = _record_from_evaluation(candidate, result, rung, spec)
     store.put(key, record)
     counters["evaluations"] = int(counters["evaluations"]) + 1
     counters["cost"] = float(counters["cost"]) + result.cost
     return record
+
+
+def _accept_evaluation(
+    record: CampaignRecord,
+    candidate: Candidate,
+    evaluation: EvaluationRecord,
+    spec: CampaignSpec,
+    evaluated: list[tuple[Candidate, EvaluationRecord]],
+    metrics_by_hash: dict[str, EvaluationRecord],
+) -> None:
+    record.evaluations.append(evaluation)
+    metrics_by_hash[candidate.candidate_hash] = evaluation
+    _update_candidate_record(record, candidate, evaluation, spec)
+    if evaluation.state == "valid":
+        evaluated.append((candidate, evaluation))
+    else:
+        record.metrics["invalid"] = int(record.metrics["invalid"]) + 1
+
+
+def _evaluate_rung_batched(
+    record: CampaignRecord,
+    active: Sequence[Candidate],
+    rung: FidelityImplementation,
+    spec: CampaignSpec,
+    evaluator: Evaluator,
+    batch_evaluator: BatchEvaluator,
+    store: ResultStore,
+    evaluator_identity: str,
+    counters: dict[str, int | float],
+    metrics_by_hash: dict[str, EvaluationRecord],
+    cancel_check: Callable[[], bool] | None,
+    batch_size: int,
+    memory_budget_bytes: int | None,
+) -> tuple[list[tuple[Candidate, EvaluationRecord]], str | None, bool, dict[str, float | int]]:
+    """Chunk-batched evaluation of the cheap rung; only rows for this rung.
+
+    Promoted candidates still flow through the normal one-at-a-time path on
+    higher (native) rungs. A batch that violates the contract or raises falls
+    back to the scalar evaluator for the affected chunk.
+    """
+    operations: list[tuple[bool, Candidate, EvaluationRecord | None]] = []
+    requests: list[BatchRequest] = []
+    request_candidates: list[Candidate] = []
+    stop_reason: str | None = None
+    cancelled = False
+    committed = int(counters["evaluations"])
+    planned = 0
+    for candidate in active:
+        if cancel_check is not None and cancel_check():
+            cancelled = True
+            break
+        if (
+            spec.budget.max_evaluations is not None
+            and committed + planned >= spec.budget.max_evaluations
+        ):
+            stop_reason = "max-evaluations"
+            break
+        if (
+            rung.rank > 0
+            and spec.budget.max_high_fidelity_evaluations is not None
+            and int(counters["high_fidelity_evaluations"])
+            >= spec.budget.max_high_fidelity_evaluations
+        ):
+            stop_reason = "max-high-fidelity-evaluations"
+            break
+        if (
+            spec.budget.max_cost is not None
+            and float(counters["cost"]) >= spec.budget.max_cost
+        ):
+            stop_reason = "max-cost"
+            break
+        candidate_record = record.candidates[candidate.candidate_hash]
+        if candidate_record.status == "preflight-invalid":
+            continue
+        key = result_key(candidate.candidate_hash, rung.name, evaluator_identity)
+        cached = store.get(key)
+        if cached is not None:
+            counters["cache_hits"] = int(counters["cache_hits"]) + 1
+            operations.append((True, candidate, cached))
+            continue
+        requests.append(
+            BatchRequest(
+                candidate_hash=candidate.candidate_hash,
+                operating_point="nominal",
+                inputs=tuple(sorted(_candidate_batch_inputs(candidate).items())),
+                index=candidate.index,
+            )
+        )
+        request_candidates.append(candidate)
+        operations.append((False, candidate, None))
+        planned += 1
+    effective = plan_batch_size(batch_size, memory_budget_bytes=memory_budget_bytes)
+    rows_by_key: dict[tuple[str, str], BatchRow] = {}
+    stats: dict[str, float | int] = {
+        "effective_batch_size": effective,
+        "batches": 0,
+        "fallback_batches": 0,
+        "peak_batch_rows": 0,
+        "setup_seconds": 0.0,
+        "evaluate_seconds": 0.0,
+    }
+    started = perf_counter()
+    for start in range(0, len(requests), effective):
+        chunk = requests[start : start + effective]
+        chunk_candidates = request_candidates[start : start + effective]
+        stats["batches"] = int(stats["batches"]) + 1
+        stats["peak_batch_rows"] = max(int(stats["peak_batch_rows"]), len(chunk))
+        expected = {request.key for request in chunk}
+        try:
+            produced = tuple(batch_evaluator.evaluate_batch(chunk))
+        except Exception:  # noqa: BLE001 - unusable batch falls back, fail-safe
+            produced = ()
+        if len(produced) != len(chunk) or {row.key for row in produced} != expected:
+            stats["fallback_batches"] = int(stats["fallback_batches"]) + 1
+            for candidate in chunk_candidates:
+                rows_by_key.pop((candidate.candidate_hash, "nominal"), None)
+            continue
+        for row in produced:
+            rows_by_key[row.key] = row
+    stats["evaluate_seconds"] = perf_counter() - started
+    evaluated: list[tuple[Candidate, EvaluationRecord]] = []
+    for cached_flag, candidate, cached in operations:
+        if cached_flag:
+            evaluation = cached
+        else:
+            row = rows_by_key.get((candidate.candidate_hash, "nominal"))
+            if row is None:
+                evaluation = _evaluate_one(
+                    candidate, rung, spec, evaluator, store, evaluator_identity, counters
+                )
+            else:
+                evaluation = _record_from_batch_row(candidate, rung, row, spec)
+                store.put(
+                    result_key(candidate.candidate_hash, rung.name, evaluator_identity),
+                    evaluation,
+                )
+                counters["evaluations"] = int(counters["evaluations"]) + 1
+                counters["cost"] = float(counters["cost"]) + row.cost
+        assert evaluation is not None
+        if rung.rank > 0:
+            counters["high_fidelity_evaluations"] = (
+                int(counters["high_fidelity_evaluations"]) + 1
+            )
+        _accept_evaluation(record, candidate, evaluation, spec, evaluated, metrics_by_hash)
+    return evaluated, stop_reason, cancelled, stats
 
 
 def run_campaign(
@@ -790,8 +988,20 @@ def run_campaign(
     store: ResultStore | None = None,
     evaluator_identity: str = "",
     cancel_check: Callable[[], bool] | None = None,
+    batch_evaluator: BatchEvaluator | None = None,
+    batch_size: int = 64,
+    memory_budget_bytes: int | None = None,
 ) -> CampaignRecord:
-    """Run a bounded, resumable campaign and return its evidence record."""
+    """Run a bounded, resumable campaign and return its evidence record.
+
+    When ``batch_evaluator`` is declared, the *cheap* rung is evaluated in
+    memory-bounded chunks through it; promoted candidates then stream through
+    the ordinary one-at-a-time path on the higher (native) rungs. Batching is
+    disabled for a rung when a cost budget is set because per-candidate cost is
+    only known after evaluation.
+    """
+    if batch_size <= 0:
+        raise ValueError("BATCH_SIZE_MUST_BE_POSITIVE")
     rungs = spec.ladder()
     active_store = store if store is not None else InMemoryResultStore()
     record = CampaignRecord(
@@ -842,49 +1052,74 @@ def run_campaign(
             rung = rungs[current_rank]
             evaluated: list[tuple[Candidate, EvaluationRecord]] = []
             stop_reason: str | None = None
-            for candidate in active:
-                if cancel_check is not None and cancel_check():
+            use_batch = (
+                batch_evaluator is not None
+                and rung.rank == 0
+                and spec.budget.max_cost is None
+            )
+            if use_batch:
+                assert batch_evaluator is not None
+                evaluated, stop_reason, cancelled, batch_stats = _evaluate_rung_batched(
+                    record,
+                    active,
+                    rung,
+                    spec,
+                    evaluator,
+                    batch_evaluator,
+                    active_store,
+                    evaluator_identity,
+                    counters,
+                    metrics_by_hash,
+                    cancel_check,
+                    batch_size,
+                    memory_budget_bytes,
+                )
+                for key, value in batch_stats.items():
+                    record.metrics[key] = value
+                if cancelled:
                     record.transition(CampaignState.CANCELLED)
                     record.stop_reason = "cancelled"
                     return _finalize(record, spec, metrics_by_hash)
-                if (
-                    spec.budget.max_evaluations is not None
-                    and int(counters["evaluations"]) >= spec.budget.max_evaluations
-                ):
-                    stop_reason = "max-evaluations"
-                    break
-                if (
-                    rung.rank > 0
-                    and spec.budget.max_high_fidelity_evaluations is not None
-                    and int(counters["high_fidelity_evaluations"])
-                    >= spec.budget.max_high_fidelity_evaluations
-                ):
-                    stop_reason = "max-high-fidelity-evaluations"
-                    break
-                if (
-                    spec.budget.max_cost is not None
-                    and float(counters["cost"]) >= spec.budget.max_cost
-                ):
-                    stop_reason = "max-cost"
-                    break
-                candidate_record = record.candidates[candidate.candidate_hash]
-                if candidate_record.status == "preflight-invalid":
-                    continue
-                evaluation = _evaluate_one(
-                    candidate, rung, spec, evaluator, active_store, evaluator_identity,
-                    counters,
-                )
-                if rung.rank > 0:
-                    counters["high_fidelity_evaluations"] = (
-                        int(counters["high_fidelity_evaluations"]) + 1
+            else:
+                for candidate in active:
+                    if cancel_check is not None and cancel_check():
+                        record.transition(CampaignState.CANCELLED)
+                        record.stop_reason = "cancelled"
+                        return _finalize(record, spec, metrics_by_hash)
+                    if (
+                        spec.budget.max_evaluations is not None
+                        and int(counters["evaluations"]) >= spec.budget.max_evaluations
+                    ):
+                        stop_reason = "max-evaluations"
+                        break
+                    if (
+                        rung.rank > 0
+                        and spec.budget.max_high_fidelity_evaluations is not None
+                        and int(counters["high_fidelity_evaluations"])
+                        >= spec.budget.max_high_fidelity_evaluations
+                    ):
+                        stop_reason = "max-high-fidelity-evaluations"
+                        break
+                    if (
+                        spec.budget.max_cost is not None
+                        and float(counters["cost"]) >= spec.budget.max_cost
+                    ):
+                        stop_reason = "max-cost"
+                        break
+                    candidate_record = record.candidates[candidate.candidate_hash]
+                    if candidate_record.status == "preflight-invalid":
+                        continue
+                    evaluation = _evaluate_one(
+                        candidate, rung, spec, evaluator, active_store, evaluator_identity,
+                        counters,
                     )
-                record.evaluations.append(evaluation)
-                metrics_by_hash[candidate.candidate_hash] = evaluation
-                _update_candidate_record(record, candidate, evaluation, spec)
-                if evaluation.state == "valid":
-                    evaluated.append((candidate, evaluation))
-                else:
-                    record.metrics["invalid"] = int(record.metrics["invalid"]) + 1
+                    if rung.rank > 0:
+                        counters["high_fidelity_evaluations"] = (
+                            int(counters["high_fidelity_evaluations"]) + 1
+                        )
+                    _accept_evaluation(
+                        record, candidate, evaluation, spec, evaluated, metrics_by_hash
+                    )
             if stop_reason is not None:
                 record.stop_reason = stop_reason
                 break

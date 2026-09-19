@@ -715,7 +715,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/native_jobs.py",
           "detail": "PARTIAL: native analysis submit/status/events/cancel/result routes over the real lifecycle.",
-          "sha256": "c14d901f4e03ff651e6f9dbe02d4b054cef1eff0cf05a7da4988b06b7421c743"
+          "sha256": "492ba4625fce89dcc85ab9a4306cc45915421df18786f15f7bc2779c90680c1e"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -769,7 +769,7 @@
           "kind": "file",
           "path": "mcp/engineering/api-client.ts",
           "detail": "PARTIAL: typed loopback-only API client over the same public routes the UI uses.",
-          "sha256": "4d6f6693f8f2aae019c810181fe94f09b60f8b793bf29ad699be42d3165bfa61"
+          "sha256": "5c794b631403d963cfb7fab983c4b81ad9197d8d31209fe2ff98d34ba7645259"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -1912,7 +1912,7 @@
           "kind": "file",
           "path": "scripts/platform/capabilities.mjs",
           "detail": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
-          "sha256": "1b0f977a439edb67418447d9382f0f497138d7fc36eaa2f3df403e0e4295cdf9"
+          "sha256": "d79b1a87a18020451de2ca28ced4b1e07ff87d05b0f9d7c4f4d5e0ee141b34fb"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2073,7 +2073,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "effd79ec9af8da8589793763213da5f7df7c47565e618ecaba88df170536fab5"
+          "sha256": "3089bcec58eae55979f59ae8819ab3ae455ce7e91b36b7deec282680e1de1e9d"
         },
         {
           "kind": "file",

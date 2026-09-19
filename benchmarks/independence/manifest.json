@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "gen12-generic-rotating-assembly",
+  "policy": "A capability is PASS only with an executed receipt; absent native capabilities are SKIPPED/BLOCKED with a reason and are never substituted by an analytical model.",
+  "description": "Generic rotating thermo-fluid-mechanical assembly exercised from a mixed/conditional design space to a provenance-backed candidate set. Acceptance is defined on declared quantities and capabilities, not application-specific names.",
+  "requiredCapabilities": [
+    "geometry",
+    "mesh",
+    "flow",
+    "structural",
+    "thermal",
+    "rotordynamics",
+    "scalar-coupling",
+    "field-coupling"
+  ],
+  "participants": {
+    "geometry": "cad-interchange",
+    "mesh": "domain-mesh",
+    "flow": "incompressible-steady-flow",
+    "structural": "structural-static",
+    "thermal": "thermal-conduction",
+    "rotordynamics": "rotor-campbell",
+    "scalar-coupling": "rotating-electrical-machine",
+    "field-coupling": "coupled-interface-validation"
+  },
+  "independence": {
+    "meshQoI": ["pressure_drop", "mass_flow"],
+    "timestepQoI": ["peak_amplitude"],
+    "rule": "element count alone never satisfies flow-solution independence; the declared QoI must converge"
+  }
+}

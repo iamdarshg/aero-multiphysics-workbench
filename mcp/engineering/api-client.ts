@@ -45,6 +45,18 @@ export interface EngineeringApi {
 
 const REQUEST_TIMEOUT_MS = 5000;
 
+/**
+ * Bounded read cache for the two slow-moving discovery endpoints (capability
+ * and participant manifests). They change at campaign/environment boundaries,
+ * not per job, so a short-lived cache removes one HTTP round trip per submit
+ * without weakening the policy gate: an unknown participant still fails closed.
+ * `0` disables the cache. Explicit invalidation is available via `invalidate()`.
+ */
+const DEFAULT_READ_CACHE_TTL_MS = (() => {
+  const raw = Number(process.env.AERO_MCP_READ_CACHE_MS ?? "");
+  return Number.isFinite(raw) && raw >= 0 ? raw : 15_000;
+})();
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
@@ -60,10 +72,47 @@ const errorFromPayload = (status: number, payload: unknown, fallback: string): A
   return new ApiError(`${fallback}: HTTP ${status}`, status, fallback);
 };
 
+export interface HttpEngineeringApiOptions {
+  readonly readCacheTtlMs?: number;
+  readonly now?: () => number;
+}
+
+export interface HttpEngineeringApiCacheStats {
+  readonly hits: number;
+  readonly misses: number;
+  readonly invalidations: number;
+}
+
 export class HttpEngineeringApi implements EngineeringApi {
   private readonly baseUrl: string;
-  constructor(baseUrl: string) {
+  private readonly readCacheTtlMs: number;
+  private readonly now: () => number;
+  private participantsCache: { atMs: number; value: ParticipantSummary[] } | null = null;
+  private capabilitiesCache: { atMs: number; value: Record<string, unknown> } | null = null;
+  private participantsInflight: Promise<ParticipantSummary[]> | null = null;
+  private capabilitiesInflight: Promise<Record<string, unknown>> | null = null;
+  private cacheCounters = { hits: 0, misses: 0, invalidations: 0 };
+
+  constructor(baseUrl: string, options: HttpEngineeringApiOptions = {}) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
+    this.readCacheTtlMs = options.readCacheTtlMs ?? DEFAULT_READ_CACHE_TTL_MS;
+    if (!Number.isFinite(this.readCacheTtlMs) || this.readCacheTtlMs < 0) throw new Error("INVALID_READ_CACHE_TTL");
+    this.now = options.now ?? (() => Date.now());
+  }
+
+  /** Drops cached discovery payloads; call after a known environment change. */
+  invalidate(): void {
+    this.cacheCounters.invalidations += 1;
+    this.participantsCache = null;
+    this.capabilitiesCache = null;
+  }
+
+  cacheStats(): HttpEngineeringApiCacheStats {
+    return { ...this.cacheCounters };
+  }
+
+  private readCacheFresh(entry: { atMs: number } | null): boolean {
+    return this.readCacheTtlMs > 0 && entry !== null && this.now() - entry.atMs < this.readCacheTtlMs;
   }
 
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
@@ -88,18 +137,49 @@ export class HttpEngineeringApi implements EngineeringApi {
   }
 
   capabilities(): Promise<Record<string, unknown>> {
-    return this.request<Record<string, unknown>>("GET", "/v1/native/capabilities");
+    if (this.readCacheFresh(this.capabilitiesCache)) {
+      this.cacheCounters.hits += 1;
+      return Promise.resolve((this.capabilitiesCache as { value: Record<string, unknown> }).value);
+    }
+    if (this.capabilitiesInflight) return this.capabilitiesInflight;
+    this.cacheCounters.misses += 1;
+    const inflight = this.request<Record<string, unknown>>("GET", "/v1/native/capabilities")
+      .then((value) => {
+        this.capabilitiesCache = { atMs: this.now(), value };
+        return value;
+      })
+      .finally(() => {
+        this.capabilitiesInflight = null;
+      });
+    this.capabilitiesInflight = inflight;
+    return inflight;
   }
 
-  async participants(): Promise<ParticipantSummary[]> {
-    const payload = await this.request<{ participants?: unknown }>("GET", "/v1/native/participants");
-    if (!Array.isArray(payload.participants)) return [];
-    return payload.participants.filter(isRecord).map((entry) => ({
-      participantId: typeof entry.participant_id === "string" ? entry.participant_id : "",
-      fidelityLevels: Array.isArray(entry.fidelity_levels)
-        ? entry.fidelity_levels.filter((level): level is string => typeof level === "string")
-        : [],
-    }));
+  participants(): Promise<ParticipantSummary[]> {
+    if (this.readCacheFresh(this.participantsCache)) {
+      this.cacheCounters.hits += 1;
+      return Promise.resolve((this.participantsCache as { value: ParticipantSummary[] }).value);
+    }
+    if (this.participantsInflight) return this.participantsInflight;
+    this.cacheCounters.misses += 1;
+    const inflight = this.request<{ participants?: unknown }>("GET", "/v1/native/participants")
+      .then((payload) => {
+        const value = Array.isArray(payload.participants)
+          ? payload.participants.filter(isRecord).map((entry) => ({
+            participantId: typeof entry.participant_id === "string" ? entry.participant_id : "",
+            fidelityLevels: Array.isArray(entry.fidelity_levels)
+              ? entry.fidelity_levels.filter((level): level is string => typeof level === "string")
+              : [],
+          }))
+          : [];
+        this.participantsCache = { atMs: this.now(), value };
+        return value;
+      })
+      .finally(() => {
+        this.participantsInflight = null;
+      });
+    this.participantsInflight = inflight;
+    return inflight;
   }
 
   submitAnalysis(input: SubmitAnalysisInput): Promise<Record<string, unknown>> {

@@ -20,9 +20,10 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from math import isfinite
+from time import perf_counter
 from typing import TYPE_CHECKING
 
 from participants.manifest import ParticipantManifest
@@ -36,6 +37,11 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
     )
 
 ScalarFunction = Callable[[Mapping[str, float]], Mapping[str, float]]
+#: Optional batch math for pure analytical/reduced participants: N input
+#: mappings in, N output mappings out. Native execution must not implement it.
+BatchScalarFunction = Callable[
+    [Sequence[Mapping[str, float]]], Sequence[Mapping[str, float]]
+]
 ClosureFunction = Callable[[Mapping[str, float]], float]
 
 
@@ -60,6 +66,91 @@ class ScalarParticipantSpec:
     inputs: tuple[VariableSpec, ...]
     outputs: tuple[VariableSpec, ...]
     function: ScalarFunction
+    batch_function: BatchScalarFunction | None = None
+
+    @property
+    def supports_batch(self) -> bool:
+        return self.batch_function is not None
+
+
+@dataclass(frozen=True, slots=True)
+class ParticipantBatchRow:
+    """One independently labelled participant batch result/quality record."""
+
+    participant_id: str
+    state: str  # "valid" | "invalid"
+    outputs: tuple[tuple[str, float], ...]
+    reasons: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.state not in {"valid", "invalid"}:
+            raise ValueError(f"UNKNOWN_BATCH_ROW_STATE:{self.state}")
+
+    @property
+    def output_dict(self) -> dict[str, float]:
+        return dict(self.outputs)
+
+
+def evaluate_participant_batch(
+    spec: ScalarParticipantSpec, states: Sequence[Mapping[str, float]]
+) -> tuple[ParticipantBatchRow, ...]:
+    """Evaluate N normalized states through the declared batch function.
+
+    Falls back to the scalar function one state at a time. A single failing
+    row is marked invalid with an explicit reason; the rest still return, and
+    the participant identity is preserved on every row.
+    """
+
+    if spec.batch_function is not None:
+        try:
+            proposed = tuple(spec.batch_function(states))
+        except Exception:  # noqa: BLE001 - batch failure falls back, fail-safe
+            return _evaluate_participant_rows(spec, states)
+        if len(proposed) != len(states):
+            return _evaluate_participant_rows(spec, states)
+        return tuple(_participant_row(spec, proposal) for proposal in proposed)
+    return _evaluate_participant_rows(spec, states)
+
+
+def _evaluate_participant_rows(
+    spec: ScalarParticipantSpec,
+    states: Sequence[Mapping[str, float]],
+) -> tuple[ParticipantBatchRow, ...]:
+    rows: list[ParticipantBatchRow] = []
+    for state in states:
+        try:
+            proposal = spec.function(state)
+        except Exception as exc:  # noqa: BLE001 - evaluation failures fail closed
+            rows.append(
+                ParticipantBatchRow(
+                    spec.participant_id,
+                    "invalid",
+                    (),
+                    (f"EVALUATION_ERROR:{type(exc).__name__}:{exc}",),
+                )
+            )
+            continue
+        rows.append(_participant_row(spec, proposal))
+    return tuple(rows)
+
+
+def _participant_row(
+    spec: ScalarParticipantSpec, proposal: Mapping[str, float]
+) -> ParticipantBatchRow:
+    outputs: list[tuple[str, float]] = []
+    reasons: list[str] = []
+    for var in spec.outputs:
+        try:
+            value = float(proposal[var.name])
+        except (KeyError, TypeError, ValueError):
+            reasons.append(f"MISSING_PARTICIPANT_OUTPUT:{spec.participant_id}:{var.name}")
+            continue
+        if not isfinite(value):
+            reasons.append(f"NONFINITE_PARTICIPANT_OUTPUT:{spec.participant_id}:{var.name}")
+            continue
+        outputs.append((var.name, value))
+    state = "invalid" if reasons else "valid"
+    return ParticipantBatchRow(spec.participant_id, state, tuple(outputs), tuple(reasons))
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,6 +215,50 @@ class CoordinatorCheckpoint:
     iterations: int
 
 
+@dataclass(frozen=True, slots=True)
+class ProblemReusePolicy:
+    """Explicit policy for reusing an OpenMDAO Problem across candidates.
+
+    ``reuse_problem`` keeps one built+setup Problem for a compatible graph;
+    ``warm_start`` seeds each candidate from the previous converged state
+    instead of the declared initial guesses. Cold start (``warm_start=False``)
+    keeps convergence candidate-independent.
+    """
+
+    reuse_problem: bool = True
+    warm_start: bool = False
+
+
+@dataclass(frozen=True, slots=True)
+class SolveMetrics:
+    """Measured setup reuse and per-candidate throughput for a batch solve."""
+
+    solves: int
+    problems_built: int
+    reused_setups: int
+    setup_seconds: float
+    solve_seconds: float
+    candidates_per_second: float
+    per_candidate_overhead_ms: float
+
+    def as_dict(self) -> dict[str, int | float]:
+        return {
+            "solves": self.solves,
+            "problemsBuilt": self.problems_built,
+            "reusedSetups": self.reused_setups,
+            "setupSeconds": self.setup_seconds,
+            "solveSeconds": self.solve_seconds,
+            "candidatesPerSecond": self.candidates_per_second,
+            "perCandidateOverheadMs": self.per_candidate_overhead_ms,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class BatchSolveResult:
+    results: tuple[CoordinatorResult, ...]
+    metrics: SolveMetrics
+
+
 def _sanitize(name: str) -> str:
     return "".join(character if character.isalnum() else "_" for character in name)
 
@@ -144,12 +279,17 @@ def _as_float(value: object) -> float:
 
 
 def participant_from_manifest(
-    manifest: ParticipantManifest, function: ScalarFunction
+    manifest: ParticipantManifest,
+    function: ScalarFunction,
+    *,
+    batch_function: BatchScalarFunction | None = None,
 ) -> ScalarParticipantSpec:
     """Derive a scalar participant spec from a ParticipantManifest declaration.
 
     Only ``float`` scalar ports participate; integer/boolean/string ports and
     field ports fail closed because the scalar coordinator cannot drive them.
+    An optional ``batch_function`` declares the participant's pure
+    analytical/reduced batch implementation.
     """
 
     participant_id = str(manifest.participant_id)
@@ -178,6 +318,7 @@ def participant_from_manifest(
         inputs=tuple(inputs),
         outputs=tuple(outputs),
         function=function,
+        batch_function=batch_function,
     )
 
 
@@ -272,6 +413,7 @@ class ManifestCoordinator:
             first_unit = next(iter(units))
             if any(not units_compatible(unit, first_unit) for unit in units):
                 raise ValueError(f"SHARED_INPUT_UNIT_MISMATCH:{name}")
+        self._problem_cache: dict[str, object] | None = None
 
     @property
     def policy(self) -> CoordinatorPolicy:
@@ -287,17 +429,75 @@ class ManifestCoordinator:
         warm_start: CoordinatorCheckpoint | None = None,
     ) -> CoordinatorResult:
         """Execute the coupled problem through OpenMDAO and return the result."""
+        result, _, _ = self._solve(initial, warm_start=warm_start, reuse=None)
+        return result
 
+    def solve_many(
+        self,
+        initial_states: Sequence[Mapping[str, float]],
+        *,
+        policy: ProblemReusePolicy | None = None,
+    ) -> BatchSolveResult:
+        """Solve many candidates, reusing Problem setup according to policy.
+
+        With ``policy.reuse_problem`` the OpenMDAO Problem is built and setup
+        once for this (fixed) participant graph and only design values are
+        updated per candidate. Cold start keeps each candidate's iteration-0
+        state identical to a fresh solve, so convergence stays candidate
+        independent; warm start explicitly seeds from the previous checkpoint.
+        """
+
+        active = policy or ProblemReusePolicy()
+        results: list[CoordinatorResult] = []
+        setup_seconds = 0.0
+        problems_built = 0
+        reused = 0
+        started = perf_counter()
+        previous: CoordinatorCheckpoint | None = None
+        for initial in initial_states:
+            warm = previous if active.warm_start else None
+            result, candidate_setup, built = self._solve(
+                initial, warm_start=warm, reuse=active
+            )
+            setup_seconds += candidate_setup
+            if built:
+                problems_built += 1
+            else:
+                reused += 1
+            results.append(result)
+            previous = self.checkpoint_of(result)
+        elapsed = perf_counter() - started
+        solves = len(results)
+        return BatchSolveResult(
+            results=tuple(results),
+            metrics=SolveMetrics(
+                solves=solves,
+                problems_built=problems_built,
+                reused_setups=reused,
+                setup_seconds=setup_seconds,
+                solve_seconds=max(0.0, elapsed - setup_seconds),
+                candidates_per_second=(solves / elapsed) if elapsed > 0 else 0.0,
+                per_candidate_overhead_ms=(elapsed * 1000.0 / solves) if solves else 0.0,
+            ),
+        )
+
+    def _solve(
+        self,
+        initial: Mapping[str, float],
+        *,
+        warm_start: CoordinatorCheckpoint | None,
+        reuse: ProblemReusePolicy | None,
+    ) -> tuple[CoordinatorResult, float, bool]:
         from importlib import metadata as _metadata
 
         import openmdao.api as om  # function-local: keeps module import light
 
         openmdao_version = _metadata.version("openmdao")
         start_values = self._resolve_start_values(initial, warm_start)
-        problem, comp_paths, indep_map, output_paths = self._build_problem(om, start_values)
-        problem.setup()
-        for path, value in start_values["set"].items():
-            problem.set_val(path, value)
+        problem, comp_paths, indep_map, output_paths, setup_seconds, built = (
+            self._problem_for(om, start_values, reuse)
+        )
+        self._apply_values(problem, start_values, indep_map, output_paths)
         policy = self._policy
         history: list[IterationRecord] = []
         current = self._initial_values(start_values)
@@ -326,7 +526,7 @@ class ManifestCoordinator:
             detail = f"interface residual {residual:.3g} above tolerance after {iteration} sweeps"
         else:
             detail = f"energy closure {closure_residual:.3g} blocked acceptance"
-        return CoordinatorResult(
+        result = CoordinatorResult(
             values=tuple(sorted(current.items())),
             iterations=iteration,
             converged=converged,
@@ -339,11 +539,76 @@ class ManifestCoordinator:
             checkpoint=_checkpoint_digest(current, iteration),
             detail=detail,
         )
+        return result, setup_seconds, built
 
     def _solver_name(self) -> str:
         if self._policy.nonlinear_solver == "newton":
             return "NewtonSolver+DirectSolver"
         return "NonlinearBlockGS"
+
+    @staticmethod
+    def _problem_signature(
+        start_values: Mapping[str, Mapping[str, float]],
+    ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+        """Structure-only signature; independent of candidate values."""
+        return (
+            tuple(sorted(start_values["indep"])),
+            tuple(sorted(start_values["outputs"])),
+        )
+
+    def _problem_for(
+        self,
+        om: object,
+        start_values: dict[str, dict[str, float]],
+        reuse: ProblemReusePolicy | None,
+    ) -> tuple[object, dict[str, str], dict[str, str], dict[str, str], float, bool]:
+        """Build+setup a Problem, or reuse the cached one for this graph.
+
+        Returns ``(problem, comp_paths, indep_map, output_paths, setup_seconds,
+        built)``.
+        """
+        signature = self._problem_signature(start_values)
+        cache = self._problem_cache
+        if (
+            reuse is not None
+            and reuse.reuse_problem
+            and cache is not None
+            and cache["signature"] == signature
+        ):
+            return (
+                cache["problem"],  # type: ignore[return-value]
+                cache["comp_paths"],  # type: ignore[return-value]
+                cache["indep_map"],  # type: ignore[return-value]
+                cache["output_paths"],  # type: ignore[return-value]
+                0.0,
+                False,
+            )
+        started = perf_counter()
+        problem, comp_paths, indep_map, output_paths = self._build_problem(om, start_values)
+        problem.setup()  # type: ignore[attr-defined]
+        setup_seconds = perf_counter() - started
+        entry = {
+            "signature": signature,
+            "problem": problem,
+            "comp_paths": comp_paths,
+            "indep_map": indep_map,
+            "output_paths": output_paths,
+        }
+        self._problem_cache = entry if reuse is not None and reuse.reuse_problem else None
+        return problem, comp_paths, indep_map, output_paths, setup_seconds, True
+
+    @staticmethod
+    def _apply_values(
+        problem: object,
+        start_values: Mapping[str, Mapping[str, float]],
+        indep_map: Mapping[str, str],
+        output_paths: Mapping[str, str],
+    ) -> None:
+        """Set candidate values on a (possibly reused) Problem, no rebuild."""
+        for key, value in start_values["indep"].items():
+            problem.set_val(indep_map[key], value)  # type: ignore[attr-defined]
+        for qualified, value in start_values["outputs"].items():
+            problem.set_val(output_paths[qualified], value)  # type: ignore[attr-defined]
 
     def _resolve_start_values(
         self,
@@ -507,15 +772,6 @@ class ManifestCoordinator:
             for var in participant.outputs
             for path in (comp_paths[participant_id],)
         }
-        start_values["set"].update(
-            {indep_map[key]: value for key, value in start_values["indep"].items()}
-        )
-        start_values["set"].update(
-            {
-                output_paths[qualified]: value
-                for qualified, value in start_values["outputs"].items()
-            }
-        )
         return problem, comp_paths, indep_map, output_paths
 
     def _initial_values(self, start_values: dict[str, dict[str, float]]) -> dict[str, float]:

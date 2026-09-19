@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   CAPABILITY_MANIFESTS,
+  CapabilityProbeCache,
   commandProbe,
 } from "../../packages/solver-contracts/src/index.ts";
 
@@ -290,6 +291,20 @@ const checkApiPreflight = async (env) => {
     `API imports; ${routes.length} routes incl. governed native submit/status/events/start/cancel/results/artifacts/provenance, ${payload.participants ?? 0} participant types, ${models} analytical models`);
 };
 
+const checkSqlite = async (env) => {
+  try {
+    const probe = await env.sqliteProbe();
+    return probe.ok
+      ? ready("sqlite", "baseline", probe.version ?? null, probe.detail)
+      : notReady("sqlite", "baseline", "failed", probe.detail,
+        "SQLite is required for local artifact storage; repair the Node.js install (node:sqlite) or Python 3.12 (sqlite3)");
+  } catch (error) {
+    return notReady("sqlite", "baseline", "failed",
+      `SQLite probe failed: ${error?.message ?? error}`,
+      "SQLite is required for local artifact storage; repair the Node.js install (node:sqlite) or Python 3.12 (sqlite3)");
+  }
+};
+
 const checkSolver = async (env, id) => {
   const manifest = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === id);
   const display = manifest?.displayName ?? id;
@@ -314,30 +329,33 @@ const checkSolver = async (env, id) => {
  * real host in read-only ways only.
  */
 export const runDoctor = async (env = defaultEnv()) => {
+  // Independent readiness probes run concurrently: every probe is read-only,
+  // and the heavier API import probe never blocks the cheap version checks.
+  // The report is reassembled in the fixed BASELINE_CHECK_IDS + manifest order
+  // below, so parallel execution cannot reorder or drop a check.
+  const [pnpm, python, uv, workspaceDeps, dataDir, sqlite, ports, apiPreflight, solvers] = await Promise.all([
+    checkPnpm(env),
+    checkPython(env),
+    checkUv(env),
+    checkWorkspaceDeps(env),
+    checkDataDir(env),
+    checkSqlite(env),
+    Promise.all(REQUIRED_PORTS.map(({ port, label }) => checkPort(env, port, label))),
+    checkApiPreflight(env),
+    Promise.all(env.solverIds.map((id) => checkSolver(env, id))),
+  ]);
   const checks = [
     checkNode(env),
-    await checkPnpm(env),
-    await checkPython(env),
-    await checkUv(env),
-    await checkWorkspaceDeps(env),
-    await checkDataDir(env),
-    await (async () => {
-      try {
-        const probe = await env.sqliteProbe();
-        return probe.ok
-          ? ready("sqlite", "baseline", probe.version ?? null, probe.detail)
-          : notReady("sqlite", "baseline", "failed", probe.detail,
-            "SQLite is required for local artifact storage; repair the Node.js install (node:sqlite) or Python 3.12 (sqlite3)");
-      } catch (error) {
-        return notReady("sqlite", "baseline", "failed",
-          `SQLite probe failed: ${error?.message ?? error}`,
-          "SQLite is required for local artifact storage; repair the Node.js install (node:sqlite) or Python 3.12 (sqlite3)");
-      }
-    })(),
-    ...(await Promise.all(REQUIRED_PORTS.map(({ port, label }) => checkPort(env, port, label)))),
-    await checkApiPreflight(env),
+    pnpm,
+    python,
+    uv,
+    workspaceDeps,
+    dataDir,
+    sqlite,
+    ...ports,
+    apiPreflight,
+    ...solvers,
   ];
-  for (const id of env.solverIds) checks.push(await checkSolver(env, id));
   const baselineReady = checks.every((check) => check.tier !== "baseline" || check.state === "ready" || check.state === "warning");
   const optional = checks.filter((check) => check.tier === "optional");
   return {
@@ -381,11 +399,24 @@ export const formatHuman = (report) => {
   return lines.join("\n");
 };
 
+/**
+ * Process-lifetime capability cache for the default host probe. Repeated
+ * doctor runs in one process (perf harness, future long-lived edge) reuse a
+ * warm version probe instead of spawning `--version` again. The cache keys on
+ * the manifest, the relevant environment, and the resolved executable identity,
+ * so a registry/env/binary change invalidates it; {@link invalidateSolverProbeCache}
+ * is the explicit refresh path injectable environments/tests never touch.
+ */
+const solverProbeCache = new CapabilityProbeCache({ probe: commandProbe });
+
+/** Explicitly drops cached native capability probes (user refresh / env change). */
+export const invalidateSolverProbeCache = (solverId) => solverProbeCache.invalidate(solverId);
+
 /** Trusted registry probe: resolves the immutable manifest by id, never a caller copy. */
 const trustedSolverProbe = async (id) => {
   const trusted = CAPABILITY_MANIFESTS.find((candidate) => candidate.id === id);
   if (!trusted) return { available: false, detail: "not in the trusted manifest registry" };
-  const capability = await commandProbe(trusted);
+  const capability = await solverProbeCache.capability(trusted);
   return { available: capability.available, version: capability.version, detail: capability.detail };
 };
 
