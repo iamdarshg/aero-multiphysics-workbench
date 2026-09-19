@@ -1,0 +1,37 @@
+{
+  "provenance": {
+    "geometryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "meshHash": "b4445d528e85965aaa3077644761df81ef0004417ecd5d780cf9b97f766f0e33",
+    "topologyDigest": "2b954d92a26629190d57d6640649dc51e1f0fb87571311e472c965648c5dbbc9"
+  },
+  "exports": [
+    {
+      "participant": "openfoam",
+      "zones": [
+        {
+          "name": "fluid",
+          "motion": "stationary",
+          "domain": "fluid"
+        }
+      ],
+      "patches": [
+        {
+          "name": "inlet",
+          "kind": "inlet",
+          "nativeType": "patch"
+        },
+        {
+          "name": "outlet",
+          "kind": "outlet",
+          "nativeType": "patch"
+        },
+        {
+          "name": "walls",
+          "kind": "wall",
+          "nativeType": "wall"
+        }
+      ],
+      "interfaces": []
+    }
+  ]
+}

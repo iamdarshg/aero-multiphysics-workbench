@@ -1,0 +1,128 @@
+{
+  "cad-interchange": {
+    "detail": "FreeCADCmd unavailable; OCC fallback via cadquery: cadquery 2.8.0 installed",
+    "executable": "ocp-fallback",
+    "solver_id": "freecad",
+    "state": "ready",
+    "version": "2.8.0"
+  },
+  "cell-spm-discharge": {
+    "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+    "executable": "python",
+    "solver_id": "pybamm",
+    "state": "ready",
+    "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+  },
+  "cell-spme-discharge": {
+    "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+    "executable": "python",
+    "solver_id": "pybamm",
+    "state": "ready",
+    "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+  },
+  "compressible-steady-flow": {
+    "detail": "simpleFoam present and reported a banner",
+    "executable": "simpleFoam",
+    "solver_id": "openfoam",
+    "state": "ready",
+    "version": "OpenFOAM 2412"
+  },
+  "coupled-interface-validation": {
+    "detail": "no executable or library for precice is installed",
+    "executable": "precice-config-visualizer",
+    "solver_id": "precice",
+    "state": "unavailable",
+    "version": null
+  },
+  "domain-mesh": {
+    "detail": "gmsh 4.15.2 installed",
+    "executable": "gmsh",
+    "solver_id": "gmsh",
+    "state": "ready",
+    "version": "4.15.2"
+  },
+  "electrostatic-field": {
+    "detail": "no executable or library for elmer is installed",
+    "executable": "ElmerSolver",
+    "solver_id": "elmer",
+    "state": "unavailable",
+    "version": null
+  },
+  "incompressible-steady-flow": {
+    "detail": "simpleFoam present and reported a banner",
+    "executable": "simpleFoam",
+    "solver_id": "openfoam",
+    "state": "ready",
+    "version": "OpenFOAM 2412"
+  },
+  "native-coupled-window": {
+    "detail": "precice-tools responded to version",
+    "executable": "precice-tools",
+    "solver_id": "precice",
+    "state": "ready",
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "pack-thevenin-discharge": {
+    "detail": "governed python-module execution: pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2",
+    "executable": "python",
+    "solver_id": "pybamm",
+    "state": "ready",
+    "version": "pybamm==26.8.0.0; pybammsolvers==0.9.1; casadi==3.7.2"
+  },
+  "power-electronics-drive": {
+    "detail": "no executable or library for aeroworkbench-electrical is installed",
+    "executable": "unknown",
+    "solver_id": "aeroworkbench-electrical",
+    "state": "unavailable",
+    "version": null
+  },
+  "rotating-electrical-machine": {
+    "detail": "no executable or library for aeroworkbench-electrical is installed",
+    "executable": "unknown",
+    "solver_id": "aeroworkbench-electrical",
+    "state": "unavailable",
+    "version": null
+  },
+  "rotating-flow-mrf": {
+    "detail": "simpleFoam present and reported a banner",
+    "executable": "simpleFoam",
+    "solver_id": "openfoam",
+    "state": "ready",
+    "version": "OpenFOAM 2412"
+  },
+  "rotor-campbell": {
+    "detail": "governed python-module execution: ross-rotordynamics==3.0.0",
+    "executable": "python",
+    "solver_id": "ross",
+    "state": "ready",
+    "version": "ross-rotordynamics==3.0.0"
+  },
+  "rotor-modal": {
+    "detail": "governed python-module execution: ross-rotordynamics==3.0.0",
+    "executable": "python",
+    "solver_id": "ross",
+    "state": "ready",
+    "version": "ross-rotordynamics==3.0.0"
+  },
+  "structural-modal": {
+    "detail": "run_aster responded to --version",
+    "executable": "run_aster",
+    "solver_id": "code-aster",
+    "state": "ready",
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "structural-static": {
+    "detail": "run_aster responded to --version",
+    "executable": "run_aster",
+    "solver_id": "code-aster",
+    "state": "ready",
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "thermal-conduction": {
+    "detail": "no executable or library for elmer is installed",
+    "executable": "ElmerSolver",
+    "solver_id": "elmer",
+    "state": "unavailable",
+    "version": null
+  }
+}

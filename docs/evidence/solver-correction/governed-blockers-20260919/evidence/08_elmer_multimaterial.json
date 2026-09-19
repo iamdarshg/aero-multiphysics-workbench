@@ -1,0 +1,60 @@
+{
+  "analysis": "steady",
+  "body_ids": {
+    "body_a": 1,
+    "body_b": 2
+  },
+  "boundary_ids": {
+    "left": 3,
+    "right": 4
+  },
+  "case_dir": "/aero-jobs/case-32158c073078",
+  "elmer_mesh_names": {
+    "left": 3,
+    "material_body_a": 1,
+    "material_body_b": 2,
+    "right": 4
+  },
+  "error_code": "MESH_INVALID",
+  "error_detail": "MESH_GROUP_MISSING:body_a,body_b",
+  "events": [
+    "QUEUED",
+    "PREPARING",
+    "FAILED"
+  ],
+  "fidelity": null,
+  "inputs_digest": "c7b8236e13f067c8adbeee7a21afcda8b391ee3aeced67b454b8c5b21bf3e681",
+  "issue": "08_elmer_multimaterial",
+  "job_id": "32158c07307848daa819d1fdd6d0e98d",
+  "mesh_hash": "44ff9a3115e24258ecf204af966d44461a429a2e77ef2eb34d4f31eed2f99d05",
+  "participant": "thermal-conduction",
+  "solver_log_tail": "",
+  "started_at": "2026-09-19T09:36:41.162019+00:00",
+  "state": "FAILED",
+  "status": {
+    "analysis": "steady",
+    "attempt": 1,
+    "checkpoint_id": null,
+    "created_at": "2026-09-19T09:36:41.162185+00:00",
+    "design_id": "governed-08_elmer_multimaterial",
+    "error_code": "MESH_INVALID",
+    "error_detail": "MESH_GROUP_MISSING:body_a,body_b",
+    "executor": "local",
+    "fidelity": "steady-conduction",
+    "input_hash": null,
+    "interruption_reason": null,
+    "job_id": "32158c07307848daa819d1fdd6d0e98d",
+    "owner_id": null,
+    "participant_id": "thermal-conduction",
+    "provenance_id": null,
+    "result_id": null,
+    "resume_of": null,
+    "revision_id": null,
+    "run_id": null,
+    "state": "FAILED",
+    "updated_at": "2026-09-19T09:36:41.227004+00:00"
+  },
+  "stderr_tail": "",
+  "stdout_tail": "",
+  "wall_s": 0.063
+}

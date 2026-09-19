@@ -1,0 +1,6 @@
+! ----- names for bodies -----
+$ material_body_a = 1
+$ material_body_b = 2
+! ----- names for boundaries -----
+$ left = 3
+$ right = 4

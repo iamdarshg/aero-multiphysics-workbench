@@ -1,0 +1,74 @@
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 09:36:26"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/usr/bin/gmsh",
+    "present": true,
+    "version": "4.8.4"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-config-visualizer": {
+    "present": false
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "detail": "No package metadata was found for cadquery",
+    "present": false
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "detail": "No package metadata was found for fastapi",
+    "present": false
+  },
+  "py:gmsh": {
+    "detail": "No package metadata was found for gmsh",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "detail": "No package metadata was found for openmdao",
+    "present": false
+  },
+  "py:pybamm": {
+    "detail": "No package metadata was found for pybamm",
+    "present": false
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}

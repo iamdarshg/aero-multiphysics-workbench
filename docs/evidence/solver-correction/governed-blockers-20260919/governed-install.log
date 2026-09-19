@@ -1,0 +1,122 @@
+=== GOVERNED INSTALL START 2026-09-19T09:31:07Z ===
+--- A: apt base + Elmer PPA + python3.12 ---
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 09:32:35
+A py312: Python 3.12.13
+--- B: python 3.12 venv stack (repo services/api deps, one pkg per command) ---
+PIP OK numpy
+PIP OK scipy
+PIP OK ross-rotordynamics
+PIP OK pybamm
+PIP OK casadi==3.7.2
+PIP OK cantera
+PIP OK openmdao
+PIP OK gmsh
+PIP OK meshio
+PIP OK fastapi
+PIP OK pydantic
+PIP OK uvicorn
+PIP OK httpx
+PIP OK pytest
+PIP OK cadquery
+ERROR: Could not load REFPROP (librefprop.so) due to: /opt/repo/librefprop.so: cannot open shared object file: No such file or directory. Make sure the library is in your system search path. In case you run 64bit Windows and you have a REFPROP license, try installing the 64bit DLL from NIST. 
+--- C: micromamba openfoam + precice (separate prefixes) ---
+
+    micromamba run -p /opt/solvers mycommand
+
+C openfoam rc=0
+
+    micromamba run -p /opt/precice mycommand
+
+C precice rc=0
+--- D: Code_Aster attempt (bounded; not fatal) ---
+
+    micromamba run -p /opt/aster mycommand
+
+D code_aster rc=0
+--- E: version capture ---
+{
+  "ElmerSolver": {
+    "path": "/usr/bin/ElmerSolver",
+    "present": true,
+    "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 09:36:26"
+  },
+  "as_run": {
+    "present": false
+  },
+  "gmsh": {
+    "path": "/usr/bin/gmsh",
+    "present": true,
+    "version": "4.8.4"
+  },
+  "pimpleFoam": {
+    "path": "/opt/solvers/bin/pimpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  },
+  "precice-config-visualizer": {
+    "present": false
+  },
+  "precice-tools": {
+    "path": "/opt/precice/bin/precice-tools",
+    "present": true,
+    "version": "WARNING: precice-tools is deprecated and will be removed in preCICE version 4."
+  },
+  "py:cadquery": {
+    "detail": "No package metadata was found for cadquery",
+    "present": false
+  },
+  "py:cantera": {
+    "detail": "No package metadata was found for cantera",
+    "present": false
+  },
+  "py:fastapi": {
+    "detail": "No package metadata was found for fastapi",
+    "present": false
+  },
+  "py:gmsh": {
+    "detail": "No package metadata was found for gmsh",
+    "present": false
+  },
+  "py:numpy": {
+    "present": true,
+    "version": "2.5.3"
+  },
+  "py:openmdao": {
+    "detail": "No package metadata was found for openmdao",
+    "present": false
+  },
+  "py:pybamm": {
+    "detail": "No package metadata was found for pybamm",
+    "present": false
+  },
+  "py:ross": {
+    "detail": "No package metadata was found for ross",
+    "present": false
+  },
+  "py:scipy": {
+    "present": true,
+    "version": "1.18.1"
+  },
+  "run_aster": {
+    "path": "/opt/aster/bin/run_aster",
+    "present": true,
+    "version": "code_aster 18.1.6 (n/a)"
+  },
+  "simpleFoam": {
+    "path": "/opt/solvers/bin/simpleFoam",
+    "present": true,
+    "version": "--> FOAM FATAL ERROR :"
+  }
+}
+--- F: precice python binding smoke ---
+[aero-governed-20260919145946:06660] Local abort before MPI_INIT completed completed successfully, but am not able to aggregate error messages, and not able to guarantee that all other processes were killed!
+--- G: openfoam env smoke ---
+--> FOAM FATAL ERROR :
+    Could not find mandatory etc entry (mode=ugo)
+WM=none
+=== GOVERNED INSTALL DONE 2026-09-19T09:36:29Z ===
