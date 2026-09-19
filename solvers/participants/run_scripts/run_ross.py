@@ -289,17 +289,33 @@ def _unbalance(case: dict[str, Any]) -> dict[str, Any]:
     return dict(definition)
 
 
+def _unbalance_response(rotor: Any, sweep: np.ndarray, unbalance: dict[str, Any]) -> Any:
+    """Call ROSS unbalance response with the supported frequency keyword.
+
+    ROSS 2.x uses ``frequency`` while ROSS 3.x uses ``speed_range`` (both in
+    rad/s). Select by the function signature so the governed path works on any
+    pinned worker stack instead of hard-coding one API generation.
+    """
+
+    import inspect
+
+    parameters = inspect.signature(rotor.run_unbalance_response).parameters
+    frequency_keyword = "speed_range" if "speed_range" in parameters else "frequency"
+    return rotor.run_unbalance_response(
+        node=int(unbalance["node"]),
+        unbalance_magnitude=float(unbalance["magnitude_kg_m"]),
+        unbalance_phase=float(unbalance["phase_deg"]),
+        **{frequency_keyword: sweep},
+    )
+
+
 def _run_forced(rotor: Any, case: dict[str, Any]) -> dict[str, Any]:
     speed_rpm = float(case["speed_rpm"])
     speed_rad_s = speed_rpm * TWO_PI / 60.0
     unbalance = _unbalance(case)
+    # `sweep` is in rad/s for both the legacy and current ROSS APIs.
     sweep = np.linspace(max(speed_rad_s * 0.2, 1.0), max(speed_rad_s * 1.5, 10.0), 9)
-    forced = rotor.run_unbalance_response(
-        node=int(unbalance["node"]),
-        unbalance_magnitude=float(unbalance["magnitude_kg_m"]),
-        unbalance_phase=float(unbalance["phase_deg"]),
-        frequency=sweep,
-    )
+    forced = _unbalance_response(rotor, sweep, unbalance)
     response = np.asarray(forced.forced_resp, dtype=complex)
     if response.ndim != 2 or response.shape[1] != sweep.size:
         raise RuntimeError(f"unexpected ROSS forced response shape:{response.shape}")
