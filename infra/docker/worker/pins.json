@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "issue": "iamdarshg/aero-multiphysics-workbench#43",
+  "description": "Single source of truth for every digest/version pinned into the native solver worker images. No floating tags are permitted; scripts/gcp/worker-image-validate.mjs fails closed on any drift.",
+  "pythonVersion": "3.12",
+  "workerUser": {
+    "name": "worker",
+    "uid": 10001,
+    "gid": 10001
+  },
+  "micromamba": {
+    "version": "2.0.5-0",
+    "url": "https://github.com/mamba-org/micromamba-releases/releases/download/2.0.5-0/micromamba-linux-64.tar.bz2",
+    "sha256": "bfc2e3a414d651af7508c49998a12b5cf3c7029d56c5ef37c9a3248cd7faef78",
+    "source": "release asset sha256 was fetched and independently recomputed during issue #43"
+  },
+  "baseImages": {
+    "participants-python": {
+      "ref": "python:3.12-slim-bookworm",
+      "digest": "sha256:d5ae74acb8026b32a2f6deea45003c5bd4e2880700c19c44bda54670ad3eff90",
+      "platform": "linux/amd64",
+      "dockerfile": "infra/docker/worker/participants-python.Dockerfile"
+    },
+    "native-solvers": {
+      "ref": "ubuntu:22.04",
+      "digest": "sha256:b8b6ee6aa931ecd9d0d952abc34dc0e5f7c6a30c6bb71b079fe399fde0329c02",
+      "platform": "linux/amd64",
+      "dockerfile": "infra/docker/worker/native-solvers.Dockerfile"
+    }
+  },
+  "apt": {
+    "osLibraries": [
+      "libglu1-mesa",
+      "libgl1",
+      "libstdc++6",
+      "libopenblas0",
+      "libgomp1",
+      "xvfb",
+      "ca-certificates",
+      "bzip2",
+      "curl",
+      "patch"
+    ],
+    "nativeOnly": [
+      "software-properties-common"
+    ],
+    "ppas": {
+      "deadsnakes": {
+        "source": "ppa:deadsnakes/ppa",
+        "packages": {
+          "python3.12": "3.12.13-1+jammy1",
+          "python3.12-venv": "3.12.13-1+jammy1"
+        }
+      },
+      "elmer": {
+        "source": "ppa:elmer-csc-ubuntu/elmer-csc-ppa",
+        "packages": {
+          "elmerfem-csc": "9.0-0ppa0-202609171021~9ef450fbb~ubuntu22.04.1"
+        }
+      }
+    }
+  },
+  "condaSolverPrefixes": {
+    "openfoam": {
+      "prefix": "/opt/solvers/openfoam",
+      "packages": { "openfoam": "2412" },
+      "executables": ["simpleFoam", "pimpleFoam", "rhoSimpleFoam", "rhoPimpleFoam"]
+    },
+    "precice": {
+      "prefix": "/opt/solvers/precice",
+      "packages": { "precice": "3.2.0", "pyprecice": "3.2.0" },
+      "executables": ["precice-config-visualizer"]
+    },
+    "code-aster": {
+      "prefix": "/opt/solvers/code-aster",
+      "packages": { "code-aster": "18.1.6" },
+      "executables": ["as_run"]
+    },
+    "gmsh": {
+      "prefix": "/opt/solvers/mesh",
+      "packages": { "gmsh": "4.15.2" },
+      "executables": ["gmsh"]
+    }
+  },
+  "pythonLock": {
+    "source": "services/api/uv.lock",
+    "manager": "uv",
+    "uvVersion": "0.9.6",
+    "directPins": {
+      "ross-rotordynamics": "2.3.0",
+      "pybamm": "26.8.0.0",
+      "openmdao": "3.45.1",
+      "gmsh": "4.15.2",
+      "cadquery": "2.8.0",
+      "casadi": "3.7.2",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    },
+    "additionalPins": {
+      "cantera": "3.2.0"
+    }
+  },
+  "images": {
+    "participants-python": {
+      "role": "python-participants",
+      "provides": ["ross", "pybamm", "openmdao", "gmsh", "cadquery", "cantera"]
+    },
+    "native-solvers": {
+      "role": "native-solvers",
+      "provides": ["openfoam", "code-aster", "elmer", "precice", "gmsh", "ross", "pybamm", "openmdao", "cadquery"]
+    }
+  },
+  "recorded": {
+    "participants-python": {
+      "digest": null,
+      "status": "PENDING",
+      "reason": "host has no Docker daemon; static validation only for issue #43. Run scripts/gcp/build-worker-images.sh --push on a Docker/BuildKit host to record the immutable image digest."
+    },
+    "native-solvers": {
+      "digest": null,
+      "status": "PENDING",
+      "reason": "host has no Docker daemon; static validation only for issue #43. Run scripts/gcp/build-worker-images.sh --push on a Docker/BuildKit host to record the immutable image digest."
+    }
+  }
+}

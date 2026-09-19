@@ -1,4 +1,5 @@
 export * from "./contracts.ts";
+export * from "./executors.ts";
 export type { NativeSolverCommand, SolverLaunchInput } from "./commands.ts";
 export * from "./manifests.ts";
 export * from "./participants.ts";

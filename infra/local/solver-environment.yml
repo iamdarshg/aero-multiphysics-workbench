@@ -6,18 +6,22 @@
 # clearly labelled unavailable (fail-closed).
 # Headless Linux servers also need: apt-get install -y xvfb
 # (freecadcmd segfaults without an X server; run under xvfb-run).
+#
+# Versions are pinned to match the trusted worker images
+# (infra/docker/worker/pins.json). This convenience path is not trusted
+# execution; if a pinned solve ever fails it fails closed, never substitutes.
 name: aero-solvers
 channels:
   - conda-forge
 dependencies:
   - python=3.12
   - pip
-  - gmsh
-  - openfoam  # [linux]
-  - precice  # [linux]
-  - freecad  # [linux]
+  - gmsh=4.15.2
+  - openfoam=2412  # [linux]
+  - precice=3.2.0  # [linux]
+  - freecad=1.1.3  # [linux]
   - pip:
-      - openmdao
-      - ross-rotordynamic
-      - pybamm
-      - cantera
+      - openmdao==3.45.1
+      - ross-rotordynamics==2.3.0
+      - pybamm==26.8.0.0
+      - cantera==3.2.0

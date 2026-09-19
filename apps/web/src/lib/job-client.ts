@@ -507,6 +507,14 @@ export const getJobResult = async (jobId: string): Promise<ResultEnvelopeSummary
   };
 };
 
+/**
+ * Raw field-manifest payload for a published result. The contract validator
+ * owns the shape; this client never trusts it and never requests raw arrays.
+ * Hosts without a field endpoint fail closed with RESULT_FIELDS_UNAVAILABLE.
+ */
+export const getResultFieldPayload = async (jobId: string): Promise<unknown> =>
+  getJson<unknown>(`/v1/native/results/${encodeURIComponent(jobId)}/fields`);
+
 export const getJobProvenance = async (jobId: string): Promise<JobProvenance> => {
   const payload = await getJson<{ job_id?: unknown; events?: unknown }>(
     `/v1/native/provenance/${encodeURIComponent(jobId)}`,

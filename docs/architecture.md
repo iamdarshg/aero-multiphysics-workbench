@@ -42,8 +42,31 @@ Project-owned processes have a hard aggregate ceiling of 896 MiB RSS, leaving at
 least 128 MiB of headroom below the user's 1 GiB limit. Admission control reserves
 memory before launch, and the process supervisor samples the complete child process
 tree while a job runs. The supervisor terminates the job fail-closed before the hard
-ceiling is crossed. Native solver jobs run one at a time locally; large jobs require
-the user's explicit remote-compute switch and cost ceiling.
+ceiling is crossed. Admission is resource-aware and concurrent rather than a single
+global worker lock: `ResourceScheduler` in `solvers/participants/lifecycle.py` admits
+independent safe jobs up to the declared per-solver-family concurrency, memory, thread
+and exclusive-resource policy under the same aggregate ceiling. Heavyweight native
+executables stay at concurrency 1 by policy, governed Python solvers may overlap two-up,
+and cheap analytical participants may run four-up; memory is never oversubscribed.
+Large jobs require the user's explicit, disabled-by-default remote-compute switch and
+cost ceiling.
+
+<!-- capability: authoritativeExecutionOwner=services-api-governed-inprocess-native-jobs -->
+<!-- capability: schedulingMode=resource-aware-concurrent -->
+<!-- capability: resultPublication=evidence-gated-publish-active -->
+<!-- capability: cachePersistence=persistent-content-addressed -->
+<!-- capability: storage=sqlite-wal-plus-content-addressed-artifacts -->
+
+## Cache, persistence, and result publication
+
+Engineering results and field artifacts are persisted content-addressed: the API keeps
+SQLite metadata (WAL) plus file-backed values and reuses a cached entry only after a
+trust check that re-validates inputs, solver identity, and upstream keys. Native results
+publish only through the evidence-gated envelope path (`publish_result`), which requires
+a completed process receipt, a parser receipt, per-artifact SHA-256 digests, an approved
+artifact root, solver identity/version, the input digest, and checkpoint lineage.
+Publication is active, not disabled: a missing or mismatched piece of that chain fails
+closed instead of emitting partial data.
 
 Suggested steady-state envelopes are 192 MiB for the web UI, 160 MiB for the API,
 96 MiB for the scheduler, 96 MiB for MCP, and at most 352 MiB for one active local

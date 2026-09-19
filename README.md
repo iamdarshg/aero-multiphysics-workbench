@@ -4,6 +4,18 @@ A local-first engineering environment for exploring a single physical design sta
 
 Every numerical result records its source (`analytical`, `surrogate`, `benchmark`, or `native_solver`). Requested native solvers that are not installed fail closed — they report as unavailable instead of returning invented data.
 
+<!-- capability: authoritativeExecutionOwner=services-api-governed-inprocess-native-jobs -->
+<!-- capability: schedulingMode=resource-aware-concurrent -->
+<!-- capability: resultPublication=evidence-gated-publish-active -->
+<!-- capability: cachePersistence=persistent-content-addressed -->
+<!-- capability: mcpServer=stdio-public-product-api -->
+<!-- capability: remoteCompute=disabled-by-default-user-only -->
+<!-- capability: containers=manifests-ci-build-smoke -->
+<!-- capability: nativeSolvers=capability-gated-fail-closed -->
+<!-- capability: storage=sqlite-wal-plus-content-addressed-artifacts -->
+
+These capability facts are machine-readable in `docs/requirements-audit.json` under `capabilityFacts`; the check in `scripts/check-docs.mjs` fails when this page or the other owned docs drift from them.
+
 ## Quickstart (baseline, no solvers needed)
 
 Prerequisites: Node.js 24, `pnpm` via `corepack`, Python 3.12 with `uv`. Docker is **not** required for the baseline product. Linux extras (`xvfb`) only matter for the optional native solver environment below.
@@ -17,7 +29,7 @@ Prerequisites: Node.js 24, `pnpm` via `corepack`, Python 3.12 with `uv`. Docker 
    `pnpm run doctor`
 4. Optional native solvers — installs a private micromamba + conda-forge environment (`infra/local/solver-environment.yml`) with no sudo and no system changes. Anything still unavailable stays clearly labelled as unavailable:
    `pnpm setup:solvers`
-5. One-command local startup — serves the API (with the in-process single-worker native job path) plus the UI behind readiness gates, then prints `stack ready`. `Ctrl-C` shuts owned services down in reverse order:
+5. One-command local startup — serves the API (the authoritative owner of the in-process, resource-aware governed native job lifecycle) plus the UI behind readiness gates, then prints `stack ready`. `Ctrl-C` shuts owned services down in reverse order:
    `pnpm dev:all`
    Production-ish equivalent (build the UI first with `pnpm --filter @aero/web build`):
    `pnpm start:local`
@@ -45,16 +57,16 @@ Capability tiers used below — a `READY` capability means only that the named e
 | Linux x86-64 (Ubuntu 22.04; also CI) | Supported | Supported via `pnpm setup:solvers`; OpenFOAM/preCICE/FreeCAD conda packages are Linux-only; headless hosts also need `xvfb` for FreeCAD |
 | macOS | Expected to work, not tested | Unsupported — Linux-only conda packages stay unavailable; the Python stack still installs |
 
-### Solvers (evidence: `docs/solver-verification.md`, `docs/evidence/milestone-2/benchmarks.json`, `docs/evidence/milestone-2/summary.json`)
+### Solvers (evidence: `docs/solver-verification.md`, `docs/evidence/solver-correction/SUMMARY.md`, `docs/evidence/solver-correction/summary.json`, `docs/evidence/milestone-2/benchmarks.json`)
 
 | Solver | Adapter | Executable verified | Canonical benchmark passes | Workflow validated |
 |---|---|---|---|---|
-| OpenFOAM | yes | yes — v2412 `blockMesh`/`icoFoam` lid-driven cavity at two mesh resolutions on GCP 2026-09-14 | no — `edf-duct-flow`/`edf-cht` gated; prepare+parse golden files only | no |
-| Code_Aster | yes | no — never executed (the GCP CalculiX cantilever exit-0 note concerns a different tool with no adapter) | no — `cantilever-modal` gated | no |
-| preCICE | yes | version string only — 3.2.0 feature string, no coupled run | no — `edf-cht` gated; analytic-transfer path proven, native path fails closed | no |
-| ROSS | yes | yes — governed `ross-rotordynamics` 2.3.0 Campbell/modal execution | yes — `rotor-campbell` COMPLETED, 1.1% beam agreement | yes — governed API job; `pnpm smoke:product` |
+| OpenFOAM | yes | yes — v2412 channel/cavity/rotating-frame MRF EXECUTED on GCP 2026-09-19 (mass imbalance 1.0e-9; 0.18% vs analytic; mesh deltas 6.3%→1.5%) | partial — channel + MRF sign checks pass; transient AMI blocked by time | no |
+| Code_Aster | yes | no — native runner/builders implemented but no canonical case executed (SOLVER-CORR 38: `as_run` absent) | no — `cantilever-modal` gated | no |
+| preCICE | yes | yes — 3.4.0 implicit nonmatching exchange EXECUTED on GCP 2026-09-19 (2 resolutions, 15 checkpoint/rollback events) | partial — consistent-mapping error 1.25→0.625; conservative integral conservation not quantified | no |
+| ROSS | yes | yes — 3.0.0 `Jeffcott`/soft-bearing/unbalance EXECUTED on GCP (first critical 8698 rpm; modal 0.46% vs Campbell) | partial — `rotor-campbell` governed job COMPLETED; governed forced analysis blocked on a ROSS 3.0 API change | yes — governed API job; `pnpm smoke:product` |
 | PyBaMM | yes | yes — governed 26.8.0.0 execution; GCP SPM discharge numbers | yes — `cell-spm-discharge` COMPLETED, validity checks passed | yes — governed API jobs |
-| Elmer | yes | version string only — solver banner, no FEM run | no — `.sif` prepare+parse golden files only | no |
+| Elmer | yes | yes — 26.2 steady Dirichlet/heat-flux + transient uniform heating EXECUTED (0.0% vs analytic) | partial — machine+drive+battery+thermal closure residual −1.19e-8 W; multi-material blocked by time | no |
 | Cantera | manifest + probe only (no dedicated case builder) | partially — GCP 0D CH4/air equilibrium executed (2621.9 K); no governed participant run | no | no |
 | pyCycle | manifest + probe only | no | no | no |
 | CadQuery | manifest + probe (+ OCC fallback path) | yes as a library — 2.8.0 via the `cad-interchange` fallback | partial — `cad-interchange` COMPLETED via fallback, honestly labelled | partial |
@@ -67,9 +79,9 @@ OpenMDAO 3.45.1 is the scalar coordinator rather than a catalogued solver: parab
 ## Known limitations
 
 - Native solvers are optional: without `pnpm setup:solvers` (or on Windows/macOS) every native capability reports unavailable and governed jobs fail closed with `CAPABILITY_UNAVAILABLE`. Version probes never imply a usable case or valid results.
-- Local native execution is single-worker with an 896 MiB aggregate project reservation budget (see `docs/architecture.md`); large jobs need the explicit remote-compute switch, which is disabled by default and has no cloud resources provisioned (see `docs/cloud-and-containers.md`).
-- Result sources are distinct: analytical screening, surrogate, benchmark, and native_solver envelopes are labelled and never substituted for one another.
-- Still unimplemented after issues #1–#8: native OpenFOAM/Code_Aster/Elmer runs, native preCICE field exchange, full-aircraft/combustor/turbine native workflows, cross-restart worker resume (local SQLite ledger), MCP-backed cancellation beyond queued reservations, deployment (no images built or pushed). The complete gap list is `pnpm audit:report`.
+- Local native execution is admitted by the resource-aware `ResourceScheduler` under a hard 896 MiB aggregate project reservation budget: heavyweight native solvers stay at concurrency 1 by policy, governed Python solvers may overlap two-up, and cheap analytical participants may run four-up (see `docs/architecture.md`). Large jobs need the explicit remote-compute switch, which is disabled by default and has no cloud resources provisioned (see `docs/cloud-and-containers.md`).
+- Result sources are distinct: analytical screening, surrogate, benchmark, and native_solver envelopes are labelled and never substituted for one another. Native results publish only through the evidence-gated envelope path, and engineering results/artifacts are cached persistently and content-addressed.
+- Still unimplemented: canonical Code_Aster native structural cases, OpenFOAM transient sliding-interface/AMI and multi-stage MRF, full-aircraft/combustor/turbine native workflows, hosted ChatGPT supervision, published container images, and provisioned cloud compute/checkpointing. The complete gap list is `pnpm audit:report`.
 
 ## Development
 

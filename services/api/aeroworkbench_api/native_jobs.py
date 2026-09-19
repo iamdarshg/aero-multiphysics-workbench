@@ -12,8 +12,10 @@ from fastapi import APIRouter, HTTPException, Request, Response, status
 from fastapi.responses import StreamingResponse
 from participants.capabilities import probe_all
 from participants.errors import ParticipantError
+from participants.executors import GCPBatchExecutor
 from participants.lifecycle import NativeJobManager
 from participants.manifest import PARTICIPANT_MANIFESTS
+from participants.remote_policy import RemoteComputePolicy
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -46,7 +48,32 @@ def default_job_root() -> Path:
 
 
 def _manager_for(root: Path) -> NativeJobManager:
-    return NativeJobManager(root)
+    """Build the governed manager from user-owned environment switches only.
+
+    There is deliberately no request/body path to remote compute: the backend is
+    selected exclusively by operator environment. When remote is selected the
+    user-owned policy must be enabled and a worker image digest pinned, or the
+    manager fails closed instead of silently falling back to local execution.
+    """
+
+    policy = RemoteComputePolicy.from_environment()
+    backend = os.environ.get("AEROWORKBENCH_EXECUTION_BACKEND", "local").strip().lower()
+    if backend == "remote":
+        executor = GCPBatchExecutor(
+            policy,
+            project=(os.environ.get("AEROWORKBENCH_GCP_PROJECT", "").strip() or None),
+            region=(os.environ.get("AEROWORKBENCH_GCP_REGION", "").strip() or None),
+            image_digest=(
+                os.environ.get("AEROWORKBENCH_GCP_IMAGE_DIGEST", "").strip() or None
+            ),
+        )
+        return NativeJobManager(
+            root,
+            execution_backend="remote",
+            remote_policy=policy,
+            remote_executor=executor,
+        )
+    return NativeJobManager(root, remote_policy=policy)
 
 
 def _cancel_job(manager: NativeJobManager, job_id: str) -> dict[str, Any]:

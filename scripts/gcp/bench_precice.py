@@ -10,6 +10,7 @@ at more than one interface resolution.
 If the native Python binding cannot be imported, the benchmark is BLOCKED with
 the exact probe reason -- never replaced by an analytical claim.
 """
+
 from __future__ import annotations
 
 import json
@@ -22,7 +23,7 @@ WORK = Path(os.environ.get("PRECICE_WORK", "/tmp/precice"))
 RECEIPTS = Path(os.environ.get("RECEIPTS", "/var/log/proofs/receipts"))
 RECEIPTS.mkdir(parents=True, exist_ok=True)
 
-PARTICIPANT_A = r'''
+PARTICIPANT_A = r"""
 import json, os, sys
 import precice
 
@@ -55,9 +56,9 @@ while p.is_coupling_ongoing():
 p.finalize()
 json.dump({"events": events, "n": n}, open("A_events.json", "w"))
 print("A_DONE", len(events))
-'''
+"""
 
-PARTICIPANT_B = r'''
+PARTICIPANT_B = r"""
 import json, sys
 import precice
 
@@ -94,7 +95,7 @@ json.dump({"read": [float(v) for v in last],
            "coords": [float(c[0]) for c in coords],
            "events": events, "n": n}, open("B_result.json", "w"))
 print("B_DONE", len(events))
-'''
+"""
 
 CONFIG = """
 <?xml version="1.0"?>
@@ -120,7 +121,8 @@ CONFIG = """
     <read-data name="Temperature" mesh="B-Mesh"/>
     <write-data name="HeatFlux" mesh="B-Mesh"/>
     <mapping:nearest-neighbor direction="read" from="A-Mesh" to="B-Mesh" constraint="consistent"/>
-    <mapping:nearest-neighbor direction="write" from="B-Mesh" to="A-Mesh" constraint="conservative"/>
+    <mapping:nearest-neighbor direction="write" from="B-Mesh" to="A-Mesh"
+      constraint="conservative"/>
   </participant>
   <m2n:sockets exchange-directory="." acceptor="A" connector="B"/>
   <coupling-scheme:serial-implicit>
@@ -136,12 +138,15 @@ CONFIG = """
 
 
 def probe() -> tuple[bool, str]:
-    code = ("import precice; "
-            "v=getattr(precice,'__version__',None) or getattr(precice,'version','unknown'); "
-            "print('precice',v,precice.__file__)")
+    code = (
+        "import precice; "
+        "v=getattr(precice,'__version__',None) or getattr(precice,'version','unknown'); "
+        "print('precice',v,precice.__file__)"
+    )
     try:
-        out = subprocess.run([sys.executable, "-c", code],
-                             capture_output=True, text=True, timeout=60)
+        out = subprocess.run(
+            [sys.executable, "-c", code], capture_output=True, text=True, timeout=60
+        )
         if out.returncode == 0:
             return True, out.stdout.strip()
         return False, (out.stderr or out.stdout).strip()[-300:]
@@ -158,20 +163,39 @@ def run_resolution(n: int) -> dict:
     clean_env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
     # preCICE logs heavily; write to files so a full pipe cannot deadlock the run.
     with open(ndir / "A.log", "w") as fa, open(ndir / "B.log", "w") as fb:
-        a = subprocess.Popen([sys.executable, "A.py", "precice-config.xml", str(n)],
-                             cwd=str(ndir), stdout=fa, stderr=subprocess.STDOUT, env=clean_env)
-        b = subprocess.Popen([sys.executable, "B.py", "precice-config.xml", str(n)],
-                             cwd=str(ndir), stdout=fb, stderr=subprocess.STDOUT, env=clean_env)
+        a = subprocess.Popen(
+            [sys.executable, "A.py", "precice-config.xml", str(n)],
+            cwd=str(ndir),
+            stdout=fa,
+            stderr=subprocess.STDOUT,
+            env=clean_env,
+        )
+        b = subprocess.Popen(
+            [sys.executable, "B.py", "precice-config.xml", str(n)],
+            cwd=str(ndir),
+            stdout=fb,
+            stderr=subprocess.STDOUT,
+            env=clean_env,
+        )
         try:
             a.wait(timeout=300)
             b.wait(timeout=300)
         except subprocess.TimeoutExpired:
-            a.kill(); b.kill()
-            return {"resolution": n, "status": "TIMEOUT",
-                    "aExit": a.returncode, "bExit": b.returncode}
-    res: dict = {"resolution": n, "aExit": a.returncode, "bExit": b.returncode,
-                 "aTail": (ndir / "A.log").read_text(errors="replace").strip()[-200:],
-                 "bTail": (ndir / "B.log").read_text(errors="replace").strip()[-200:]}
+            a.kill()
+            b.kill()
+            return {
+                "resolution": n,
+                "status": "TIMEOUT",
+                "aExit": a.returncode,
+                "bExit": b.returncode,
+            }
+    res: dict = {
+        "resolution": n,
+        "aExit": a.returncode,
+        "bExit": b.returncode,
+        "aTail": (ndir / "A.log").read_text(errors="replace").strip()[-200:],
+        "bTail": (ndir / "B.log").read_text(errors="replace").strip()[-200:],
+    }
     bres = ndir / "B_result.json"
     aev = ndir / "A_events.json"
     if aev.is_file():
@@ -187,7 +211,7 @@ def run_resolution(n: int) -> dict:
             exact = [10.0 * x for x in xs]
             res["readValues"] = read
             res["exactValues"] = exact
-            res["maxAbsError"] = max(abs(r - e) for r, e in zip(read, exact))
+            res["maxAbsError"] = max(abs(r - e) for r, e in zip(read, exact, strict=True))
             res["events"] = data.get("events", [])
         except Exception as exc:  # noqa: BLE001
             res["bResultParseError"] = str(exc)
@@ -207,8 +231,11 @@ def main() -> int:
     try:
         for n in (4, 8):
             out["resolutions"].append(run_resolution(n))
-        out["status"] = "EXECUTED" if all(
-            r.get("aExit") == 0 and r.get("bExit") == 0 for r in out["resolutions"]) else "PARTIAL"
+        out["status"] = (
+            "EXECUTED"
+            if all(r.get("aExit") == 0 and r.get("bExit") == 0 for r in out["resolutions"])
+            else "PARTIAL"
+        )
     except Exception as exc:  # noqa: BLE001
         out["reason"] = f"{type(exc).__name__}:{exc}"
         out["status"] = "FAILED"

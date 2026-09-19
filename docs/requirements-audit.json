@@ -13,7 +13,7 @@
       "id": "section:0",
       "title": "PROJECT PURPOSE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 0,
@@ -37,7 +37,7 @@
       "id": "section:1",
       "title": "CORE PHILOSOPHY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 1,
@@ -61,7 +61,7 @@
       "id": "section:2",
       "title": "USE THE FOLLOWING MAIN TECHNOLOGY ARCHITECTURE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 2,
@@ -85,7 +85,7 @@
       "id": "section:3",
       "title": "FIELD COUPLING",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: preCICE contract layer only (config builder, static coupling XML, adapter gating verified). No native preCICE execution has run; field transfer remains unvalidated.",
+      "statusExplanation": "PARTIAL: preCICE native field coupling EXECUTED on GCP (SOLVER-CORR 40: preCICE 3.4.0 implicit nonmatching exchange at 4 and 8 resolutions, both participants exit 0, consistent-mapping error 1.25 -> 0.625, 15 checkpoint/rollback events each). Conservative-mapping integral conservation and full EDF CHT exchange remain unquantified.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 3,
@@ -98,6 +98,18 @@
           "path": "solvers/precice/config_builder.py",
           "detail": "PARTIAL: preCICE contract layer only (config builder, static coupling XML, adapter gating verified). No native preCICE execution has run; field transfer remains unvalidated.",
           "sha256": "89bad874e9b36c202025db2d040f017f5425c070606345b91ef5578c3fa56a8a"
+        },
+        {
+          "kind": "file",
+          "path": "solvers/precice/native_adapter.py",
+          "detail": "PARTIAL: native preCICE participant launch/adapters used by the executed implicit-exchange proof.",
+          "sha256": "59b7266629b94b04c393c5bcb2f1c63b6d3331ba72824286d9424ed61fc365a7"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue40_precice.json",
+          "detail": "PARTIAL: raw GCP native preCICE 3.4.0 exchange receipt (two resolutions, checkpoint/rollback counts).",
+          "sha256": "04b1e40c2d5ec040b4a849afa258f14442d0cbdb72ee83a002b4821ead9f5631"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -106,7 +118,7 @@
       "id": "section:4",
       "title": "COUPLING MUST BE STRONG BY DEFAULT",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 4,
@@ -130,7 +142,7 @@
       "id": "section:5",
       "title": "GLOBAL PHYSICAL CONVERGENCE MANAGER",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 5,
@@ -154,7 +166,7 @@
       "id": "section:6",
       "title": "RESONANCE MUST BE INSIDE THE PHYSICS LOOP",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 6,
@@ -178,7 +190,7 @@
       "id": "section:7",
       "title": "EDF SYSTEM \u2014 FULL FIRST IMPLEMENTATION",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 7,
@@ -202,7 +214,7 @@
       "id": "section:8",
       "title": "CFD BACKEND",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: OpenFOAM v2412 EXECUTED on GCP (blockMesh 0, icoFoam 0, lid-driven cavity at 10x10 and 20x20, continuity ~1e-9). Rotating/CHT/transient suite not run.",
+      "statusExplanation": "PARTIAL: OpenFOAM v2412 EXECUTED on GCP (SOLVER-CORR 37: plane channel mass imbalance 1.0e-9, lid-driven cavity 10^2/20^2/40^2, rotating-frame MRF sign flip on generated geometry, 0.18% vs analytic). Transient sliding-interface AMI and multi-stage MRF remain blocked by time.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 8,
@@ -212,9 +224,15 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: OpenFOAM v2412 EXECUTED on GCP (blockMesh 0, icoFoam 0, lid-driven cavity at 10x10 and 20x20, continuity ~1e-9). Rotating/CHT/transient suite not run.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "path": "solvers/openfoam/case.py",
+          "detail": "PARTIAL: native OpenFOAM case builders for channel/cavity/rotating-frame cases exercised by the executed ladder.",
+          "sha256": "a13643018403e1a97b68302c1c814e4a79c4dc0fd63d6eb71c503ec373668dc7"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue37_openfoam.json",
+          "detail": "PARTIAL: raw GCP OpenFOAM v2412 execution receipt (channel/cavity/MRF numbers).",
+          "sha256": "7d5317381a6c72448b7d879af4ad955f056477faff0d027e31f857169564a37b"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -223,7 +241,7 @@
       "id": "section:9",
       "title": "STRUCTURAL BACKEND",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
+      "statusExplanation": "PARTIAL: Code_Aster adapter contracts, fail-closed gating, native runner and structure builders are implemented; no canonical native structural case has executed (SOLVER-CORR 38: run_aster present but as_run absent), so the structural solve itself remains unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 9,
@@ -236,6 +254,18 @@
           "path": "solvers/code_aster/adapter.py",
           "detail": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
           "sha256": "2409c907574372ff97bac6942f0269e80e6e3020ef24da989b888a87196c41b5"
+        },
+        {
+          "kind": "file",
+          "path": "solvers/code_aster/structure.py",
+          "detail": "PARTIAL: native Code_Aster structural case builders and comm/parser path; not yet exercised on a canonical case.",
+          "sha256": "c16e386f3873a42780ccf46ae5ea6433ab1d950803a3cf1013bcf6011e218019"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue38_ross.json",
+          "detail": "PARTIAL: shared-geometry/material structural proof records Code_Aster as not executed (runner present, as_run absent).",
+          "sha256": "c63e2229a01d34af47818967b231d742f52460deca9cc7481f7828e876e37b99"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -244,7 +274,7 @@
       "id": "section:10",
       "title": "THERMAL",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: Elmer 26.2 EXECUTED on GCP (SOLVER-CORR 39: steady 1-D Dirichlet T_mid 50.0 K, prescribed heat flux T_left 10.0 K, transient uniform heating energy accumulation, all 0.0% vs analytic; machine+drive+battery+thermal closure residual -1.19e-8 W). Multi-material conduction and native CHT exchange remain unrun.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 10,
@@ -260,6 +290,24 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:10",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "solvers/elmer/case.py",
+          "detail": "PARTIAL: Elmer case builder and fields/parser path exercised by the executed steady/transient proofs.",
+          "sha256": "c1f71155fdcff504c82c59a97cd0bbcb7407472bff78983e122b4b03ec7e3e99"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue39_elmer.json",
+          "detail": "PARTIAL: raw GCP Elmer 26.2 execution receipt (Dirichlet, flux, transient).",
+          "sha256": "c4dcfdf88bc1f67037c8f2084d3498ec348eb40a13a93e5018064db506ea8c98"
+        },
+        {
+          "kind": "file",
+          "path": "packages/thermal/aeroworkbench_thermal/network.py",
+          "detail": "PARTIAL: analytical thermal-network closure used alongside the native thermal participant.",
+          "sha256": "03ffc9574e02af15b6b6a4241c5e8fd824f7c833926200e59bc8cca19b6ffb3a"
         }
       ],
       "lastVerifiedAt": null
@@ -268,7 +316,7 @@
       "id": "section:11",
       "title": "ELECTRIC MOTOR \u2014 THREE FIDELITY LEVELS",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: level-1 equivalent-circuit motor model plus a generic electrical-machine/power-electronics participant (GEN 09); an Elmer/OpenMDAO machine+drive+battery+thermal closure EXECUTED on GCP (SOLVER-CORR 39, residual -1.19e-8 W, 12000 rpm fail-closed). High-fidelity EM FEM remains unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 11,
@@ -284,6 +332,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:11",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/electrical/aeroworkbench_electrical/machine.py",
+          "detail": "PARTIAL: generic electrical-machine participant with the implemented fidelity ladder.",
+          "sha256": "ad781f01c5d7b5b447761c4c3d4208d4ab1e5f593d32e459f4a4e0cae25643c3"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue39_electrical.json",
+          "detail": "PARTIAL: raw GCP electrical/thermal closure receipt (delivered vs consumed power residual).",
+          "sha256": "91ebfc341d05ecc5629f38149886d17fa7b2572b14c90ad6f6c3fefe78eed79c"
         }
       ],
       "lastVerifiedAt": null
@@ -292,7 +352,7 @@
       "id": "section:12",
       "title": "ESC MODEL",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: ESC/power-electronics participant with switching and validity models (GEN 09); full 6S pack-coupled inverter validation and native thermal derating remain unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 12,
@@ -308,6 +368,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:12",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/electrical/aeroworkbench_electrical/power_electronics.py",
+          "detail": "PARTIAL: ESC/inverter power-electronics participant model used by the electrical ladder.",
+          "sha256": "f1cc6d4baf6cbccab9afd703952cd9b7d61c00b8cb807153537bfa6a262ce004"
         }
       ],
       "lastVerifiedAt": null
@@ -316,7 +382,7 @@
       "id": "section:13",
       "title": "BATTERY MODEL",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 13,
@@ -340,7 +406,7 @@
       "id": "section:14",
       "title": "AIRCRAFT PURPOSE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 14,
@@ -364,7 +430,7 @@
       "id": "section:15",
       "title": "OPERATING ENVELOPE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 15,
@@ -388,7 +454,7 @@
       "id": "section:16",
       "title": "WHOLE-AIRCRAFT COUPLING",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 16,
@@ -412,7 +478,7 @@
       "id": "section:17",
       "title": "GEOMETRY SYSTEM",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: parametric geometry is a first-class design-variable participant (GEN 01) with regeneration and export; native CAD/kernel round-trip and full assembly validation remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 17,
@@ -428,6 +494,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:17",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/geometry/aeroworkbench_geometry/regeneration.py",
+          "detail": "PARTIAL: deterministic geometry regeneration from design variables (GEN 01).",
+          "sha256": "a70a1e97bd02b0d6a342d7d8e432a08641fbfe99a68f50a311eb7226d8773023"
+        },
+        {
+          "kind": "file",
+          "path": "packages/geometry/aeroworkbench_geometry/parametric.py",
+          "detail": "PARTIAL: parametric participant surface and parameter-to-geometry mapping.",
+          "sha256": "3bad6ad7cd23555e735a0db8d9080f53cdd2d3c0b2a8b6cff83076c5f371ef6e"
         }
       ],
       "lastVerifiedAt": null
@@ -436,7 +514,7 @@
       "id": "section:18",
       "title": "SEMANTIC GEOMETRY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: semantic geometry with named zones, boundaries and interfaces feeds solver-mesh generation (GEN 05); complete semantic-to-native mesh reconciliation for every workflow is not validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 18,
@@ -452,6 +530,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:18",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/mesh/aeroworkbench_mesh/semantics.py",
+          "detail": "PARTIAL: semantic boundary/zone/interface model consumed by native mesh generation.",
+          "sha256": "15ede6825ac1ca9e6371c6b8e3fe862d229c9e508f2e16ca56b2f6b754b0674e"
         }
       ],
       "lastVerifiedAt": null
@@ -460,7 +544,7 @@
       "id": "section:19",
       "title": "PARAMETRIC GEOMETRY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: parametric geometry regeneration and typed design variables are implemented (GEN 01/02); interactive parametric editing UX and full CAD-kernel validation remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 19,
@@ -476,6 +560,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:19",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/geometry/aeroworkbench_geometry/parametric.py",
+          "detail": "PARTIAL: typed parametric design variables driving geometry regeneration.",
+          "sha256": "3bad6ad7cd23555e735a0db8d9080f53cdd2d3c0b2a8b6cff83076c5f371ef6e"
         }
       ],
       "lastVerifiedAt": null
@@ -484,7 +574,7 @@
       "id": "section:20",
       "title": "MESHING",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: native mesh generation from semantic real-CAD with quality checks and export is implemented (GEN 05, Gmsh 4.15.2 governed execution / 119852 elements); full adaptive remeshing across every solver remains incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 20,
@@ -500,6 +590,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:20",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/mesh/aeroworkbench_mesh/native_mesh.py",
+          "detail": "PARTIAL: native mesh generation path from semantic geometry.",
+          "sha256": "e99cbc3147b2acb4aa474206451f750942913db82be859a68508e48eefcdbb5e"
+        },
+        {
+          "kind": "file",
+          "path": "packages/mesh/aeroworkbench_mesh/quality.py",
+          "detail": "PARTIAL: mesh-quality metrics/gates for generated meshes.",
+          "sha256": "e95f64f715e45f6e8320963a1a5ce7442d2c4a9b4941b731c6e5be5e277fcb36"
         }
       ],
       "lastVerifiedAt": null
@@ -508,7 +610,7 @@
       "id": "section:21",
       "title": "CACHE EVERYTHING SAFE TO CACHE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: engineering results are cached persistently and content-addressed (PERF 03/06): SQLite-keyed metadata plus file values, with reuse gated by a trust check on inputs, solver identity and upstream keys. Cross-machine cache federation and garbage-collection policy remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 21,
@@ -524,6 +626,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:21",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/cache/src/persistent-cache.ts",
+          "detail": "PARTIAL: persistent content-addressed cache with invalidation and trust-gated reuse (PERF 03).",
+          "sha256": "adef86658b473a75bce179d800dfdb1596b4353e38c4197628317dbf7b4ccdf4"
+        },
+        {
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
+          "detail": "PARTIAL: SQLite-backed persistent result cache with pinning and trusted-native reuse (PERF 06).",
+          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
         }
       ],
       "lastVerifiedAt": null
@@ -532,7 +646,7 @@
       "id": "section:22",
       "title": "WARM STARTS",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: persistent content-addressed caching enables warm reuse of prior results and avoids recomputation; seeding native solver initial fields from cached state is not validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 22,
@@ -548,6 +662,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:22",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/cache/src/persistent-cache.ts",
+          "detail": "PARTIAL: warm reuse of previously computed results via the persistent cache.",
+          "sha256": "adef86658b473a75bce179d800dfdb1596b4353e38c4197628317dbf7b4ccdf4"
         }
       ],
       "lastVerifiedAt": null
@@ -556,7 +676,7 @@
       "id": "section:23",
       "title": "MESH MORPHING AND LOCAL REMESH",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: mesh morphing and local remesh helpers exist and are exercised by tests (GEN 05); production-scale local remeshing with solver-coupled deformation remains unvalidated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 23,
@@ -572,6 +692,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:23",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/mesh/aeroworkbench_mesh/morph.py",
+          "detail": "PARTIAL: mesh morphing/local-remesh primitives (GEN 05).",
+          "sha256": "ac72b71742ae56b2457aa4124864ebccf1ad28eff2a806bbfd19be05aaa3c5b2"
         }
       ],
       "lastVerifiedAt": null
@@ -580,7 +706,7 @@
       "id": "section:24",
       "title": "DESIGN VARIANTS",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: canonical mixed/conditional/hierarchical design space (GEN 02), deterministic candidate generation (GEN 03) and campaign evaluation/promotion (GEN 04) are implemented; full design-tree UX and native promotion at scale remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 24,
@@ -596,6 +722,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:24",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/optimization/aeroworkbench_optimization/design_space.py",
+          "detail": "PARTIAL: canonical mixed/conditional/hierarchical design-space contract (GEN 02).",
+          "sha256": "c710d814e2e12088fd5cfdda59057a6a3a47bef3e38c5b91eddcbd528c58ca30"
+        },
+        {
+          "kind": "file",
+          "path": "packages/optimization/aeroworkbench_optimization/generation.py",
+          "detail": "PARTIAL: deterministic candidate generation and permutation (GEN 03).",
+          "sha256": "f5296741a961b74522a89ce47358c21542066fcb14d7b6fc2d5c4b4e8e9d171b"
         }
       ],
       "lastVerifiedAt": null
@@ -604,7 +742,7 @@
       "id": "section:25",
       "title": "COMPLETE PROVENANCE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 25,
@@ -640,13 +778,13 @@
           "kind": "file",
           "path": "apps/web/src/app/page.tsx",
           "detail": "PARTIAL: UI wiring for capability load, real job control, failure states and result inspection.",
-          "sha256": "081a1cad80ec9be526ba96a4da3ed386e913771cf8079287d28e45a6ceaf42f8"
+          "sha256": "500c16884bacab9c251e561294c38f964ff4a917df2e46fb76bf21fb300c327d"
         },
         {
           "kind": "file",
           "path": "apps/web/src/lib/job-client.ts",
           "detail": "PARTIAL: single typed API client for health, capabilities, submit, events, cancel and results.",
-          "sha256": "7dd6353e83a73c72ad1d4dfd5439814177ef7ee4b4d65388a3b0acf6fda73076"
+          "sha256": "a76f8b956800d095b9a841629bdf9a5f966ed503234a19cce6e273096848fbfd"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -715,7 +853,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/native_jobs.py",
           "detail": "PARTIAL: native analysis submit/status/events/cancel/result routes over the real lifecycle.",
-          "sha256": "492ba4625fce89dcc85ab9a4306cc45915421df18786f15f7bc2779c90680c1e"
+          "sha256": "8bd95755a2d28afb615d946258fd1e93f23a28f7d14efcc915400067e533c9e3"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -724,7 +862,7 @@
       "id": "section:30",
       "title": "AI ENGINEERING INTERFACE",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Single engineering MCP server exists with typed skeleton tools (design/result/provenance/simulation/job); stdio handshake test passes. Stores unconnected; full namespace coverage unavailable.",
+      "statusExplanation": "PARTIAL: a single engineering MCP server over stdio exposes seven API-backed product tools (capabilities/design/job/result inspection, validated variant create, deferred submit, owned-job cancel) with strict Zod schemas; it is no longer a skeleton and imports no scheduler internals. Full namespace coverage of every design/result/provenance store remains incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 30,
@@ -737,6 +875,12 @@
           "path": "mcp/engineering/server.ts",
           "detail": "PARTIAL: Single engineering MCP server exists with typed skeleton tools (design/result/provenance/simulation/job); stdio handshake test passes. Stores unconnected; full namespace coverage unavailable.",
           "sha256": "e57db42bd61d6c85ce2cf1c701b97795c012b0629fb802f40d5e99d16b10679d"
+        },
+        {
+          "kind": "file",
+          "path": "mcp/engineering/operations.ts",
+          "detail": "PARTIAL: API-backed product operations implementing the seven MCP tools through the public API.",
+          "sha256": "1018cc25081bac2e0151c55b068e2308bad843d0c36671b87d50e244c4c66bb9"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -777,8 +921,8 @@
     {
       "id": "section:32",
       "title": "CHATGPT MUST BE ABLE TO SUPERVISE LIVE SIMULATIONS",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: an AI client (e.g. ChatGPT) can supervise governed simulations through the API-backed MCP server: inspect capabilities, inspect jobs/results/provenance, submit deferred analyses (never starting compute itself), and cancel owned jobs. A hosted ChatGPT app and live token-level streaming supervision remain unavailable.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 32,
@@ -787,22 +931,31 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:32; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:32",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "mcp/engineering/operations.ts",
+          "detail": "PARTIAL: API-backed MCP product tools that let an AI client inspect and control governed jobs.",
+          "sha256": "1018cc25081bac2e0151c55b068e2308bad843d0c36671b87d50e244c4c66bb9"
+        },
+        {
+          "kind": "file",
+          "path": "mcp/engineering/api-client.ts",
+          "detail": "PARTIAL: loopback-only typed API client used by the MCP supervision tools.",
+          "sha256": "5c794b631403d963cfb7fab983c4b81ad9197d8d31209fe2ff98d34ba7645259"
+        },
+        {
+          "kind": "file",
+          "path": "docs/mcp-engineering.md",
+          "detail": "PARTIAL: documented MCP tool set, policy gates and deferred-submit behaviour.",
+          "sha256": "ba1ba9ea6b52be7800b5b8e690d587af020f75bed8cfd1c2125b6d718ae4f18c"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-19T07:00:00Z"
     },
     {
       "id": "section:33",
       "title": "USER-ONLY CLOUD COMPUTE SWITCH",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 33,
@@ -826,7 +979,7 @@
       "id": "section:34",
       "title": "CLOUD COMPUTE",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 34,
@@ -850,7 +1003,7 @@
       "id": "section:35",
       "title": "USER COST LIMITS",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 35,
@@ -874,7 +1027,7 @@
       "id": "section:36",
       "title": "CLOUD CHECKPOINTING",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 36,
@@ -925,7 +1078,7 @@
       "id": "section:38",
       "title": "GAS TURBINE SYSTEM",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: analytical gas-turbine/engine models and the ideal-Brayton system demo exist with bookkeeping residual <1e-12; real compressor/turbine/combustor component models and native coupling remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 38,
@@ -949,7 +1102,7 @@
       "id": "section:39",
       "title": "COMPRESSOR DESIGN",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 39,
@@ -973,7 +1126,7 @@
       "id": "section:40",
       "title": "TURBINE DESIGN",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 40,
@@ -1009,7 +1162,7 @@
           "kind": "file",
           "path": "docs/solver-verification.md",
           "detail": "PARTIAL: Cantera 3.2.0 EXECUTED 0D CH4/air HP equilibrium (Tad 2621.9 K) on GCP. No reacting CFD or liner analysis.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "sha256": "565b4711807c138867229c4c27c3c0e570d5d46043854265a7d21f6c4b773ebe"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -1018,7 +1171,7 @@
       "id": "section:42",
       "title": "THERMOACOUSTICS",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 42,
@@ -1075,7 +1228,7 @@
           "kind": "file",
           "path": "docs/solver-verification.md",
           "detail": "PARTIAL: FreeCAD 1.x installs from conda-forge; freecadcmd exit 0 under xvfb-run (flaky on 2GB boxes, prefer e2-medium). STEP roundtrip uncompleted.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "sha256": "565b4711807c138867229c4c27c3c0e570d5d46043854265a7d21f6c4b773ebe"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -1084,7 +1237,7 @@
       "id": "section:45",
       "title": "EXTENSIBILITY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: physics participants declare typed inputs/outputs, units, mesh roles, coupling direction, capability, launch policy and parsers via the typed manifest registry; third-party extension without forking is not yet demonstrated end to end.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 45,
@@ -1100,6 +1253,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:45",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "solvers/participants/manifest.py",
+          "detail": "PARTIAL: typed participant manifest contract used to join the coupling graph without bypassing gates.",
+          "sha256": "ead398a509a32173bd7a7dce1fd6fc967b9c67bfbdd6146efaa8a01760aca302"
         }
       ],
       "lastVerifiedAt": null
@@ -1107,8 +1266,8 @@
     {
       "id": "section:46",
       "title": "MATERIAL DATABASE",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: a content-addressed material database with real stored revision properties (isotropic/orthotropic/laminate), provenance and solver export exists; certification-grade datasets and a full external source qualification remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 46,
@@ -1117,22 +1276,31 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:46; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:46",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/materials/aeroworkbench_materials/database.py",
+          "detail": "PARTIAL: content-addressed material database with real stored property sets and revisions.",
+          "sha256": "71fc80aa2b00ce3f17fd5c09deef658f730f7e028d66ef08675f91cf964450b1"
+        },
+        {
+          "kind": "file",
+          "path": "packages/materials/aeroworkbench_materials/properties.py",
+          "detail": "PARTIAL: typed constant/table material property values with provenance.",
+          "sha256": "15ef3c082ed6af3d4a512e436a7bec0136a8e65f0ff4ad591c59e28754d46008"
+        },
+        {
+          "kind": "file",
+          "path": "packages/materials/aeroworkbench_materials/revision.py",
+          "detail": "PARTIAL: immutable material revision + digest contract.",
+          "sha256": "345d0ab1d3d43cb5eb0f7b535737f8b39660e1fd7baae129a7acd55b9e6598cf"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-19T07:00:00Z"
     },
     {
       "id": "section:47",
       "title": "COMPOSITES",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: orthotropic/composite laminate support via classical laminate theory (ply stack, fibre angle, thickness, homogenized orthotropic properties) is implemented with typed provenance; certification-grade failure criteria and native composite structural validation remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 47,
@@ -1141,22 +1309,25 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:47; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:47",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "packages/materials/aeroworkbench_materials/laminate.py",
+          "detail": "PARTIAL: classical-laminate-theory composite support deriving homogenized orthotropic properties.",
+          "sha256": "28f0565dcab1aab100d9959a2bc6b54966ff93368d7dfc5bce26e6f1308348f2"
+        },
+        {
+          "kind": "file",
+          "path": "packages/materials/aeroworkbench_materials/solver_export.py",
+          "detail": "PARTIAL: export of material/laminate data for solver consumption.",
+          "sha256": "b07e68b0f57ff459177bd5ac1cda7d1e6f2aedee678173f25ec1a6a0f0b22c8c"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-19T07:00:00Z"
     },
     {
       "id": "section:48",
       "title": "OPTIMIZATION",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: deterministic candidate generation, design-space exploration, campaign evaluation, selection/diversity and multi-fidelity promotion are implemented (GEN 02/03/04, PERF 05 batch evaluation); native promotion and full multi-objective optimizer coverage remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 48,
@@ -1172,6 +1343,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:48",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/optimization/aeroworkbench_optimization/campaign.py",
+          "detail": "PARTIAL: campaign evaluation/selection/promotion orchestration (GEN 04).",
+          "sha256": "21a79bc25bbec64fdf3cb71b9da6a2643d17595aae8673bc6350c1e8587d92f8"
+        },
+        {
+          "kind": "file",
+          "path": "packages/optimization/aeroworkbench_optimization/design_space.py",
+          "detail": "PARTIAL: design-space exploration primitives (GEN 02).",
+          "sha256": "c710d814e2e12088fd5cfdda59057a6a3a47bef3e38c5b91eddcbd528c58ca30"
         }
       ],
       "lastVerifiedAt": null
@@ -1180,7 +1363,7 @@
       "id": "section:49",
       "title": "ADAPTIVE FIDELITY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: adaptive-fidelity promotion logic (constraint margin, disagreement, mesh sensitivity, resonance proximity) is implemented (GEN 12 promotion module); policy tuning against real coupled campaigns is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 49,
@@ -1196,6 +1379,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:49",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/convergence/aeroworkbench_convergence/promotion.py",
+          "detail": "PARTIAL: adaptive-fidelity promotion rules (GEN 12).",
+          "sha256": "b0601f7f7e6736c1bf01eb5f1bcd1105984c63b08544a8bdb1a7d91b78827022"
         }
       ],
       "lastVerifiedAt": null
@@ -1204,7 +1393,7 @@
       "id": "section:50",
       "title": "PHYSICS BENCHMARKING",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: bounded performance baselines/regression budgets (PERF 01) and a generic numerical-independence/generative release benchmark (GEN 12) exist; a full canonical physics benchmark suite across all solvers is incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 50,
@@ -1220,6 +1409,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:50",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "docs/performance-baselines.md",
+          "detail": "PARTIAL: bounded performance baselines and regression budgets (PERF 01).",
+          "sha256": "0366316972470a223e5c9ba75e0236ccf82d1c7b94c45988c9a408d61f23502a"
+        },
+        {
+          "kind": "file",
+          "path": "benchmarks/independence/generic_benchmark.py",
+          "detail": "PARTIAL: generic generative-engineering/independence release benchmark (GEN 12).",
+          "sha256": "6a115be201cb6d9975ad8a1e35c26877bbca28c95e5f1e761ebbdd60a3d352fd"
         }
       ],
       "lastVerifiedAt": null
@@ -1228,7 +1429,7 @@
       "id": "section:51",
       "title": "MESH INDEPENDENCE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: automated mesh-independence gates are implemented and exercised by the numerical-independence suite (GEN 12); they are not yet wired as mandatory gates for every solver workflow.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 51,
@@ -1244,6 +1445,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:51",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/convergence/aeroworkbench_convergence/independence.py",
+          "detail": "PARTIAL: mesh/time-step independence gate logic (GEN 12).",
+          "sha256": "51893b42403195e6c63eada0e5bd6358b6e86f552862433df5c7da2eb32cd272"
+        },
+        {
+          "kind": "file",
+          "path": "docs/numerical-independence.md",
+          "detail": "PARTIAL: documented numerical-independence gates and tolerances.",
+          "sha256": "4e37b355f87ab7f06d8b55e05a70a88e1c0a97ef5babfa02c5ed948d2df5f4e7"
         }
       ],
       "lastVerifiedAt": null
@@ -1252,7 +1465,7 @@
       "id": "section:52",
       "title": "TIME-STEP INDEPENDENCE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: automated time-step-independence gates are implemented and exercised by the numerical-independence suite (GEN 12); they are not yet mandatory for every transient solver workflow.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 52,
@@ -1268,6 +1481,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:52",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/convergence/aeroworkbench_convergence/independence.py",
+          "detail": "PARTIAL: time-step independence gate logic (GEN 12).",
+          "sha256": "51893b42403195e6c63eada0e5bd6358b6e86f552862433df5c7da2eb32cd272"
+        },
+        {
+          "kind": "file",
+          "path": "docs/numerical-independence.md",
+          "detail": "PARTIAL: documented numerical-independence gates and tolerances.",
+          "sha256": "4e37b355f87ab7f06d8b55e05a70a88e1c0a97ef5babfa02c5ed948d2df5f4e7"
         }
       ],
       "lastVerifiedAt": null
@@ -1276,7 +1501,7 @@
       "id": "section:53",
       "title": "POWER/ENERGY BALANCE DASHBOARD",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: power/energy balance closure is computed and checked across the electrical/thermal participant chain (GCP SOLVER-CORR 39 delivered vs consumed power residual -1.19e-8 W); a full interactive dashboard across every workflow is incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 53,
@@ -1292,6 +1517,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:53",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue39_electrical.json",
+          "detail": "PARTIAL: real power/heat balance closure with residual from the executed machine+drive+battery+thermal chain.",
+          "sha256": "91ebfc341d05ecc5629f38149886d17fa7b2572b14c90ad6f6c3fefe78eed79c"
         }
       ],
       "lastVerifiedAt": null
@@ -1300,7 +1531,7 @@
       "id": "section:54",
       "title": "RESULT QUALITY SCORE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: result quality is scored through solver residual plus mass/energy/force/geometry/thermal/electrical/dynamic closure in the convergence manager (closure module); a single unified quality score across all result types remains incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 54,
@@ -1316,6 +1547,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:54",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "packages/convergence/aeroworkbench_convergence/closure.py",
+          "detail": "PARTIAL: multi-physics closure checks feeding result quality.",
+          "sha256": "c3f2d092912d2e733a23d56d92c08e3877c9054755bd21c5e4d5b6fa0cfc3879"
         }
       ],
       "lastVerifiedAt": null
@@ -1324,7 +1561,7 @@
       "id": "section:55",
       "title": "ERROR RECOVERY",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 55,
@@ -1348,7 +1585,7 @@
       "id": "section:56",
       "title": "APPLICATION INFRASTRUCTURE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: application infrastructure treats Node as a thin edge and kept the heavy engineering path in the Python engine (PERF 04), with documented hot paths and budgets; a full production deployment topology is not in scope here.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 56,
@@ -1364,6 +1601,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:56",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "docs/hot-paths.md",
+          "detail": "PARTIAL: documented thin-edge hot paths and subprocess/IPC budget decisions (PERF 04).",
+          "sha256": "2cb15aca3a6a17289d752661e3906061f3e4b9c69a49fee323c694c8efa74cd8"
         }
       ],
       "lastVerifiedAt": null
@@ -1372,7 +1615,7 @@
       "id": "section:57",
       "title": "DATABASE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: durable SQLite metadata (WAL) plus content-addressed file-backed results/artifacts are implemented (PERF 06), with batched metadata writes and artifact references; cross-restart worker resume and a fully external database remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 57,
@@ -1388,6 +1631,18 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:57",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/repositories/sqlite.py",
+          "detail": "PARTIAL: SQLite repository with durable provenance/result metadata.",
+          "sha256": "96963faf062f1e1f651a25fbf727b4079ccbec338534826eda4e1fd6f7f50ada"
+        },
+        {
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
+          "detail": "PARTIAL: persistent content-addressed result store with pinning and trusted reuse.",
+          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
         }
       ],
       "lastVerifiedAt": null
@@ -1396,7 +1651,7 @@
       "id": "section:58",
       "title": "STORAGE FORMATS",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: results and artifacts are stored content-addressed with exact SHA-256 digests and typed metadata; full storage-format coverage for every native solver artifact remains incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 58,
@@ -1412,6 +1667,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:58",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
+          "detail": "PARTIAL: content-addressed storage of result values with digests.",
+          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
         }
       ],
       "lastVerifiedAt": null
@@ -1420,7 +1681,7 @@
       "id": "section:59",
       "title": "API",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 59,
@@ -1444,7 +1705,7 @@
       "id": "section:60",
       "title": "CI/CD",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: CI contracts job runs node checks and platform tests on PRs touching platform paths. Native solver benchmark tier is explicitly gated off (if:false).",
+      "statusExplanation": "PARTIAL: the fast release-gate workflow runs install/typecheck/JS-TS/Python/UI-build, MCP stdio E2E, product smoke, release E2E, container smoke and a reporting-mode requirements audit; native solver benchmarks stay opt-in and hosted CI never fakes native success. A push-to-registry/deploy stage is intentionally absent.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 60,
@@ -1457,6 +1718,12 @@
           "path": ".github/workflows/platform.yml",
           "detail": "PARTIAL: fast release-gate workflow (install/typecheck/JS-TS/Python/UI build/MCP E2E/product smoke/release E2E) with package-download-only caching.",
           "sha256": "774c91c1502e88b679faefabb5d19f78d8b48601c0600622b710e787fdec6423"
+        },
+        {
+          "kind": "file",
+          "path": "docs/testing-tiers.md",
+          "detail": "PARTIAL: tiered, hard-budget test/deploy-check contract (PERF 07).",
+          "sha256": "25dd2fdc089a51905ba9cb046faf557080ce473264eb9835b142fd9da031c90a"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -1464,8 +1731,8 @@
     {
       "id": "section:61",
       "title": "CONTAINERS",
-      "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "status": "PARTIAL",
+      "statusExplanation": "PARTIAL: the platform image and compose profile build and run in CI via `pnpm smoke:container` (`docker info` fail-closed, image build, api+web up, one native_solver product job, clean compose down); no image digest is published or pushed and the local baseline path never requires Docker.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 61,
@@ -1474,22 +1741,31 @@
       },
       "evidence": [
         {
-          "kind": "receipt",
-          "path": "docs/evidence/requirements-baseline.json",
-          "detail": "Baseline receipt observation for section:61; status BLOCKED is limited to the explicitly listed current subset.",
-          "sha256": "3ceb2238707c813be183e4d87031379ec4c4d00490d4da69e8642278c627ad71",
-          "receiptId": "baseline-requirements-evidence-v2",
-          "observationId": "section:61",
-          "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+          "kind": "file",
+          "path": "scripts/platform/container-smoke.mjs",
+          "detail": "PARTIAL: CI container smoke that builds/runs the image and verifies a native_solver job, failing closed without a daemon.",
+          "sha256": "9764c7cda5fc021f31037fcfad5713aed0a71b3fd264185217be2b35ea5e1c32"
+        },
+        {
+          "kind": "file",
+          "path": "infra/docker/Dockerfile.platform",
+          "detail": "PARTIAL: multi-stage platform image manifest built by the container smoke.",
+          "sha256": "bc8be99cc7d52f5e83ed14d6e118fef3db059202c44c10442e8793b7a95d61d5"
+        },
+        {
+          "kind": "file",
+          "path": "infra/docker/compose.local.yml",
+          "detail": "PARTIAL: api+web compose profile with explicit profile and deny-by-default permissions.",
+          "sha256": "866e33dccc4a430cfc0a9afd990e6867661a7bf58663b348d712900972e0c54a"
         }
       ],
-      "lastVerifiedAt": null
+      "lastVerifiedAt": "2026-09-19T07:00:00Z"
     },
     {
       "id": "section:62",
       "title": "DEPLOYMENT",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 62,
@@ -1618,7 +1894,7 @@
       "id": "section:68",
       "title": "ENGINEERING AI UX",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: an in-UI engineering AI assistant (conversational design/simulation guidance) is unavailable; the MCP server exposes API-backed tools to an external AI client but no integrated engineering AI UX exists in the workbench.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 68,
@@ -1642,7 +1918,7 @@
       "id": "section:69",
       "title": "NO PREMATURE STOPPING",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 69,
@@ -1666,7 +1942,7 @@
       "id": "section:70",
       "title": "PARALLEL EXECUTION",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: the single global worker lock was replaced by `ResourceScheduler`, which admits independent safe jobs concurrently under the 896 MiB aggregate budget using per-solver-family concurrency/memory/thread/exclusive policy plus priority-aged fairness (PERF 02); fully distributed/multi-host parallelism is not implemented. (`scripts/check-docs.mjs` independently verifies the scheduler marker in `solvers/participants/lifecycle.py`.)",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 70,
@@ -1690,7 +1966,7 @@
       "id": "section:71",
       "title": "USE AUTONOMOUS CODE REVIEW",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 71,
@@ -1714,7 +1990,7 @@
       "id": "section:72",
       "title": "TEST EVERYTHING BEFORE DECLARING DONE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a tiered, hard-budget test runner (`pnpm test:fast/focused/integration/native-smoke/science/all`) plus a per-test Python hang watchdog make the edit loop bounded and deterministic (PERF 07); the full native/science tiers are not run on every change.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 72,
@@ -1730,6 +2006,12 @@
           "receiptId": "baseline-requirements-evidence-v2",
           "observationId": "section:72",
           "receiptCommit": "ff7a8c6154d9c12ce15111c60103f824449ddf96"
+        },
+        {
+          "kind": "file",
+          "path": "docs/testing-tiers.md",
+          "detail": "PARTIAL: tiered test contract with hard budgets and hang guard (PERF 07).",
+          "sha256": "25dd2fdc089a51905ba9cb046faf557080ce473264eb9835b142fd9da031c90a"
         }
       ],
       "lastVerifiedAt": null
@@ -1738,7 +2020,7 @@
       "id": "section:73",
       "title": "DO NOT FAKE RESULTS",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 73,
@@ -1762,7 +2044,7 @@
       "id": "section:74",
       "title": "DON'T SUBSTITUTE PLACEHOLDERS FOR REQUIRED FEATURES",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 74,
@@ -1786,7 +2068,7 @@
       "id": "section:75",
       "title": "EXTERNAL DOCUMENTATION",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 75,
@@ -1810,7 +2092,7 @@
       "id": "section:76",
       "title": "SOURCE CONTROL",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 76,
@@ -1876,7 +2158,7 @@
       "id": "section:79",
       "title": "ONE-COMMAND DEMOS",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 79,
@@ -1900,7 +2182,7 @@
       "id": "section:80",
       "title": "SOLVER CAPABILITY DETECTOR",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
+      "statusExplanation": "PARTIAL: the capability detector reports READY/MISSING per solver with a warm probe cache and fail-closed exit, and `pnpm setup:solvers` provisions a private micromamba/conda-forge environment without sudo; still-unavailable tools stay clearly labelled.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 80,
@@ -1913,6 +2195,12 @@
           "path": "scripts/platform/capabilities.mjs",
           "detail": "PARTIAL: Capability detector reports READY/MISSING per solver without pretending; contract tests assert fail-closed behavior. Auto-install of native solvers unavailable.",
           "sha256": "d79b1a87a18020451de2ca28ced4b1e07ff87d05b0f9d7c4f4d5e0ee141b34fb"
+        },
+        {
+          "kind": "file",
+          "path": "scripts/platform/setup-solvers.mjs",
+          "detail": "PARTIAL: private no-sudo solver provisioning path that never fakes unavailable capability.",
+          "sha256": "d9d142371fb7f535c70998505e7bcfd0bfd03f0fdac50d23af1db7f1d8df1655"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1921,7 +2209,7 @@
       "id": "section:81",
       "title": "DOCUMENTATION",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Architecture, operations, solver-integration, cloud/container, and MCP docs exist but do not yet cover the full mandated guide list (coupling, CAD import, all workflows, debugging).",
+      "statusExplanation": "PARTIAL: architecture, platform operations, solver integrations/verification, cloud/container boundary, MCP, hot paths, performance baselines, numerical independence and testing tiers are documented; the full mandated guide list (all coupling/CAD/workflow/debugging guides) is not yet complete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 81,
@@ -1933,7 +2221,31 @@
           "kind": "file",
           "path": "docs/architecture.md",
           "detail": "PARTIAL: Architecture, operations, solver-integration, cloud/container, and MCP docs exist but do not yet cover the full mandated guide list (coupling, CAD import, all workflows, debugging).",
-          "sha256": "9f7a911b6b118607b0cdd9f168599032b5a7148a25dc1d72487e03be8813b94f"
+          "sha256": "4fc60e936769e54f612fcd13966f24a8b5dc3d4c044e09e9652c4c96fb165b70"
+        },
+        {
+          "kind": "file",
+          "path": "docs/numerical-independence.md",
+          "detail": "PARTIAL: numerical-independence methodology and gates.",
+          "sha256": "4e37b355f87ab7f06d8b55e05a70a88e1c0a97ef5babfa02c5ed948d2df5f4e7"
+        },
+        {
+          "kind": "file",
+          "path": "docs/performance-baselines.md",
+          "detail": "PARTIAL: performance baselines and regression budgets.",
+          "sha256": "0366316972470a223e5c9ba75e0236ccf82d1c7b94c45988c9a408d61f23502a"
+        },
+        {
+          "kind": "file",
+          "path": "docs/hot-paths.md",
+          "detail": "PARTIAL: engineering hot-path reference.",
+          "sha256": "2cb15aca3a6a17289d752661e3906061f3e4b9c69a49fee323c694c8efa74cd8"
+        },
+        {
+          "kind": "file",
+          "path": "docs/testing-tiers.md",
+          "detail": "PARTIAL: test-tier and runtime-budget reference.",
+          "sha256": "25dd2fdc089a51905ba9cb046faf557080ce473264eb9835b142fd9da031c90a"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -1942,7 +2254,7 @@
       "id": "section:82",
       "title": "FINAL COMPLETION TEST",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 82,
@@ -1966,7 +2278,7 @@
       "id": "section:83",
       "title": "STOPPING CONDITION",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -1990,7 +2302,7 @@
       "id": "section:84",
       "title": "FINAL RESPONSE",
       "status": "PARTIAL",
-      "statusExplanation": "The current repository verifies only an analytical, contract, or architectural subset; the complete requirement is not yet validated, so it remains partial.",
+      "statusExplanation": "PARTIAL: a verified subset exists (analytical/contract models, generative-engineering packages, the resource-aware platform, and/or GCP native-execution receipts as cited in evidence); the complete requirement is not yet validated.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 84,
@@ -2014,7 +2326,7 @@
       "id": "section:85",
       "title": "BEGIN NOW",
       "status": "BLOCKED",
-      "statusExplanation": "Required native capability, product surface, deployment receipt, or end-to-end validation is unavailable in the current repository; this is explicitly blocked rather than represented by a substitute.",
+      "statusExplanation": "BLOCKED: the mandatory native capability, hosted deployment, or end-to-end validation this requirement needs is unavailable in the current repository; no substitute result is counted.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 85,
@@ -2040,7 +2352,7 @@
       "id": "stopping:1",
       "title": "the repository exists and is clean",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
+      "statusExplanation": "PARTIAL: the repository exists, is public, and main is pushed; this audit describes a worktree revision under review and does not claim full system completion.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2052,7 +2364,7 @@
           "kind": "file",
           "path": "README.md",
           "detail": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
-          "sha256": "6c4b8cad7a3ff698d02c89cbe089a509111b8d87b59597ce369702a0969c6421"
+          "sha256": "de7bce359280aa90f2a4d94a32707bb447fc1270abf6aabc1b0ffca1ffe13bff"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"
@@ -2073,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "3089bcec58eae55979f59ae8819ab3ae455ce7e91b36b7deec282680e1de1e9d"
+          "sha256": "d14f116d7a586e10a739fec3c4f6c5ca202c8db21666b875fc30516c45933ceb"
         },
         {
           "kind": "file",
@@ -2109,7 +2421,7 @@
       "id": "stopping:4",
       "title": "CAD works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2133,7 +2445,7 @@
       "id": "stopping:5",
       "title": "geometry import works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2157,7 +2469,7 @@
       "id": "stopping:6",
       "title": "FreeCAD pathway works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2181,7 +2493,7 @@
       "id": "stopping:7",
       "title": "OpenMDAO coupling works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: OpenMDAO 3.45.1 EXECUTED paraboloid SLSQP (f=-27.333333) on GCP. Multidisciplinary coupling demo not run.",
+      "statusExplanation": "PARTIAL: real CFD works for the executed OpenFOAM channel/cavity/MRF cases (SOLVER-CORR 37) plus earlier cavity runs; transient sliding-interface AMI and multi-stage MRF remain unrun.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2191,9 +2503,9 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: OpenMDAO 3.45.1 EXECUTED paraboloid SLSQP (f=-27.333333) on GCP. Multidisciplinary coupling demo not run.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "path": "docs/evidence/solver-correction/receipts/issue37_openfoam.json",
+          "detail": "PARTIAL: raw GCP OpenFOAM v2412 execution receipt.",
+          "sha256": "7d5317381a6c72448b7d879af4ad955f056477faff0d027e31f857169564a37b"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -2202,7 +2514,7 @@
       "id": "stopping:8",
       "title": "preCICE coupling works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2226,7 +2538,7 @@
       "id": "stopping:9",
       "title": "real CFD works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Real OpenFOAM cavity EXECUTED at two mesh resolutions on GCP. Rotating/aero suite not run.",
+      "statusExplanation": "PARTIAL: real structural analysis is not yet proven; Code_Aster builders/runner exist but no canonical native structural case executed (SOLVER-CORR 38), while ROSS rotor dynamics did execute.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2236,9 +2548,9 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: Real OpenFOAM cavity EXECUTED at two mesh resolutions on GCP. Rotating/aero suite not run.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "path": "docs/evidence/solver-correction/receipts/issue38_ross.json",
+          "detail": "PARTIAL: ROSS native rotor-dynamic receipt with Code_Aster recorded as not executed.",
+          "sha256": "c63e2229a01d34af47818967b231d742f52460deca9cc7481f7828e876e37b99"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -2247,7 +2559,7 @@
       "id": "stopping:10",
       "title": "real structural analysis works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: CalculiX cantilever RAN (exit 0) on GCP; result numbers unverified. Code_Aster untouched.",
+      "statusExplanation": "PARTIAL: thermal coupling works for the executed Elmer steady/transient cases and the electrical/thermal closure (SOLVER-CORR 39); full native thermal-structural field exchange remains unrun.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2257,9 +2569,9 @@
       "evidence": [
         {
           "kind": "file",
-          "path": "docs/solver-verification.md",
-          "detail": "PARTIAL: CalculiX cantilever RAN (exit 0) on GCP; result numbers unverified. Code_Aster untouched.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "path": "docs/evidence/solver-correction/receipts/issue39_elmer.json",
+          "detail": "PARTIAL: raw GCP Elmer 26.2 thermal execution receipt.",
+          "sha256": "c4dcfdf88bc1f67037c8f2084d3498ec348eb40a13a93e5018064db506ea8c98"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -2268,7 +2580,7 @@
       "id": "stopping:11",
       "title": "thermal coupling works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2355,7 +2667,7 @@
       "id": "stopping:15",
       "title": "high-fidelity EM works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2379,7 +2691,7 @@
       "id": "stopping:16",
       "title": "ROSS works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2403,7 +2715,7 @@
       "id": "stopping:17",
       "title": "modal/resonance detection works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Analytical resonance screening (Campbell, forcing spectrum) verified; prestressed native modes unavailable.",
+      "statusExplanation": "PARTIAL: analytical resonance screening (Campbell, forcing spectrum) is verified and generic rotor dynamics with geometry/material-derived ROSS models executed (GEN 10, SOLVER-CORR 38); prestressed native modes with full coupling remain incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2416,6 +2728,18 @@
           "path": "packages/core/aeroworkbench_core/resonance.py",
           "detail": "PARTIAL: Analytical resonance screening (Campbell, forcing spectrum) verified; prestressed native modes unavailable.",
           "sha256": "28a90768ef1ba0393f19911d5af69f733a8d4e001fe91b0da14d3a6e20e05ac1"
+        },
+        {
+          "kind": "file",
+          "path": "solvers/participants/run_scripts/run_ross.py",
+          "detail": "PARTIAL: governed ROSS run script used by the executed rotor-dynamic proofs.",
+          "sha256": "c6f1131ddc0432d111517f53c870f6b438555abd8281a869582e35db7191bce3"
+        },
+        {
+          "kind": "file",
+          "path": "docs/evidence/solver-correction/receipts/issue38_ross.json",
+          "detail": "PARTIAL: raw GCP ROSS 3.0 critical-speed/unbalance receipt.",
+          "sha256": "c63e2229a01d34af47818967b231d742f52460deca9cc7481f7828e876e37b99"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2424,7 +2748,7 @@
       "id": "stopping:18",
       "title": "dynamic escalation works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2490,7 +2814,7 @@
       "id": "stopping:21",
       "title": "compressor workflow works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2526,7 +2850,7 @@
           "kind": "file",
           "path": "docs/solver-verification.md",
           "detail": "PARTIAL: 0D Cantera equilibrium EXECUTED on GCP. Combustor CFD and thermoacoustics not run.",
-          "sha256": "b0437d263d77b6f7c92693d8fcc6bfa21464ded735f431fab1a3103c44d86279"
+          "sha256": "565b4711807c138867229c4c27c3c0e570d5d46043854265a7d21f6c4b773ebe"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:45:00Z"
@@ -2535,7 +2859,7 @@
       "id": "stopping:23",
       "title": "turbine workflow works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2580,7 +2904,7 @@
       "id": "stopping:25",
       "title": "visualization works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2667,7 +2991,7 @@
       "id": "stopping:29",
       "title": "warm starts work",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2691,7 +3015,7 @@
       "id": "stopping:30",
       "title": "mesh morphing/local remesh works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2715,7 +3039,7 @@
       "id": "stopping:31",
       "title": "MCP works",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: API-backed MCP server with policy gates and an stdio E2E covering tool list, deferred submit, owned-job cancel and fail-closed rejection. Supervisable live simulation unavailable.",
+      "statusExplanation": "PARTIAL: MCP works over stdio with seven API-backed product tools and an E2E handshake covering tool list, deferred submit and owned-job cancel; full store/namespace coverage remains incomplete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2734,6 +3058,12 @@
           "path": "tests/platform/participants.test.ts",
           "detail": "PARTIAL: MCP stdio E2E over the real server including frames-only stdout and rejection paths.",
           "sha256": "5a500be2ad5722aeaf790b966c164768d9f3f1a05c1e67e0dacceb359ff59d23"
+        },
+        {
+          "kind": "file",
+          "path": "mcp/engineering/operations.ts",
+          "detail": "PARTIAL: implemented API-backed MCP tool operations.",
+          "sha256": "1018cc25081bac2e0151c55b068e2308bad843d0c36671b87d50e244c4c66bb9"
         }
       ],
       "lastVerifiedAt": "2026-09-18T19:43:51Z"
@@ -2742,7 +3072,7 @@
       "id": "stopping:32",
       "title": "AI can supervise simulations",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2766,7 +3096,7 @@
       "id": "stopping:33",
       "title": "GCP compute works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2790,7 +3120,7 @@
       "id": "stopping:34",
       "title": "remote-compute user-only switch works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2814,7 +3144,7 @@
       "id": "stopping:35",
       "title": "cloud cost controls work",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2838,7 +3168,7 @@
       "id": "stopping:36",
       "title": "checkpoint/restart works",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2925,7 +3255,7 @@
       "id": "stopping:40",
       "title": "physics benchmarks pass",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Analytical benchmark manifest and physics suites pass; native solver validation unavailable.",
+      "statusExplanation": "PARTIAL: bounded performance baselines and automated numerical-independence gates pass for the generic release benchmark (PERF 01, GEN 12); the canonical multi-solver physics benchmark suite is not complete.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2938,6 +3268,18 @@
           "path": "benchmarks/manifest.json",
           "detail": "PARTIAL: Analytical benchmark manifest and physics suites pass; native solver validation unavailable.",
           "sha256": "bec99198b9b3ff126e78af899728c0155e784f5f47b4c39cbd60606115afb30c"
+        },
+        {
+          "kind": "file",
+          "path": "benchmarks/independence/generic_benchmark.py",
+          "detail": "PARTIAL: generic independence/generative release benchmark (GEN 12).",
+          "sha256": "6a115be201cb6d9975ad8a1e35c26877bbca28c95e5f1e761ebbdd60a3d352fd"
+        },
+        {
+          "kind": "file",
+          "path": "docs/numerical-independence.md",
+          "detail": "PARTIAL: independence gate methodology and tolerances.",
+          "sha256": "4e37b355f87ab7f06d8b55e05a70a88e1c0a97ef5babfa02c5ed948d2df5f4e7"
         }
       ],
       "lastVerifiedAt": "2026-09-14T14:36:13Z"
@@ -2946,7 +3288,7 @@
       "id": "stopping:41",
       "title": "documentation is complete",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2970,7 +3312,7 @@
       "id": "stopping:42",
       "title": "automated tests pass",
       "status": "PARTIAL",
-      "statusExplanation": "PARTIAL: Python suite (88 tests) plus web/schema/contract suites pass this turn; full e2e, cloud, and native tiers not run.",
+      "statusExplanation": "PARTIAL: the tiered test runner and per-test hang guard make automated tests bounded and deterministic (PERF 07); the full native/science tiers require provisioned solvers and are not part of the default pass.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -2983,6 +3325,12 @@
           "path": "services/api/pyproject.toml",
           "detail": "PARTIAL: Python suite (165 tests incl. milestone-3 OpenMDAO orchestration, field coupling, fidelity, DOE/optimization) plus schema/contract suites pass; cloud and heavy-native tiers not run.",
           "sha256": "f9b7180c4ef25ec24a15e3cc575d4a4539b79d930f912435ed8c79ab08f8c201"
+        },
+        {
+          "kind": "file",
+          "path": "docs/testing-tiers.md",
+          "detail": "PARTIAL: documented tiered automated-test contract (PERF 07).",
+          "sha256": "25dd2fdc089a51905ba9cb046faf557080ce473264eb9835b142fd9da031c90a"
         }
       ],
       "lastVerifiedAt": "2026-09-14T19:25:03Z"
@@ -2991,7 +3339,7 @@
       "id": "stopping:43",
       "title": "deployment is live and usable",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -3015,7 +3363,7 @@
       "id": "stopping:44",
       "title": "the final requirement audit contains no incomplete mandatory requirement",
       "status": "BLOCKED",
-      "statusExplanation": "This mandatory stopping condition is not satisfied by the current baseline and has no complete validation receipt.",
+      "statusExplanation": "PARTIAL: this mandatory stopping condition is not yet satisfied; the current evidence covers only a verified subset and no complete validation receipt exists.",
       "sourceRef": {
         "briefId": "authoritative-user-brief-v1",
         "section": 83,
@@ -3035,5 +3383,18 @@
       ],
       "lastVerifiedAt": null
     }
-  ]
+  ],
+  "capabilityFacts": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-09-19T07:00:00Z",
+    "authoritativeExecutionOwner": "services-api-governed-inprocess-native-jobs",
+    "schedulingMode": "resource-aware-concurrent",
+    "resultPublication": "evidence-gated-publish-active",
+    "cachePersistence": "persistent-content-addressed",
+    "mcpServer": "stdio-public-product-api",
+    "remoteCompute": "disabled-by-default-user-only",
+    "containers": "manifests-ci-build-smoke",
+    "nativeSolvers": "capability-gated-fail-closed",
+    "storage": "sqlite-wal-plus-content-addressed-artifacts"
+  }
 }

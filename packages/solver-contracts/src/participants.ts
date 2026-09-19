@@ -1,4 +1,5 @@
 import type { SolverId } from "./contracts.ts";
+import type { CheckpointMode } from "./executors.ts";
 
 /** One typed scalar or field port with units and direction. */
 export interface ParticipantPort {
@@ -35,6 +36,8 @@ export interface ParticipantManifest {
   readonly validityRef: string;
   readonly artifactOutputs: readonly string[];
   readonly checkpoint: boolean;
+  /** Explicit checkpoint behavior: unsupported | periodic | solver-window | time-step | external. */
+  readonly checkpointPolicy: CheckpointMode;
   readonly benchmarkRef: string;
 }
 
@@ -76,6 +79,7 @@ const manifest = (
   validityRef: refs[2],
   artifactOutputs: Object.freeze([...artifactOutputs]),
   checkpoint: true,
+  checkpointPolicy: "periodic" as const,
   benchmarkRef,
 });
 

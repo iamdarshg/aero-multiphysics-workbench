@@ -24,9 +24,15 @@ _TRANSITION_COLUMNS: tuple[str, ...] = (
     "error_detail",
     "run_id",
     "input_hash",
+    "geometry_hash",
+    "mesh_hash",
     "envelope_json",
     "result_id",
     "provenance_id",
+    "checkpoint_id",
+    "checkpoint_json",
+    "interruption_reason",
+    "cost_json",
 )
 
 
@@ -48,6 +54,14 @@ class JobRow:
     revision_id: str | None = None
     result_id: str | None = None
     provenance_id: str | None = None
+    resume_of: str | None = None
+    attempt: int = 1
+    checkpoint_id: str | None = None
+    checkpoint_json: str | None = None
+    interruption_reason: str | None = None
+    cost_json: str | None = None
+    geometry_hash: str | None = None
+    mesh_hash: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -143,7 +157,20 @@ class JobLedger:
 
     @staticmethod
     def _optional_job_columns() -> tuple[str, ...]:
-        return ("owner_id", "revision_id", "result_id", "provenance_id")
+        return (
+            "owner_id",
+            "revision_id",
+            "result_id",
+            "provenance_id",
+            "resume_of",
+            "attempt",
+            "checkpoint_id",
+            "checkpoint_json",
+            "interruption_reason",
+            "cost_json",
+            "geometry_hash",
+            "mesh_hash",
+        )
 
     def _migrate_job_columns(self) -> None:
         existing = {
@@ -166,13 +193,17 @@ class JobLedger:
         inputs: dict[str, Any],
         owner_id: str | None = None,
         revision_id: str | None = None,
+        resume_of: str | None = None,
+        attempt: int = 1,
+        checkpoint_id: str | None = None,
     ) -> None:
         inputs_json = self._serialize(inputs)
         with self._lock:
             self._connection.execute(
                 "INSERT INTO native_jobs(job_id,participant_id,design_id,state,"
                 "error_code,error_detail,run_id,input_hash,envelope_json,inputs_json,"
-                "created_at,updated_at,owner_id,revision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "created_at,updated_at,owner_id,revision_id,resume_of,attempt,checkpoint_id) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
                     job_id,
                     participant_id,
@@ -188,6 +219,9 @@ class JobLedger:
                     created_at,
                     owner_id,
                     revision_id,
+                    resume_of,
+                    int(attempt),
+                    checkpoint_id,
                 ),
             )
             self._commit()
@@ -204,6 +238,9 @@ class JobLedger:
         detail: str,
         owner_id: str | None = None,
         revision_id: str | None = None,
+        resume_of: str | None = None,
+        attempt: int = 1,
+        checkpoint_id: str | None = None,
     ) -> int:
         """Insert the job row and its first event in ONE transaction."""
 
@@ -213,8 +250,8 @@ class JobLedger:
                 self._connection.execute(
                     "INSERT INTO native_jobs(job_id,participant_id,design_id,state,"
                     "error_code,error_detail,run_id,input_hash,envelope_json,inputs_json,"
-                    "created_at,updated_at,owner_id,revision_id) "
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    "created_at,updated_at,owner_id,revision_id,resume_of,attempt,checkpoint_id) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         job_id,
                         participant_id,
@@ -230,6 +267,9 @@ class JobLedger:
                         created_at,
                         owner_id,
                         revision_id,
+                        resume_of,
+                        int(attempt),
+                        checkpoint_id,
                     ),
                 )
                 cursor = self._connection.execute(
@@ -255,9 +295,14 @@ class JobLedger:
         error_detail: str | None | Any = _UNSET,
         run_id: str | None | Any = _UNSET,
         input_hash: str | None | Any = _UNSET,
+        geometry_hash: str | None | Any = _UNSET,
+        mesh_hash: str | None | Any = _UNSET,
         envelope_json: str | None | Any = _UNSET,
         result_id: str | None | Any = _UNSET,
         provenance_id: str | None | Any = _UNSET,
+        checkpoint_json: str | None | Any = _UNSET,
+        interruption_reason: str | None | Any = _UNSET,
+        cost_json: str | None | Any = _UNSET,
     ) -> None:
         assignments = ["state=?", "updated_at=?"]
         values: list[Any] = [state, updated_at]
@@ -266,9 +311,14 @@ class JobLedger:
             ("error_detail", error_detail),
             ("run_id", run_id),
             ("input_hash", input_hash),
+            ("geometry_hash", geometry_hash),
+            ("mesh_hash", mesh_hash),
             ("envelope_json", envelope_json),
             ("result_id", result_id),
             ("provenance_id", provenance_id),
+            ("checkpoint_json", checkpoint_json),
+            ("interruption_reason", interruption_reason),
+            ("cost_json", cost_json),
         ):
             if value is not _UNSET:
                 assignments.append(f"{column}=?")
@@ -349,7 +399,9 @@ class JobLedger:
             row = self._connection.execute(
                 "SELECT job_id,participant_id,design_id,state,error_code,error_detail,"
                 "run_id,input_hash,envelope_json,inputs_json,created_at,updated_at,"
-                "owner_id,revision_id,result_id,provenance_id "
+                "owner_id,revision_id,result_id,provenance_id,resume_of,attempt,"
+                "checkpoint_id,checkpoint_json,interruption_reason,cost_json,"
+                "geometry_hash,mesh_hash "
                 "FROM native_jobs WHERE job_id=?",
                 (job_id,),
             ).fetchone()
@@ -362,6 +414,12 @@ class JobLedger:
                 return None
             value = row[name]
             return None if value is None else str(value)
+
+        raw_attempt = row["attempt"] if "attempt" in columns else None
+        try:
+            attempt = int(raw_attempt) if raw_attempt is not None else 1
+        except (TypeError, ValueError):
+            attempt = 1
 
         return JobRow(
             job_id=row["job_id"],
@@ -380,6 +438,14 @@ class JobLedger:
             revision_id=_optional("revision_id"),
             result_id=_optional("result_id"),
             provenance_id=_optional("provenance_id"),
+            resume_of=_optional("resume_of"),
+            attempt=attempt,
+            checkpoint_id=_optional("checkpoint_id"),
+            checkpoint_json=_optional("checkpoint_json"),
+            interruption_reason=_optional("interruption_reason"),
+            cost_json=_optional("cost_json"),
+            geometry_hash=_optional("geometry_hash"),
+            mesh_hash=_optional("mesh_hash"),
         )
 
     def all(self) -> list[JobRow]:

@@ -13,6 +13,7 @@ compares the first whirl/critical speed against closed-form expectations:
 
 Numbers are parsed from real ROSS ``result.json``; failures are BLOCKED.
 """
+
 from __future__ import annotations
 
 import json
@@ -37,8 +38,7 @@ STEEL = {
 }
 
 
-def gov_case(analysis: str, model: dict, speed_rpm: float, max_speed_rpm: float,
-             name: str) -> dict:
+def gov_case(analysis: str, model: dict, speed_rpm: float, max_speed_rpm: float, name: str) -> dict:
     ndir = WORK / name
     ndir.mkdir(parents=True, exist_ok=True)
     case = {
@@ -54,24 +54,40 @@ def gov_case(analysis: str, model: dict, speed_rpm: float, max_speed_rpm: float,
     }
     (ndir / "case.json").write_text(json.dumps(case, indent=2, sort_keys=True))
     try:
-        done = subprocess.run([PY, str(RUN_SCRIPT)], cwd=str(ndir), capture_output=True,
-                              text=True, timeout=600,
-                              env={**os.environ, "NUMBA_DISABLE_JIT": "1"})
+        done = subprocess.run(
+            [PY, str(RUN_SCRIPT)],
+            cwd=str(ndir),
+            capture_output=True,
+            text=True,
+            timeout=600,
+            env={**os.environ, "NUMBA_DISABLE_JIT": "1"},
+        )
     except subprocess.TimeoutExpired as exc:
         return {"name": name, "status": "BLOCKED", "reason": f"timeout:{exc}"}
-    result = {"name": name, "analysis": analysis, "exit": done.returncode,
-              "stdout": done.stdout.strip()[:200],
-              "stderr": done.stderr.strip()[-300:]}
+    result = {
+        "name": name,
+        "analysis": analysis,
+        "exit": done.returncode,
+        "stdout": done.stdout.strip()[:200],
+        "stderr": done.stderr.strip()[-300:],
+    }
     rj = ndir / "result.json"
     if rj.is_file():
         result.update(json.loads(rj.read_text()))
     return result
 
 
-def jeffcott_model(nseg: int = 4, length_m: float = 0.4, dia_m: float = 0.02,
-                   disk_mass_scale: float = 1.0, bearing_k: float = 1e9) -> dict:
-    seg = [{"length_m": length_m / nseg, "outer_diameter_m": dia_m,
-            "inner_diameter_m": 0.0} for _ in range(nseg)]
+def jeffcott_model(
+    nseg: int = 4,
+    length_m: float = 0.4,
+    dia_m: float = 0.02,
+    disk_mass_scale: float = 1.0,
+    bearing_k: float = 1e9,
+) -> dict:
+    seg = [
+        {"length_m": length_m / nseg, "outer_diameter_m": dia_m, "inner_diameter_m": 0.0}
+        for _ in range(nseg)
+    ]
     rho = STEEL["density_kg_m3"]
     shaft_mass = rho * math.pi * (dia_m / 2) ** 2 * length_m
     disk_mass = shaft_mass * disk_mass_scale
@@ -83,10 +99,18 @@ def jeffcott_model(nseg: int = 4, length_m: float = 0.4, dia_m: float = 0.02,
     return {
         "material": STEEL,
         "segments": seg,
-        "disks": [{"position": nseg // 2, "width_m": width,
-                   "inner_diameter_m": i_d, "outer_diameter_m": o_d}],
-        "bearings": [{"node": 0, "kxx": bearing_k, "cxx": 0.0},
-                     {"node": nseg, "kxx": bearing_k, "cxx": 0.0}],
+        "disks": [
+            {
+                "position": nseg // 2,
+                "width_m": width,
+                "inner_diameter_m": i_d,
+                "outer_diameter_m": o_d,
+            }
+        ],
+        "bearings": [
+            {"node": 0, "kxx": bearing_k, "cxx": 0.0},
+            {"node": nseg, "kxx": bearing_k, "cxx": 0.0},
+        ],
         "gyroscopic": True,
         "shear_effects": True,
         "rotary_inertia": True,
@@ -98,7 +122,7 @@ def jeffcott_model(nseg: int = 4, length_m: float = 0.4, dia_m: float = 0.02,
 def jeffcott_analytic_rpm(model: dict) -> float:
     L = sum(s["length_m"] for s in model["segments"])
     d = model["segments"][0]["outer_diameter_m"]
-    I = math.pi * d**4 / 64.0
+    I = math.pi * d**4 / 64.0  # noqa: E741
     k = 48.0 * STEEL["youngs_modulus_pa"] * I / L**3
     m = model["_declaredDiskMassKg"]
     omega = math.sqrt(k / m)
@@ -143,10 +167,9 @@ def bench_ross() -> dict:
             out["shortStiffCriticalRpm"] = crit_short[0]
         if modal.get("first_whirl_hz"):
             out["modalFirstWhirlRpm"] = modal["first_whirl_hz"] * 60.0
-            out["modalVsCampbellRelDelta"] = (
-                abs(modal["first_whirl_hz"] * 60.0 - (crit_rigid[0] if crit_rigid else 0))
-                / max(modal["first_whirl_hz"] * 60.0, 1e-9)
-            )
+            out["modalVsCampbellRelDelta"] = abs(
+                modal["first_whirl_hz"] * 60.0 - (crit_rigid[0] if crit_rigid else 0)
+            ) / max(modal["first_whirl_hz"] * 60.0, 1e-9)
         if forced.get("peak_speed_rpm") and crit_rigid:
             out["unbalancePeakRpm"] = forced["peak_speed_rpm"]
             out["peakNearCritical"] = abs(forced["peak_speed_rpm"] - crit_rigid[0]) / crit_rigid[0]
@@ -161,30 +184,54 @@ def bench_ross() -> dict:
 def direct_unbalance() -> dict:
     """Minimal direct native ROSS 3.x unbalance response (governed script is 2.x API)."""
     import inspect
+
     # The workspace puts solvers/ on sys.path, which shadows the pip ROSS with
     # the workbench's own `ross` package; drop it so the real library resolves.
     sys.path[:] = [p for p in sys.path if Path(p).name.lower() != "solvers"]
     try:
         import numpy as np
         import ross as rs
+
         if not hasattr(rs, "Material"):
-            return {"status": "BLOCKED",
-                    "reason": f"wrong ross module resolved: {getattr(rs, '__file__', '?')}"}
+            return {
+                "status": "BLOCKED",
+                "reason": f"wrong ross module resolved: {getattr(rs, '__file__', '?')}",
+            }
     except Exception as exc:  # noqa: BLE001
         return {"status": "BLOCKED", "reason": f"import:{type(exc).__name__}:{exc}"}
     m = jeffcott_model()
-    mat = rs.Material(STEEL["name"], E=STEEL["youngs_modulus_pa"],
-                      G_s=STEEL["shear_modulus_pa"], rho=STEEL["density_kg_m3"])
-    shaft = [rs.ShaftElement(L=s["length_m"], idl=0.0, odl=s["outer_diameter_m"],
-                             idr=0.0, odr=s["outer_diameter_m"], material=mat,
-                             shear_effects=True, rotary_inertia=True, gyroscopic=True)
-             for s in m["segments"]]
+    mat = rs.Material(
+        STEEL["name"],
+        E=STEEL["youngs_modulus_pa"],
+        G_s=STEEL["shear_modulus_pa"],
+        rho=STEEL["density_kg_m3"],
+    )
+    shaft = [
+        rs.ShaftElement(
+            L=s["length_m"],
+            idl=0.0,
+            odl=s["outer_diameter_m"],
+            idr=0.0,
+            odr=s["outer_diameter_m"],
+            material=mat,
+            shear_effects=True,
+            rotary_inertia=True,
+            gyroscopic=True,
+        )
+        for s in m["segments"]
+    ]
     node = len(m["segments"]) // 2
     disk = rs.DiskElement.from_geometry(
-        node, mat, width=m["disks"][0]["width_m"],
-        i_d=m["disks"][0]["inner_diameter_m"], o_d=m["disks"][0]["outer_diameter_m"])
-    bearings = [rs.BearingElement(0, kxx=1e9, cxx=0.0),
-                rs.BearingElement(len(m["segments"]), kxx=1e9, cxx=0.0)]
+        node,
+        mat,
+        width=m["disks"][0]["width_m"],
+        i_d=m["disks"][0]["inner_diameter_m"],
+        o_d=m["disks"][0]["outer_diameter_m"],
+    )
+    bearings = [
+        rs.BearingElement(0, kxx=1e9, cxx=0.0),
+        rs.BearingElement(len(m["segments"]), kxx=1e9, cxx=0.0),
+    ]
     rotor = rs.Rotor(shaft, [disk], bearings)
     params = list(inspect.signature(rotor.run_unbalance_response).parameters)
     freq_key = next((k for k in params if "freq" in k.lower() or "speed" in k.lower()), None)
@@ -195,8 +242,7 @@ def direct_unbalance() -> dict:
     positive = sorted(float(w) for w in modal.wn if float(w) > 0)
     whirl = positive[0] if positive else 900.0
     sweep = np.linspace(whirl * 0.5, whirl * 1.5, 25)
-    kwargs = {freq_key: sweep, "node": node,
-              "unbalance_magnitude": 1e-4, "unbalance_phase": 0.0}
+    kwargs = {freq_key: sweep, "node": node, "unbalance_magnitude": 1e-4, "unbalance_phase": 0.0}
     kwargs = {k: v for k, v in kwargs.items() if k in params}
     forced = rotor.run_unbalance_response(**kwargs)
     resp = np.asarray(forced.forced_resp, dtype=complex)
@@ -207,9 +253,16 @@ def direct_unbalance() -> dict:
         xaxis = getattr(forced, "speed_range", None)
     xval = float(np.asarray(xaxis)[peak]) if xaxis is not None else float(sweep[peak])
     first_rpm = whirl * 60.0 / (2 * 3.141592653589793)
-    return {"status": "EXECUTED", "signature": params, "frequencyKey": freq_key,
-            "peakResponseM": float(mag[peak]), "peakX": xval, "peakIndex": peak,
-            "firstWhirlRpm": first_rpm, "responseShape": list(resp.shape)}
+    return {
+        "status": "EXECUTED",
+        "signature": params,
+        "frequencyKey": freq_key,
+        "peakResponseM": float(mag[peak]),
+        "peakX": xval,
+        "peakIndex": peak,
+        "firstWhirlRpm": first_rpm,
+        "responseShape": list(resp.shape),
+    }
 
 
 def main() -> int:

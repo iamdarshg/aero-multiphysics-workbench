@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aero-workbench.local/schemas/capability-manifest.schema.json",
+  "title": "Worker image capability manifest",
+  "description": "Machine-readable executable/version receipt emitted by a pinned worker image at build or first start. Runtime participant probing (solvers/participants/capabilities.py) must agree with every entry before native results may publish.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "image", "python", "solvers"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "digest", "builtAt"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "enum": ["python-participants", "native-solvers"] },
+        "digest": {
+          "type": "string",
+          "pattern": "^(sha256:[0-9a-f]{64}|PENDING)$"
+        },
+        "builtAt": { "type": "string", "minLength": 1 },
+        "baseRef": { "type": "string", "minLength": 1 },
+        "baseDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^3\\.12\\." }
+      }
+    },
+    "solvers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "kind", "path", "version"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["ready", "unavailable"] },
+          "kind": { "enum": ["executable", "library"] },
+          "path": {
+            "type": "string",
+            "description": "Absolute path for an executable, or the importable module/distribution name for a library."
+          },
+          "version": { "type": ["string", "null"] },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

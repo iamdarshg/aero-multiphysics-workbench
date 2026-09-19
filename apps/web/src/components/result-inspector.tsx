@@ -6,7 +6,9 @@ import {
   artifactFileUrl,
   downloadJobArtifact,
   type ArtifactMetadata,
+  type ResultEnvelopeSummary,
 } from '../lib/job-client';
+import FieldInspector from './field-inspector';
 
 export type ArtifactPreviewKind = 'image' | 'text' | 'unsupported';
 
@@ -43,10 +45,11 @@ export interface ResultInspectorProps {
   jobId: string;
   manifestUrl: string;
   artifacts: ArtifactMetadata[];
+  envelope?: ResultEnvelopeSummary | null;
 }
 
 /** Compact result/artifact inspection in the current dialog design language. */
-export default function ResultInspector({ jobId, manifestUrl, artifacts }: ResultInspectorProps) {
+export default function ResultInspector({ jobId, manifestUrl, artifacts, envelope = null }: ResultInspectorProps) {
   const [openPreviews, setOpenPreviews] = useState<Record<string, boolean>>({});
   const [previewTexts, setPreviewTexts] = useState<Record<string, string>>({});
   const [previewTruncated, setPreviewTruncated] = useState<Record<string, boolean>>({});
@@ -131,6 +134,7 @@ export default function ResultInspector({ jobId, manifestUrl, artifacts }: Resul
           Export result manifest (JSON)
         </a>
       </p>
+      <FieldInspector jobId={jobId} envelope={envelope} />
     </section>
   );
 }

@@ -10,6 +10,7 @@ and a 3-mesh independence check on the steady QoI.
 
 All numbers are parsed from the real Elmer VTU result; failures are BLOCKED.
 """
+
 from __future__ import annotations
 
 import json
@@ -27,8 +28,9 @@ RECEIPTS.mkdir(parents=True, exist_ok=True)
 
 def sh(cmd: str, cwd: Path, timeout: int = 600) -> tuple[int, str]:
     try:
-        done = subprocess.run(["bash", "-lc", cmd], cwd=str(cwd), capture_output=True,
-                              text=True, timeout=timeout)
+        done = subprocess.run(
+            ["bash", "-lc", cmd], cwd=str(cwd), capture_output=True, text=True, timeout=timeout
+        )
         return done.returncode, (done.stdout or "") + (done.stderr or "")
     except subprocess.TimeoutExpired as exc:
         return 124, f"TIMEOUT {timeout}s: {exc}"
@@ -83,8 +85,9 @@ def parse_temperature(vtu: Path) -> dict:
         nums = [float(x) for x in re.findall(r"[-+0-9.eE]+", m.group(1))]
         pts = [(nums[i], nums[i + 1], nums[i + 2]) for i in range(0, len(nums) - 2, 3)]
     temp = None
-    for m in re.finditer(r'<DataArray[^>]*Name="[Tt]emperature"[^>]*>(.*?)</DataArray>',
-                         text, re.S):
+    for m in re.finditer(
+        r'<DataArray[^>]*Name="[Tt]emperature"[^>]*>(.*?)</DataArray>', text, re.S
+    ):
         nums = [float(x) for x in re.findall(r"[-+0-9.eE]+", m.group(1))]
         if nums:
             temp = nums
@@ -102,9 +105,12 @@ def parse_temperature(vtu: Path) -> dict:
     # nearest node to left boundary x=0
     left = min(range(n), key=lambda i: (pts[i][0] - min(p[0] for p in pts)) ** 2)
     return {
-        "tmax": tmax, "tmin": tmin,
-        "tMid": temp[best], "tMidAt": pts[best][:2],
-        "tLeft": temp[left], "nNodes": n,
+        "tmax": tmax,
+        "tmin": tmin,
+        "tMid": temp[best],
+        "tMidAt": pts[best][:2],
+        "tLeft": temp[left],
+        "nNodes": n,
     }
 
 
@@ -115,8 +121,7 @@ def run_case(tag: str, L: float, H: float, lc: float, sif: str, want_vtu: bool =
     write_geo(ndir / "geom.geo", L, H, lc)
     rc_g, log_g = sh("gmsh -2 geom.geo -o geom.msh > gmsh.log 2>&1", ndir, 240)
     meshdir = ndir / "mesh"
-    rc_e, log_e = sh(f"ElmerGrid 14 2 geom.msh -out mesh > elmergrid.log 2>&1",
-                     ndir, 240)
+    rc_e, log_e = sh("ElmerGrid 14 2 geom.msh -out mesh > elmergrid.log 2>&1", ndir, 240)
     names = read_names(meshdir)
     rendered = sif
     for name in ("left", "right", "top", "bottom", "domain"):
@@ -125,13 +130,19 @@ def run_case(tag: str, L: float, H: float, lc: float, sif: str, want_vtu: bool =
     rc_s, log_s = sh("ElmerSolver case.sif > elmersolver.log 2>&1", ndir, 600)
     data = {}
     # Elmer's ResultOutputSolver writes into the mesh directory as case_tNNNN.vtu.
-    vtus = sorted((ndir / "mesh").glob("case_t*.vtu"),
-                  key=lambda p: int(re.sub(r"\D", "", p.stem) or 0))
+    vtus = sorted(
+        (ndir / "mesh").glob("case_t*.vtu"), key=lambda p: int(re.sub(r"\D", "", p.stem) or 0)
+    )
     if rc_s == 0 and vtus:
         data = parse_temperature(vtus[-1])
     return {
-        "tag": tag, "lc": lc, "gmshExit": rc_g, "elmerGridExit": rc_e,
-        "solverExit": rc_s, "names": names, "data": data,
+        "tag": tag,
+        "lc": lc,
+        "gmshExit": rc_g,
+        "elmerGridExit": rc_e,
+        "solverExit": rc_s,
+        "names": names,
+        "data": data,
         "solverVersion": "present" if "ElmerSolver" in log_s or rc_s == 0 else "unknown",
     }
 
@@ -205,24 +216,33 @@ End
 
 def steady_sif(bc: str) -> str:
     return BASE.format(
-        simtype="Steady State", timestep="", bodyforce_ref="", initial_ref="",
-        bc=bc, bodyforce="", initial="",
+        simtype="Steady State",
+        timestep="",
+        bodyforce_ref="",
+        initial_ref="",
+        bc=bc,
+        bodyforce="",
+        initial="",
     )
 
 
 def dirichlet_sif() -> str:
-    bc = ('Boundary Condition 1\n  Target Boundaries(1) = @@left@@\n  Name = "left"\n'
-          '  Temperature = 100.0\nEnd\n\n'
-          'Boundary Condition 2\n  Target Boundaries(1) = @@right@@\n  Name = "right"\n'
-          '  Temperature = 0.0\nEnd\n')
+    bc = (
+        'Boundary Condition 1\n  Target Boundaries(1) = @@left@@\n  Name = "left"\n'
+        "  Temperature = 100.0\nEnd\n\n"
+        'Boundary Condition 2\n  Target Boundaries(1) = @@right@@\n  Name = "right"\n'
+        "  Temperature = 0.0\nEnd\n"
+    )
     return steady_sif(bc)
 
 
 def flux_sif() -> str:
-    bc = ('Boundary Condition 1\n  Target Boundaries(1) = @@right@@\n  Name = "right"\n'
-          '  Temperature = 0.0\nEnd\n\n'
-          'Boundary Condition 2\n  Target Boundaries(1) = @@left@@\n  Name = "left"\n'
-          '  Heat Flux = 10.0\nEnd\n')
+    bc = (
+        'Boundary Condition 1\n  Target Boundaries(1) = @@right@@\n  Name = "right"\n'
+        "  Temperature = 0.0\nEnd\n\n"
+        'Boundary Condition 2\n  Target Boundaries(1) = @@left@@\n  Name = "left"\n'
+        "  Heat Flux = 10.0\nEnd\n"
+    )
     return steady_sif(bc)
 
 
@@ -233,8 +253,8 @@ def transient_sif() -> str:
         bodyforce_ref="Body Force = 1",
         initial_ref="Initial Condition = 1",
         bc="",
-        bodyforce='Body Force 1\n  Heat Source = 10.0\nEnd',
-        initial='Initial Condition 1\n  Temperature = 0.0\nEnd',
+        bodyforce="Body Force 1\n  Heat Source = 10.0\nEnd",
+        initial="Initial Condition 1\n  Temperature = 0.0\nEnd",
     )
 
 
@@ -259,8 +279,7 @@ def bench_steady() -> dict:
     mids = [lv["data"].get("tMid") for lv in out["levels"]]
     if all(v is not None for v in mids):
         out["tMidRelDeltas"] = [
-            abs(mids[i + 1] - mids[i]) / max(abs(mids[i + 1]), 1e-12)
-            for i in range(len(mids) - 1)
+            abs(mids[i + 1] - mids[i]) / max(abs(mids[i + 1]), 1e-12) for i in range(len(mids) - 1)
         ]
     out["status"] = "EXECUTED"
     return out
@@ -323,8 +342,10 @@ def main() -> int:
         },
     }
     (RECEIPTS / "issue39_elmer.json").write_text(json.dumps(out, indent=2, sort_keys=True))
-    print("WROTE issue39_elmer.json", json.dumps(
-        {k: v["status"] for k, v in out["benchmarks"].items()}))
+    print(
+        "WROTE issue39_elmer.json",
+        json.dumps({k: v["status"] for k, v in out["benchmarks"].items()}),
+    )
     return 0
 
 

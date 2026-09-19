@@ -11,8 +11,30 @@ it. One native executable may service several participant types.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import StrEnum
 
 MANIFEST_VERSION = "2"
+
+
+class CheckpointMode(StrEnum):
+    """Explicit, immutable checkpoint behavior declared by a participant.
+
+    ``unsupported`` means no trusted restart exists. ``periodic`` writes on a
+    bounded iteration/time cadence, ``solver-window`` follows the solver's own
+    time-window/iteration boundary, ``time-step`` follows a transient time
+    stepper, and ``external`` means a restart artifact is only produced when
+    explicitly requested. Resume is permitted only when a mode actually
+    produces checkpoints.
+    """
+
+    UNSUPPORTED = "unsupported"
+    PERIODIC = "periodic"
+    SOLVER_WINDOW = "solver-window"
+    TIME_STEP = "time-step"
+    EXTERNAL = "external"
+
+
+_CHECKPOINT_MODES = frozenset(mode.value for mode in CheckpointMode)
 
 _VALID_ID = frozenset(
     "abcdefghijklmnopqrstuvwxyz0123456789-"
@@ -93,6 +115,7 @@ class ParticipantManifest:
     artifacts: tuple[str, ...]
     checkpoint: bool
     benchmark_ref: str
+    checkpoint_policy: str = CheckpointMode.UNSUPPORTED
 
     def __post_init__(self) -> None:
         _check_id("participant", self.participant_id)
@@ -130,6 +153,10 @@ class ParticipantManifest:
             raise ValueError("ARTIFACT_OUTPUTS_REQUIRED")
         if not self.benchmark_ref.strip():
             raise ValueError("BENCHMARK_EVIDENCE_REQUIRED")
+        if self.checkpoint_policy not in _CHECKPOINT_MODES:
+            raise ValueError(f"INVALID_CHECKPOINT_POLICY:{self.checkpoint_policy}")
+        if self.checkpoint != (self.checkpoint_policy != CheckpointMode.UNSUPPORTED.value):
+            raise ValueError("CHECKPOINT_FLAG_MUST_MATCH_POLICY")
 
     @property
     def scalar_inputs(self) -> tuple[PortSpec, ...]:
@@ -186,9 +213,13 @@ def _manifest(
     coupling_direction: str = "none",
     convergence_measures: tuple[str, ...] = ("residual",),
     fidelity_levels: tuple[str, ...] = ("baseline",),
-    checkpoint: bool = True,
+    checkpoint: bool | None = None,
+    checkpoint_policy: str = CheckpointMode.UNSUPPORTED,
     benchmark_ref: str = "pending",
 ) -> ParticipantManifest:
+    mode = CheckpointMode(checkpoint_policy)
+    if checkpoint is None:
+        checkpoint = mode != CheckpointMode.UNSUPPORTED
     return ParticipantManifest(
         participant_id,
         physics_domain,
@@ -210,6 +241,7 @@ def _manifest(
         artifacts,
         checkpoint,
         benchmark_ref,
+        mode.value,
     )
 
 
@@ -245,6 +277,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("inlet", "outlet", "wall"),
         convergence_measures=("residual", "continuity"),
         fidelity_levels=("rans-steady",),
+        checkpoint_policy=CheckpointMode.SOLVER_WINDOW,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -263,6 +296,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("inlet", "outlet", "wall"),
         convergence_measures=("residual", "continuity", "energy"),
         fidelity_levels=("rans-steady-compressible",),
+        checkpoint_policy=CheckpointMode.SOLVER_WINDOW,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -282,6 +316,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         coupling_direction="one-way",
         convergence_measures=("residual", "continuity", "torque"),
         fidelity_levels=("mrf-steady",),
+        checkpoint_policy=CheckpointMode.SOLVER_WINDOW,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -309,6 +344,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("mechanical_constraint",),
         convergence_measures=("residual",),
         fidelity_levels=("linear-static",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -336,6 +372,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("mechanical_constraint",),
         convergence_measures=("eigen_residual",),
         fidelity_levels=("modal", "prestressed-modal"),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -363,6 +400,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("shaft",),
         convergence_measures=("eigen_residual",),
         fidelity_levels=("beam-campbell",),
+        checkpoint_policy=CheckpointMode.EXTERNAL,
         benchmark_ref="milestone-2:rotor-campbell",
     ),
     _manifest(
@@ -390,6 +428,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("shaft",),
         convergence_measures=("eigen_residual",),
         fidelity_levels=("beam-modal",),
+        checkpoint_policy=CheckpointMode.EXTERNAL,
         benchmark_ref="milestone-2:rotor-modal",
     ),
     _manifest(
@@ -418,6 +457,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=(),
         convergence_measures=("solver_residual",),
         fidelity_levels=("spm",),
+        checkpoint_policy=CheckpointMode.TIME_STEP,
         benchmark_ref="milestone-2:cell-spm",
     ),
     _manifest(
@@ -446,6 +486,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=(),
         convergence_measures=("solver_residual",),
         fidelity_levels=("spme",),
+        checkpoint_policy=CheckpointMode.TIME_STEP,
         benchmark_ref="milestone-2:cell-spme",
     ),
     _manifest(
@@ -474,6 +515,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=(),
         convergence_measures=("solver_residual",),
         fidelity_levels=("ecm-thevenin",),
+        checkpoint_policy=CheckpointMode.TIME_STEP,
         benchmark_ref="milestone-2:pack-ecm",
     ),
     _manifest(
@@ -501,6 +543,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("thermal_constraint",),
         convergence_measures=("residual", "energy"),
         fidelity_levels=("steady-conduction",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -527,6 +570,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("electrical_constraint",),
         convergence_measures=("residual",),
         fidelity_levels=("electrostatic",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -566,6 +610,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         coupling_direction="two-way",
         convergence_measures=("power_balance", "temperature_fixed_point"),
         fidelity_levels=("analytical", "reduced", "native"),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="gen09:rotating-electrical-machine",
     ),
     _manifest(
@@ -601,6 +646,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         coupling_direction="two-way",
         convergence_measures=("power_balance", "thermal_fixed_point"),
         fidelity_levels=("analytical",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="gen09:power-electronics-drive",
     ),
     _manifest(
@@ -627,6 +673,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         coupling_direction="two-way",
         convergence_measures=("interface_residual", "conservation"),
         fidelity_levels=("implicit-iqn",),
+        checkpoint_policy=CheckpointMode.SOLVER_WINDOW,
         benchmark_ref="pending-native-binary",
     ),
     _manifest(
@@ -656,6 +703,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=("rotating_region",),
         convergence_measures=("quality",),
         fidelity_levels=("conforming-linear",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="milestone-2:domain-mesh",
         execute_ref="participants.mesh_case:execute_mesh_case",
     ),
@@ -686,6 +734,7 @@ PARTICIPANT_MANIFESTS: tuple[ParticipantManifest, ...] = (
         semantic_requirements=(),
         convergence_measures=("topology",),
         fidelity_levels=("brep-roundtrip",),
+        checkpoint_policy=CheckpointMode.UNSUPPORTED,
         benchmark_ref="milestone-2:cad-interchange",
         execute_ref="participants.cad_case:execute_cad_case",
     ),

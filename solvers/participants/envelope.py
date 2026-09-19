@@ -39,7 +39,9 @@ class EvidenceBundle(BaseModel):
     process_state: str = Field(pattern=r"^(completed)$")
     exit_code: int = Field(ge=0, le=0)
     peak_rss_mib: float | None = Field(default=None, ge=0)
-    execution_mode: str = Field(default="subprocess", pattern=r"^(subprocess|in-process)$")
+    execution_mode: str = Field(
+        default="subprocess", pattern=r"^(subprocess|in-process|remote)$"
+    )
     stdout_sha256: str | None = Field(default=None, pattern=_HEX64)
     stderr_sha256: str | None = Field(default=None, pattern=_HEX64)
     parser_name: str = Field(min_length=1)
@@ -51,6 +53,16 @@ class EvidenceBundle(BaseModel):
     manifest_version: str = Field(min_length=1)
     validity_passed: bool
     validity_detail: str = Field(default="")
+    # INFRA-FIX 03/04: transport and lineage evidence. Absent for local runs.
+    executor: str = Field(default="local", min_length=1)
+    image_digest: str | None = Field(default=None, min_length=1)
+    region: str | None = Field(default=None, min_length=1)
+    project: str | None = Field(default=None, min_length=1)
+    estimated_cost_usd: float | None = Field(default=None, ge=0)
+    actual_cost_usd: float | None = Field(default=None, ge=0)
+    checkpoint_id: str | None = Field(default=None, min_length=1)
+    resume_of: str | None = Field(default=None, min_length=1)
+    attempt: int = Field(default=1, ge=1)
 
 
 class ResultEnvelope(BaseModel):
@@ -94,7 +106,7 @@ def publish_result(
         )
     if not validity.passed or not evidence.validity_passed:
         raise ParticipantError(NativeErrorCode.RESULT_INVALID, "validity did not pass")
-    if evidence.execution_mode == "subprocess" and (
+    if evidence.execution_mode in {"subprocess", "remote"} and (
         evidence.stdout_sha256 is None or evidence.stderr_sha256 is None
     ):
         raise ParticipantError(
