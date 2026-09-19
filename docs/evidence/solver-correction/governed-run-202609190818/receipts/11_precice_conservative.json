@@ -1,0 +1,44 @@
+{
+  "engine": "analytic-transfer (repo conservative mapping; not native solver output)",
+  "issue": "11_precice_conservative",
+  "native_coupled_window": {
+    "reason": "no governed participant launches a native preCICE coupled window: the coupled-interface-validation participant only runs precice-config-visualizer config validation and its run script/command has no native coupling loop; adding one would require a new manifest + run script outside this run's scope",
+    "status": "BLOCKED"
+  },
+  "resolutions": [
+    {
+      "accepted": true,
+      "method": "conservative",
+      "relative_conservation_error": 0.0,
+      "resolution_points": 3,
+      "source_hash": "410575884dfbec2d9c5c651953f7942b0dccaf5700d91c8f1ec614e4071ecc38",
+      "source_integral": 7.0,
+      "target_hash": "f28ba9cd84b7867835719ac124f4b9988d36b151b2fc257e4b040943437782b9",
+      "target_integral": 7.0,
+      "target_integral_rel_error": 0.0
+    },
+    {
+      "accepted": true,
+      "method": "conservative",
+      "relative_conservation_error": 0.0,
+      "resolution_points": 6,
+      "source_hash": "410575884dfbec2d9c5c651953f7942b0dccaf5700d91c8f1ec614e4071ecc38",
+      "source_integral": 7.0,
+      "target_hash": "e8a44529dea94ea92382ec072c0c32ce25a31aa76ce7591b22d8436ca5a58133",
+      "target_integral": 7.0,
+      "target_integral_rel_error": 0.0
+    },
+    {
+      "accepted": true,
+      "method": "conservative",
+      "relative_conservation_error": 0.0,
+      "resolution_points": 9,
+      "source_hash": "410575884dfbec2d9c5c651953f7942b0dccaf5700d91c8f1ec614e4071ecc38",
+      "source_integral": 7.0,
+      "target_hash": "bcc100d50c4cc932197fada35e0f8eebaac1030513ce8917c432c46f3e9453da",
+      "target_integral": 7.0,
+      "target_integral_rel_error": 0.0
+    }
+  ],
+  "source_integral": 7.0
+}

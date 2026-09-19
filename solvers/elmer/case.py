@@ -566,7 +566,6 @@ def render_thermal_sif(case: ThermalCase) -> str:
         lines += [
             "  Simulation Type = Steady State",
             "  Steady State Max Iterations = 50",
-            "  Steady State Convergence Tolerance = 1.0e-6",
         ]
     lines += [
         '  Output File = "case.result"',

@@ -1,0 +1,72 @@
+{
+  "analysis": "steady",
+  "analytic": {
+    "conductivity_a_w_m_k": 2.0,
+    "conductivity_b_w_m_k": 0.5,
+    "flux_w_m2": 133.33333333333334,
+    "interface_temperature_k": 380.0,
+    "length_a_m": 0.3,
+    "length_b_m": 0.3,
+    "series_resistance": 0.75,
+    "t_left_k": 400.0,
+    "t_right_k": 300.0
+  },
+  "body_ids": {
+    "material_body_a": 1,
+    "material_body_b": 2
+  },
+  "case_dir": "/home/iamdarshg/aero-jobs/case-e8253f223f71",
+  "elmer_mesh_names": {
+    "left": 3,
+    "material_body_a": 1,
+    "material_body_b": 2,
+    "right": 4
+  },
+  "error_code": "PROCESS_EXIT_NONZERO",
+  "error_detail": "native process failed:PROCESS_EXIT_NONZERO:stderr.log: STOP 1 | stdout.log: nputFile: Unknown specifier:[2]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[temperature]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[3.000000e+02]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[end]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nWARNING:: LoadInputFile: There are no BCs in the system!\nLoadInputFile: Number of Body Forces: 0\nLoadInputFile: Number of Initial Conditions: 0\nLoadInputFile: Number of Materials: 0\nLoadInputFile: Number of Equations: 1\nLoadInputFile: Number of Solvers: 3\nLoadInputFile: Number of Bodies: 2\nERROR:: LoadInputFile: Solvers 2 and 3 have the same Equation name!",
+  "events": [
+    "QUEUED",
+    "PREPARING",
+    "RUNNING",
+    "FAILED"
+  ],
+  "fidelity": null,
+  "inputs_digest": "dc5170e6badb9632c2432622e8c1011466ceac5264297b5efd2f2eb4b357060e",
+  "issue": "08_elmer_multimaterial",
+  "job_id": "e8253f223f71492b95b445e7ea609685",
+  "mesh_hash": "8e2efbdb7735685ba21690b5e57c54acb85fed57ec3a3bdd6ccc7ea3960ed4f4",
+  "participant": "thermal-conduction",
+  "patch_ids": {
+    "left": 3,
+    "right": 4
+  },
+  "solver_log_tail": "RROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[target boundaries]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[1]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[temperature]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[4.000000e+02]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[end]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[boundary condition 2]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[name]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[fixed-temperature-right]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[fixed-temperature-right]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[target boundaries]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[2]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[temperature]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[3.000000e+02]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[end]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nWARNING:: LoadInputFile: There are no BCs in the system!\nLoadInputFile: Number of Body Forces: 0\nLoadInputFile: Number of Initial Conditions: 0\nLoadInputFile: Number of Materials: 0\nLoadInputFile: Number of Equations: 1\nLoadInputFile: Number of Solvers: 3\nLoadInputFile: Number of Bodies: 2\nERROR:: LoadInputFile: Solvers 2 and 3 have the same Equation name!\n",
+  "started_at": "2026-09-19T08:23:54.258793+00:00",
+  "state": "FAILED",
+  "status": {
+    "analysis": "steady",
+    "attempt": 1,
+    "checkpoint_id": null,
+    "created_at": "2026-09-19T08:23:54.258928+00:00",
+    "design_id": "governed-08_elmer_multimaterial",
+    "error_code": "PROCESS_EXIT_NONZERO",
+    "error_detail": "native process failed:PROCESS_EXIT_NONZERO:stderr.log: STOP 1 | stdout.log: nputFile: Unknown specifier:[2]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[temperature]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[3.000000e+02]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[end]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nWARNING:: LoadInputFile: There are no BCs in the system!\nLoadInputFile: Number of Body Forces: 0\nLoadInputFile: Number of Initial Conditions: 0\nLoadInputFile: Number of Materials: 0\nLoadInputFile: Number of Equations: 1\nLoadInputFile: Number of Solvers: 3\nLoadInputFile: Number of Bodies: 2\nERROR:: LoadInputFile: Solvers 2 and 3 have the same Equation name!",
+    "executor": "local",
+    "fidelity": "steady-conduction",
+    "input_hash": "1ecd5131773b39d36b950c11f87e7a5ae3a94b6ba52bd8920a69473ec2a9ef6c",
+    "interruption_reason": null,
+    "job_id": "e8253f223f71492b95b445e7ea609685",
+    "owner_id": null,
+    "participant_id": "thermal-conduction",
+    "provenance_id": null,
+    "result_id": null,
+    "resume_of": null,
+    "revision_id": null,
+    "run_id": "d8d599e656304c75a90f7dc3ef259362",
+    "state": "FAILED",
+    "updated_at": "2026-09-19T08:23:55.080424+00:00"
+  },
+  "stderr_tail": "STOP 1\n",
+  "stdout_tail": "keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[fixed-temperature-right]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[fixed-temperature-right]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[target boundaries]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[2]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[temperature]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[3.000000e+02]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nCheckKeyword:  Unlisted keyword: [target bodies] in section: [solver 3]\nERROR:: LoadInputFile: Unknown specifier:[end]\nERROR:: LoadInputFile:         section:  [solver 3]\nERROR:: LoadInputFile:         keyword:  [target bodies]\nWARNING:: LoadInputFile: There are no BCs in the system!\nLoadInputFile: Number of Body Forces: 0\nLoadInputFile: Number of Initial Conditions: 0\nLoadInputFile: Number of Materials: 0\nLoadInputFile: Number of Equations: 1\nLoadInputFile: Number of Solvers: 3\nLoadInputFile: Number of Bodies: 2\nERROR:: LoadInputFile: Solvers 2 and 3 have the same Equation name!\n",
+  "wall_s": 0.814
+}

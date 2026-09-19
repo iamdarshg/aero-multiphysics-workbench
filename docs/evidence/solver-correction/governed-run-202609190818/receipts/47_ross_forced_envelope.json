@@ -1,0 +1,60 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1631,
+      "name": "case.json",
+      "sha256": "e0d514825e9b25a5a0533fce46b7778d312dcff912bb421b74935b7a7bca06c5"
+    },
+    {
+      "bytes": 177,
+      "name": "result.json",
+      "sha256": "ab6d9a4f1692d5ac57489883d53c293055a42d74fd0c5268cd5c84b8a2749aa0"
+    },
+    {
+      "bytes": 13480,
+      "name": "run_ross.py",
+      "sha256": "d68de00eae80ba89a545aefdd44b0753423623905157d75b3f582c7e6711cf8f"
+    },
+    {
+      "bytes": 996,
+      "name": "solver.log",
+      "sha256": "db7d15b2133364296124277ab0035c506807feb990f91cd322d75607744e44e5"
+    },
+    {
+      "bytes": 233,
+      "name": "stderr.log",
+      "sha256": "e0d631ace40e66543e6c17b4645a658baf5a8077cc57965b43f6b63e15b5460f"
+    },
+    {
+      "bytes": 996,
+      "name": "stdout.log",
+      "sha256": "db7d15b2133364296124277ab0035c506807feb990f91cd322d75607744e44e5"
+    }
+  ],
+  "fidelity": "beam-campbell",
+  "input_hash": "14d2628d4a4538a4a6f98b4ca5f838658f91b86d824dd19f53f18fe1e90ebb39",
+  "provenance_id": "2a93222493594da4a99fd936279f4dbb",
+  "run_id": "f7538d30cb0f43978d3c9a8c40ab9d73",
+  "scalars": {
+    "peak_response_m": 0.00013863709872090623,
+    "peak_speed_rpm": 2550.0
+  },
+  "solver_identity": "ross",
+  "solver_version": "3.0.0",
+  "source": "native_solver",
+  "units": {
+    "peak_response_m": "m",
+    "peak_speed_rpm": "rpm"
+  },
+  "validity": {
+    "checks": {
+      "response_finite": true
+    },
+    "detail": "forced peak response finite and non-negative",
+    "participant_id": "rotor-campbell",
+    "passed": true
+  },
+  "warnings": [
+    "NUMBA_DISABLE_JIT=1 was set for ROSS compatibility; numerics unaffected"
+  ]
+}

@@ -295,7 +295,7 @@
           "kind": "file",
           "path": "solvers/elmer/case.py",
           "detail": "PARTIAL: Elmer case builder and fields/parser path exercised by the executed steady/transient proofs.",
-          "sha256": "c1f71155fdcff504c82c59a97cd0bbcb7407472bff78983e122b4b03ec7e3e99"
+          "sha256": "f11de2498dbf5bcc6bd7c309c0ceb0892299e04f61ed6853ba77cf864cb5e9b2"
         },
         {
           "kind": "file",
@@ -2733,7 +2733,7 @@
           "kind": "file",
           "path": "solvers/participants/run_scripts/run_ross.py",
           "detail": "PARTIAL: governed ROSS run script used by the executed rotor-dynamic proofs.",
-          "sha256": "c6f1131ddc0432d111517f53c870f6b438555abd8281a869582e35db7191bce3"
+          "sha256": "c895997194408f71dadba4ea7982f3393cbbeca53d62779a46645d11848138db"
         },
         {
           "kind": "file",

@@ -1,0 +1,123 @@
+Info    : [  0%] Fragments                                                                                  Info    : [ 10%] Fragments                                                                                  Info    : [ 20%] Fragments                                                                                  Info    : [ 30%] Fragments                                                                                  Info    : [ 40%] Fragments                                                                                  Info    : [ 50%] Fragments                                                                                  Info    : [ 60%] Fragments                                                                                  Info    : [ 70%] Fragments                                                                                  Info    : [ 80%] Fragments - Splitting faces                                                                                Info    : [ 90%] Fragments                                                                                                                                                                                                                                                  Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 20%] Meshing curve 4 (Line)
+Info    : [ 30%] Meshing curve 5 (Line)
+Info    : [ 30%] Meshing curve 6 (Line)
+Info    : [ 40%] Meshing curve 7 (Line)
+Info    : [ 40%] Meshing curve 8 (Line)
+Info    : [ 50%] Meshing curve 9 (Line)
+Info    : [ 50%] Meshing curve 10 (Line)
+Info    : [ 60%] Meshing curve 11 (Line)
+Info    : [ 60%] Meshing curve 12 (Line)
+Info    : [ 70%] Meshing curve 13 (Line)
+Info    : [ 70%] Meshing curve 14 (Line)
+Info    : [ 80%] Meshing curve 15 (Line)
+Info    : [ 80%] Meshing curve 16 (Line)
+Info    : [ 90%] Meshing curve 17 (Line)
+Info    : [ 90%] Meshing curve 18 (Line)
+Info    : [100%] Meshing curve 19 (Line)
+Info    : [100%] Meshing curve 20 (Line)
+Info    : Done meshing 1D (Wall 0.00266469s, CPU 0.002666s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 10%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 30%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 7 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 8 (Plane, Frontal-Delaunay)
+Info    : [ 80%] Meshing surface 9 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 10 (Plane, Frontal-Delaunay)
+Info    : [100%] Meshing surface 11 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0113951s, CPU 0.011374s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 2 volumes with 1 connected component
+Info    : Tetrahedrizing 199 nodes...
+Info    : Done tetrahedrizing 207 nodes (Wall 0.00286742s, CPU 0.001888s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00596097s, CPU 0.003967s)
+Info    : Found volume 1
+Info    : Found volume 2
+Info    : It. 0 - 0 nodes created - worst tet radius 0.840191 (nodes removed 0 0)
+Info    : 3D refinement terminated (199 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 521 tetrahedra created in 2.4324e-05 sec. (21419174 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.0097052s, CPU 0.006656s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.698677:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :         8 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       124 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : 12 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.558737 / average = 0.73145 (Wall 0.00027693s, CPU 0.000276s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         6 elements
+Info    : 0.60 < quality < 0.70 :       119 elements
+Info    : 0.70 < quality < 0.80 :        70 elements
+Info    : 0.80 < quality < 0.90 :        15 elements
+Info    : 0.90 < quality < 1.00 :        36 elements
+Info    : Optimizing volume 2
+Info    : Optimization starts (volume = 0.0015) with worst = 0.047095 / average = 0.688521:
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         5 elements
+Info    : 0.60 < quality < 0.70 :       120 elements
+Info    : 0.70 < quality < 0.80 :        61 elements
+Info    : 0.80 < quality < 0.90 :        18 elements
+Info    : 0.90 < quality < 1.00 :        39 elements
+Info    : 17 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.723707 (Wall 0.000394263s, CPU 0.00037s)
+Info    : 18 edge swaps, 0 node relocations (volume = 0.0015): worst = 0.0721353 / average = 0.722978 (Wall 0.000528444s, CPU 0.000499s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         2 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :         0 elements
+Info    : 0.50 < quality < 0.60 :         3 elements
+Info    : 0.60 < quality < 0.70 :       123 elements
+Info    : 0.70 < quality < 0.80 :        65 elements
+Info    : 0.80 < quality < 0.90 :        17 elements
+Info    : 0.90 < quality < 1.00 :        37 elements
+Info    : Done optimizing mesh (Wall 0.00149297s, CPU 0.001462s)
+Info    : 199 nodes 1003 elements
+Info    : Writing '/home/iamdarshg/aero-evidence/run1/gen08_work/domain.msh'...
+Info    : Done writing '/home/iamdarshg/aero-evidence/run1/gen08_work/domain.msh'
+[native] job 8c436526e36d40109260c974a4981c67 FAILED MESH_INVALID:MESH_GROUP_MISSING:left,material_material_body_a,material_material_body_b,right
+[native] job 6d3170820f424a0c8868d23f159acf8a FAILED CAPABILITY_UNAVAILABLE:no executable or library for openfoam is installed
+[native] job 8e2d1280187640cfb57481c297999de6 FAILED CAPABILITY_UNAVAILABLE:no executable or library for code-aster is installed
+PYTHON 3.12.13 /opt/py312/bin/python
+REPO /opt/repo JOB_ROOT /home/iamdarshg/aero-jobs
+PROBE rotor-campbell ready governed python-module execution: ross-rotordynamics==3.0.0
+PROBE thermal-conduction ready ElmerSolver responded to --version
+PROBE rotating-flow-mrf unavailable no executable or library for openfoam is installed
+PROBE structural-static unavailable no executable or library for code-aster is installed
+PROBE coupled-interface-validation unavailable no executable or library for precice is installed
+== ISSUE 47 governed ROSS forced ==
+== GEN 08 governed Elmer multi-material ==
+== GEN 06 governed OpenFOAM transient AMI ==
+== GEN 07 governed Code_Aster static ==
+== GEN 11 conservative mapping conservation ==
+GOVERNED RUN DONE -> /home/iamdarshg/aero-evidence/run1
