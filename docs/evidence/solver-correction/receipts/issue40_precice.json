@@ -1,0 +1,363 @@
+{
+  "bindingDetail": "precice 0.0.0 /opt/precice/lib/python3.14/site-packages/precice/__init__.py",
+  "resolutions": [
+    {
+      "aEvents": [
+        {
+          "event": "write_checkpoint",
+          "iter": 0,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 0,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 1,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 2,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 3,
+          "participant": "A"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 5,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 5,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 6,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 7,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 8,
+          "participant": "A"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 10,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 10,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 11,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 12,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 13,
+          "participant": "A"
+        }
+      ],
+      "aExit": 0,
+      "aTail": "06:43:41 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: \u001b[0mLeaving ~PointToPointCommunication\n(0) 06:43:41 [impl::ParticipantImpl]:589 in finalize: \u001b[0mLeaving finalize\nA_DONE 15",
+      "bExit": 0,
+      "bTail": "06:43:41 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: \u001b[0mLeaving ~PointToPointCommunication\n(0) 06:43:41 [impl::ParticipantImpl]:589 in finalize: \u001b[0mLeaving finalize\nB_DONE 15",
+      "events": [
+        {
+          "event": "write_checkpoint",
+          "iter": 0,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 1,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 2,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 3,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 4,
+          "participant": "B"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 5,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 6,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 7,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 8,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 9,
+          "participant": "B"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 10,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 11,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 12,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 13,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 14,
+          "participant": "B"
+        }
+      ],
+      "exactValues": [
+        1.25,
+        3.75,
+        6.25,
+        8.75
+      ],
+      "maxAbsError": 1.25,
+      "readValues": [
+        0.0,
+        3.333333333333333,
+        6.666666666666666,
+        10.0
+      ],
+      "resolution": 4
+    },
+    {
+      "aEvents": [
+        {
+          "event": "write_checkpoint",
+          "iter": 0,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 0,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 1,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 2,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 3,
+          "participant": "A"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 5,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 5,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 6,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 7,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 8,
+          "participant": "A"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 10,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 10,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 11,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 12,
+          "participant": "A"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 13,
+          "participant": "A"
+        }
+      ],
+      "aExit": 0,
+      "aTail": "06:43:43 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: \u001b[0mLeaving ~PointToPointCommunication\n(0) 06:43:43 [impl::ParticipantImpl]:589 in finalize: \u001b[0mLeaving finalize\nA_DONE 15",
+      "bExit": 0,
+      "bTail": "06:43:43 [m2n::PointToPointCommunication]:318 in ~PointToPointCommunication: \u001b[0mLeaving ~PointToPointCommunication\n(0) 06:43:43 [impl::ParticipantImpl]:589 in finalize: \u001b[0mLeaving finalize\nB_DONE 15",
+      "events": [
+        {
+          "event": "write_checkpoint",
+          "iter": 0,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 1,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 2,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 3,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 4,
+          "participant": "B"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 5,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 6,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 7,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 8,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 9,
+          "participant": "B"
+        },
+        {
+          "event": "write_checkpoint",
+          "iter": 10,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 11,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 12,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 13,
+          "participant": "B"
+        },
+        {
+          "event": "read_checkpoint",
+          "iter": 14,
+          "participant": "B"
+        }
+      ],
+      "exactValues": [
+        0.625,
+        1.875,
+        3.125,
+        4.375,
+        5.625,
+        6.875,
+        8.125,
+        9.375
+      ],
+      "maxAbsError": 0.625,
+      "readValues": [
+        0.0,
+        1.4285714285714284,
+        2.8571428571428568,
+        4.285714285714286,
+        5.7142857142857135,
+        7.142857142857143,
+        8.571428571428571,
+        10.0
+      ],
+      "resolution": 8
+    }
+  ],
+  "solver": "preCICE",
+  "status": "EXECUTED"
+}

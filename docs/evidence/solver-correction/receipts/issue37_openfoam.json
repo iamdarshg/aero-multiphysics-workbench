@@ -1,0 +1,162 @@
+{
+  "benchmarks": {
+    "cavity": {
+      "case": "lid-driven-cavity",
+      "levels": [
+        {
+          "blockMeshExit": 0,
+          "cells": 100,
+          "continuity": "",
+          "maxUx": 0.69724155,
+          "mesh": "10x10",
+          "minUx": -0.19092473,
+          "solverExit": 0
+        },
+        {
+          "blockMeshExit": 0,
+          "cells": 400,
+          "continuity": "",
+          "maxUx": 0.85266698,
+          "mesh": "20x20",
+          "minUx": -0.20385624,
+          "solverExit": 0
+        },
+        {
+          "blockMeshExit": 0,
+          "cells": 1600,
+          "continuity": "",
+          "maxUx": 0.92658163,
+          "mesh": "40x40",
+          "minUx": -0.20691534,
+          "solverExit": 0
+        }
+      ],
+      "minUxRelDeltas": [
+        0.06343445753733125,
+        0.014784307437041686
+      ],
+      "status": "EXECUTED"
+    },
+    "channel": {
+      "analyticMaxUx": 1.5,
+      "analyticRelError": 0.0017972666666666488,
+      "case": "plane-channel-poiseuille",
+      "inletVolumetricFlow_m3s": 0.001,
+      "levels": [
+        {
+          "blockMeshExit": 0,
+          "cells": 320,
+          "continuity": "",
+          "inletFlow": null,
+          "inletMeanUx": 1.0,
+          "inletPhiSum": -0.001,
+          "maxUx": 1.4546648,
+          "mesh": "40x8",
+          "outletFlow": null,
+          "outletMeanUx": null,
+          "outletPhiSum": 0.00099999999,
+          "solverExit": 0
+        },
+        {
+          "blockMeshExit": 0,
+          "cells": 1280,
+          "continuity": "",
+          "inletFlow": null,
+          "inletMeanUx": 1.0,
+          "inletPhiSum": -0.001,
+          "maxUx": 1.4885616,
+          "mesh": "80x16",
+          "outletFlow": null,
+          "outletMeanUx": null,
+          "outletPhiSum": 0.001000000001,
+          "solverExit": 0
+        },
+        {
+          "blockMeshExit": 0,
+          "cells": 5120,
+          "continuity": "",
+          "inletFlow": null,
+          "inletMeanUx": 1.0,
+          "inletPhiSum": -0.001,
+          "maxUx": 1.4973041,
+          "mesh": "160x32",
+          "outletFlow": null,
+          "outletMeanUx": null,
+          "outletPhiSum": 0.000999999999,
+          "solverExit": 0
+        }
+      ],
+      "massImbalanceRel": 9.999999960041972e-10,
+      "outletVolumetricFlow_m3s": 0.000999999999,
+      "status": "EXECUTED"
+    },
+    "mrf": {
+      "case": "rotating-frame-mrf-shear",
+      "multiZone": {
+        "blockMeshExit": 0,
+        "checkMeshExit": 0,
+        "converged": false,
+        "setsToZonesExit": 0,
+        "solverExit": 0,
+        "tag": "multi",
+        "topoSetExit": 0,
+        "torqueLower_Nm": [
+          0.00233767695,
+          -0.00108942188,
+          -0.0429711793
+        ],
+        "torqueUpper_Nm": [
+          0.000424778747,
+          0.000663885392,
+          0.00955692036
+        ]
+      },
+      "multiZoneIndependent": true,
+      "oneZoneNegative": {
+        "blockMeshExit": 0,
+        "checkMeshExit": 0,
+        "converged": false,
+        "setsToZonesExit": 0,
+        "solverExit": 0,
+        "tag": "one_neg",
+        "topoSetExit": 0,
+        "torqueLower_Nm": [
+          -0.00981728655,
+          -0.00889274716,
+          -0.489268746
+        ],
+        "torqueUpper_Nm": [
+          0.0144515111,
+          0.000226273374,
+          0.0322742939
+        ]
+      },
+      "oneZonePositive": {
+        "blockMeshExit": 0,
+        "checkMeshExit": 0,
+        "converged": false,
+        "setsToZonesExit": 0,
+        "solverExit": 0,
+        "tag": "one_pos",
+        "topoSetExit": 0,
+        "torqueLower_Nm": [
+          -0.014123081,
+          -0.00305414304,
+          0.00462148331
+        ],
+        "torqueUpper_Nm": [
+          0.0135805253,
+          0.000899705224,
+          -0.0467595494
+        ]
+      },
+      "signFlipped": true,
+      "stationaryLowerVsRotatingUpperSignsOpposite": true,
+      "status": "EXECUTED",
+      "upperTorqueZneg": 0.0322742939,
+      "upperTorqueZpos": -0.0467595494
+    }
+  },
+  "solver": "OpenFOAM",
+  "version": "v2412"
+}

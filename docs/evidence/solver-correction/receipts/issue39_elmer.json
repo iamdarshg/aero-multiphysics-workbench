@@ -1,0 +1,166 @@
+{
+  "benchmarks": {
+    "prescribedFlux": {
+      "analyticTleft": 10.0,
+      "case": "steady-1d-prescribed-flux",
+      "level": {
+        "data": {
+          "nNodes": 306,
+          "tLeft": 10.0,
+          "tMid": 5.0,
+          "tMidAt": [
+            0.5,
+            0.06
+          ],
+          "tmax": 10.0,
+          "tmin": 0.0
+        },
+        "elmerGridExit": 0,
+        "gmshExit": 0,
+        "lc": 0.02,
+        "names": {
+          "bottom": 3,
+          "domain": 5,
+          "left": 2,
+          "right": 1,
+          "top": 4
+        },
+        "solverExit": 0,
+        "solverVersion": "present",
+        "tag": "flux"
+      },
+      "relErrorTleft": 0.0,
+      "status": "EXECUTED",
+      "tLeft": 10.0
+    },
+    "steadyDirichlet": {
+      "analyticTmid": 50.0,
+      "case": "steady-1d-dirichlet",
+      "levels": [
+        {
+          "data": {
+            "nNodes": 33,
+            "tLeft": 100.0,
+            "tMid": 50.0,
+            "tMidAt": [
+              0.5,
+              0.05
+            ],
+            "tmax": 100.0,
+            "tmin": 0.0
+          },
+          "elmerGridExit": 0,
+          "gmshExit": 0,
+          "lc": 0.1,
+          "names": {
+            "bottom": 3,
+            "domain": 5,
+            "left": 2,
+            "right": 1,
+            "top": 4
+          },
+          "solverExit": 0,
+          "solverVersion": "present",
+          "tag": "steady_0.1"
+        },
+        {
+          "data": {
+            "nNodes": 63,
+            "tLeft": 100.0,
+            "tMid": 50.0,
+            "tMidAt": [
+              0.5,
+              0.05
+            ],
+            "tmax": 100.0,
+            "tmin": 0.0
+          },
+          "elmerGridExit": 0,
+          "gmshExit": 0,
+          "lc": 0.05,
+          "names": {
+            "bottom": 3,
+            "domain": 5,
+            "left": 2,
+            "right": 1,
+            "top": 4
+          },
+          "solverExit": 0,
+          "solverVersion": "present",
+          "tag": "steady_0.05"
+        },
+        {
+          "data": {
+            "nNodes": 205,
+            "tLeft": 100.0,
+            "tMid": 50.0,
+            "tMidAt": [
+              0.5,
+              0.05
+            ],
+            "tmax": 100.0,
+            "tmin": 0.0
+          },
+          "elmerGridExit": 0,
+          "gmshExit": 0,
+          "lc": 0.025,
+          "names": {
+            "bottom": 3,
+            "domain": 5,
+            "left": 2,
+            "right": 1,
+            "top": 4
+          },
+          "solverExit": 0,
+          "solverVersion": "present",
+          "tag": "steady_0.025"
+        }
+      ],
+      "relErrorTmid": 0.0,
+      "status": "EXECUTED",
+      "tMidRelDeltas": [
+        0.0,
+        0.0
+      ],
+      "tmax": 100.0,
+      "tmin": 0.0
+    },
+    "transient": {
+      "analyticTfinal": 1.0,
+      "case": "transient-uniform-heating-energy-accumulation",
+      "level": {
+        "data": {
+          "nNodes": 306,
+          "tLeft": 1.0,
+          "tMid": 1.0,
+          "tMidAt": [
+            0.5,
+            0.06
+          ],
+          "tmax": 1.0,
+          "tmin": 1.0
+        },
+        "elmerGridExit": 0,
+        "gmshExit": 0,
+        "lc": 0.02,
+        "names": {
+          "bottom": 3,
+          "domain": 5,
+          "left": 2,
+          "right": 1,
+          "top": 4
+        },
+        "solverExit": 0,
+        "solverVersion": "present",
+        "tag": "transient"
+      },
+      "relErrorTfinal": 0.0,
+      "status": "EXECUTED",
+      "tMid": 1.0,
+      "tmax": 1.0,
+      "tmin": 1.0
+    }
+  },
+  "solver": "Elmer",
+  "version": "ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 06:22:29 | ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 06:22:29 |  Started inside library code |  Going parallel initialization"
+}

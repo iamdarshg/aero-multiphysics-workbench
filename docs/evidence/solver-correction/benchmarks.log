@@ -1,0 +1,86 @@
+=== BENCHMARKS START 2026-09-19T06:21:49Z ===
+WM_PROJECT_VERSION=v2412 simpleFoam=/opt/solvers/bin/simpleFoam
+gmsh=/bin/gmsh gmshToFoam=/opt/solvers/bin/gmshToFoam
+--- issue37 openfoam ---
+WROTE issue37_openfoam.json {"channel": "EXECUTED", "cavity": "EXECUTED", "mrf": "EXECUTED"}
+--- issue39 elmer ---
+WROTE issue39_elmer.json {"steadyDirichlet": "EXECUTED", "prescribedFlux": "EXECUTED", "transient": "EXECUTED"}
+--- issue38 ross (governed run script) ---
+/opt/py312/lib/python3.12/site-packages/ccp/__init__.py:135: UserWarning: /home/iamdarshg/librefprop.so.
+REFPROP not configured. Automatically switching to EOS='HEOS' (CoolProp backend).
+  _warnings.warn(
+WROTE issue38_ross.json status= EXECUTED
+Good news: It is possible to use REFPROP on your system! However, the library 
+could not be loaded. Please make sure that REFPROP is available on your system.
+
+Neither found in current location nor found in system PATH.
+If you already obtained a copy of REFPROP from http://www.nist.gov/srd/, 
+add location of REFPROP to the PATH environment variable or your library path.
+
+In case you do not use Windows, have a look at https://github.com/jowr/librefprop.so 
+to find instructions on how to compile your own version of the REFPROP library.
+
+COOLPROP_REFPROP_ROOT: ?
+ALTERNATIVE_REFPROP_PATH: /home/iamdarshg
+ERROR: Could not load REFPROP (librefprop.so) due to: /home/iamdarshg/librefprop.so: cannot open shared object file: No such file or directory. Make sure the library is in your system search path. In case you run 64bit Windows and you have a REFPROP license, try installing the 64bit DLL from NIST. 
+--- issue39 electrical closure ---
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+NL: NLBGSSolver 'NL: NLBGS' on system '' failed to converge in 1 iterations.
+WROTE issue39_electrical.json status= EXECUTED
+--- issue40 precice ---
+WROTE issue40_precice.json status= PARTIAL
+--- issue41 promotion gate ---
+WROTE issue41_gate.json status= EXECUTED positive= True refusesInvalid= True
+--- collect evidence ---
+issue37_openfoam.json => ?
+issue38_ross.json => EXECUTED
+issue39_electrical.json => EXECUTED
+issue39_elmer.json => ?
+issue40_precice.json => PARTIAL
+issue41_gate.json => EXECUTED
+=== BENCHMARKS DONE 2026-09-19T06:33:31Z ===

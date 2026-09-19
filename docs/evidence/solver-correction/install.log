@@ -1,0 +1,39 @@
+=== INSTALL START 2026-09-19T05:18:27Z ===
+--- A: apt base ---
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Adding key to /etc/apt/trusted.gpg.d/deadsnakes-ubuntu-ppa.gpg with fingerprint F23C5A6CF475977595C89F51BA6932366A755776
+Adding key to /etc/apt/trusted.gpg.d/elmer-csc-ubuntu-ubuntu-elmer-csc-ppa.gpg with fingerprint 1FE4A88ACFEE8388A409F23A89358ABF9FB7E178
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+A gmsh: 4.8.4
+A elmer: ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 05:20:09
+A py312: Python 3.12.13
+--- B: conda heavies ---
+
+    micromamba run -p /opt/solvers mycommand
+
+B mamba create rc=0
+Transaction finished
+
+B pyprecice rc=0
+--- C: python venv ---
+PIP OK numpy
+PIP OK scipy
+PIP OK ross
+PIP OK pybamm
+PIP OK cantera
+PIP OK openmdao
+PYSTACK OK
+--- D: code_aster attempt (bounded) ---
+
+    micromamba run -p /opt/aster mycommand
+
+D code_aster rc=0
+/tmp/metadata-scripts1733542664/startup-script: line 53: /opt/aster/bin/as_run: No such file or directory
+--- E: interpreter smoke ---
+P12 VER 3.12.13
+WARNING: precice-tools is deprecated and will be removed in preCICE version 4.
+Please use precice-version , precice-config-validate or precice-config-doc instead.
+3.4.0;no-info [git failed to run];PRE
+ELMER SOLVER (v 26.2) STARTED AT: 2026/09/19 05:22:35
+bash: line 1: simpleFoam: command not found
+=== INSTALL DONE 2026-09-19T05:22:35Z ===

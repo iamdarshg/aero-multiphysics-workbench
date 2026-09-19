@@ -1,0 +1,160 @@
+{
+  "mission": "SOLVER-CORR 01-05 native solver-correctness benchmarks on GCP",
+  "project": "project-ba289c9c-3c25-4e15-9dc",
+  "zone": "us-central1-a",
+  "vm": {
+    "name": "aero-solvercorr-202609190517",
+    "machineType": "e2-standard-2",
+    "provisioningModel": "SPOT",
+    "image": "ubuntu-2204-lts",
+    "bootDiskGb": 60,
+    "createdUtc": "2026-09-19T05:18:00Z",
+    "deletedUtc": "2026-09-19T07:12:00Z",
+    "elapsedMinutes": 114,
+    "deleted": true,
+    "verifiedDeleted": true,
+    "deviation": "Mission preferred Spot/preemptible; regional PREEMPTIBLE_CPUS quota reported 0 across checked regions. A Spot e2-standard-2 was accepted by the API anyway and ran to completion. The pre-existing RUNNING instance instance-20260823-180846 (asia-south1-c) was never touched.",
+    "estimatedCostUsd": 0.04,
+    "costBasis": "Spot e2-standard-2 us-central1 ~= US$0.0126/hr + 60 GB pd-standard ~= US$0.0033/hr; ~1.9 h wall."
+  },
+  "solverVersions": {
+    "OpenFOAM": "v2412 (conda-forge)",
+    "Elmer": "26.2 (ppa:elmer-csc-ubuntu/elmer-csc-ppa)",
+    "preCICE": "3.4.0 (conda-forge, pyprecice)",
+    "ROSS": "3.0.0 (pip ross-rotordynamics)",
+    "Gmsh": "4.8.4 (apt)",
+    "code_aster": "18.1.6 (conda-forge; runner run_aster present, as_run absent)",
+    "python": "3.12.13",
+    "OpenMDAO": "used via aeroworkbench_electrical composition"
+  },
+  "install": {
+    "installMinutes": 4.3,
+    "note": "openfoam and precice share an MPI/PETSc stack and cannot co-reside in one conda prefix; installing openfoam evicted precice, so preCICE was restored in /opt/precice."
+  },
+  "benchmarks": {
+    "37": {
+      "solver": "OpenFOAM",
+      "case": "plane channel (Poiseuille) + lid-driven cavity + rotating-frame MRF shear",
+      "status": "EXECUTED",
+      "evidence": "receipts/issue37_openfoam.json",
+      "channel": {
+        "inletVolumetricFlow_m3s": 0.001,
+        "outletVolumetricFlow_m3s": 0.000999999999,
+        "massImbalanceRel": 1.0e-9,
+        "analyticMaxUx": 1.5,
+        "nativeMaxUx": 1.4973041,
+        "analyticRelError": 0.001797,
+        "meshLadder": ["40x8", "80x16", "160x32"],
+        "meshMaxUx": [1.4546648, 1.4885616, 1.4973041]
+      },
+      "cavity": {
+        "meshLadder": ["10x10", "20x20", "40x40"],
+        "minUx": [-0.19092473, -0.20385624, -0.20691534],
+        "minUxRelDeltas": [0.06343445753733125, 0.014784307437041686]
+      },
+      "mrf": {
+        "oneZone": {
+          "upperTorqueZpos_Nm": -0.0467595494,
+          "upperTorqueZneg_Nm": 0.0322742939,
+          "signFlipped": true,
+          "stationaryLowerVsRotatingUpperSignsOpposite": true
+        },
+        "multiZone": {
+          "torqueLowerMz_Nm": -0.0429711793,
+          "torqueUpperMz_Nm": 0.00955692036,
+          "independentRates": true
+        },
+        "note": "Steady solver reached its iteration cap (converged=false); torques are finite and sign-consistent. Rotation origin centred on the domain."
+      },
+      "notRun": {
+        "transientAMI": "BLOCKED BY TIME - no transient sliding-interface case executed within budget",
+        "multiStageMRF": "PARTIAL - two independent rotating-frame zones, not a multi-stage rotor MRF"
+      }
+    },
+    "38": {
+      "solver": "ROSS",
+      "case": "Jeffcott rotor + flexible/soft-bearing shaft + unbalance response + short/stiff shaft",
+      "status": "EXECUTED",
+      "evidence": "receipts/issue38_ross.json",
+      "analyticFirstCriticalRpm": 10693.42533487408,
+      "nativeFirstCriticalRpm": 8697.998368,
+      "criticalRelError": 0.1866031607633212,
+      "modalFirstWhirlRpm": 8738.057798220492,
+      "modalVsCampbellRelDelta": 0.004584477597372941,
+      "softBearingDropsCritical": true,
+      "softFirstCriticalRpm": 2887.080442,
+      "shortStiffFirstCriticalRpm": 46858.808618,
+      "directUnbalance": {
+        "status": "EXECUTED",
+        "firstWhirlRpm": 8738.125606206326,
+        "peakSpeedRad_s": 915.0543736867551,
+        "peakResponseM": 0.38657276041838395,
+        "note": "Direct ROSS 3.x call; peak coincides with first whirl (resonance)."
+      },
+      "notRun": {
+        "governedForcedAnalysis": "BLOCKED - repo run_ross.py passes the ROSS 2.x keyword 'frequency'; ROSS 3.0.0 API uses speed_range. Product code was NOT modified.",
+        "codeAster": "BLOCKED - conda-forge code-aster 18.1.6 installs run_aster (and MEDCoupling) but not as_run; no canonical structural case was executed within budget."
+      }
+    },
+    "39": {
+      "solver": "Elmer + OpenMDAO scalar participants",
+      "case": "steady/multi-material/flux/transient conduction + machine-drive-battery-thermal energy closure",
+      "status": "EXECUTED",
+      "evidence": ["receipts/issue39_elmer.json", "receipts/issue39_electrical.json"],
+      "elmer": {
+        "steadyDirichlet": {"tMid_K": 50.0, "analytic_K": 50.0, "relError": 0.0,
+                            "tmax_K": 100.0, "tmin_K": 0.0, "meshIndependent": true},
+        "prescribedFlux": {"tLeft_K": 10.0, "analytic_K": 10.0, "relError": 0.0},
+        "transientUniformHeating": {"tFinal_K": 1.0, "analytic_K": 1.0, "relError": 0.0}
+      },
+      "electrical": {
+        "deliveredPowerW": 1847.1628410245567,
+        "consumedPowerW": 1847.1628410364804,
+        "couplingClosureResidualW": -1.1923702913918532e-08,
+        "powerBalanceResidualW": 0.0,
+        "heatBalancePassed": true,
+        "failClosedCase": "12000 rpm -> MACHINE_WINDING_TEMP_OUT_OF_VALIDITY:805.0 K (BLOCKED, correct fail-closed)"
+      },
+      "notRun": {
+        "multiMaterialConduction": "BLOCKED BY TIME - not executed"
+      }
+    },
+    "40": {
+      "solver": "preCICE",
+      "case": "native 2-participant implicit nonmatching-mesh scalar exchange",
+      "status": "EXECUTED",
+      "evidence": "receipts/issue40_precice.json",
+      "resolutions": [4, 8],
+      "participantsExit": [0, 0],
+      "consistentMappingMaxAbsError": {"res4": 1.25, "res8": 0.625},
+      "checkpointRollbackEvents": "A and B each 15 implicit checkpoint/read_checkpoint events",
+      "limitations": "Conservative write-mapping integral conservation was not separately quantified; interfaces are 1-D line meshes in 2-D."
+    },
+    "41": {
+      "solver": "aeroworkbench_convergence promotion gate + GEN12 independence runner",
+      "case": "cross-solver validation gate + negative acceptance test",
+      "status": "EXECUTED",
+      "evidence": "receipts/issue41_gate.json",
+      "positiveControl": "validated-final = true",
+      "negativeMissingReceipt": "validated-final = false (blocker required-participant-unavailable:thermal-conduction)",
+      "negativeInvalidReceipt": "validated-final = false (blocker mesh-independence-failed:incompressible-steady-flow)",
+      "refusesInvalid": true,
+      "realIndependence": {"elmerSteadyMesh": "accepted (3 levels, QoI tMid)", "openfoamChannel": "derived from native QoI once channel executes"},
+      "honestSet": "incomplete-diagnostic with real blockers (code_aster unavailable, preCICE coupling flag)"
+    }
+  },
+  "reproduce": {
+    "vmBootstrap": "scripts/gcp/install-solvers.sh",
+    "benchmarkRunner": "scripts/gcp/run-benchmarks.sh",
+    "benchmarks": [
+      "scripts/gcp/bench_openfoam.py",
+      "scripts/gcp/bench_elmer.py",
+      "scripts/gcp/bench_ross.py",
+      "scripts/gcp/bench_electrical.py",
+      "scripts/gcp/bench_precice.py",
+      "scripts/gcp/bench_promotion.py"
+    ],
+    "invocation": "gcloud compute scp scripts/gcp/* to /opt/repo/scripts/gcp; sudo bash /opt/repo/scripts/gcp/run-benchmarks.sh",
+    "note": "preCICE benchmark must run with PYTHONPATH cleared and /opt/precice/bin/python so the native binding shadows solvers/precice."
+  }
+}

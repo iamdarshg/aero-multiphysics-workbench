@@ -1,0 +1,322 @@
+{
+  "benchmark": "cross-solver-validation-gate",
+  "honestSet": {
+    "blockers": [
+      "required-participant-unavailable:coupled-interface-validation",
+      "required-participant-unavailable:structural-static",
+      "required-participant-deferred:structural-static",
+      "field-coupling-failed:coupled-interface-validation",
+      "mesh-independence-failed:rotor-campbell"
+    ],
+    "candidateHash": "candidate-real-receipts",
+    "participants": [
+      {
+        "participantId": "cad-interchange",
+        "required": true
+      },
+      {
+        "participantId": "domain-mesh",
+        "required": true
+      },
+      {
+        "participantId": "incompressible-steady-flow",
+        "required": true
+      },
+      {
+        "participantId": "structural-static",
+        "required": true
+      },
+      {
+        "participantId": "thermal-conduction",
+        "required": true
+      },
+      {
+        "participantId": "rotor-campbell",
+        "required": true
+      },
+      {
+        "participantId": "rotating-electrical-machine",
+        "required": true
+      },
+      {
+        "participantId": "coupled-interface-validation",
+        "required": true
+      }
+    ],
+    "reason": "not validated: required-participant-unavailable:coupled-interface-validation, required-participant-unavailable:structural-static, required-participant-deferred:structural-static, field-coupling-failed:coupled-interface-validation, mesh-independence-failed:rotor-campbell",
+    "status": "incomplete-diagnostic",
+    "validatedFinal": false
+  },
+  "independence": {
+    "elmerSteady": {
+      "accepted": true,
+      "declared": [
+        {
+          "lc": 0.1
+        },
+        {
+          "lc": 0.05
+        },
+        {
+          "lc": 0.025
+        }
+      ],
+      "gciSafetyFactor": 1.25,
+      "kind": "mesh",
+      "levels": [
+        "lc0.1",
+        "lc0.05",
+        "lc0.025"
+      ],
+      "minLevels": 2,
+      "reason": "mesh independence accepted across 3 levels for declared QoI tMid",
+      "resolutions": [
+        0.1,
+        0.05,
+        0.025
+      ],
+      "runHashes": [
+        "f165ea8652b7ed69132aaebd9ecbe7b3f4122ff40d651b3e0d0cb58ad3395b64",
+        "47ede95a23e8783c36a6393ff01315efb8699ce9d732fc100b3692a907cde6ac",
+        "26ed397ae8c495909d2f68d3a3116c607872a557f1703e9c31e19a441d96779e"
+      ],
+      "runIds": [
+        "el-lc0.1",
+        "el-lc0.05",
+        "el-lc0.025"
+      ],
+      "trends": [
+        {
+          "deltas": [
+            0.0,
+            0.0
+          ],
+          "detail": "finest=50 finest-change=0 allowed=1",
+          "gciFine": null,
+          "name": "tMid",
+          "observedOrder": null,
+          "passed": true,
+          "relativeDeltas": [
+            0.0,
+            0.0
+          ],
+          "values": [
+            50.0,
+            50.0,
+            50.0
+          ]
+        }
+      ]
+    },
+    "openfoamChannel": {
+      "accepted": true,
+      "declared": [
+        {
+          "element_count": 320.0
+        },
+        {
+          "element_count": 1280.0
+        },
+        {
+          "element_count": 5120.0
+        }
+      ],
+      "gciSafetyFactor": 1.25,
+      "kind": "mesh",
+      "levels": [
+        "40x8",
+        "80x16",
+        "160x32"
+      ],
+      "minLevels": 2,
+      "reason": "mesh independence accepted across 3 levels for declared QoI maxUx,massFlow",
+      "resolutions": [
+        0.05590169943749474,
+        0.02795084971874737,
+        0.013975424859373685
+      ],
+      "runHashes": [
+        "1a6cfc0e13c7b718f9497582844b509ba08180e6f86b8114dccc7be85100df16",
+        "41aa8dc59944a84e7e7737751bf2163dd13774a31ae6e4aea6278b48b2a14e80",
+        "ee08bbde032bb50c6b667acf209c0880ea7d52c7d9704175a89541b18de9b639"
+      ],
+      "runIds": [
+        "of-40x8",
+        "of-80x16",
+        "of-160x32"
+      ],
+      "trends": [
+        {
+          "deltas": [
+            0.03389679999999995,
+            0.008742500000000097
+          ],
+          "detail": "finest=1.4973 finest-change=0.00874 allowed=0.0749",
+          "gciFine": 0.002536641217719337,
+          "name": "maxUx",
+          "observedOrder": 1.955031287295343,
+          "passed": true,
+          "relativeDeltas": [
+            0.022638554185485733,
+            0.005838827262945515
+          ],
+          "values": [
+            1.4546648,
+            1.4885616,
+            1.4973041
+          ]
+        },
+        {
+          "deltas": [
+            0.0,
+            0.0
+          ],
+          "detail": "finest=1 finest-change=0 allowed=0.05",
+          "gciFine": null,
+          "name": "massFlow",
+          "observedOrder": null,
+          "passed": true,
+          "relativeDeltas": [
+            0.0,
+            0.0
+          ],
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    }
+  },
+  "negative_invalidReceipt": {
+    "blockers": [
+      "mesh-independence-failed:incompressible-steady-flow"
+    ],
+    "candidateHash": "candidate-bad-mesh-independence",
+    "participants": [
+      {
+        "participantId": "cad-interchange",
+        "required": true
+      },
+      {
+        "participantId": "domain-mesh",
+        "required": true
+      },
+      {
+        "participantId": "incompressible-steady-flow",
+        "required": true
+      },
+      {
+        "participantId": "structural-static",
+        "required": true
+      },
+      {
+        "participantId": "thermal-conduction",
+        "required": true
+      },
+      {
+        "participantId": "rotor-campbell",
+        "required": true
+      },
+      {
+        "participantId": "rotating-electrical-machine",
+        "required": true
+      },
+      {
+        "participantId": "coupled-interface-validation",
+        "required": true
+      }
+    ],
+    "reason": "not validated: mesh-independence-failed:incompressible-steady-flow",
+    "status": "incomplete-diagnostic",
+    "validatedFinal": false
+  },
+  "negative_missingReceipt": {
+    "blockers": [
+      "required-participant-unavailable:thermal-conduction",
+      "required-participant-deferred:thermal-conduction"
+    ],
+    "candidateHash": "candidate-missing-thermal",
+    "participants": [
+      {
+        "participantId": "cad-interchange",
+        "required": true
+      },
+      {
+        "participantId": "domain-mesh",
+        "required": true
+      },
+      {
+        "participantId": "incompressible-steady-flow",
+        "required": true
+      },
+      {
+        "participantId": "structural-static",
+        "required": true
+      },
+      {
+        "participantId": "thermal-conduction",
+        "required": true
+      },
+      {
+        "participantId": "rotor-campbell",
+        "required": true
+      },
+      {
+        "participantId": "rotating-electrical-machine",
+        "required": true
+      },
+      {
+        "participantId": "coupled-interface-validation",
+        "required": true
+      }
+    ],
+    "reason": "not validated: required-participant-unavailable:thermal-conduction, required-participant-deferred:thermal-conduction",
+    "status": "incomplete-diagnostic",
+    "validatedFinal": false
+  },
+  "positiveControl": {
+    "blockers": [],
+    "candidateHash": "candidate-all-receipts",
+    "participants": [
+      {
+        "participantId": "cad-interchange",
+        "required": true
+      },
+      {
+        "participantId": "domain-mesh",
+        "required": true
+      },
+      {
+        "participantId": "incompressible-steady-flow",
+        "required": true
+      },
+      {
+        "participantId": "structural-static",
+        "required": true
+      },
+      {
+        "participantId": "thermal-conduction",
+        "required": true
+      },
+      {
+        "participantId": "rotor-campbell",
+        "required": true
+      },
+      {
+        "participantId": "rotating-electrical-machine",
+        "required": true
+      },
+      {
+        "participantId": "coupled-interface-validation",
+        "required": true
+      }
+    ],
+    "reason": "all required scientific gates passed",
+    "status": "validated-final",
+    "validatedFinal": true
+  },
+  "refusesInvalid": true,
+  "status": "EXECUTED"
+}

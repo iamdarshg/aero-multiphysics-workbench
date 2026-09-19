@@ -1,0 +1,76 @@
+{
+  "benchmark": "electrical-machine-drive-battery-energy-closure",
+  "cases": [
+    {
+      "closureResidual": 1.1923702913918532e-08,
+      "consumedPowerW": 1847.1628410364804,
+      "converged": true,
+      "couplingClosureResidualW": -1.1923702913918532e-08,
+      "deliveredPowerW": 1847.1628410245567,
+      "driveLossW": 96.18380554951591,
+      "electricalPowerW": 1750.9790354869644,
+      "engine": "openmdao",
+      "heatBalancePassed": true,
+      "heatBalanceReason": "heat-balance closure passed for heat-flow",
+      "iterations": 23,
+      "loadTorqueNm": 0.0,
+      "machineLossW": 467.6415320578664,
+      "mechanicalPowerW": 1283.337503429098,
+      "powerBalanceChecks": [
+        {
+          "detail": "|sim-ref|=0 allowed=0.00275 (scale=100)",
+          "name": "energy",
+          "passed": true,
+          "reference": 1750.9790354869644,
+          "residual": 0.0,
+          "simulated": 1750.9790354869644
+        }
+      ],
+      "powerBalancePassed": true,
+      "powerBalanceReason": "energy closure passed for energy",
+      "residualNorm": 6.719967586832354e-07,
+      "speedRpm": 20000.0,
+      "thermalDriveLossW": 96.18380554951591,
+      "thermalMachineLossW": 467.6415320578664
+    },
+    {
+      "closureResidual": 1.1923702913918532e-08,
+      "consumedPowerW": 1847.1628410364804,
+      "converged": true,
+      "couplingClosureResidualW": -1.1923702913918532e-08,
+      "deliveredPowerW": 1847.1628410245567,
+      "driveLossW": 96.18380554951591,
+      "electricalPowerW": 1750.9790354869644,
+      "engine": "openmdao",
+      "heatBalancePassed": true,
+      "heatBalanceReason": "heat-balance closure passed for heat-flow",
+      "iterations": 23,
+      "loadTorqueNm": 0.01,
+      "machineLossW": 467.6415320578664,
+      "mechanicalPowerW": 1283.337503429098,
+      "powerBalanceChecks": [
+        {
+          "detail": "|sim-ref|=0 allowed=0.00275 (scale=100)",
+          "name": "energy",
+          "passed": true,
+          "reference": 1750.9790354869644,
+          "residual": 0.0,
+          "simulated": 1750.9790354869644
+        }
+      ],
+      "powerBalancePassed": true,
+      "powerBalanceReason": "energy closure passed for energy",
+      "residualNorm": 6.719967586832354e-07,
+      "speedRpm": 20000.0,
+      "thermalDriveLossW": 96.18380554951591,
+      "thermalMachineLossW": 467.6415320578664
+    },
+    {
+      "loadTorqueNm": 0.0,
+      "reason": "ElectricalModelError:'comp_rotating_electrical_machine' <class _ParticipantComp>: Error calling compute(), MACHINE_WINDING_TEMP_OUT_OF_VALIDITY:805.00486941942",
+      "speedRpm": 12000.0,
+      "status": "BLOCKED"
+    }
+  ],
+  "status": "EXECUTED"
+}
