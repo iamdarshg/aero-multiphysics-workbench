@@ -1,0 +1,14 @@
+{
+  "fixture_id": "rotating-blade-laminate",
+  "description": "rotating blade/propeller-style laminate",
+  "angles_deg": [0.0, 45.0, -45.0, 0.0, 0.0, -45.0, 45.0, 0.0],
+  "ply_thickness_m": 0.0002,
+  "length_m": 1.0,
+  "width_m": 0.05,
+  "n_x_n_m": 0.0,
+  "tip_radius_m": 0.6,
+  "omega_rad_s": 300.0,
+  "temperature_k": 320.0,
+  "delta_temperature_k": 40.0,
+  "region_radius_m": 0.3
+}

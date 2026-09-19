@@ -1,0 +1,12 @@
+{
+  "rotor_id": "prop-open",
+  "blade_count": 4,
+  "tip_radius_m": 0.3,
+  "hub_radius_m": 0.05,
+  "coaxial": true,
+  "axial_spacing_m": 0.1,
+  "sections": [
+    {"radius_fraction": 0.2, "chord_m": 0.08, "twist_deg": 20.0},
+    {"radius_fraction": 0.9, "chord_m": 0.05, "twist_deg": 10.0}
+  ]
+}

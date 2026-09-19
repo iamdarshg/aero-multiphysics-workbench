@@ -1,0 +1,14 @@
+{
+  "fixture_id": "cantilever-laminate-plate",
+  "description": "fixed cantilever laminate plate/beam",
+  "angles_deg": [0.0, 45.0, -45.0, 90.0, 90.0, -45.0, 45.0, 0.0],
+  "ply_thickness_m": 0.000125,
+  "length_m": 0.5,
+  "width_m": 0.1,
+  "n_x_n_m": 50000.0,
+  "pressure_pa": 0.0,
+  "omega_rad_s": 0.0,
+  "temperature_k": 300.0,
+  "delta_temperature_k": 20.0,
+  "region_radius_m": 0.5
+}

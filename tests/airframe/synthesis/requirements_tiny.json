@@ -1,0 +1,78 @@
+{
+  "requirements": [
+    {
+      "id": "REQ-PAYLOAD",
+      "kind": "mission",
+      "metric": "payload_mass",
+      "operator": "at_least",
+      "value": 300.0,
+      "unit": "kg",
+      "rationale": "mission payload"
+    },
+    {
+      "id": "REQ-STALL",
+      "kind": "performance",
+      "metric": "stall_speed",
+      "operator": "at_most",
+      "value": 30.0,
+      "unit": "m/s"
+    },
+    {
+      "id": "REQ-CRUISE",
+      "kind": "performance",
+      "metric": "cruise_speed",
+      "operator": "at_least",
+      "value": 65.0,
+      "unit": "m/s"
+    },
+    {
+      "id": "REQ-MAX",
+      "kind": "constraint",
+      "metric": "max_speed",
+      "operator": "at_most",
+      "value": 110.0,
+      "unit": "m/s"
+    },
+    {
+      "id": "REQ-CLIMB",
+      "kind": "performance",
+      "metric": "climb_gradient",
+      "operator": "at_least",
+      "value": 0.08,
+      "unit": "dimensionless"
+    },
+    {
+      "id": "REQ-ALTITUDE",
+      "kind": "mission",
+      "metric": "cruise_altitude",
+      "operator": "at_most",
+      "value": 3000.0,
+      "unit": "m"
+    },
+    {
+      "id": "REQ-ASPECT-RATIO",
+      "kind": "constraint",
+      "metric": "aspect_ratio",
+      "operator": "between",
+      "lower": 7.0,
+      "upper": 9.0,
+      "unit": "dimensionless"
+    },
+    {
+      "id": "REQ-RANGE",
+      "kind": "mission",
+      "metric": "range",
+      "operator": "at_least",
+      "value": 400000.0,
+      "unit": "m"
+    },
+    {
+      "id": "REQ-LOAD-FACTOR",
+      "kind": "constraint",
+      "metric": "load_factor",
+      "operator": "at_least",
+      "value": 3.5,
+      "unit": "dimensionless"
+    }
+  ]
+}

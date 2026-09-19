@@ -1,0 +1,37 @@
+{
+  "flow": {
+    "label": "flat-plate-boundary-layer",
+    "reynoldsNumber": 1000000.0,
+    "machNumber": 0.1,
+    "turbulenceIntensity": 0.01,
+    "reference": {
+      "label": "plate length",
+      "lengthM": 1.0,
+      "velocityMS": 30.0,
+      "source": "declared plate length reference"
+    },
+    "transitionState": "fully_turbulent",
+    "separationFraction": 0.0,
+    "thresholds": "external_flow"
+  },
+  "wall": {
+    "surface": "plate",
+    "mode": "wall_function",
+    "layerCount": 12,
+    "growthRatio": 1.3,
+    "measured": {
+      "firstCellHeightM": 0.0012,
+      "yPlus": 45.0,
+      "layerCount": 12,
+      "growthRatio": 1.25,
+      "totalThicknessM": 0.09,
+      "thermalWallTemperatureK": null,
+      "source": "measured from the generated gmsh mesh"
+    },
+    "expectCompatible": true
+  },
+  "expect": {
+    "regime": "turbulent",
+    "source": "analytical"
+  }
+}

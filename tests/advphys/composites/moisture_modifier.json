@@ -1,0 +1,9 @@
+{
+  "modifier_id": "hot-wet-moisture",
+  "revision": "screening-r1",
+  "source": "generic hot/wet moisture knockdown",
+  "factor": 0.85,
+  "moisture_min_fraction": 0.0,
+  "moisture_max_fraction": 1.0,
+  "note": "generic moisture knockdown for platform verification"
+}

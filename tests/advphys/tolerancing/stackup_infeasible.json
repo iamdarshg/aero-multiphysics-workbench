@@ -1,0 +1,12 @@
+{
+  "stackupId": "running-clearance-stack",
+  "characteristic": "running-clearance",
+  "unit": "mm",
+  "lowerSpec": 0.0,
+  "upperSpec": 0.15,
+  "terms": [
+    {"id": "bore-contribution", "calloutId": "bore", "sensitivity": 0.5},
+    {"id": "shaft-contribution", "calloutId": "shaft", "sensitivity": -0.5},
+    {"id": "runout-contribution", "calloutId": "face-runout", "sensitivity": 1.0}
+  ]
+}

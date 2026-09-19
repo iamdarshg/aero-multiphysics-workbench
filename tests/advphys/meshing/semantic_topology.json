@@ -1,0 +1,10 @@
+{
+  "entities": [
+    {"key": "blade.wall", "kind": "wall", "region": "rotor_fluid", "component": "rotor"},
+    {"key": "blade.fluid", "kind": "fluid_region", "region": "rotor_fluid", "component": "rotor"},
+    {"key": "rotor.stator.iface", "kind": "interface", "region": "rotor_fluid", "component": "rotor"},
+    {"key": "duct.wall", "kind": "wall", "region": "duct_fluid", "component": "duct"},
+    {"key": "duct.fluid", "kind": "stationary_region", "region": "duct_fluid", "component": "duct"},
+    {"key": "shaft.solid", "kind": "solid_region", "region": "shaft_solid", "component": "shaft"}
+  ]
+}

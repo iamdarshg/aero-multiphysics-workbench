@@ -1,0 +1,46 @@
+{
+  "specId": "vs03-fixture-spec",
+  "variables": [
+    {
+      "name": "tolerance",
+      "unit": "m",
+      "uncertaintyClass": "aleatory",
+      "distribution": { "kind": "normal", "params": [0.0, 0.05] },
+      "provenance": {
+        "source": "manufacturing-tolerance",
+        "reference": "fixture-manufacturing-line",
+        "revision": "1",
+        "detail": "declared manufacturing scatter for the fixture"
+      }
+    },
+    {
+      "name": "material_strength",
+      "unit": "Pa",
+      "uncertaintyClass": "aleatory",
+      "distribution": { "kind": "lognormal", "params": [24.0, 0.05] },
+      "provenance": {
+        "source": "material-scatter",
+        "reference": "fixture-material-batch",
+        "revision": "2"
+      }
+    }
+  ],
+  "correlations": [
+    { "nameA": "tolerance", "nameB": "material_strength", "coefficient": 0.25 }
+  ],
+  "modelForm": [
+    {
+      "fidelity": "surrogate",
+      "response": "thrust",
+      "trusted": false,
+      "distribution": { "kind": "normal", "params": [0.0, 0.03] },
+      "provenance": {
+        "source": "aerodynamic-model-discrepancy",
+        "reference": "fixture-rom-vs-native",
+        "revision": "1",
+        "detail": "surrogate model error, epistemic"
+      }
+    }
+  ],
+  "software": { "name": "aeroworkbench-vehicle-systems-robust", "version": "1.0.0" }
+}

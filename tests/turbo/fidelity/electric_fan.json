@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo07-electric-fan",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "fan", "kind": "fan_stage" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" },
+    { "id": "motor", "kind": "motor_coupling" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "fan", "kind": "flow", "station": "1" },
+    { "from": "fan", "to": "nozzle", "kind": "flow", "station": "2" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "3" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 4.5, "unit": "kg/s" }, "totalPressure": { "value": 95000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 110000, "unit": "Pa" }, "totalTemperature": { "value": 305, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 109000, "unit": "Pa" }, "totalTemperature": { "value": 304.5, "unit": "K" } } }
+  ],
+  "rows": [
+    {
+      "id": "fan-rotor",
+      "node": "fan",
+      "role": "work_adding",
+      "frame": "rotating",
+      "shaft": "fan-spool",
+      "stationIn": "1",
+      "stationOut": "2",
+      "rowCount": 1,
+      "periodicity": 12,
+      "family": "axial",
+      "geometryRef": "fan-blade-geometry",
+      "clearance": { "tipClearance": { "value": 0.5, "unit": "mm" }, "endwallState": "sealed", "shroudState": "shrouded" },
+      "materialRef": "composite@1",
+      "thermalRef": "fan-thermal@1"
+    }
+  ],
+  "shafts": [
+    {
+      "id": "fan-spool",
+      "kind": "single",
+      "members": ["fan-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 3000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.0,
+      "couplings": [
+        { "id": "motor-drive", "kind": "electric_motor", "targetNode": "motor", "efficiency": 0.95 }
+      ]
+    }
+  ]
+}

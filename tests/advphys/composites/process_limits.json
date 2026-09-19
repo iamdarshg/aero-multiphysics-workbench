@@ -1,0 +1,14 @@
+{
+  "process": "autoclave-ud-tape",
+  "revision": "screening-r1",
+  "source": "generic composite process screening limits",
+  "min_ply_thickness_m": 0.0001,
+  "max_ply_thickness_m": 0.0002,
+  "allowed_orientations_deg": [0.0, 45.0, -45.0, 90.0],
+  "min_ply_count": 4,
+  "require_symmetric": true,
+  "require_balanced": true,
+  "min_radius_m": 0.05,
+  "max_ply_drop_ratio": 0.1,
+  "max_drape_angle_deg": 5.0
+}

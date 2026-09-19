@@ -1,0 +1,12 @@
+{
+  "source": "generic UD carbon/epoxy screening allowables; verify before certification use",
+  "revision": "screening-r1",
+  "x_tension_pa": 1500000000.0,
+  "x_compression_pa": 1200000000.0,
+  "y_tension_pa": 50000000.0,
+  "y_compression_pa": 200000000.0,
+  "shear_pa": 70000000.0,
+  "temperature_min_k": 233.15,
+  "temperature_max_k": 393.15,
+  "note": "generic ply allowables for platform verification"
+}

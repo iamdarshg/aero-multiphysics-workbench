@@ -1,0 +1,44 @@
+{
+  "assemblyId": "flying-wing-demo",
+  "surfaces": [
+    {
+      "surfaceId": "blended",
+      "role": "flying_wing",
+      "frame": "body",
+      "nStations": 4,
+      "planform": {
+        "spanMm": 140.0,
+        "rootChordMm": 60.0,
+        "tipChordMm": 20.0,
+        "sweepDeg": 18.0,
+        "twistRootDeg": 2.0,
+        "twistTipDeg": -4.0
+      },
+      "profile": {
+        "family": "cst",
+        "thicknessRatio": 0.14,
+        "cstUpper": [0.16, 0.11, 0.05, 0.02],
+        "cstLower": [-0.12, -0.08, -0.03, -0.01]
+      }
+    }
+  ],
+  "bodies": [],
+  "controls": [
+    {
+      "controlId": "elevon_left",
+      "parentId": "blended",
+      "kind": "elevon",
+      "hingeFraction": 0.72,
+      "spanFraction": [0.0, 0.5],
+      "deflectionDeg": -4.0
+    },
+    {
+      "controlId": "elevon_right",
+      "parentId": "blended",
+      "kind": "elevon",
+      "hingeFraction": 0.72,
+      "spanFraction": [0.5, 1.0],
+      "deflectionDeg": 4.0
+    }
+  ]
+}

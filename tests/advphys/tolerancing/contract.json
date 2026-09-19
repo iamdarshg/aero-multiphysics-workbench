@@ -1,0 +1,92 @@
+{
+  "contractId": "generic-assembly-contract",
+  "revision": 2,
+  "schemaVersion": "advphys10-v1",
+  "callouts": [
+    {
+      "id": "bore",
+      "characteristic": "running-clearance-bore",
+      "toleranceClass": "dimension",
+      "nominal": 40.0,
+      "unit": "mm",
+      "lowerDeviation": -0.05,
+      "upperDeviation": 0.05,
+      "distribution": "normal",
+      "sigmaMultiplier": 3.0,
+      "datums": [
+        {"datumId": "A", "feature": "mounting-face", "precedence": 1},
+        {"datumId": "B", "feature": "pilot-bore", "precedence": 2}
+      ],
+      "provenance": {"sourceKind": "user-requirement", "reference": "generic-drawing", "revision": "3"}
+    },
+    {
+      "id": "shaft",
+      "characteristic": "running-clearance-shaft",
+      "toleranceClass": "dimension",
+      "nominal": 39.93,
+      "unit": "mm",
+      "lowerDeviation": -0.02,
+      "upperDeviation": 0.02,
+      "distribution": "normal",
+      "sigmaMultiplier": 3.0,
+      "datums": [{"datumId": "A", "feature": "mounting-face", "precedence": 1}],
+      "provenance": {"sourceKind": "manufacturing-method", "reference": "turning-capability", "revision": "1"}
+    },
+    {
+      "id": "face-runout",
+      "characteristic": "face-runout",
+      "toleranceClass": "runout",
+      "nominal": 0.0,
+      "unit": "mm",
+      "lowerDeviation": -0.02,
+      "upperDeviation": 0.02,
+      "distribution": "uniform",
+      "datums": [{"datumId": "A", "feature": "mounting-face", "precedence": 1}],
+      "provenance": {"sourceKind": "user-requirement", "reference": "generic-drawing", "revision": "3"}
+    },
+    {
+      "id": "angular",
+      "characteristic": "mounting-angle",
+      "toleranceClass": "angle",
+      "nominal": 90.0,
+      "unit": "deg",
+      "lowerDeviation": -0.1,
+      "upperDeviation": 0.1,
+      "distribution": "uniform",
+      "provenance": {"sourceKind": "user-requirement", "reference": "generic-drawing", "revision": "3"}
+    },
+    {
+      "id": "flatness",
+      "characteristic": "seating-flatness",
+      "toleranceClass": "flatness",
+      "nominal": 0.0,
+      "unit": "mm",
+      "lowerDeviation": 0.0,
+      "upperDeviation": 0.01,
+      "distribution": "uniform",
+      "provenance": {"sourceKind": "user-requirement", "reference": "generic-drawing", "revision": "3"}
+    },
+    {
+      "id": "surface-finish",
+      "characteristic": "sealing-surface-roughness",
+      "toleranceClass": "surface_finish",
+      "nominal": 1.6,
+      "unit": "um",
+      "lowerDeviation": -0.2,
+      "upperDeviation": 0.4,
+      "distribution": "triangular",
+      "provenance": {"sourceKind": "manufacturing-method", "reference": "grinding-capability", "revision": "1"}
+    },
+    {
+      "id": "modulus",
+      "characteristic": "supplied-material-modulus",
+      "toleranceClass": "material_variability",
+      "nominal": 70000.0,
+      "unit": "MPa",
+      "lowerDeviation": -2000.0,
+      "upperDeviation": 2000.0,
+      "distribution": "normal",
+      "provenance": {"sourceKind": "material", "reference": "supplier-lot-report", "revision": "5"}
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "assemblyId": "fixed-wing-demo",
+  "surfaces": [
+    {
+      "surfaceId": "wing",
+      "role": "wing",
+      "frame": "body",
+      "nStations": 3,
+      "planform": {
+        "spanMm": 120.0,
+        "rootChordMm": 24.0,
+        "tipChordMm": 12.0,
+        "sweepDeg": 4.0,
+        "dihedralDeg": 3.0,
+        "twistRootDeg": 0.0,
+        "twistTipDeg": -2.0
+      },
+      "profile": {
+        "family": "parametric",
+        "thicknessRatio": 0.12,
+        "camberRatio": 0.02,
+        "thicknessFamily": "naca4",
+        "camberFamily": "parabolic"
+      }
+    },
+    {
+      "surfaceId": "tail",
+      "role": "tail",
+      "frame": "body",
+      "nStations": 2,
+      "planform": {
+        "spanMm": 40.0,
+        "rootChordMm": 10.0,
+        "tipChordMm": 6.0,
+        "sweepDeg": 8.0
+      },
+      "profile": {
+        "family": "naca4",
+        "thicknessRatio": 0.1
+      }
+    },
+    {
+      "surfaceId": "fin",
+      "role": "fin",
+      "frame": "body",
+      "nStations": 2,
+      "planform": {
+        "spanMm": 30.0,
+        "rootChordMm": 12.0,
+        "tipChordMm": 7.0,
+        "sweepDeg": 20.0
+      },
+      "profile": {
+        "family": "naca4",
+        "thicknessRatio": 0.09
+      }
+    }
+  ],
+  "bodies": [
+    {
+      "bodyId": "fuselage",
+      "role": "fuselage",
+      "frame": "body",
+      "nPoints": 12,
+      "spine": [[0.0, 0.0, 0.0], [0.0, 0.0, 40.0], [0.0, 0.0, 95.0]],
+      "widthsMm": [8.0, 12.0, 5.0],
+      "heightsMm": [8.0, 12.0, 5.0],
+      "exponent": 2.0
+    }
+  ],
+  "controls": [
+    {
+      "controlId": "elevator",
+      "parentId": "tail",
+      "kind": "elevator",
+      "hingeFraction": 0.7,
+      "spanFraction": [0.0, 1.0],
+      "deflectionDeg": 5.0
+    },
+    {
+      "controlId": "rudder",
+      "parentId": "fin",
+      "kind": "rudder",
+      "hingeFraction": 0.7,
+      "spanFraction": [0.0, 1.0],
+      "deflectionDeg": 0.0
+    },
+    {
+      "controlId": "aileron",
+      "parentId": "wing",
+      "kind": "aileron",
+      "hingeFraction": 0.75,
+      "spanFraction": [0.5, 1.0],
+      "deflectionDeg": 0.0
+    }
+  ]
+}

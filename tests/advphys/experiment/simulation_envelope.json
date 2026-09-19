@@ -1,0 +1,9 @@
+{
+  "envelope_id": "sim-env-1",
+  "design_revision": "design-r3",
+  "channels": [
+    {"name": "lift", "unit": "N", "time_s": [0.0, 0.001, 0.002, 0.003, 0.004], "values": [49.8, 50.8, 51.9, 50.8, 49.8]},
+    {"name": "drag", "unit": "N", "time_s": [0.0, 0.001, 0.002, 0.003, 0.004], "values": [5.05, 5.15, 5.25, 5.15, 5.05]},
+    {"name": "pressure", "unit": "Pa", "frequency_hz": [0.0, 200.0, 400.0], "values": [0.0, 5.2, 0.4]}
+  ]
+}

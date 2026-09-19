@@ -1,0 +1,8 @@
+{
+  "features": [
+    {"key": "blade.wall", "curvature_radius_mm": 3.0, "wake_thickness_mm": 1.5},
+    {"key": "blade.fluid", "shock_indicator": 0.8, "wavelength_mm": 10.0},
+    {"key": "duct.fluid", "gap_mm": 2.0, "wavelength_mm": 20.0},
+    {"key": "shaft.solid", "structural_thickness_mm": 4.0}
+  ]
+}

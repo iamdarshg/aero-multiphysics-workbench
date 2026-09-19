@@ -1,0 +1,9 @@
+{
+  "modifier_id": "thermal-aging",
+  "mechanism": "thermal_aging",
+  "factor": 0.9,
+  "source": "generic thermal aging knockdown",
+  "revision": "screening-r1",
+  "temperature_min_k": 293.15,
+  "temperature_max_k": 473.15
+}

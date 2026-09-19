@@ -1,0 +1,39 @@
+{
+  "plan_id": "struct-plan-1",
+  "article": {
+    "article_id": "article-struct-1",
+    "revision": "b2",
+    "kind": "structural",
+    "description": "generic structural test article"
+  },
+  "design_revision": "struct-r2",
+  "configuration": "static",
+  "condition": {
+    "name": "static_load",
+    "values": {
+      "load": {"value": 5000.0, "unit": "N"}
+    }
+  },
+  "environment": {
+    "values": {
+      "temperature": {"value": 296.15, "unit": "K"}
+    }
+  },
+  "calibrations": [
+    {"calibration_id": "cal-strain", "revision": 1, "reference": "shunt calibration", "uncertainty": 10.0, "unit": "microstrain", "valid_from": "2026-02-01"},
+    {"calibration_id": "cal-load", "revision": 4, "reference": "NIST-traceable load cell", "uncertainty": 0.2, "unit": "kN", "valid_from": "2026-02-01"},
+    {"calibration_id": "cal-accel", "revision": 2, "reference": "back-to-back accelerometer", "uncertainty": 0.01, "unit": "g0", "valid_from": "2026-02-01"}
+  ],
+  "channels": [
+    {"name": "strain", "unit": "microstrain", "lower": -5000.0, "upper": 5000.0, "role": "response", "sensor_id": "sg-1", "sensor_type": "strain_gauge", "calibration_id": "cal-strain", "uncertainty": 10.0, "location_m": [0.0, 0.0, 0.0], "orientation_deg": [0.0, 0.0, 0.0], "sample_rate_hz": 2000.0, "filtering": ["lowpass"]},
+    {"name": "load", "unit": "kN", "lower": 0.0, "upper": 100.0, "role": "command", "sensor_id": "lc-3", "sensor_type": "load_cell", "calibration_id": "cal-load", "uncertainty": 0.2, "location_m": [0.0, 0.0, 1.0], "orientation_deg": [0.0, 0.0, 0.0], "sample_rate_hz": 2000.0, "filtering": []},
+    {"name": "accel", "unit": "g0", "lower": -10.0, "upper": 10.0, "role": "response", "sensor_id": "acc-1", "sensor_type": "accelerometer", "calibration_id": "cal-accel", "uncertainty": 0.01, "location_m": [0.5, 0.0, 0.0], "orientation_deg": [0.0, 0.0, 0.0], "sample_rate_hz": 2000.0, "filtering": ["anti_alias"]}
+  ],
+  "sampling": {
+    "sample_rate_hz": 2000.0,
+    "timebase_id": "tb-struct",
+    "trigger_channel": "load",
+    "trigger_level": 4.9,
+    "duration_s": 0.002
+  }
+}

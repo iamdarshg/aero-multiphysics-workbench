@@ -1,0 +1,41 @@
+{
+  "plan_id": "wt-plan-1",
+  "article": {
+    "article_id": "article-wt-1",
+    "revision": "r3",
+    "kind": "wind_tunnel",
+    "description": "generic lifting surface, no product assumptions"
+  },
+  "design_revision": "design-r3",
+  "configuration": "clean",
+  "condition": {
+    "name": "cruise",
+    "values": {
+      "mach": {"value": 0.3, "unit": "1"},
+      "alpha": {"value": 2.0, "unit": "deg"}
+    }
+  },
+  "environment": {
+    "values": {
+      "static_temperature": {"value": 288.15, "unit": "K"},
+      "static_pressure": {"value": 101325.0, "unit": "Pa"}
+    }
+  },
+  "calibrations": [
+    {"calibration_id": "cal-lift", "revision": 2, "reference": "NIST-traceable load cell", "uncertainty": 0.5, "unit": "N", "valid_from": "2026-01-01"},
+    {"calibration_id": "cal-drag", "revision": 1, "reference": "NIST-traceable load cell", "uncertainty": 0.5, "unit": "N", "valid_from": "2026-01-01"},
+    {"calibration_id": "cal-pressure", "revision": 3, "reference": "deadweight tester", "uncertainty": 50.0, "unit": "Pa", "valid_from": "2026-01-01"}
+  ],
+  "channels": [
+    {"name": "lift", "unit": "N", "lower": 0.0, "upper": 100.0, "role": "response", "sensor_id": "lc-1", "sensor_type": "strain_gauge_load_cell", "calibration_id": "cal-lift", "uncertainty": 0.5, "location_m": [0.0, 0.0, 0.5], "orientation_deg": [0.0, 0.0, 0.0], "sample_rate_hz": 1000.0, "filtering": ["anti_alias"]},
+    {"name": "drag", "unit": "N", "lower": 0.0, "upper": 50.0, "role": "response", "sensor_id": "lc-2", "sensor_type": "strain_gauge_load_cell", "calibration_id": "cal-drag", "uncertainty": 0.5, "location_m": [0.0, 0.0, 0.5], "orientation_deg": [0.0, 90.0, 0.0], "sample_rate_hz": 1000.0, "filtering": ["anti_alias"]},
+    {"name": "pressure", "unit": "Pa", "lower": 90000.0, "upper": 110000.0, "role": "measured", "sensor_id": "pt-1", "sensor_type": "pressure_transducer", "calibration_id": "cal-pressure", "uncertainty": 50.0, "location_m": [0.1, 0.0, 0.2], "orientation_deg": [0.0, 0.0, 0.0], "sample_rate_hz": 1000.0, "filtering": []}
+  ],
+  "sampling": {
+    "sample_rate_hz": 1000.0,
+    "timebase_id": "tb-1",
+    "trigger_channel": null,
+    "trigger_level": null,
+    "duration_s": 0.004
+  }
+}

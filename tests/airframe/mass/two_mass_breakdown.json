@@ -1,0 +1,62 @@
+{
+  "vehicleId": "airframe03-fixture",
+  "frame": "body",
+  "items": [
+    {
+      "id": "payload",
+      "category": "payload",
+      "mass": { "value": 2.0, "unit": "kg" },
+      "cg": { "x": 0.5, "y": 0.0, "z": 0.0, "unit": "m", "frame": "body" },
+      "inertia": {
+        "ixx": 2.0,
+        "iyy": 3.0,
+        "izz": 4.0,
+        "ixy": 0.0,
+        "ixz": 0.0,
+        "iyz": 0.0,
+        "frame": "body"
+      },
+      "installation": {
+        "fromFrame": "body",
+        "toFrame": "body",
+        "translation": { "x": 0.0, "y": 0.0, "z": 0.0, "unit": "m", "frame": "body" },
+        "rotation": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+      },
+      "source": {
+        "source": "analytical",
+        "fidelity": "analytical",
+        "method": "hand-computable fixture",
+        "reference": "airframe03-fixture",
+        "revision": "1"
+      }
+    },
+    {
+      "id": "battery",
+      "category": "battery",
+      "mass": { "value": 2.0, "unit": "kg" },
+      "cg": { "x": -0.5, "y": 0.0, "z": 0.0, "unit": "m", "frame": "body" },
+      "inertia": {
+        "ixx": 2.0,
+        "iyy": 3.0,
+        "izz": 4.0,
+        "ixy": 0.0,
+        "ixz": 0.0,
+        "iyz": 0.0,
+        "frame": "body"
+      },
+      "installation": {
+        "fromFrame": "body",
+        "toFrame": "body",
+        "translation": { "x": 0.0, "y": 0.0, "z": 0.0, "unit": "m", "frame": "body" },
+        "rotation": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+      },
+      "source": {
+        "source": "analytical",
+        "fidelity": "analytical",
+        "method": "hand-computable fixture",
+        "reference": "airframe03-fixture",
+        "revision": "1"
+      }
+    }
+  ]
+}

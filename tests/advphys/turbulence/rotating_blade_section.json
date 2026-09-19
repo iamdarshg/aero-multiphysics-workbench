@@ -1,0 +1,28 @@
+{
+  "flow": {
+    "label": "rotating-blade-section",
+    "reynoldsNumber": 300000.0,
+    "machNumber": 0.3,
+    "turbulenceIntensity": 0.03,
+    "reference": {
+      "label": "blade section chord",
+      "lengthM": 0.2,
+      "velocityMS": 60.0,
+      "source": "declared blade section reference"
+    },
+    "transitionState": "natural",
+    "separationFraction": 0.0,
+    "thresholds": "external_flow",
+    "roughness": {
+      "surface": "blade",
+      "model": "eroded",
+      "equivalentSandGrainM": 2e-05,
+      "source": "eroded blade surface from ADV-PHYS 08"
+    }
+  },
+  "expect": {
+    "regime": "transitional",
+    "transitionModelRequired": true,
+    "source": "analytical"
+  }
+}

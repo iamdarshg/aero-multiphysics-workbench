@@ -1,0 +1,27 @@
+{
+  "fits": [
+    {
+      "fitId": "pilot-fit",
+      "holeCalloutId": "bore",
+      "shaftCalloutId": "shaft",
+      "requiredFit": "clearance",
+      "minClearance": 0.0
+    }
+  ],
+  "paths": [
+    {
+      "pathId": "bolt-insertion",
+      "direction": [0.0, 0.0, 1.0],
+      "requiredLengthM": 0.04,
+      "availableLengthM": 0.05
+    }
+  ],
+  "joints": [
+    {
+      "jointId": "bolt-edge",
+      "fastenerDiameterM": 0.006,
+      "edgeDistanceM": 0.015,
+      "minEdgeRatio": 2.0
+    }
+  ]
+}

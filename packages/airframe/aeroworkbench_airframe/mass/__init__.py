@@ -1,0 +1,170 @@
+"""AIRFRAME 03: generic vehicle mass properties, packaging, and CG/inertia closure.
+
+Public API (later AIRFRAME/VEHICLE-SYSTEMS issues import these exact paths):
+
+    from aeroworkbench_airframe.mass import (
+        MassItem,
+        MassBreakdown,
+        InstallationTransform,
+        aggregate_mass_properties,
+        close_mass_breakdown,
+        evaluate_packaging,
+        evaluate_cog_constraints,
+        evaluate_mass_feasibility,
+        apply_participants,
+    )
+
+Every result carries source/fidelity/units/validity/input-hash/software identity
+and provenance. No mass is fabricated: a missing component property fails closed.
+"""
+
+from .aggregate import (
+    MassAggregate,
+    MassClosureCheck,
+    aggregate_mass_properties,
+    compute_mass_properties,
+    mass_closure_checks,
+    mass_properties_canonical,
+    mass_properties_digest,
+)
+from .closure import MassClosureReport, close_mass_breakdown
+from .constraints import (
+    Axis,
+    AxisRange,
+    CenterOfGravityRange,
+    CogConstraintFinding,
+    CogConstraintReport,
+    StaticMarginConstraint,
+    axis_component,
+    evaluate_cog_constraints,
+)
+from .contracts import (
+    DEFAULT_SOFTWARE,
+    MASS_RESULT_UNITS,
+    SOFTWARE_NAME,
+    SOFTWARE_VERSION,
+    InstallationTransform,
+    MassBreakdown,
+    MassCategory,
+    MassItem,
+    MassItemSource,
+    MassResultMeta,
+    SoftwareIdentity,
+    Validity,
+    result_meta,
+)
+from .errors import (
+    MassClosureError,
+    MassError,
+    MassParticipantError,
+    PackagingError,
+)
+from .feasibility import (
+    FEASIBLE,
+    INFEASIBLE,
+    PREFLIGHT_INVALID,
+    MassFeasibilityReport,
+    evaluate_mass_feasibility,
+)
+from .invalidation import (
+    mass_breakdown_change_sections,
+    mass_change_sections,
+    mass_invalidated_families,
+    mass_properties_changed,
+)
+from .linalg import (
+    ROTATION_TOLERANCE,
+    axis_rotation,
+    determinant,
+    inertia_matrix,
+    is_orthonormal,
+    is_positive_definite,
+    leading_principal_minors,
+    parallel_axis_matrix,
+    tensor_from_matrix,
+)
+from .packaging import (
+    BoundingBox,
+    PackageVolume,
+    PackageVolumeKind,
+    PackagingFinding,
+    PackagingLayout,
+    PackagingReport,
+    Placement,
+    evaluate_packaging,
+)
+from .participants import (
+    MassDistributionUpdate,
+    MassParticipant,
+    MassUpdate,
+    apply_mass_updates,
+    apply_participants,
+)
+
+__all__ = [
+    "Axis",
+    "AxisRange",
+    "BoundingBox",
+    "CenterOfGravityRange",
+    "CogConstraintFinding",
+    "CogConstraintReport",
+    "DEFAULT_SOFTWARE",
+    "FEASIBLE",
+    "INFEASIBLE",
+    "InstallationTransform",
+    "MASS_RESULT_UNITS",
+    "MassAggregate",
+    "MassBreakdown",
+    "MassCategory",
+    "MassClosureCheck",
+    "MassClosureError",
+    "MassClosureReport",
+    "MassDistributionUpdate",
+    "MassError",
+    "MassFeasibilityReport",
+    "MassItem",
+    "MassItemSource",
+    "MassParticipant",
+    "MassParticipantError",
+    "MassResultMeta",
+    "MassUpdate",
+    "PREFLIGHT_INVALID",
+    "ROTATION_TOLERANCE",
+    "SOFTWARE_NAME",
+    "SOFTWARE_VERSION",
+    "PackageVolume",
+    "PackageVolumeKind",
+    "PackagingError",
+    "PackagingFinding",
+    "PackagingLayout",
+    "PackagingReport",
+    "Placement",
+    "SoftwareIdentity",
+    "StaticMarginConstraint",
+    "Validity",
+    "aggregate_mass_properties",
+    "apply_mass_updates",
+    "apply_participants",
+    "axis_component",
+    "axis_rotation",
+    "close_mass_breakdown",
+    "compute_mass_properties",
+    "determinant",
+    "evaluate_cog_constraints",
+    "evaluate_mass_feasibility",
+    "evaluate_packaging",
+    "inertia_matrix",
+    "is_orthonormal",
+    "is_positive_definite",
+    "leading_principal_minors",
+    "mass_breakdown_change_sections",
+    "mass_change_sections",
+    "mass_closure_checks",
+    "mass_invalidated_families",
+    "mass_properties_canonical",
+    "mass_properties_changed",
+    "mass_properties_digest",
+    "parallel_axis_matrix",
+    "result_meta",
+    "tensor_from_matrix",
+]

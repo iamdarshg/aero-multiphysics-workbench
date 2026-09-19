@@ -1,0 +1,36 @@
+{
+  "requirements": [
+    {
+      "id": "REQ-PAYLOAD-MIN",
+      "kind": "mission",
+      "metric": "payload_mass",
+      "operator": "at_least",
+      "value": 500.0,
+      "unit": "kg"
+    },
+    {
+      "id": "REQ-PAYLOAD-MAX",
+      "kind": "mission",
+      "metric": "payload_mass",
+      "operator": "at_most",
+      "value": 100.0,
+      "unit": "kg"
+    },
+    {
+      "id": "REQ-STALL-MIN",
+      "kind": "performance",
+      "metric": "stall_speed",
+      "operator": "at_least",
+      "value": 80.0,
+      "unit": "m/s"
+    },
+    {
+      "id": "REQ-MAX-SPEED-MAX",
+      "kind": "constraint",
+      "metric": "max_speed",
+      "operator": "at_most",
+      "value": 60.0,
+      "unit": "m/s"
+    }
+  ]
+}

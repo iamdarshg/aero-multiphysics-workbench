@@ -1,0 +1,9 @@
+{
+  "material_id": "synthetic-temp-ply",
+  "revision": "screening-r1",
+  "youngs_modulus_samples": [[293.15, 135000000000.0], [393.15, 128000000000.0]],
+  "youngs_modulus_transverse_pa": 10000000000.0,
+  "poisson_ratio": 0.3,
+  "shear_modulus_pa": 5000000000.0,
+  "density_kg_m3": 1600.0
+}

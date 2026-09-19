@@ -1,0 +1,23 @@
+{
+  "flow": {
+    "label": "separated-diffuser",
+    "reynoldsNumber": 50000.0,
+    "machNumber": 0.2,
+    "turbulenceIntensity": 0.05,
+    "reference": {
+      "label": "diffuser length",
+      "lengthM": 0.5,
+      "velocityMS": 20.0,
+      "source": "declared diffuser length reference"
+    },
+    "transitionState": "fully_turbulent",
+    "pressureGradientParameter": 0.35,
+    "separationFraction": 0.35,
+    "thresholds": "internal_flow"
+  },
+  "expect": {
+    "regime": "turbulent",
+    "separationFraction": 0.35,
+    "source": "analytical"
+  }
+}

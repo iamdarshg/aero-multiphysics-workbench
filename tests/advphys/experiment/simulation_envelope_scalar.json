@@ -1,0 +1,8 @@
+{
+  "envelope_id": "sim-env-scalar",
+  "design_revision": "design-r3",
+  "channels": [
+    {"name": "lift", "unit": "N", "values": [49.9]},
+    {"name": "drag", "unit": "N", "values": [5.05]}
+  ]
+}

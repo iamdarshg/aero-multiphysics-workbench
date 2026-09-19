@@ -1,0 +1,8 @@
+{
+  "indicators": [
+    {"kind": "gradient", "key": "blade.wall", "magnitude": 0.8},
+    {"kind": "shock", "key": "blade.fluid", "magnitude": 0.6},
+    {"kind": "wake", "key": "duct.fluid", "magnitude": 0.05},
+    {"kind": "residual", "key": "shaft.solid", "magnitude": 0.01}
+  ]
+}

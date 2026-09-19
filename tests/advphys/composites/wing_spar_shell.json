@@ -1,0 +1,15 @@
+{
+  "fixture_id": "wing-spar-shell",
+  "description": "fixed wing/spar-like pressure shell",
+  "angles_deg": [0.0, 45.0, -45.0, 0.0, 0.0, -45.0, 45.0, 0.0],
+  "ply_thickness_m": 0.000125,
+  "length_m": 2.0,
+  "width_m": 0.3,
+  "n_x_n_m": 0.0,
+  "pressure_pa": 50000.0,
+  "hoop_radius_m": 0.15,
+  "omega_rad_s": 0.0,
+  "temperature_k": 300.0,
+  "delta_temperature_k": 30.0,
+  "region_radius_m": 0.4
+}

@@ -1,0 +1,10 @@
+{
+  "observations": [
+    {"inputs": {"x": 0.0}, "measured": 1.00},
+    {"inputs": {"x": 1.0}, "measured": 3.50},
+    {"inputs": {"x": 2.0}, "measured": 6.01},
+    {"inputs": {"x": 3.0}, "measured": 8.49},
+    {"inputs": {"x": 4.0}, "measured": 11.01},
+    {"inputs": {"x": 5.0}, "measured": 13.49}
+  ]
+}

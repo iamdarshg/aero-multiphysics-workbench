@@ -1,0 +1,8 @@
+{
+  "max_cells": 5000000,
+  "max_memory_mb": 2048.0,
+  "max_wall_time_s": 600.0,
+  "max_adaptation_passes": 4,
+  "cells_per_second": 50000.0,
+  "bytes_per_cell": 512
+}

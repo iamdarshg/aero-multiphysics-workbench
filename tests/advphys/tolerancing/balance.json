@@ -1,0 +1,35 @@
+{
+  "spec": {
+    "specId": "generic-rotor-balance",
+    "allowableResidualKgM": 0.002,
+    "correctionPlanes": [
+      {"id": "plane-1", "axialLocationM": 0.01, "radiusM": 0.05},
+      {"id": "plane-2", "axialLocationM": 0.09, "radiusM": 0.05}
+    ]
+  },
+  "elements": [
+    {"id": "hub", "massKg": 0.5, "xM": 0.0, "yM": 0.0, "zM": 0.05},
+    {"id": "mass-a", "massKg": 0.01, "xM": 0.0001, "yM": 0.0, "zM": 0.02},
+    {"id": "mass-b", "massKg": 0.01, "xM": 0.0, "yM": 0.0001, "zM": 0.08}
+  ],
+  "scatterElements": [
+    {
+      "id": "mass-a",
+      "massKg": 0.01,
+      "massToleranceKg": 0.0002,
+      "xM": 0.0001,
+      "yM": 0.0,
+      "zM": 0.02,
+      "distribution": "normal"
+    },
+    {
+      "id": "mass-b",
+      "massKg": 0.01,
+      "massToleranceKg": 0.0002,
+      "xM": 0.0,
+      "yM": 0.0001,
+      "zM": 0.08,
+      "distribution": "normal"
+    }
+  ]
+}

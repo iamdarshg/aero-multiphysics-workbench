@@ -1,0 +1,24 @@
+{
+  "rows": [
+    {
+      "row_id": "rotor1",
+      "node": "n1",
+      "role": "work_adding",
+      "frame": "rotating",
+      "shaft": "shaft1",
+      "station_in": "s1",
+      "station_out": "s2",
+      "tip_clearance_mm": 0.5
+    },
+    {
+      "row_id": "stator1",
+      "node": "n2",
+      "role": "diffuser_guide",
+      "frame": "stationary",
+      "shaft": null,
+      "station_in": "s2",
+      "station_out": "s3",
+      "tip_clearance_mm": 0.3
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "source": "generic UD carbon/epoxy strain allowables; verify before certification use",
+  "revision": "screening-r1",
+  "x_tension": 0.0111,
+  "x_compression": 0.0089,
+  "y_tension": 0.005,
+  "y_compression": 0.02,
+  "shear": 0.014
+}

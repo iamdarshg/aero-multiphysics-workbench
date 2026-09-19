@@ -1,0 +1,9 @@
+{
+  "wall_patches": ["blade.wall", "duct.wall"],
+  "layer_count": 6,
+  "growth_ratio": 1.2,
+  "y_plus_target": 1.0,
+  "curvature_limit_fraction": 0.2,
+  "clearance_fraction": 0.5,
+  "y_plus_tolerance": 0.25
+}

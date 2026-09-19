@@ -1,0 +1,45 @@
+{
+  "flow": {
+    "label": "low-re-airfoil",
+    "reynoldsNumber": 100000.0,
+    "machNumber": 0.05,
+    "turbulenceIntensity": 0.005,
+    "reference": {
+      "label": "airfoil chord",
+      "lengthM": 0.15,
+      "velocityMS": 10.0,
+      "source": "declared chord reference"
+    },
+    "transitionState": "natural",
+    "pressureGradientParameter": -0.02,
+    "separationFraction": 0.0,
+    "thresholds": "low_reynolds",
+    "roughness": {
+      "surface": "airfoil",
+      "model": "manufactured_finish",
+      "equivalentSandGrainM": 5e-06,
+      "source": "machined aluminum surface finish"
+    }
+  },
+  "wall": {
+    "surface": "airfoil",
+    "mode": "wall_resolved",
+    "layerCount": 20,
+    "growthRatio": 1.2,
+    "measured": {
+      "firstCellHeightM": 2.5e-05,
+      "yPlus": 0.8,
+      "layerCount": 22,
+      "growthRatio": 1.15,
+      "totalThicknessM": 0.006,
+      "thermalWallTemperatureK": null,
+      "source": "measured from the generated gmsh mesh"
+    },
+    "expectCompatible": true
+  },
+  "expect": {
+    "regime": "transitional",
+    "transitionModelRequired": true,
+    "source": "analytical"
+  }
+}

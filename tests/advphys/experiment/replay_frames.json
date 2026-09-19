@@ -1,0 +1,7 @@
+{
+  "frames": [
+    {"time_s": 0.0, "values": {"y": 1.0}, "origin": "measurement"},
+    {"time_s": 0.001, "values": {"y": 2.0}, "origin": "measurement"},
+    {"time_s": 0.002, "values": {"y": 3.0}, "origin": "measurement"}
+  ]
+}
