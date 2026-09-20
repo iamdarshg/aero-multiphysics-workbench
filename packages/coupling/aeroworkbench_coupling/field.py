@@ -114,13 +114,20 @@ def _interpolate(
 def transfer_field(
     source: InterfaceMesh,
     source_values: Sequence[float],
-    target: InterfaceMesh,
-    quantity: str,
+    target: InterfaceMesh | str,
+    quantity: str | Sequence[float],
     method: str | None = None,
     tolerance: float = 1e-6,
 ) -> TransferReceipt:
     """Map one field between nonmatching interface meshes."""
 
+    # Backward-compatible positional form: transfer_field(source, target,
+    # quantity, values).
+    if isinstance(target, str) and not isinstance(quantity, str):
+        legacy_target, legacy_quantity, legacy_values = source_values, target, quantity
+        source_values, target, quantity = legacy_values, legacy_target, legacy_quantity
+    if not isinstance(target, InterfaceMesh) or not isinstance(quantity, str):
+        raise ValueError("FIELD_TRANSFER_ARGUMENTS_INVALID")
     if quantity not in SUPPORTED_QUANTITIES:
         raise ValueError(f"FIELD_QUANTITY_NOT_SUPPORTED:{quantity}")
     resolved_method = method or _DEFAULT_METHOD[quantity]
@@ -187,7 +194,7 @@ def transfer_field(
         raise ValueError("TRANSFER_PRODUCED_NONFINITE_VALUES")
     accepted = error <= tolerance
     return TransferReceipt(
-        source, target, quantity, resolved_method, mapped, error, tolerance, accepted,
+        source.name, target.name, quantity, resolved_method, mapped, error, tolerance, accepted,
         "conservation within tolerance" if accepted else "transfer exceeded tolerance",
     )
 
@@ -427,3 +434,62 @@ class FieldCoupler:
                 value + relaxation * increment
                 for value, increment in zip(current, residual_vector, strict=True)
             ]
+
+
+@dataclass(frozen=True, slots=True)
+class WrenchTransferReceipt:
+    force: tuple[float, float, float]
+    moment: tuple[float, float, float]
+    virtual_work: float
+    accepted: bool
+    source_system: str = ""
+    target_system: str = ""
+
+    @property
+    def values(self):
+        return self.force + self.moment
+
+
+def transfer_wrench(contract, force, moment, transform) -> WrenchTransferReceipt:
+    """Rotate a force/moment pair and shift moment to the target origin."""
+    import numpy as np
+    rotation = np.asarray(transform.rotation, dtype=float)
+    translation = np.asarray(transform.translation_m, dtype=float)
+    f = rotation @ np.asarray(force, dtype=float)
+    m = rotation @ np.asarray(moment, dtype=float) + np.cross(translation, f)
+    return WrenchTransferReceipt(tuple(f.tolist()), tuple(m.tolist()), float(np.dot(f, translation)), True, contract.source_system, contract.target_system)
+
+
+@dataclass(frozen=True, slots=True)
+class ClosureReceipt:
+    accepted: bool
+    residual: float
+
+
+def power_closure(contract, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:
+    residual = float(input_w - output_w - loss_w)
+    return ClosureReceipt(abs(residual) <= tolerance, residual)
+
+
+def electrical_closure(contract, voltage_in, current_in, voltage_out, current_out, *, loss_w=0.0, tolerance=1e-9):
+    return power_closure(contract, voltage_in * current_in, voltage_out * current_out, loss_w=loss_w, tolerance=tolerance)
+
+
+def shaft_closure(contract, speed_in, torque_in, speed_out, torque_out, *, loss_w=0.0, tolerance=1e-9):
+    return power_closure(contract, speed_in * torque_in, speed_out * torque_out, loss_w=loss_w, tolerance=tolerance)
+
+
+@dataclass(frozen=True, slots=True)
+class HarmonicTransferReceipt:
+    values: tuple[complex, ...]
+    shaft_id: str
+
+    @property
+    def coefficients(self):
+        return self.values
+
+
+def transfer_harmonic(contract, values, basis, *, delay_s: float, angle_rad: float) -> HarmonicTransferReceipt:
+    from cmath import exp
+    phase = exp(1j * (basis.order * angle_rad - 2.0 * 3.141592653589793 * basis.frequency_hz * delay_s))
+    return HarmonicTransferReceipt(tuple(complex(value) * phase for value in values), basis.shaft_id)

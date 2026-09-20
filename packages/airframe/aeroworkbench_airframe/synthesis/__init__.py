@@ -45,7 +45,15 @@ from .requirements import (
     detect_conflicts,
     requirement_spec_from_payload,
 )
-from .seams import SeamResult, synthesize_lifting_body_seam, synthesize_rotorcraft_seam
+from .seams import (
+    RotorcraftCapabilityUnavailable,
+    RotorcraftEnvelope,
+    evaluate_rotorcraft_envelope,
+    probe_rotorcraft_foundation,
+    SeamResult,
+    synthesize_lifting_body_seam,
+    synthesize_rotorcraft_seam,
+)
 from .seeds import VehicleSeed, build_seed_design_space
 
 __all__ = [
@@ -68,6 +76,10 @@ __all__ = [
     "RequirementError",
     "RequirementSpec",
     "SeamResult",
+    "RotorcraftCapabilityUnavailable",
+    "RotorcraftEnvelope",
+    "evaluate_rotorcraft_envelope",
+    "probe_rotorcraft_foundation",
     "SynthesisError",
     "SynthesisInfeasibleError",
     "SynthesisQuantity",

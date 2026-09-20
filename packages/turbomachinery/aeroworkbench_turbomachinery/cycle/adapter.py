@@ -131,6 +131,64 @@ class PyCycleCase:
         }
 
 
+@dataclass(frozen=True, slots=True)
+class PyCycleExecutionReceipt:
+    """Governed outcome for a requested pyCycle-native execution.
+
+    ``unavailable`` is a first-class outcome: it carries the exact staged
+    input identity and never contains an analytical substitute.
+    """
+
+    state: str
+    engine: str
+    fidelity: str
+    input_hash: str
+    source: str | None
+    result: CycleResult | None
+    error_code: str | None
+    detail: str
+
+    def __post_init__(self) -> None:
+        if self.state not in {"completed", "unavailable"}:
+            raise ValueError(f"PYCYCLE_EXECUTION_STATE_INVALID:{self.state}")
+        if len(self.input_hash) != 64:
+            raise ValueError("PYCYCLE_EXECUTION_INPUT_HASH_INVALID")
+        if self.state == "unavailable" and (self.source is not None or self.result is not None):
+            raise ValueError("PYCYCLE_UNAVAILABLE_MUST_NOT_CONTAIN_RESULT")
+
+
+@dataclass(frozen=True, slots=True)
+class PyCycleRunReceipt:
+    """Governed outcome of requesting the optional pyCycle fidelity.
+
+    An unavailable or unsupported request is a first-class outcome, not a
+    numerical result.  ``published`` can only become true when a genuine
+    :class:`CycleResult` was produced by the pyCycle execution path.
+    """
+
+    state: str
+    fidelity: str
+    model_digest: str
+    input_hash: str
+    solver_version: str | None
+    result: CycleResult | None
+    detail: str
+
+    def __post_init__(self) -> None:
+        if self.state not in {"completed", "unavailable", "unsupported", "failed"}:
+            raise ValueError(f"INVALID_PYCYCLE_RUN_STATE:{self.state}")
+        if len(self.input_hash) != 64:
+            raise ValueError("PYCYCLE_RUN_RECEIPT_NEEDS_INPUT_HASH")
+        if self.state == "completed" and self.result is None:
+            raise ValueError("PYCYCLE_COMPLETED_WITHOUT_RESULT")
+        if self.state != "completed" and self.result is not None:
+            raise ValueError("PYCYCLE_UNPUBLISHED_STATE_HAS_RESULT")
+
+    @property
+    def published(self) -> bool:
+        return self.state == "completed" and self.result is not None
+
+
 def pycycle_supported_topology(model: CycleModel) -> tuple[bool, str]:
     """Whether the pyCycle element set can express this compiled topology.
 
@@ -229,6 +287,45 @@ def prepare_pycycle_case(
     )
 
 
+def request_pycycle_execution(
+    model: CycleModel,
+    operating_point: CycleOperatingPoint | None = None,
+    *,
+    case_dir: Path,
+) -> PyCycleExecutionReceipt:
+    """Stage a canonical request and return an honest native availability receipt.
+
+    This entry point is intentionally non-throwing for capability absence so a
+    campaign can record why a native promotion did not run. A pyCycle result is
+    still published only by a governed executor with a trusted receipt; until
+    that executor is configured, availability alone is not treated as proof of
+    execution.
+    """
+
+    canonical_case = _canonical_pycycle_case(model, operating_point)
+    input_hash = content_digest(canonical_case)
+    case_dir.mkdir(parents=True, exist_ok=True)
+    (case_dir / "case.json").write_text(
+        json.dumps(canonical_case, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    status = probe_cycle_engine("pycycle")
+    detail = (
+        f"pyCycle is not installed: {status.detail}"
+        if not status.available
+        else "pyCycle is installed but no governed native executor receipt is configured"
+    )
+    return PyCycleExecutionReceipt(
+        state="unavailable",
+        engine="pycycle",
+        fidelity=CycleFidelity.PYCYCLE_NATIVE.value,
+        input_hash=input_hash,
+        source=None,
+        result=None,
+        error_code="CAPABILITY_UNAVAILABLE",
+        detail=detail,
+    )
+
+
 def solve_with_pycycle(
     model: CycleModel, operating_point: CycleOperatingPoint | None = None
 ) -> CycleResult:
@@ -251,6 +348,64 @@ def solve_with_pycycle(
     raise CycleCapabilityUnavailable(
         "pyCycle execution requires a governed native benchmark run; "
         "no trusted receipt is available and no analytical result is relabelled"
+    )
+
+
+def request_pycycle_run(
+    model: CycleModel,
+    operating_point: CycleOperatingPoint | None = None,
+) -> PyCycleRunReceipt:
+    """Request pyCycle and return a typed receipt for every governed outcome.
+
+    This wrapper is intended for schedulers and fidelity planners that need to
+    record why native promotion did not happen.  It deliberately retains the
+    raising :func:`solve_with_pycycle` API for callers that require a result.
+    """
+
+    canonical_case = _canonical_pycycle_case(model, operating_point)
+    input_hash = content_digest(canonical_case)
+    status = probe_cycle_engine("pycycle")
+    if not status.available:
+        return PyCycleRunReceipt(
+            state="unavailable",
+            fidelity=CycleFidelity.PYCYCLE_NATIVE.value,
+            model_digest=model.digest,
+            input_hash=input_hash,
+            solver_version=None,
+            result=None,
+            detail=f"pyCycle is not installed: {status.detail}",
+        )
+    supported, reason = pycycle_supported_topology(model)
+    if not supported:
+        return PyCycleRunReceipt(
+            state="unsupported",
+            fidelity=CycleFidelity.PYCYCLE_NATIVE.value,
+            model_digest=model.digest,
+            input_hash=input_hash,
+            solver_version=status.version,
+            result=None,
+            detail=f"PYCYCLE_TOPOLOGY_UNSUPPORTED:{reason}",
+        )
+    try:
+        result = solve_with_pycycle(model, operating_point)
+    except CycleCapabilityUnavailable as exc:
+        return PyCycleRunReceipt(
+            state="unavailable",
+            fidelity=CycleFidelity.PYCYCLE_NATIVE.value,
+            model_digest=model.digest,
+            input_hash=input_hash,
+            solver_version=status.version,
+            result=None,
+            detail=exc.detail,
+        )
+    return PyCycleRunReceipt(
+        state="completed",
+        fidelity=CycleFidelity.PYCYCLE_NATIVE.value,
+        model_digest=model.digest,
+        input_hash=input_hash,
+        solver_version=status.version,
+        result=result,
+        detail=result.detail,
     )
 
 
@@ -757,9 +912,13 @@ __all__ = [
     "OpenMdaoCycleEngine",
     "OpenMdaoPolicy",
     "PyCycleCase",
+    "PyCycleExecutionReceipt",
+    "PyCycleRunReceipt",
     "parse_pycycle_result",
     "prepare_pycycle_case",
     "pycycle_supported_topology",
+    "request_pycycle_execution",
+    "request_pycycle_run",
     "solve_with_openmdao",
     "solve_with_pycycle",
 ]

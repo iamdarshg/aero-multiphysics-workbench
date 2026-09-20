@@ -23,12 +23,16 @@ from aeroworkbench_airframe.aero_geometry import (
     AirfoilProfile,
     BodySection,
     ControlSurface,
+    FfdControl,
+    GeometryRefinementPlan,
     LiftingSurface,
     LoftedBody,
     Planform,
     SpanwiseStation,
     check_lifting_surface,
+    estimate_body_volume_mm3,
     probe_cad,
+    refine_assembly,
     regenerate_assembly,
 )
 from aeroworkbench_geometry import KernelIdentity
@@ -372,6 +376,60 @@ def test_airframe02_impossible_shape_returns_invalid_receipt() -> None:
     )
     assert receipt.valid is False
     assert receipt.invalid_reasons
+
+
+def test_airframe02_projected_self_intersection_fails_before_cad() -> None:
+    profile = _profile_families()["naca4"]
+    crossing = LiftingSurface(
+        "crossing",
+        "wing",
+        (
+            SpanwiseStation(0.0, (0.0, 0.0, 0.0), 5.0, 0.0, 0.0, profile),
+            SpanwiseStation(0.33, (10.0, 0.0, 10.0), 5.0, 0.0, 0.0, profile),
+            SpanwiseStation(0.66, (0.0, 0.0, 10.0), 5.0, 0.0, 0.0, profile),
+            SpanwiseStation(1.0, (10.0, 0.0, 0.0), 5.0, 0.0, 0.0, profile),
+        ),
+        "surface-local",
+    )
+    findings = check_lifting_surface(crossing)
+    assert "SURFACE_SELF_INTERSECTION" in {finding.code for finding in findings}
+
+
+def test_airframe02_ffd_refinement_preserves_lifting_body_volume_and_topology() -> None:
+    body = LoftedBody.from_spine(
+        "blended-body",
+        "lifting_body",
+        ((0.0, 0.0, 0.0), (0.0, 0.0, 500.0), (0.0, 0.0, 1000.0)),
+        (100.0, 400.0, 100.0),
+        (40.0, 120.0, 40.0),
+    )
+    assembly = AeroGeometryAssembly("lifting-body", bodies=(body,))
+    before_volume = estimate_body_volume_mm3(body)
+    receipt = refine_assembly(
+        assembly,
+        GeometryRefinementPlan(
+            plan_id="volume-preserving-width-refinement",
+            controls=(
+                FfdControl(
+                    component_id="blended-body",
+                    station_fraction=0.5,
+                    support_fraction=0.6,
+                    width_scale=1.25,
+                    displacement_mm=(15.0, 0.0, 0.0),
+                ),
+            ),
+            preserve_body_volume=True,
+            max_volume_change_fraction=1e-9,
+        ),
+    )
+    assert receipt.valid
+    assert receipt.before_digest == assembly.digest
+    assert receipt.after_digest != assembly.digest
+    assert receipt.topology_changed is False
+    assert receipt.volume_change_fraction <= 1e-9
+    assert estimate_body_volume_mm3(receipt.assembly.bodies[0]) == pytest.approx(
+        before_volume, rel=1e-9
+    )
 
 
 def test_airframe02_invalid_contracts_fail_closed() -> None:

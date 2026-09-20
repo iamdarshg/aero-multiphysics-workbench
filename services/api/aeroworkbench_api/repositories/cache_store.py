@@ -20,6 +20,7 @@ import re
 import sqlite3
 import threading
 import uuid
+from contextlib import contextmanager
 from collections.abc import Callable
 from copy import deepcopy
 from dataclasses import asdict, dataclass
@@ -29,6 +30,8 @@ from typing import Any, cast
 
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 DEFAULT_MAX_BYTES = 64 * 1024 * 1024
+_PROCESS_KEY_LOCKS: dict[str, threading.Lock] = {}
+_PROCESS_KEY_LOCKS_GUARD = threading.Lock()
 
 
 def _canonical(value: Any) -> Any:
@@ -69,6 +72,14 @@ def cache_key(
     participant: str | None = None,
     fidelity: str | None = None,
     validity_policy_version: str | None = None,
+    subtree_digest: str | None = None,
+    boundary_digest: str | None = None,
+    interface_digest: str | None = None,
+    transform_digest: str | None = None,
+    mapping_digest: str | None = None,
+    harmonic_digest: str | None = None,
+    temporal_digest: str | None = None,
+    qoi_digest: str | None = None,
 ) -> str:
     """One canonical cache key covering every axis that can change a result.
 
@@ -112,6 +123,10 @@ def cache_key(
         "upstreamKeys": list(upstream_keys),
         "fidelity": fidelity,
         "validityPolicyVersion": validity_policy_version,
+        "subtreeDigest": subtree_digest, "boundaryDigest": boundary_digest,
+        "interfaceDigest": interface_digest, "transformDigest": transform_digest,
+        "mappingDigest": mapping_digest, "harmonicDigest": harmonic_digest,
+        "temporalDigest": temporal_digest, "qoiDigest": qoi_digest,
     }
     return content_digest({name: value for name, value in payload.items() if value is not None})
 
@@ -189,6 +204,8 @@ class PersistentResultCache:
         self._connection.execute("PRAGMA foreign_keys = ON")
         self._lock = threading.Lock()
         self._key_locks: dict[str, threading.Lock] = {}
+        self._invalidated: set[str] = set()
+        self._history: dict[str, Any] = {}
         self._migrate()
 
     # -- schema ----------------------------------------------------------
@@ -207,6 +224,7 @@ class PersistentResultCache:
                   participant TEXT,
                   source TEXT NOT NULL,
                   validity_policy_version TEXT,
+                  compatibility_digest TEXT,
                   artifacts TEXT NOT NULL,
                   value_digest TEXT NOT NULL,
                   value_bytes INTEGER NOT NULL,
@@ -224,6 +242,9 @@ class PersistentResultCache:
                 );
                 """
             )
+            columns = {row[1] for row in self._connection.execute("PRAGMA table_info(result_cache)")}
+            if "compatibility_digest" not in columns:
+                self._connection.execute("ALTER TABLE result_cache ADD COLUMN compatibility_digest TEXT")
             self._connection.commit()
 
     # -- writes ----------------------------------------------------------
@@ -240,6 +261,7 @@ class PersistentResultCache:
         participant: str | None = None,
         source: str = "analytical",
         validity_policy_version: str | None = None,
+        compatibility_digest: str | None = None,
         artifacts: tuple[CacheArtifactRef, ...] = (),
         pinned: bool = False,
     ) -> None:
@@ -273,9 +295,9 @@ class PersistentResultCache:
             try:
                 self._connection.execute(
                     "INSERT INTO result_cache(key,node_type,family,upstream_keys,solver_id,"
-                    "solver_version,participant,source,validity_policy_version,artifacts,"
+                    "solver_version,participant,source,validity_policy_version,compatibility_digest,artifacts,"
                     "value_digest,value_bytes,pinned,created_at,last_accessed_at) "
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         key,
                         node_type,
@@ -286,6 +308,7 @@ class PersistentResultCache:
                         participant,
                         source,
                         validity_policy_version,
+                        compatibility_digest,
                         _canonical_json([asdict(item) for item in refs]),
                         value_digest,
                         value_bytes,
@@ -305,13 +328,20 @@ class PersistentResultCache:
     def compute_if_absent(self, key: str, factory: Callable[[], Any], **meta: Any) -> Any:
         """One in-flight computation per key across concurrent callers."""
 
-        lock = self._key_lock(key)
+        with _PROCESS_KEY_LOCKS_GUARD:
+            lock = _PROCESS_KEY_LOCKS.setdefault(key, threading.Lock())
         with lock:
             loaded = self._load(key)
             if loaded is not None:
                 return deepcopy(loaded[1])
             value = factory()
-            self.put(key, value, **meta)
+            try:
+                self.put(key, value, **meta)
+            except sqlite3.IntegrityError:
+                loaded = self._load(key)
+                if loaded is None:
+                    raise
+                return deepcopy(loaded[1])
             return deepcopy(value)
 
     def pin(self, key: str, pinned: bool = True) -> None:
@@ -331,6 +361,27 @@ class PersistentResultCache:
             return None
         self._touch(key)
         return deepcopy(loaded[1])
+
+    def get_historical(self, key: str) -> Any | None:
+        return deepcopy(self._history.get(key))
+
+    def lookup(self, key: str, *, warm_start_key: str | None = None,
+               compatibility_digest: str | None = None) -> Any:
+        loaded = self._load(key)
+        if loaded is not None:
+            return type("CacheLookup", (), {"status": "exact_hit", "value": deepcopy(loaded[1]), "source_key": key, "reason": ""})()
+        if warm_start_key is not None:
+            with self._lock:
+                row = self._get_row(warm_start_key)
+            if row is not None and row["compatibility_digest"] == compatibility_digest:
+                value = self.get(warm_start_key)
+                self._record_event("cache.warm_start", warm_start_key, json.dumps({"source": warm_start_key}))
+                return type("CacheLookup", (), {"status": "warm_start", "value": value, "source_key": warm_start_key, "reason": ""})()
+            reason = "INCOMPATIBLE_WARM_START"
+        else:
+            reason = "INVALIDATED" if key in self._invalidated else "NOT_FOUND"
+        self._record_event("cache.miss", key, json.dumps({"reason": reason}))
+        return type("CacheLookup", (), {"status": "miss", "value": None, "source_key": None, "reason": reason})()
 
     def describe(self, key: str) -> CacheEntryMetadata | None:
         if not HEX64.fullmatch(key):
@@ -361,12 +412,22 @@ class PersistentResultCache:
             rows = self._connection.execute(
                 "SELECT key, upstream_keys FROM result_cache"
             ).fetchall()
-            for row in rows:
-                upstream = json.loads(row["upstream_keys"])
-                if row["key"] == key or key in upstream:
-                    dropped.append(str(row["key"]))
+            affected = {key}
+            changed = True
+            while changed:
+                changed = False
+                for row in rows:
+                    upstream = set(json.loads(row["upstream_keys"]))
+                    if str(row["key"]) not in affected and upstream & affected:
+                        affected.add(str(row["key"]))
+                        changed = True
+            dropped.extend(affected & {str(row["key"]) for row in rows})
             for dropped_key in dropped:
+                loaded = self._load(dropped_key)
+                if loaded is not None:
+                    self._history[dropped_key] = loaded[1]
                 self._delete_locked(dropped_key)
+                self._invalidated.add(dropped_key)
             self._connection.commit()
         for dropped_key in dropped:
             self._record_event("cache.invalidate", dropped_key, f"invalidated by {key}")

@@ -98,9 +98,13 @@ from .stability import (
     neutral_point,
     static_margin,
 )
+from .tailless import TaillessClosureReport, TaillessClosureSpec, evaluate_tailless_closure
 
 __all__ = [
     "AeroCoefficientError",
+    "TaillessClosureReport",
+    "TaillessClosureSpec",
+    "evaluate_tailless_closure",
     "AeroCoefficients",
     "AeroReference",
     "AeroState",

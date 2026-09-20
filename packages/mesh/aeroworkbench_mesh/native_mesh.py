@@ -38,8 +38,8 @@ class GmshCapability:
 def probe_gmsh() -> GmshCapability:
     try:
         import gmsh  # noqa: PLC0415
-    except ImportError as exc:
-        return GmshCapability(False, None, f"gmsh is not installed: {exc}")
+    except (ImportError, OSError) as exc:
+        return GmshCapability(False, None, f"gmsh is unavailable: {exc}")
     try:
         version = str(gmsh.GMSH_API_VERSION)
     except Exception:

@@ -98,6 +98,9 @@ from .loads import (
     load_case_from_aero,
     load_case_from_mass,
     load_case_from_trim,
+    load_case_from_landing_gear,
+    load_case_from_propulsor,
+    ground_load_set_for_segment,
 )
 from .mass_feedback import (
     StructuralMassParticipant,
@@ -215,6 +218,9 @@ __all__ = [
     "load_case_from_aero",
     "load_case_from_mass",
     "load_case_from_trim",
+    "load_case_from_landing_gear",
+    "load_case_from_propulsor",
+    "ground_load_set_for_segment",
     "map_structure_to_code_aster",
     "margin_of_safety",
     "material_has_allowable",

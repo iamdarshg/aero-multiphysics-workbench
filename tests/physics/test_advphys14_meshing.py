@@ -12,6 +12,7 @@ Native meshing is capability-gated and fails closed; nothing is fabricated.
 
 from __future__ import annotations
 
+import builtins
 import json
 import tempfile
 from pathlib import Path
@@ -19,7 +20,13 @@ from typing import Any
 
 import pytest
 from aeroworkbench_convergence import QuantityOfInterest, StudyRun, run_mesh_independence
-from aeroworkbench_mesh import MeshSpec, SemanticEntity, SemanticTopologyReceipt, ZoneSpec
+from aeroworkbench_mesh import (
+    MeshSpec,
+    SemanticEntity,
+    SemanticTopologyReceipt,
+    ZoneSpec,
+    probe_gmsh,
+)
 from aeroworkbench_meshing import (
     AdaptationError,
     AdaptationPolicy,
@@ -745,6 +752,23 @@ def test_advphys14_update_forces_remesh_on_topology_change() -> None:
 
 
 # -- H. quality receipt -------------------------------------------------------
+
+
+def test_advphys14_gmsh_loader_error_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    real_import = builtins.__import__
+
+    def fail_gmsh_import(name: str, *args: Any, **kwargs: Any) -> Any:
+        if name == "gmsh":
+            raise OSError("libXft.so.2: cannot open shared object file")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fail_gmsh_import)
+
+    capability = probe_gmsh()
+
+    assert capability.available is False
+    assert capability.version is None
+    assert "libXft.so.2" in capability.detail
 
 
 def test_advphys14_planned_quality_receipt_is_unmeasured() -> None:

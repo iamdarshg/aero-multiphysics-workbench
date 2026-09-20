@@ -90,6 +90,7 @@ class ExternalAeroCase:
     section_polars: tuple[tuple[str, ProfilePolar], ...] = ()
     section_profile_drag: tuple[tuple[str, float], ...] = ()
     reference: GeometryReference | None = None
+    bodies: tuple[object, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.case_id.strip():
@@ -115,6 +116,10 @@ class ExternalAeroCase:
                 raise ExternalAeroValidationError(f"CASE_DRAG_SURFACE_UNKNOWN:{surface_id}")
             if not isfinite(drag) or drag < 0.0:
                 raise ExternalAeroValidationError(f"CASE_SECTION_DRAG_INVALID:{surface_id}")
+
+    @property
+    def body_volume_m3(self) -> float:
+        return sum(float(getattr(body, "volume_m3", 0.0)) for body in self.bodies)
 
     def surface(self, surface_id: str) -> LiftingSurface:
         for surface in self.surfaces:
@@ -164,6 +169,7 @@ class ExternalAeroCase:
                 {"surfaceId": name, "drag": value}
                 for name, value in self.section_profile_drag
             ],
+            "bodies": [body.canonical_payload() for body in self.bodies],
         }
 
     @property

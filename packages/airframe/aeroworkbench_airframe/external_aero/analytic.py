@@ -152,6 +152,8 @@ def evaluate_analytic(
     parasite = drag_buildup(
         reference, drag_components, miscellaneous_drag=miscellaneous_drag
     )
+    if case.bodies:
+        parasite += 0.0025 * case.body_volume_m3 / max(reference.area_m2, 1e-9)
     induced = lift * lift / (pi * aspect_ratio * efficiency)
     drag = parasite + induced
     pitching = section.quarter_chord_moment_coefficient()

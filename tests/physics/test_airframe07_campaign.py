@@ -1,0 +1,127 @@
+"""AIRFRAME 07: campaign evaluation, mutation policy, replay, and resume."""
+
+from __future__ import annotations
+
+import json
+
+import pytest
+from aeroworkbench_airframe.campaign import (
+    AirframeCampaignReceipt,
+    AirframeCampaignSession,
+    AirframeMutationPolicy,
+    MutationStage,
+    build_airframe_campaign_spec,
+)
+from aeroworkbench_airframe.synthesis import compile_requirements_payload, generate_fixed_wing_seeds
+from aeroworkbench_optimization import (
+    CampaignBudget,
+    EvaluationResult,
+    FidelityImplementation,
+    GenerationRequest,
+    PhysicsFlags,
+    StudyObjective,
+)
+
+
+def _seed():
+    compiled = compile_requirements_payload(
+        {
+            "requirements": [
+                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 120.0, "unit": "kg"},
+                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 30.0, "unit": "m/s"},
+                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 65.0, "unit": "m/s"},
+                {"id": "range", "kind": "mission", "metric": "range", "operator": "at_least", "value": 300.0, "unit": "km"},
+            ]
+        }
+    )
+    return generate_fixed_wing_seeds(compiled, seed_count=1)[0]
+
+
+def _evaluator(candidate, fidelity: str) -> EvaluationResult:
+    values = {
+        item.variable_id: float(item.value)
+        for item in candidate.assignment
+        if item.point_id is None and isinstance(item.value, (int, float))
+    }
+    span = values["wing_span"]
+    area = values["wing_area"]
+    mass = values["max_takeoff_mass"]
+    return EvaluationResult(
+        outputs={"score": mass / area, "span": span},
+        flags=PhysicsFlags(converged=True, closure_passed=True, validity_ok=True),
+        fidelity=fidelity,
+        source="analytical",
+        cost=0.0,
+        signals={"constraint_margin": 0.5},
+    )
+
+
+def test_airframe07_mutation_policy_invalidates_downstream_stages() -> None:
+    policy = AirframeMutationPolicy.default()
+    decision = policy.evaluate({"wing_span": (10.0, 10.5)})
+    assert decision.accepted
+    assert decision.earliest_stage is MutationStage.GEOMETRY
+    assert decision.invalidated_stages == (
+        MutationStage.GEOMETRY,
+        MutationStage.MASS,
+        MutationStage.AERO,
+        MutationStage.TRIM,
+        MutationStage.VERIFICATION,
+    )
+    unknown = policy.evaluate({"magic_knob": (0.0, 1.0)})
+    assert not unknown.accepted
+    assert unknown.reason == "UNKNOWN_AIRFRAME_MUTATION:magic_knob"
+
+
+def test_airframe07_campaign_replays_and_resume_reuses_exact_results() -> None:
+    spec = build_airframe_campaign_spec(
+        "airframe07",
+        _seed(),
+        generation=GenerationRequest("lhs", budget=4, seed=19),
+        objectives=(StudyObjective("score", "minimize"),),
+        fidelity_ladder=(FidelityImplementation("analytical", 0, 0.0),),
+        budget=CampaignBudget(max_evaluations=4),
+    )
+    session = AirframeCampaignSession(
+        spec,
+        _evaluator,
+        evaluator_identity="airframe07-analytical-v1",
+        mutation_policy=AirframeMutationPolicy.default(),
+    )
+    first = session.run()
+    assert first.record.best is not None
+    assert first.record.metrics["evaluations"] == 4
+    assert first.mutation_decisions
+    resumed = session.resume(first)
+    assert resumed.record.metrics["evaluations"] == 0
+    assert resumed.record.metrics["cache_hits"] == 4
+    rebuilt = AirframeCampaignReceipt.from_dict(
+        json.loads(json.dumps(first.as_dict()))
+    )
+    assert rebuilt.as_dict() == first.as_dict()
+    assert rebuilt.digest == first.digest
+
+
+def test_airframe07_resume_rejects_policy_or_evaluator_drift() -> None:
+    spec = build_airframe_campaign_spec(
+        "airframe07-drift",
+        _seed(),
+        generation=GenerationRequest("lhs", budget=1, seed=7),
+        objectives=(StudyObjective("score", "minimize"),),
+        fidelity_ladder=(FidelityImplementation("analytical", 0, 0.0),),
+    )
+    session = AirframeCampaignSession(
+        spec,
+        _evaluator,
+        evaluator_identity="stable-evaluator",
+        mutation_policy=AirframeMutationPolicy.default(),
+    )
+    receipt = session.run()
+    incompatible = AirframeCampaignSession(
+        spec,
+        _evaluator,
+        evaluator_identity="changed-evaluator",
+        mutation_policy=AirframeMutationPolicy.default(),
+    )
+    with pytest.raises(ValueError, match="EVALUATOR_IDENTITY_MISMATCH"):
+        incompatible.resume(receipt)

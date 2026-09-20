@@ -154,6 +154,7 @@ class NodeResult:
     unit: str
     input_hash: str
     detail: str
+    status: str = "computed"
 
 
 # NodeFunction receives resolved upstream NodeResults and returns (value, unit).
@@ -174,6 +175,20 @@ class ComputationDAG:
         if node.node_id not in self._functions:
             raise ValueError(f"NODE_FUNCTION_MISSING:{node.node_id}")
         self._nodes[node.node_id] = node
+
+    @classmethod
+    def from_system(cls, system, functions: Mapping[str, NodeFunction]) -> "ComputationDAG":
+        dag = cls(functions)
+        def visit(node, upstream=()):
+            for child in getattr(node, "children", ()):
+                visit(child, upstream)
+            deps = tuple(child.system_id for child in getattr(node, "children", ()))
+            if deps:
+                deps = tuple(deps)
+            kind = "analytical"
+            dag.add(NodeSpec(node.system_id, kind, "analysis", deps, ("analytical", "1"), {}))
+        visit(system)
+        return dag
 
     def _order(self) -> tuple[str, ...]:
         ordered: list[str] = []
@@ -199,6 +214,7 @@ class ComputationDAG:
         self,
         base_hashes: Mapping[str, str],
         changed_sections: tuple[str, ...] = (),
+        **_options,
     ) -> dict[str, NodeResult]:
         import re
 
@@ -208,7 +224,27 @@ class ComputationDAG:
         invalidated = set(invalidated_families(changed_sections))
         invalidate_all = "all" in invalidated
         receipts: dict[str, NodeResult] = {}
+        # Evaluate independent leaves together; this is important for physical
+        # assemblies whose sibling participants are expensive or synchronized.
+        leaves = [node for node in self._nodes.values() if not node.upstream]
+        if len(leaves) > 1:
+            from concurrent.futures import ThreadPoolExecutor
+            def run_leaf(node):
+                key = content_digest({"node": node.node_id})
+                cached = self._cache.get(key)
+                if cached is not None:
+                    return node.node_id, NodeResult(node.node_id, key, True, cached[0], cached[1], key, "cache hit", "computed")
+                try:
+                    value, unit = self._functions[node.node_id]({})
+                    self._cache.put(key, (value, unit))
+                    return node.node_id, NodeResult(node.node_id, key, False, value, unit, key, f"computed with {node.solver[0]} {node.solver[1]}", "computed")
+                except Exception as exc:
+                    return node.node_id, NodeResult(node.node_id, key, False, None, "", key, str(exc), "failed")
+            with ThreadPoolExecutor(max_workers=len(leaves)) as pool:
+                receipts.update(dict(pool.map(run_leaf, leaves)))
         for node_id in self._order():
+            if node_id in receipts:
+                continue
             node = self._nodes[node_id]
             upstream_keys = [receipts[upstream].key for upstream in sorted(node.upstream)]
             try:
@@ -235,6 +271,9 @@ class ComputationDAG:
                     node_id, key, True, value, unit, key,
                     "cache hit; inputs unchanged",
                 )
+                continue
+            if any(receipts[upstream].status in {"failed", "upstream_failed"} or receipts[upstream].value is None for upstream in node.upstream):
+                receipts[node_id] = NodeResult(node_id, key, False, None, "", key, "upstream failed", "upstream_failed")
                 continue
             deps = {upstream: receipts[upstream] for upstream in node.upstream}
             value, unit = self._functions[node_id](deps)

@@ -298,12 +298,16 @@ def test_airframe06_missing_or_impossible_requirements_fail_closed() -> None:
         generate_fixed_wing_seeds(tight)
 
 
-def test_airframe06_rotorcraft_seam_is_capability_gated_and_fails_closed() -> None:
+def test_airframe06_rotorcraft_seam_uses_available_analytical_propulsor_foundation() -> None:
     seam = synthesize_rotorcraft_seam(_compiled())
-    assert seam.available is False
-    assert seam.seeds == ()
-    assert "AIRFRAME" in seam.reason or "rotor" in seam.reason.lower()
-    assert seam.blocking_issue
+    assert seam.available is True
+    assert len(seam.seeds) == 1
+    assert seam.blocking_issue is None
+    assert seam.reason == "ROTORCRAFT_ANALYTICAL_SEAM_AVAILABLE"
+    seed = seam.seeds[0]
+    assert seed.parameter("hover_thrust").value_si > 0.0
+    assert seed.parameter("rotor_radius").value_si > 0.0
+    assert seed.parameter("forward_flight_speed").value_si > 0.0
     assert seam.provenance.source.value == "analytical"
     assert len(seam.provenance.inputs_hash) == 64
 

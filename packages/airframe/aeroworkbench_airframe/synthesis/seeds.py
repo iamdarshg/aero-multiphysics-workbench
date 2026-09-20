@@ -40,6 +40,14 @@ class VehicleSeed:
         raise KeyError(f"UNKNOWN_SEED_PARAMETER:{name}")
 
     @property
+    def assignment(self) -> tuple[Any, ...]:
+        """Optimization-compatible scalar projection of the seed."""
+        return tuple(
+            type("SeedAssignment", (), {"variable_id": quantity.name, "value": quantity.quantity.value_si, "point_id": None})()
+            for quantity in self.quantities
+        )
+
+    @property
     def admissibility(self) -> tuple[str, ...]:
         return tuple(
             f"{quantity.name}:{violation}"

@@ -32,6 +32,9 @@ __all__ = [
     "load_case_from_aero",
     "load_case_from_mass",
     "load_case_from_trim",
+    "load_case_from_landing_gear",
+    "load_case_from_propulsor",
+    "ground_load_set_for_segment",
 ]
 
 STANDARD_GRAVITY_M_S2 = 9.80665
@@ -126,6 +129,7 @@ class StructuralLoadCase:
     distributed: tuple[DistributedLoad, ...] = ()
     point: tuple[PointLoad, ...] = ()
     reference: str = ""
+    applied_moments_n_m: tuple[float, float, float] = (0.0, 0.0, 0.0)
 
     def __post_init__(self) -> None:
         if not self.case_id.strip() or not self.component_id.strip():
@@ -134,6 +138,8 @@ class StructuralLoadCase:
             raise LoadCaseError("LOAD_CASE_SPAN_MUST_BE_POSITIVE")
         if not isfinite(self.load_factor) or self.load_factor <= 0.0:
             raise LoadCaseError("LOAD_CASE_FACTOR_MUST_BE_POSITIVE")
+        if len(self.applied_moments_n_m) != 3 or any(not isfinite(value) for value in self.applied_moments_n_m):
+            raise LoadCaseError("LOAD_CASE_APPLIED_MOMENTS_INVALID")
 
     def normal_force_n(self) -> float:
         total = sum(load.normal_force_n(self.span_m) for load in self.distributed)
@@ -170,6 +176,7 @@ class StructuralLoadCase:
             "distributed": [load.canonical_payload() for load in self.distributed],
             "point": [load.as_dict() for load in self.point],
             "reference": self.reference,
+            "appliedMomentsNm": list(self.applied_moments_n_m),
         }
 
     @property
@@ -399,3 +406,38 @@ def load_case_from_mass(seam: MassLoadSeam, *, case_id: str) -> StructuralLoadCa
         distributed=(distributed,),
         reference=seam.reference,
     )
+
+
+def load_case_from_landing_gear(gear_case, *, component_id: str, span_m: float, station_fraction: float, load_factor: float = 1.0) -> StructuralLoadCase:
+    from aeroworkbench_vehicle_systems.landing_gear import GearLoadCase
+    if not isinstance(gear_case, GearLoadCase):
+        raise LoadCaseError("LANDING_GEAR_CASE_REQUIRED")
+    return StructuralLoadCase(
+        case_id=f"landing:{gear_case.case_id}", source=LoadSource.LANDING,
+        component_id=component_id, span_m=span_m, load_factor=load_factor,
+        point=(PointLoad(station_fraction, gear_case.vertical_force_n, gear_case.drag_force_n, gear_case.side_force_n),),
+        reference=f"{gear_case.gear_id}:{gear_case.kind.value}",
+    )
+
+
+def load_case_from_propulsor(loads, *, component_id: str, span_m: float, station_fraction: float, case_id: str, load_factor: float = 1.0) -> StructuralLoadCase:
+    return StructuralLoadCase(
+        case_id=case_id, source=LoadSource.PROPULSION, component_id=component_id,
+        span_m=span_m, load_factor=load_factor,
+        point=(PointLoad(station_fraction, loads.normal_force_n, loads.thrust_n, 0.0),),
+        applied_moments_n_m=tuple(
+            value * load_factor
+            for value in (loads.torque_n_m, loads.pitching_moment_n_m, loads.yawing_moment_n_m)
+        ),
+        reference=loads.provenance.model,
+    )
+
+
+def ground_load_set_for_segment(segment, export, *, component_id: str, span_m: float, station_fraction: float) -> StructuralLoadSet:
+    from aeroworkbench_vehicle_systems.mission import SegmentKind
+    if segment.kind not in {SegmentKind.TAXI, SegmentKind.TAKEOFF, SegmentKind.LANDING}:
+        raise ValueError("GROUND_SEGMENT_REQUIRED")
+    return StructuralLoadSet(component_id, tuple(
+        load_case_from_landing_gear(case, component_id=component_id, span_m=span_m, station_fraction=station_fraction)
+        for case in export.cases
+    ))

@@ -61,6 +61,13 @@ from .robustness import (
     check_lifting_surface,
     topology_change_receipt,
 )
+from .refinement import (
+    FfdControl,
+    GeometryRefinementPlan,
+    RefinementReceipt,
+    estimate_body_volume_mm3,
+    refine_assembly,
+)
 from .seam import Point, SurfaceGrid, SurfaceSeam, seam_digest
 from .surface import (
     LIFTING_SURFACE_ROLES,
@@ -116,4 +123,9 @@ __all__ = [
     "SurfaceGrid",
     "SurfaceSeam",
     "seam_digest",
+    "FfdControl",
+    "GeometryRefinementPlan",
+    "RefinementReceipt",
+    "estimate_body_volume_mm3",
+    "refine_assembly",
 ]

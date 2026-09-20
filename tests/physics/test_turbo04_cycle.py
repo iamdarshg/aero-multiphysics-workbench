@@ -34,6 +34,8 @@ from aeroworkbench_turbomachinery.cycle import (
     probe_cycle_engine,
     probe_cycle_engines,
     pycycle_supported_topology,
+    request_pycycle_execution,
+    request_pycycle_run,
     solve_cycle,
     solve_with_openmdao,
     solve_with_pycycle,
@@ -647,6 +649,48 @@ def test_turbo04_pycycle_fails_closed_when_absent() -> None:
     with pytest.raises(CycleCapabilityUnavailable) as solve_failure:
         solve_with_pycycle(model)
     assert solve_failure.value.code == "CAPABILITY_UNAVAILABLE"
+
+
+@pytest.mark.skipif(
+    probe_cycle_engine("pycycle").available, reason="pyCycle is installed"
+)
+def test_turbo04_pycycle_request_returns_unavailable_receipt_without_fallback(
+    tmp_path: Path,
+) -> None:
+    receipt = request_pycycle_execution(
+        compile_cycle_model(_core_design()), case_dir=tmp_path / "pycycle"
+    )
+
+    assert receipt.state == "unavailable"
+    assert receipt.engine == "pycycle"
+    assert receipt.fidelity == "pycycle-native"
+    assert receipt.source is None
+    assert receipt.result is None
+    assert receipt.error_code == "CAPABILITY_UNAVAILABLE"
+    assert len(receipt.input_hash) == 64
+    assert "not installed" in receipt.detail
+    staged = json.loads(
+        (tmp_path / "pycycle" / "case.json").read_text(encoding="utf-8")
+    )
+    assert staged["library"] == "pycycle"
+    assert staged["modelDigest"] == compile_cycle_model(_core_design()).digest
+
+
+@pytest.mark.skipif(
+    probe_cycle_engine("pycycle").available, reason="pyCycle is installed"
+)
+def test_turbo04_pycycle_request_returns_typed_unavailable_receipt() -> None:
+    model = compile_cycle_model(_core_design())
+    receipt = request_pycycle_run(model)
+
+    assert receipt.state == "unavailable"
+    assert receipt.fidelity == "pycycle-native"
+    assert receipt.model_digest == model.digest
+    assert len(receipt.input_hash) == 64
+    assert receipt.result is None
+    assert receipt.published is False
+    assert receipt.solver_version is None
+    assert "not installed" in receipt.detail
 
 
 def test_turbo04_pycycle_parser_rejects_foreign_and_missing_results(
