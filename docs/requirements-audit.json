@@ -637,7 +637,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: SQLite-backed persistent result cache with pinning and trusted-native reuse (PERF 06).",
-          "sha256": "6cb7cba866b627e6d1b39d4a5c69d6fdda2e1de3aee33fefdb0bd5ab120f0c62"
+          "sha256": "5a4c2a4de51ae11a862b409074f93b4cc4ecfd5dfe612594ad26a47b576f07d4"
         }
       ],
       "lastVerifiedAt": null
@@ -727,13 +727,13 @@
           "kind": "file",
           "path": "packages/optimization/aeroworkbench_optimization/design_space.py",
           "detail": "PARTIAL: canonical mixed/conditional/hierarchical design-space contract (GEN 02).",
-          "sha256": "054dc778ef358aca714158a16433db3462d4254d581a3bd2fb6c2d0c67b7d945"
+          "sha256": "da854d98b2b2eae67fe676cf0b1550d93a614c1d4021163d90c00a57408e43a5"
         },
         {
           "kind": "file",
           "path": "packages/optimization/aeroworkbench_optimization/generation.py",
           "detail": "PARTIAL: deterministic candidate generation and permutation (GEN 03).",
-          "sha256": "c1528ffa3acd3a3ca4bf1ef72fdf4c29b09cbc0057847b4c684cba65d51de931"
+          "sha256": "f5296741a961b74522a89ce47358c21542066fcb14d7b6fc2d5c4b4e8e9d171b"
         }
       ],
       "lastVerifiedAt": null
@@ -1348,13 +1348,13 @@
           "kind": "file",
           "path": "packages/optimization/aeroworkbench_optimization/campaign.py",
           "detail": "PARTIAL: campaign evaluation/selection/promotion orchestration (GEN 04).",
-          "sha256": "395be9909c3071b8a4a690099307a8dfd26fe667a6634579ca61c88c285bdf39"
+          "sha256": "454dfbc6974b6cd5e9dd0f776cabb4e93c949f28f2db6ee698a8e139a546f4cd"
         },
         {
           "kind": "file",
           "path": "packages/optimization/aeroworkbench_optimization/design_space.py",
           "detail": "PARTIAL: design-space exploration primitives (GEN 02).",
-          "sha256": "054dc778ef358aca714158a16433db3462d4254d581a3bd2fb6c2d0c67b7d945"
+          "sha256": "da854d98b2b2eae67fe676cf0b1550d93a614c1d4021163d90c00a57408e43a5"
         }
       ],
       "lastVerifiedAt": null
@@ -1636,13 +1636,13 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/sqlite.py",
           "detail": "PARTIAL: SQLite repository with durable provenance/result metadata.",
-          "sha256": "d1ed20d2ee8a7155dfee32c043b89e2d66b461f735a7012a8de055c0c8c834dd"
+          "sha256": "96963faf062f1e1f651a25fbf727b4079ccbec338534826eda4e1fd6f7f50ada"
         },
         {
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: persistent content-addressed result store with pinning and trusted reuse.",
-          "sha256": "6cb7cba866b627e6d1b39d4a5c69d6fdda2e1de3aee33fefdb0bd5ab120f0c62"
+          "sha256": "5a4c2a4de51ae11a862b409074f93b4cc4ecfd5dfe612594ad26a47b576f07d4"
         }
       ],
       "lastVerifiedAt": null
@@ -1672,7 +1672,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: content-addressed storage of result values with digests.",
-          "sha256": "6cb7cba866b627e6d1b39d4a5c69d6fdda2e1de3aee33fefdb0bd5ab120f0c62"
+          "sha256": "5a4c2a4de51ae11a862b409074f93b4cc4ecfd5dfe612594ad26a47b576f07d4"
         }
       ],
       "lastVerifiedAt": null
