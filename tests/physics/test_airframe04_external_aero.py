@@ -8,6 +8,7 @@ share the typed aero-coefficient contract trim consumes. Fixtures under
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,7 @@ from aeroworkbench_airframe.external_aero.contracts import (
     VLM_VALIDITY_LIMITS,
 )
 from aeroworkbench_airframe.external_aero.native import (
+    GovernedVspaeroBackend,
     VspaeroSolution,
     vspaero_case_manifest,
 )
@@ -403,3 +405,62 @@ def test_airframe04_vspaero_case_preparation_is_deterministic(tmp_path: Path) ->
     manifest = vspaero_case_manifest(case, level)
     assert manifest["caseId"] == "rectangular-wing-ar6"
     assert manifest["caseDigest"] == case.digest
+
+
+def test_airframe04_governed_vspaero_fake_process_parses_native_artifacts(
+    tmp_path: Path,
+) -> None:
+    case, reference, _ = rectangular_case()
+    payload = {
+        "coefficients": {"CL": 0.42, "CD": 0.025, "CY": 0.01, "Cl": 0.02, "Cm": -0.05, "Cn": 0.03},
+        "derivatives": {
+            "method": "native perturbation",
+            "stepDeg": 0.5,
+            "values": {"dCL/dalpha": 4.2, "dCm/dalpha": -0.8},
+        },
+        "loads": [{
+            "surfaceId": "main-wing", "spanFraction": 0.5, "arcM": 1.0,
+            "chordM": 1.0, "sectionLiftCoefficient": 0.4,
+            "circulationM2S": 2.0, "liftPerSpanNm": 30.0, "inducedAlphaDeg": 1.2,
+        }],
+        "validity": {
+            "checks": {"converged": True, "residuals": True},
+            "detail": "fake native receipt",
+        },
+        "artifacts": [],
+        "detail": "fake native VSPAERO run",
+    }
+    code = (
+        "import json,sys; a=sys.argv; out=a[a.index('--output')+1]; "
+        f"json.dump({payload!r}, open(out, 'w', encoding='utf-8'))"
+    )
+    backend = GovernedVspaeroBackend(
+        executable=sys.executable,
+        command_prefix=("-c", code),
+        job_root=tmp_path,
+        solver_name="fake-vspaero",
+        solver_version="test-1",
+    )
+    harness_solution = backend.solve(case, reference)
+    assert getattr(harness_solution.execution_receipt, "state", None) == "completed"
+    assert getattr(harness_solution.execution_receipt, "solver_identity", None) == "fake-vspaero"
+    result = solve_vspaero(case, reference, backend=backend, run_id="fake-run-001")
+    assert result.source is ResultSource.NATIVE_SOLVER
+    assert result.coefficients.lift == pytest.approx(0.42)
+    assert result.derivatives is not None
+    assert result.derivatives.require("dCL/dalpha") == pytest.approx(4.2)
+    assert len(result.distributed_loads) == 1
+    assert result.validity.passed
+    assert result.artifacts == ("vspaero-result.json", "stdout.log", "stderr.log")
+    assert backend.solver_name == result.solver_name
+    assert result.provenance.solver_version == "test-1"
+
+
+def test_airframe04_governed_vspaero_missing_executable_fails_closed(tmp_path: Path) -> None:
+    case, reference, _ = rectangular_case()
+    backend = GovernedVspaeroBackend(
+        executable="vspaero-definitely-missing",
+        job_root=tmp_path,
+    )
+    with pytest.raises(ExternalAeroCapabilityUnavailableError, match="NATIVE_VSPAERO_UNAVAILABLE"):
+        solve_vspaero(case, reference, backend=backend, run_id="missing-run")

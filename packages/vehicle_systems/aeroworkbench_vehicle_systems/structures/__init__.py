@@ -102,6 +102,11 @@ from .loads import (
     load_case_from_propulsor,
     load_case_from_trim,
 )
+from .manufacturing import (
+    StructuralManufacturingLimits,
+    screen_structure_manufacturability,
+    structural_measurements,
+)
 from .mass_feedback import (
     StructuralMassParticipant,
     apply_structure_mass,
@@ -196,6 +201,7 @@ __all__ = [
     "StructuralLoadSet",
     "StructuralMassParticipant",
     "StructuralMember",
+    "StructuralManufacturingLimits",
     "StructuralParticipant",
     "StructuralPort",
     "StructuresCapabilityUnavailable",
@@ -233,7 +239,9 @@ __all__ = [
     "plate_buckling_stress_pa",
     "require_native_structure",
     "size_architecture",
+    "screen_structure_manufacturability",
     "solve_native_structure",
     "structural_participants",
     "structure_mass_updates",
+    "structural_measurements",
 ]

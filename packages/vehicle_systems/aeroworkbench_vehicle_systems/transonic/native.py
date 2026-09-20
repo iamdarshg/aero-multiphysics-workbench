@@ -9,7 +9,7 @@ from math import isfinite
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
-from .contracts import ResultEnvelope, Validity, native_envelope
+from .contracts import ResultEnvelope, ShockFeature, Validity, native_envelope
 from .errors import TransonicCapabilityUnavailable, TransonicContractError, TransonicValidityError
 from .policy import THERMAL_COUPLING_MIN_MACH, promotion_for
 from .regime import assert_not_hypersonic
@@ -135,6 +135,7 @@ class NativeCompressibleSolution:
     shock_detail: str
     artifacts: tuple[str, ...]
     validity_checks: tuple[tuple[str, bool], ...] = ()
+    shock_feature: ShockFeature | None = None
 
     def __post_init__(self) -> None:
         if not self.shock_detail.strip():
@@ -184,12 +185,14 @@ class NativeCompressibleReceipt:
     validity: Validity
     envelope: ResultEnvelope
     artifacts: tuple[str, ...] = ()
+    shock_feature: ShockFeature | None = None
 
     def canonical(self) -> dict[str, Any]:
         return {
             "caseId": self.case_id,
             "liftCoefficient": self.lift_coefficient,
             "cdWave": self.cd_wave,
+            "shockFeature": None if self.shock_feature is None else self.shock_feature.canonical(),
             "solver": {
                 "name": self.solver_name,
                 "version": self.solver_version,
@@ -254,4 +257,5 @@ def solve_native_compressible(
         validity,
         envelope,
         solution.artifacts,
+        solution.shock_feature,
     )

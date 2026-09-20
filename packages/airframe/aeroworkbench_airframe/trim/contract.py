@@ -19,6 +19,7 @@ from typing import Any, Protocol, runtime_checkable
 from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 
 from ..canonical import content_digest
+from ..state import Controls
 from ..units import Quantity, Vec3, require_dimension
 from .errors import AeroCoefficientError
 
@@ -153,8 +154,14 @@ class AeroReference:
         require_dimension(self.area, "area", "aeroReference.area")
         require_dimension(self.span, "length", "aeroReference.span")
         require_dimension(self.chord, "length", "aeroReference.chord")
-        require_dimension(self.moment_reference, "length", "aeroReference.momentReference")
-        if self.area.value_si <= 0 or self.span.value_si <= 0 or self.chord.value_si <= 0:
+        require_dimension(
+            self.moment_reference, "length", "aeroReference.momentReference"
+        )
+        if (
+            self.area.value_si <= 0
+            or self.span.value_si <= 0
+            or self.chord.value_si <= 0
+        ):
             raise ValueError("NONPOSITIVE_AERO_REFERENCE")
         if self.cg_mac_fraction is not None:
             finite(self.cg_mac_fraction, "aeroReference.cgMacFraction")
@@ -182,6 +189,7 @@ class AeroState:
     roll_rate: Quantity = Quantity(0.0, "rad/s")
     yaw_rate: Quantity = Quantity(0.0, "rad/s")
     deflections: tuple[tuple[str, Quantity], ...] = ()
+    controls: Controls = Controls()
 
     def __post_init__(self) -> None:
         require_dimension(self.alpha, "angle", "aeroState.alpha")
@@ -231,7 +239,10 @@ class FlightCondition:
             raise ValueError("NONPOSITIVE_MASS")
         if self.bank is not None:
             require_dimension(self.bank, "angle", "condition.bank")
-        for label, quantity in (("thrust", self.thrust), ("thrustMax", self.thrust_max)):
+        for label, quantity in (
+            ("thrust", self.thrust),
+            ("thrustMax", self.thrust_max),
+        ):
             if quantity is not None:
                 require_dimension(quantity, "force", f"condition.{label}")
                 if quantity.value_si < 0.0:
@@ -322,14 +333,15 @@ class LongitudinalDerivatives:
 
     def present(self) -> dict[str, bool]:
         return {
-            field.name: getattr(self, field.name) is not None
-            for field in fields(self)
+            field.name: getattr(self, field.name) is not None for field in fields(self)
         }
 
     def require(self, *names: str) -> dict[str, float]:
         missing = [name for name in names if getattr(self, name, None) is None]
         if missing:
-            raise AeroCoefficientError(f"MISSING_LONGITUDINAL_DERIVATIVES:{','.join(missing)}")
+            raise AeroCoefficientError(
+                f"MISSING_LONGITUDINAL_DERIVATIVES:{','.join(missing)}"
+            )
         return {name: finite(float(getattr(self, name)), name) for name in names}
 
 
@@ -359,8 +371,7 @@ class LateralDirectionalDerivatives:
 
     def present(self) -> dict[str, bool]:
         return {
-            field.name: getattr(self, field.name) is not None
-            for field in fields(self)
+            field.name: getattr(self, field.name) is not None for field in fields(self)
         }
 
     def require(self, *names: str) -> dict[str, float]:

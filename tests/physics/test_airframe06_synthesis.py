@@ -18,6 +18,8 @@ from typing import Any
 import pytest
 from aeroworkbench_airframe.synthesis import (
     METHODS,
+    METRIC_DIMENSIONS,
+    METRIC_ENFORCEMENT_ROUTES,
     SYNTHESIS_MODEL,
     CompiledRequirements,
     RequirementCompileError,
@@ -107,7 +109,9 @@ def test_airframe06_compiler_is_deterministic_and_order_independent() -> None:
     )
 
 
-def test_airframe06_impossible_requirements_fail_closed_with_explicit_conflicts() -> None:
+def test_airframe06_impossible_requirements_fail_closed_with_explicit_conflicts() -> (
+    None
+):
     with pytest.raises(RequirementConflictError) as raised:
         compile_requirements_payload(load_fixture("requirements_impossible.json"))
     conflicts = raised.value.conflicts
@@ -140,7 +144,11 @@ def test_airframe06_unknown_metric_unit_and_dimension_fail_closed() -> None:
         )
     with pytest.raises(RequirementCompileError, match="UNKNOWN_REQUIREMENT_UNIT"):
         compile_requirements(
-            [_requirement("REQ-X", "payload_mass", "at_least", value=1.0, unit="furlong")]
+            [
+                _requirement(
+                    "REQ-X", "payload_mass", "at_least", value=1.0, unit="furlong"
+                )
+            ]
         )
     with pytest.raises(RequirementCompileError, match="REQUIREMENT_DIMENSION_MISMATCH"):
         compile_requirements(
@@ -148,7 +156,68 @@ def test_airframe06_unknown_metric_unit_and_dimension_fail_closed() -> None:
         )
     with pytest.raises(RequirementCompileError, match="REQUIREMENT_BOUNDS_INVERTED"):
         compile_requirements(
-            [_requirement("REQ-X", "payload_mass", "between", lower=10.0, upper=1.0, unit="kg")]
+            [
+                _requirement(
+                    "REQ-X", "payload_mass", "between", lower=10.0, upper=1.0, unit="kg"
+                )
+            ]
+        )
+
+
+@pytest.mark.parametrize("metric", sorted(METRIC_DIMENSIONS))
+def test_airframe06_every_registered_metric_has_an_explicit_enforcement_route(
+    metric: str,
+) -> None:
+    mode, target = METRIC_ENFORCEMENT_ROUTES[metric]
+    assert mode in {"direct", "downstream"}
+    assert target in {
+        "fixed_wing_synthesis",
+        "mission_campaign",
+        "vs06_landing_gear",
+        "trim_control",
+        "manufacturing_constraints",
+    }
+
+    units = {
+        "mass": "kg",
+        "velocity": "m/s",
+        "length": "m",
+        "time": "s",
+        "dimensionless": "dimensionless",
+        "pressure": "Pa",
+        "power": "W",
+        "energy": "J",
+        "volume": "m3",
+    }
+    compiled = compile_requirements(
+        [
+            _requirement(
+                f"REQ-{metric}",
+                metric,
+                "at_most",
+                value=1.0,
+                unit=units[METRIC_DIMENSIONS[metric]],
+            )
+        ]
+    )
+    requirement = compiled.requirements[0]
+    assert requirement.enforcement_route.mode == mode
+    assert requirement.enforcement_route.target == target
+    if mode == "downstream":
+        assert compiled.downstream_constraints()[0]["target"] == target
+
+
+def test_airframe06_metric_without_route_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delitem(METRIC_ENFORCEMENT_ROUTES, "payload_mass")
+    with pytest.raises(RequirementCompileError, match="UNSUPPORTED_REQUIREMENT_METRIC"):
+        compile_requirements(
+            [
+                _requirement(
+                    "REQ-PAYLOAD", "payload_mass", "at_least", value=1.0, unit="kg"
+                )
+            ]
         )
 
 
@@ -185,9 +254,10 @@ def test_airframe06_fixed_wing_fixture_yields_valid_provenanced_seeds() -> None:
             assert quantity.quantity.dimension
             assert quantity.validity.method == quantity.method
             assert quantity.validity.assumptions
-    assert seeds[0].parameter("aspect_ratio").value_si != seeds[1].parameter(
-        "aspect_ratio"
-    ).value_si
+    assert (
+        seeds[0].parameter("aspect_ratio").value_si
+        != seeds[1].parameter("aspect_ratio").value_si
+    )
 
 
 def test_airframe06_seeds_never_overwrite_user_hard_constraints() -> None:
@@ -201,11 +271,15 @@ def test_airframe06_seeds_never_overwrite_user_hard_constraints() -> None:
     for seed in seeds:
         assert seed.parameter("stall_speed").value_si <= limits["stall_speed"].upper_si
         aspect = seed.parameter("aspect_ratio").value_si
-        assert limits["aspect_ratio"].lower_si <= aspect <= limits["aspect_ratio"].upper_si
+        assert (
+            limits["aspect_ratio"].lower_si <= aspect <= limits["aspect_ratio"].upper_si
+        )
         assert seed.parameter("load_factor").value_si == pytest.approx(
             limits["load_factor"].lower_si
         )
-        assert seed.parameter("range").value_si == pytest.approx(limits["range"].lower_si)
+        assert seed.parameter("range").value_si == pytest.approx(
+            limits["range"].lower_si
+        )
     assert limits["aspect_ratio"].lower_si == pytest.approx(7.0)
     assert limits["stall_speed"].upper_si == pytest.approx(30.0)
 
@@ -214,13 +288,21 @@ def test_airframe06_seeds_are_deterministic_and_hashable() -> None:
     first = generate_fixed_wing_seeds(_compiled(), seed_count=2)
     second = generate_fixed_wing_seeds(_compiled(), seed_count=2)
     assert [seed.seed_id for seed in first] == [seed.seed_id for seed in second]
-    assert [seed.content_hash for seed in first] == [seed.content_hash for seed in second]
+    assert [seed.content_hash for seed in first] == [
+        seed.content_hash for seed in second
+    ]
 
     reordered = compile_requirements_payload(
-        {"requirements": list(reversed(load_fixture("requirements_tiny.json")["requirements"]))}
+        {
+            "requirements": list(
+                reversed(load_fixture("requirements_tiny.json")["requirements"])
+            )
+        }
     )
     third = generate_fixed_wing_seeds(reordered, seed_count=2)
-    assert [seed.content_hash for seed in third] == [seed.content_hash for seed in first]
+    assert [seed.content_hash for seed in third] == [
+        seed.content_hash for seed in first
+    ]
 
 
 def test_airframe06_seed_feeds_design_space_and_design_state_machinery() -> None:
@@ -251,9 +333,15 @@ def test_airframe06_seed_feeds_design_space_and_design_state_machinery() -> None
 
 def test_airframe06_missing_or_impossible_requirements_fail_closed() -> None:
     payload_only = compile_requirements(
-        [_requirement("REQ-PAYLOAD", "payload_mass", "at_least", value=100.0, unit="kg")]
+        [
+            _requirement(
+                "REQ-PAYLOAD", "payload_mass", "at_least", value=100.0, unit="kg"
+            )
+        ]
     )
-    with pytest.raises(SynthesisInfeasibleError, match="REQUIRED_METRIC_MISSING:stall_speed"):
+    with pytest.raises(
+        SynthesisInfeasibleError, match="REQUIRED_METRIC_MISSING:stall_speed"
+    ):
         generate_fixed_wing_seeds(payload_only)
 
     tight = compile_requirements_payload(
@@ -298,7 +386,9 @@ def test_airframe06_missing_or_impossible_requirements_fail_closed() -> None:
         generate_fixed_wing_seeds(tight)
 
 
-def test_airframe06_rotorcraft_seam_uses_available_analytical_propulsor_foundation() -> None:
+def test_airframe06_rotorcraft_seam_uses_available_analytical_propulsor_foundation() -> (
+    None
+):
     seam = synthesize_rotorcraft_seam(_compiled())
     assert seam.available is True
     assert len(seam.seeds) == 1
@@ -313,12 +403,18 @@ def test_airframe06_rotorcraft_seam_uses_available_analytical_propulsor_foundati
 
 
 def test_airframe06_lifting_body_seam_uses_planform_volume_and_sweep() -> None:
-    compiled = compile_requirements_payload(load_fixture("requirements_lifting_body.json"))
+    compiled = compile_requirements_payload(
+        load_fixture("requirements_lifting_body.json")
+    )
     seam = synthesize_lifting_body_seam(compiled)
     assert seam.available is True
     assert len(seam.seeds) == 1
     quantities = {quantity.name: quantity for quantity in seam.seeds[0].quantities}
-    expected = {"lifting_body_planform_area", "lifting_body_thickness_ratio", "lifting_body_sweep"}
+    expected = {
+        "lifting_body_planform_area",
+        "lifting_body_thickness_ratio",
+        "lifting_body_sweep",
+    }
     assert expected <= set(quantities)
     assert quantities["lifting_body_thickness_ratio"].validity.valid is True
     assert quantities["lifting_body_planform_area"].quantity.dimension == "area"
@@ -328,10 +424,16 @@ def test_airframe06_lifting_body_seam_uses_planform_volume_and_sweep() -> None:
 def test_airframe06_report_aggregates_seeds_and_seams_deterministically() -> None:
     report = synthesize_initial_seeds(_compiled(), seed_count=2)
     assert report.seeds
-    assert {seam.architecture_type for seam in report.seams} >= {"rotorcraft", "lifting_body"}
+    assert {seam.architecture_type for seam in report.seams} >= {
+        "rotorcraft",
+        "lifting_body",
+    }
     assert any(seam.available for seam in report.seams) or any(
         not seam.available for seam in report.seams
     )
     assert report.requirements.content_hash == _compiled().content_hash
-    assert report.content_hash == synthesize_initial_seeds(_compiled(), seed_count=2).content_hash
+    assert (
+        report.content_hash
+        == synthesize_initial_seeds(_compiled(), seed_count=2).content_hash
+    )
     assert report.canonical_payload()["seeds"]

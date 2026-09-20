@@ -13,8 +13,10 @@ validity verdict, and its provenance uses the core native-solver contract.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
+from collections.abc import Mapping
 from dataclasses import dataclass
 from math import isfinite
 from pathlib import Path
@@ -34,6 +36,28 @@ from .contracts import (
     SpanLoad,
 )
 from .errors import ExternalAeroCapabilityUnavailableError, ExternalAeroValidationError
+
+# These optional participant bindings are runtime constructors, not type names.
+# Keep the imported symbols separate from their unavailable fallbacks so mypy
+# does not treat the fallback assignments as redefinitions of imported types.
+_ArtifactDigest: Any
+_ExecutionReceipt: Any
+_ParseReceipt: Any
+_PrepareReceipt: Any
+_ValidityReport: Any
+_run_governed: Any
+
+try:
+    from participants.executors import ArtifactDigest as _ArtifactDigest
+    from participants.executors import ExecutionReceipt as _ExecutionReceipt
+    from participants.receipts import ParseReceipt as _ParseReceipt
+    from participants.receipts import PrepareReceipt as _PrepareReceipt
+    from participants.receipts import ValidityReport as _ValidityReport
+    from participants.runner import run_governed as _run_governed
+except ImportError:  # pragma: no cover - package layout supplies these in production
+    _ArtifactDigest = _ExecutionReceipt = Any
+    _ParseReceipt = _PrepareReceipt = _ValidityReport = Any
+    _run_governed = None
 
 VSPAERO_MODEL = "airframe.external_aero.vspaero"
 VSPAERO_EXECUTABLES: tuple[str, ...] = ("vspaero", "vspaero.exe", "openvsp", "vsp")
@@ -111,6 +135,9 @@ class VspaeroSolution:
     derivatives: AeroDerivatives | None = None
     distributed_loads: tuple[SpanLoad, ...] = ()
     validity_checks: tuple[tuple[str, bool], ...] = ()
+    execution_receipt: object | None = None
+    prepare_receipt: object | None = None
+    parse_receipt: object | None = None
 
     def __post_init__(self) -> None:
         if not self.detail.strip():
@@ -128,6 +155,90 @@ class VspaeroBackend(Protocol):
     solver_version: str
 
     def solve(self, case: ExternalAeroCase, reference: AeroReference) -> VspaeroSolution: ...
+
+
+@dataclass(frozen=True, slots=True)
+class GovernedVspaeroBackend:
+    """Execute a VSPAERO-compatible case command through the native supervisor.
+
+    The executable receives ``--case <manifest> --output <result>`` in its case
+    directory and must write the strict JSON result consumed by
+    :func:`parse_vspaero_result`.  This small adapter also works with the real
+    OpenVSP/VSPAERO wrapper executable, while keeping process governance in the
+    shared participant runner rather than using an unbounded subprocess call.
+    """
+
+    executable: str
+    job_root: Path
+    solver_name: str = "vspaero"
+    solver_version: str = "unknown"
+    timeout_s: float = 600.0
+    rss_limit_mib: float = 800.0
+    result_name: str = "vspaero-result.json"
+    command_prefix: tuple[str, ...] = ()
+
+    def solve(self, case: ExternalAeroCase, reference: AeroReference) -> VspaeroSolution:
+        if _run_governed is None:
+            raise ExternalAeroCapabilityUnavailableError("NATIVE_VSPAERO_GOVERNOR_UNAVAILABLE")
+        resolved = shutil.which(self.executable) or self.executable
+        if not Path(resolved).is_file():
+            raise ExternalAeroCapabilityUnavailableError(
+                f"NATIVE_VSPAERO_UNAVAILABLE:{self.executable}:executable not found"
+            )
+        case_dir = self.job_root / case.case_id
+        manifest = prepare_vspaero_case(case, reference, case_dir)
+        process = _run_governed(
+            (resolved, *self.command_prefix, "--case", manifest.name, "--output", self.result_name),
+            case_dir=case_dir,
+            job_root=self.job_root,
+            rss_limit_mib=self.rss_limit_mib,
+            timeout_s=self.timeout_s,
+        )
+        result_path = case_dir / self.result_name
+        if not result_path.is_file():
+            raise ExternalAeroValidationError("NATIVE_VSPAERO_RESULT_ARTIFACT_MISSING")
+        solution, parsed, validity = parse_vspaero_result(case_dir, self.result_name)
+        artifacts = _validate_artifacts(
+            case_dir, (self.result_name, "stdout.log", "stderr.log") + solution.artifacts
+        )
+        execution = _ExecutionReceipt(
+            state="completed",
+            execution_mode="subprocess",
+            exit_code=int(getattr(process, "exit_code", 0) or 0),
+            peak_rss_mib=float(getattr(process, "peak_rss_mib", 0.0) or 0.0),
+            stdout_sha256=getattr(process, "stdout_sha256", None),
+            stderr_sha256=getattr(process, "stderr_sha256", None),
+            started_at=float(getattr(process, "started_at", 0.0) or 0.0),
+            finished_at=float(getattr(process, "finished_at", 0.0) or 0.0),
+            input_hash=case.digest,
+            solver_identity=self.solver_name,
+            solver_version=self.solver_version,
+            artifacts=tuple(
+                _ArtifactDigest(
+                    name=name,
+                    sha256=hashlib.sha256((case_dir / name).read_bytes()).hexdigest(),
+                    bytes=(case_dir / name).stat().st_size,
+                )
+                for name in artifacts
+            ),
+        )
+        return VspaeroSolution(
+            coefficients=solution.coefficients,
+            artifacts=artifacts,
+            detail=solution.detail,
+            derivatives=solution.derivatives,
+            distributed_loads=solution.distributed_loads,
+            validity_checks=validity.checks.items(),
+            execution_receipt=execution,
+            prepare_receipt=_PrepareReceipt(
+                participant_id="airframe-external-aero",
+                case_id=case.case_id,
+                input_hash=case.digest,
+                files=(manifest.name,),
+                detail="canonical VSPAERO case manifest prepared",
+            ),
+            parse_receipt=parsed,
+        )
 
 
 def prepare_vspaero_case(
@@ -162,6 +273,102 @@ def _native_validity(solution: VspaeroSolution) -> AeroValidity:
         checks=checks,
         detail=solution.detail,
         limits=VSPAERO_VALIDITY_LIMITS,
+    )
+
+
+def _number(payload: Mapping[str, Any], key: str) -> float:
+    value = payload.get(key)
+    if not isinstance(value, int | float) or isinstance(value, bool) or not isfinite(float(value)):
+        raise ExternalAeroValidationError(f"NATIVE_VSPAERO_NUMBER_REQUIRED:{key}")
+    return float(value)
+
+
+def _validate_artifacts(case_dir: Path, artifacts: tuple[str, ...]) -> tuple[str, ...]:
+    checked: list[str] = []
+    for name in artifacts:
+        path = Path(name)
+        if path.name != name or path.is_absolute() or ".." in path.parts:
+            raise ExternalAeroValidationError(f"NATIVE_VSPAERO_UNSAFE_ARTIFACT:{name}")
+        if not (case_dir / path).is_file():
+            raise ExternalAeroValidationError(f"NATIVE_VSPAERO_ARTIFACT_MISSING:{name}")
+        checked.append(name)
+    return tuple(dict.fromkeys(checked))
+
+
+def parse_vspaero_result(
+    case_dir: Path, result_name: str = "vspaero-result.json"
+) -> tuple[VspaeroSolution, Any, Any]:
+    """Parse the governed JSON result artifact without deriving missing values."""
+
+    path = case_dir / result_name
+    if not path.is_file():
+        raise ExternalAeroValidationError("NATIVE_VSPAERO_RESULT_ARTIFACT_MISSING")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ExternalAeroValidationError(f"NATIVE_VSPAERO_RESULT_INVALID:{exc}") from exc
+    if not isinstance(payload, dict):
+        raise ExternalAeroValidationError("NATIVE_VSPAERO_RESULT_NOT_OBJECT")
+    coefficients = payload.get("coefficients")
+    if not isinstance(coefficients, dict):
+        raise ExternalAeroValidationError("NATIVE_VSPAERO_COEFFICIENTS_REQUIRED")
+    result = AeroCoefficients(
+        lift=_number(coefficients, "CL"), drag=_number(coefficients, "CD"),
+        side=_number(coefficients, "CY"), roll=_number(coefficients, "Cl"),
+        pitch=_number(coefficients, "Cm"), yaw=_number(coefficients, "Cn"),
+    )
+    derivatives_payload = payload.get("derivatives")
+    derivatives = None
+    if derivatives_payload is not None:
+        if not isinstance(derivatives_payload, dict) or not isinstance(
+            derivatives_payload.get("values"), dict
+        ):
+            raise ExternalAeroValidationError("NATIVE_VSPAERO_DERIVATIVES_INVALID")
+        derivatives = AeroDerivatives(
+            values=tuple((str(key), _number(derivatives_payload["values"], str(key)))
+                         for key in derivatives_payload["values"]),
+            method=str(derivatives_payload.get("method", "native")),
+            step_deg=float(derivatives_payload.get("stepDeg", 1.0)),
+        )
+    validity_payload = payload.get("validity", {})
+    checks_payload = (
+        validity_payload.get("checks", {}) if isinstance(validity_payload, dict) else {}
+    )
+    if not isinstance(checks_payload, dict) or not all(
+        isinstance(value, bool) for value in checks_payload.values()
+    ):
+        raise ExternalAeroValidationError("NATIVE_VSPAERO_VALIDITY_INVALID")
+    checks = tuple((str(key), value) for key, value in checks_payload.items())
+    detail = str(payload.get("detail", "native VSPAERO result parsed"))
+    declared = payload.get("artifacts", [])
+    if not isinstance(declared, list) or not all(isinstance(item, str) for item in declared):
+        raise ExternalAeroValidationError("NATIVE_VSPAERO_ARTIFACT_LIST_INVALID")
+    loads: list[SpanLoad] = []
+    for item in payload.get("loads", []):
+        if not isinstance(item, dict):
+            raise ExternalAeroValidationError("NATIVE_VSPAERO_LOAD_INVALID")
+        loads.append(SpanLoad(
+            surface_id=str(item["surfaceId"]), span_fraction=_number(item, "spanFraction"),
+            arc_m=_number(item, "arcM"), chord_m=_number(item, "chordM"),
+            section_lift_coefficient=_number(item, "sectionLiftCoefficient"),
+            circulation_m2_s=_number(item, "circulationM2S"),
+            lift_per_span_n_m=_number(item, "liftPerSpanNm"),
+            induced_alpha_deg=_number(item, "inducedAlphaDeg"),
+        ))
+    parsed = _ParseReceipt(
+        "airframe-external-aero", "vspaero-json",
+        {key: float(value) for key, value in result.canonical().items()}, detail=detail
+    )
+    validity = _ValidityReport(
+        "airframe-external-aero",
+        all(checks_payload.values()) if checks_payload else True,
+        dict(checks_payload),
+        detail,
+    )
+    return (
+        VspaeroSolution(result, tuple(declared), detail, derivatives, tuple(loads), checks),
+        parsed,
+        validity,
     )
 
 
@@ -256,7 +463,9 @@ __all__ = [
     "VSPAERO_MODEL",
     "VspaeroBackend",
     "VspaeroCapability",
+    "GovernedVspaeroBackend",
     "VspaeroSolution",
+    "parse_vspaero_result",
     "prepare_vspaero_case",
     "probe_any_vspaero_capability",
     "probe_vspaero_capability",

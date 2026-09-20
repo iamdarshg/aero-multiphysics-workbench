@@ -1,0 +1,6 @@
+{
+  "branches": ["wingbox", "multi_spar", "monocoque", "semi_monocoque", "shell"],
+  "spar_count": 2,
+  "rib_count": 5,
+  "stringer_count": 4
+}

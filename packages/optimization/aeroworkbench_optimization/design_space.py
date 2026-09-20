@@ -20,6 +20,8 @@ from collections.abc import Mapping, Sequence
 from math import isfinite
 from typing import Any
 
+from aeroworkbench_airframe.units import dimension_of, to_si
+
 __all__ = [
     "DesignSpaceError",
     "active_variable_ids",
@@ -34,8 +36,6 @@ __all__ = [
     "validate_design_space",
     "variable_is_active",
 ]
-
-_UNIT_SCALE: dict[str, float] = {"m": 1.0, "cm": 0.01, "mm": 0.001, "in": 0.0254}
 
 _VARIABLE_KINDS = (
     "continuous",
@@ -64,16 +64,28 @@ def _normalize_number(value: float) -> float:
     return 0.0 if value == 0 else float(value)
 
 
-def _to_si(label: str, value: float, unit: str | None) -> float:
+def _normalize_si(value: float) -> float:
+    # Remove conversion noise so equivalent units retain one candidate identity.
+    normalized = round(float(value), 12)
+    return 0.0 if normalized == 0 else normalized
+
+
+def _to_si(
+    label: str, value: float, unit: str | None, expected_unit: str | None = None
+) -> float:
     if unit is None:
         _require_finite(label, value)
         return _normalize_number(float(value))
-    scale = _UNIT_SCALE.get(unit)
-    if scale is None:
-        raise DesignSpaceError(f"UNSUPPORTED_UNIT:{label}:{unit}")
-    if not isfinite(value):
-        raise DesignSpaceError(f"{label} must be finite")
-    return _normalize_number((float(value) + 0.0) * scale)
+    try:
+        if expected_unit is not None and dimension_of(unit) != dimension_of(expected_unit):
+            raise DesignSpaceError(f"UNIT_DIMENSION_MISMATCH:{label}:{unit}:{expected_unit}")
+        return _normalize_si(to_si(float(value), unit))
+    except DesignSpaceError:
+        raise
+    except ValueError as error:
+        if str(error).startswith("NONFINITE_"):
+            raise DesignSpaceError(f"{label} must be finite") from error
+        raise DesignSpaceError(f"UNSUPPORTED_UNIT:{label}:{unit}") from error
 
 
 def _canonical(value: Any) -> Any:
@@ -236,8 +248,10 @@ def _validate_variable(variable: Mapping[str, Any], index: Mapping[str, Any]) ->
             raise DesignSpaceError(f"VARIABLE_UNIT_EMPTY:{variable_id}")
         if kind in {"categorical", "boolean"}:
             raise DesignSpaceError(f"NON_NUMERIC_VARIABLE_HAS_UNIT:{variable_id}")
-        if unit not in _UNIT_SCALE:
-            raise DesignSpaceError(f"UNSUPPORTED_UNIT:{variable_id}:{unit}")
+        try:
+            dimension_of(str(unit))
+        except ValueError as error:
+            raise DesignSpaceError(f"UNSUPPORTED_UNIT:{variable_id}:{unit}") from error
     _validate_bindings(variable)
     mutation_scale = variable.get("mutationScale")
     if mutation_scale is not None:
@@ -456,7 +470,9 @@ def _resolve_value(
                 value = float(entry["value"])
                 return {
                     "raw": value,
-                    "value_si": _to_si(variable_id, value, str(entry["unit"])),
+                    "value_si": _to_si(
+                        variable_id, value, str(entry["unit"]), variable.get("unit")
+                    ),
                     "unit": variable.get("unit"),
                 }
             if entry_kind == "dimensionless":
@@ -745,7 +761,10 @@ def _domain_violations(
                     violations.append(f"{variable_id}:UNKNOWN_PROFILE_POINT:{point['id']}")
                     continue
                 value = _to_si(
-                    variable_id, float(point["value"]), point.get("unit", variable.get("unit"))
+                    variable_id,
+                    float(point["value"]),
+                    point.get("unit", variable.get("unit")),
+                    variable.get("unit"),
                 )
                 lower, upper = _profile_point_si_bounds(variable, control)
                 if value < lower or value > upper:
@@ -863,7 +882,7 @@ def _flat_profile_points(
         )
         point: dict[str, Any] = {
             "id": str(control["id"]),
-            "valueSI": _to_si(str(variable["id"]), raw_value, unit),
+            "valueSI": _to_si(str(variable["id"]), raw_value, unit, variable.get("unit")),
             "rawValue": raw_value,
         }
         if unit is not None:

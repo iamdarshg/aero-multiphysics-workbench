@@ -15,7 +15,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from aeroworkbench_airframe import InertiaTensor, MassProperties, Quantity, Vec3
+from aeroworkbench_airframe import (
+    Controls,
+    InertiaTensor,
+    MassProperties,
+    Quantity,
+    Vec3,
+)
 from aeroworkbench_airframe.trim import (
     INFEASIBLE,
     PREFLIGHT_INVALID,
@@ -30,6 +36,7 @@ from aeroworkbench_airframe.trim import (
     LinearAeroModel,
     LongitudinalDerivatives,
     NativeTrimCapabilityError,
+    TrimControl,
     TrimFidelity,
     TrimSpec,
     TrimVariable,
@@ -52,7 +59,9 @@ _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _load() -> dict[str, Any]:
-    payload: dict[str, Any] = json.loads((_FIXTURE_DIR / _FIXTURE).read_text(encoding="utf-8"))
+    payload: dict[str, Any] = json.loads(
+        (_FIXTURE_DIR / _FIXTURE).read_text(encoding="utf-8")
+    )
     return payload
 
 
@@ -126,19 +135,27 @@ def _closed_form_trim(data: dict[str, Any]) -> tuple[float, float, float]:
     det = lon["cl_alpha"] * lon["cm_de"] - lon["cl_de"] * lon["cm_alpha"]
     alpha = (rhs_alpha * lon["cm_de"] - lon["cl_de"] * rhs_pitch) / det
     elevator = (lon["cl_alpha"] * rhs_pitch - rhs_alpha * lon["cm_alpha"]) / det
-    drag_coef = lon["cd_0"] + lon["cd_alpha"] * alpha + data["inducedDragFactor"] * lift_needed**2
+    drag_coef = (
+        lon["cd_0"]
+        + lon["cd_alpha"] * alpha
+        + data["inducedDragFactor"] * lift_needed**2
+    )
     return alpha, elevator, dynamic * drag_coef / cond["thrustMax"]["value"]
 
 
 def test_level_trim_converges_to_force_moment_balance() -> None:
     data = _load()
-    result = trim_level_flight(_model(data), _condition(data), elevator_limit=Quantity(0.5, "rad"))
+    result = trim_level_flight(
+        _model(data), _condition(data), elevator_limit=Quantity(0.5, "rad")
+    )
     assert result.status == TRIMMED
     assert result.converged and result.feasible and result.trimmed
     assert result.solution is not None and result.residuals is not None
     assert result.residuals.scaled_norm < 1e-9
     assert result.solution.lift.value_si == pytest.approx(9810.0, abs=1e-6)
-    assert result.solution.thrust.value_si == pytest.approx(result.solution.drag.value_si, abs=1e-6)
+    assert result.solution.thrust.value_si == pytest.approx(
+        result.solution.drag.value_si, abs=1e-6
+    )
     assert result.solution.pitch_moment.value_si == pytest.approx(0.0, abs=1e-9)
 
 
@@ -157,8 +174,11 @@ def test_climb_trim_maneuver_point() -> None:
     base = _condition(data)
     gamma = Quantity(5.0, "deg")
     condition = FlightCondition(
-        velocity=base.velocity, density=base.density, gravity=base.gravity,
-        mass=base.mass, gamma=gamma,
+        velocity=base.velocity,
+        density=base.density,
+        gravity=base.gravity,
+        mass=base.mass,
+        gamma=gamma,
     )
     spec = TrimSpec(
         condition=condition,
@@ -191,8 +211,10 @@ def test_throttle_beyond_max_is_infeasible() -> None:
     data = _load()
     payload = data["condition"]
     condition = FlightCondition(
-        velocity=_quantity(payload["velocity"]), density=_quantity(payload["density"]),
-        gravity=_quantity(payload["gravity"]), mass=_quantity(payload["mass"]),
+        velocity=_quantity(payload["velocity"]),
+        density=_quantity(payload["density"]),
+        gravity=_quantity(payload["gravity"]),
+        mass=_quantity(payload["mass"]),
         thrust_max=Quantity(100.0, "N"),
     )
     result = trim_level_flight(_model(data), condition)
@@ -206,9 +228,12 @@ def test_static_instability_is_a_constraint_violation() -> None:
     data = _load()
     model = _model(data)
     unstable = replace(
-        model, longitudinal=replace(model.longitudinal, cm_alpha=0.4),
+        model,
+        longitudinal=replace(model.longitudinal, cm_alpha=0.4),
     )
-    result = trim_level_flight(unstable, _condition(data), elevator_limit=Quantity(0.5, "rad"))
+    result = trim_level_flight(
+        unstable, _condition(data), elevator_limit=Quantity(0.5, "rad")
+    )
     assert result.converged
     assert result.status == INFEASIBLE
     assert "STATIC_INSTABILITY_CONSTRAINT_VIOLATION" in result.notes
@@ -226,7 +251,11 @@ def test_static_margin_and_neutral_point() -> None:
     report = evaluate_static_stability(
         model.longitudinal, model.lateral_directional, cg_mac_fraction=0.25
     )
-    assert report.valid and report.longitudinal_stable and report.lateral_directional_stable
+    assert (
+        report.valid
+        and report.longitudinal_stable
+        and report.lateral_directional_stable
+    )
     assert report.static_margin is not None and report.neutral_point is not None
     assert report.coverage_complete
     assert report.meta.validity.valid
@@ -241,7 +270,10 @@ def test_sign_and_axis_conventions() -> None:
     assert high.c_lift > low.c_lift
     neutral = model.coefficients(AeroState(alpha=Quantity(0.0, "rad")))
     up = model.coefficients(
-        AeroState(alpha=Quantity(0.0, "rad"), deflections=(("elevator", Quantity(0.05, "rad")),))
+        AeroState(
+            alpha=Quantity(0.0, "rad"),
+            deflections=(("elevator", Quantity(0.05, "rad")),),
+        )
     )
     assert up.c_pitch < neutral.c_pitch
     side = model.coefficients(
@@ -251,7 +283,11 @@ def test_sign_and_axis_conventions() -> None:
     report = evaluate_static_stability(
         model.longitudinal, model.lateral_directional, cg_mac_fraction=0.25
     )
-    verdicts = {finding.name: finding for finding in report.findings if finding.kind == "stability"}
+    verdicts = {
+        finding.name: finding
+        for finding in report.findings
+        if finding.kind == "stability"
+    }
     assert verdicts["cm_alpha_negative"].passed
     assert verdicts["cn_beta_positive"].passed
     assert verdicts["cl_beta_negative"].passed
@@ -260,7 +296,9 @@ def test_sign_and_axis_conventions() -> None:
 def test_missing_derivative_coverage_fails_closed() -> None:
     data = _load()
     model = _model(data)
-    sparse = replace(model, longitudinal=replace(model.longitudinal, cl_alpha=None, cm_alpha=None))
+    sparse = replace(
+        model, longitudinal=replace(model.longitudinal, cl_alpha=None, cm_alpha=None)
+    )
     with pytest.raises(AeroCoefficientError):
         sparse.coefficients(AeroState(alpha=Quantity(0.05, "rad")))
     report = evaluate_static_stability(
@@ -295,8 +333,10 @@ def test_missing_thrust_source_fails_closed() -> None:
     data = _load()
     payload = data["condition"]
     condition = FlightCondition(
-        velocity=_quantity(payload["velocity"]), density=_quantity(payload["density"]),
-        gravity=_quantity(payload["gravity"]), mass=_quantity(payload["mass"]),
+        velocity=_quantity(payload["velocity"]),
+        density=_quantity(payload["density"]),
+        gravity=_quantity(payload["gravity"]),
+        mass=_quantity(payload["mass"]),
     )
     spec = TrimSpec(
         condition=condition,
@@ -314,8 +354,11 @@ def test_dynamic_stability_modes_and_damping() -> None:
     trim = trim_level_flight(model, condition)
     assert trim.solution is not None
     report = evaluate_dynamic_stability(
-        model, condition=condition, mass_properties=_mass(data),
-        trim_alpha=trim.solution.alpha.value_si, trim_elevator=trim.solution.elevator.value_si,
+        model,
+        condition=condition,
+        mass_properties=_mass(data),
+        trim_alpha=trim.solution.alpha.value_si,
+        trim_elevator=trim.solution.elevator.value_si,
     )
     assert report.valid
     assert len(report.longitudinal_matrix) == 4 and len(report.lateral_matrix) == 4
@@ -323,7 +366,9 @@ def test_dynamic_stability_modes_and_damping() -> None:
     lat = {mode.kind for mode in report.lateral_modes}
     assert {"short-period", "phugoid"} <= lon
     assert {"dutch-roll", "roll", "spiral"} <= lat
-    short_period = [mode for mode in report.longitudinal_modes if mode.kind == "short-period"]
+    short_period = [
+        mode for mode in report.longitudinal_modes if mode.kind == "short-period"
+    ]
     assert len(short_period) == 2 and all(mode.stable for mode in short_period)
     assert all(mode.frequency_hz >= 0.0 for mode in report.longitudinal_modes)
     assert report.meta.validity.valid
@@ -336,11 +381,18 @@ def test_control_authority_available_vs_required() -> None:
     trim = trim_level_flight(model, condition, elevator_limit=Quantity(0.5, "rad"))
     assert trim.solution is not None
     dynamic = 0.5 * condition.density.value_si * trim.solution.velocity.value_si**2
-    state = AeroState(alpha=trim.solution.alpha, velocity=trim.solution.velocity,
-                      deflections=(("elevator", Quantity(0.0, "rad")),))
+    state = AeroState(
+        alpha=trim.solution.alpha,
+        velocity=trim.solution.velocity,
+        deflections=(("elevator", Quantity(0.0, "rad")),),
+    )
     report = evaluate_control_authority(
-        model, state, reference=model.reference_geometry, dynamic_pressure=dynamic,
-        required_pitch_moment=100.0, elevator_limit=Quantity(0.5, "rad"),
+        model,
+        state,
+        reference=model.reference_geometry,
+        dynamic_pressure=dynamic,
+        required_pitch_moment=100.0,
+        elevator_limit=Quantity(0.5, "rad"),
     )
     assert report.within_authority
     surface = report.surface("elevator")
@@ -404,6 +456,109 @@ def test_provider_contract_is_structural() -> None:
     assert isinstance(model, AerodynamicCoefficientProvider)
     bundle = model.derivatives(AeroState(alpha=Quantity(0.0, "rad")))
     assert isinstance(bundle, DerivativeBundle)
-    assert bundle.content_hash == model.derivatives(
-        AeroState(alpha=Quantity(0.0, "rad"))
-    ).content_hash
+    assert (
+        bundle.content_hash
+        == model.derivatives(AeroState(alpha=Quantity(0.0, "rad"))).content_hash
+    )
+
+
+def test_generic_named_surface_is_bound_into_trim_state() -> None:
+    data = _load()
+    model = _model(data)
+
+    class ElevonProvider:
+        provider_id = model.provider_id
+
+        def reference(self):
+            return model.reference()
+
+        def coefficients(self, state):
+            elevon = state.controls.surface_deflections[0][1]
+            return model.coefficients(
+                replace(state, deflections=(("elevator", elevon),))
+            )
+
+        def derivatives(self, state):
+            return model.derivatives(state)
+
+    control = TrimControl.surface("left_elevon")
+    spec = TrimSpec(
+        condition=_condition(data),
+        variables=(TrimVariable.ALPHA, control, TrimVariable.THROTTLE),
+        controls=Controls(surface_deflections=(("left_elevon", Quantity(0.0, "rad")),)),
+    )
+    result = solve_trim(ElevonProvider(), spec)
+    assert result.status == TRIMMED
+    assert result.solution is not None
+    assert result.solution.controls.surface_deflections[0][0] == "left_elevon"
+
+
+def test_rotor_controls_are_bindable_and_canonical() -> None:
+    data = _load()
+    controls = Controls(
+        rpm=Quantity(420.0, "rpm"),
+        collective=Quantity(8.0, "deg"),
+        cyclic=(("longitudinal", Quantity(2.0, "deg")),),
+    )
+    rpm_spec = TrimSpec(
+        condition=_condition(data),
+        variables=(TrimVariable.ALPHA, TrimControl.rpm(), TrimControl.collective()),
+        controls=controls,
+    )
+    cyclic_spec = TrimSpec(
+        condition=_condition(data),
+        variables=(
+            TrimVariable.ALPHA,
+            TrimControl.cyclic("longitudinal"),
+            TrimVariable.THRUST,
+        ),
+        controls=controls,
+    )
+    assert rpm_spec.controls.canonical()["rpm"]["dimension"] == "rotational_speed"
+    assert rpm_spec.controls.canonical()["collective"]["dimension"] == "angle"
+    assert (
+        cyclic_spec.controls.canonical()["cyclic"]["longitudinal"]["dimension"]
+        == "angle"
+    )
+
+
+def test_unknown_generic_control_fails_closed() -> None:
+    data = _load()
+    with pytest.raises(ValueError, match="TRIM_CONTROL_UNBOUND:surface:right_elevon"):
+        TrimSpec(
+            condition=_condition(data),
+            variables=(
+                TrimVariable.ALPHA,
+                TrimControl.surface("right_elevon"),
+                TrimVariable.THRUST,
+            ),
+        )
+
+
+def test_trim_rejects_invalid_high_speed_operating_point_derivatives() -> None:
+    data = _load()
+    model = _model(data)
+
+    class InvalidHighSpeedProvider:
+        provider_id = model.provider_id
+
+        def reference(self):
+            return model.reference()
+
+        def coefficients(self, state):
+            return model.coefficients(state)
+
+        def derivatives(self, state):
+            bundle = model.derivatives(state)
+            return DerivativeBundle(
+                bundle.longitudinal,
+                bundle.lateral_directional,
+                valid=False,
+                notes=("HIGH_SPEED_DERIVATIVE_INVALID:shock-sensitive",),
+            )
+
+    result = trim_level_flight(InvalidHighSpeedProvider(), _condition(data))
+    assert result.status == PREFLIGHT_INVALID
+    assert result.static_stability is not None
+    assert result.static_stability.valid is False
+    assert "HIGH_SPEED_DERIVATIVE_INVALID:shock-sensitive" in result.notes

@@ -220,5 +220,8 @@ describe("canonical cache key covers every reuse axis", () => {
     );
     assert.notEqual(createContentKey({ ...common, settings: { tolerance: 0.001 } }), baseline);
     assert.notEqual(createContentKey({ ...common, semanticHash: digest("e") }), baseline);
+    assert.notEqual(createContentKey({ ...common, mappingDigest: digest("e") }), baseline);
+    assert.notEqual(createContentKey({ ...common, harmonicDigest: digest("e") }), baseline);
+    assert.notEqual(createContentKey({ ...common, boundaryDigest: digest("e") }), baseline);
   });
 });

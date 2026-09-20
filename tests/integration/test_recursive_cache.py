@@ -74,3 +74,39 @@ def test_hierarchy_axes_change_cache_key():
     for axis in ("subtree_digest", "boundary_digest", "interface_digest", "transform_digest",
                  "mapping_digest", "harmonic_digest", "temporal_digest", "qoi_digest"):
         assert cache_key(**base, **{axis: "d"*64}) != original
+
+
+def test_reverse_dependency_index_supports_siblings_and_reachability(tmp_path):
+    cache = PersistentResultCache(tmp_path)
+    root, left, right, leaf = [x * 64 for x in "abcd"]
+    cache.put(root, {"value": "root"}, node_type="boundary", family="boundary")
+    cache.put(left, {"value": "left"}, node_type="mapping", family="mapping",
+              upstream_keys=(root,))
+    cache.put(right, {"value": "right"}, node_type="mapping", family="mapping",
+              upstream_keys=(root,))
+    cache.put(leaf, {"value": "leaf"}, node_type="harmonic", family="harmonic",
+              upstream_keys=(left,))
+
+    assert cache.downstream_dependencies(root, transitive=False) == [left, right]
+    assert cache.downstream_dependencies(root) == [left, right, leaf]
+    assert cache.is_reachable(root, leaf)
+    assert not cache.is_reachable(right, leaf)
+    assert cache.invalidate(left) == [left, leaf]
+    assert cache.get(right) == {"value": "right"}
+    cache.close()
+
+
+def test_lookup_exposes_typed_explainable_outcomes(tmp_path):
+    cache = PersistentResultCache(tmp_path)
+    old, new, context = "a" * 64, "b" * 64, "c" * 64
+    cache.put(old, {"x": 1}, node_type="mapping", family="mapping",
+              compatibility_digest=context)
+    assert cache.lookup(old).status == "exact_hit"
+    assert cache.lookup(
+        new, warm_start_key=old, compatibility_digest=context
+    ).status == "warm_start"
+    assert cache.lookup(
+        new, warm_start_key=old, compatibility_digest="d" * 64
+    ).reason == "INCOMPATIBLE_WARM_START"
+    assert cache.lookup("f" * 64).reason == "NOT_FOUND"
+    cache.close()

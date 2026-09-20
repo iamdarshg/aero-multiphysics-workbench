@@ -14,6 +14,39 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import isfinite
+from typing import Literal
+
+
+@dataclass(frozen=True, slots=True)
+class HarmonicBasis:
+    """Identity and normalization metadata for a complex harmonic line."""
+
+    shaft_id: str
+    frame: str
+    frequency_hz: float
+    order: float
+    convention: Literal["exp(+iwt)", "exp(-iwt)"] = "exp(+iwt)"
+    amplitude_convention: Literal["peak", "rms", "peak-to-peak"] = "peak"
+    phase_reference: Literal["cosine", "sine"] = "cosine"
+    normalization: Literal["one-sided", "two-sided"] = "two-sided"
+    spectral_kind: Literal["line", "PSD", "CSD"] = "line"
+    base_id: str = ""
+
+    def __post_init__(self) -> None:
+        if (
+            not self.shaft_id.strip()
+            or not self.frame.strip()
+            or not self.base_id.strip()
+            or not isfinite(self.frequency_hz)
+            or self.frequency_hz < 0
+            or not isfinite(self.order)
+            or self.order < 0
+        ):
+            raise ValueError("HARMONIC_BASIS_INVALID")
+
+    @property
+    def order_identity(self) -> tuple[str, float]:
+        return self.base_id, self.order
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,7 +112,13 @@ def separation(
             for spectrum in modal:
                 for mode in spectrum.natural_frequencies_hz:
                     pairs.append(
-                        (force.source, frequency, spectrum.source, mode, abs(mode - frequency))
+                        (
+                            force.source,
+                            frequency,
+                            spectrum.source,
+                            mode,
+                            abs(mode - frequency),
+                        )
                     )
     worst = min(pairs, key=lambda item: item[4])
     ordered = tuple(sorted(pairs, key=lambda item: item[4]))
@@ -150,18 +189,27 @@ def check_resonance(
         state = "watch" if wanted else "clear"
         if not wanted:
             return ResonanceTrigger(
-                "clear", margin, (), None,
+                "clear",
+                margin,
+                (),
+                None,
                 f"separation {margin:.3g} Hz inside watch band but nothing to activate",
             )
     else:
         return ResonanceTrigger(
-            "clear", margin, (), None,
+            "clear",
+            margin,
+            (),
+            None,
             f"forcing lines separated from modes by {margin:.3g} Hz",
         )
     activate = tuple(name for name in wanted if name in policy.available)
     capability = _capability_for(activate[0]) if activate else None
     return ResonanceTrigger(
-        state if activate else "watch", margin, activate, capability,
+        state if activate else "watch",
+        margin,
+        activate,
+        capability,
         f"separation {margin:.3g} Hz crosses the {state} margin; "
         f"activating {', '.join(activate) if activate else 'nothing available'}",
     )

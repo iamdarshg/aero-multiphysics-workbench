@@ -92,9 +92,11 @@ from .ladder import (
 )
 from .native import (
     VSPAERO_EXECUTABLES,
+    GovernedVspaeroBackend,
     VspaeroBackend,
     VspaeroCapability,
     VspaeroSolution,
+    parse_vspaero_result,
     prepare_vspaero_case,
     probe_any_vspaero_capability,
     probe_vspaero_capability,
@@ -149,6 +151,7 @@ __all__ = [
     "ExternalAeroResult",
     "ExternalAeroValidationError",
     "ExternalAeroValidityError",
+    "GovernedVspaeroBackend",
     "GeometryReference",
     "ProfilePolar",
     "PolarPoint",
@@ -176,6 +179,7 @@ __all__ = [
     "plan_external_aero_fidelity",
     "polar_from_points",
     "prepare_vspaero_case",
+    "parse_vspaero_result",
     "probe_any_vspaero_capability",
     "probe_vspaero_capability",
     "reference_from_altitude",

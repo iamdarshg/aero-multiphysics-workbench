@@ -14,6 +14,14 @@ from pathlib import Path
 
 import pytest
 from aeroworkbench_airframe import InertiaTensor, MassProperties, Quantity, Vec3
+from aeroworkbench_airframe.mass import (
+    BoundingBox,
+    MassItemSource,
+    PackageVolume,
+    PackageVolumeKind,
+    PackagingLayout,
+)
+from aeroworkbench_core.types import FidelityLevel, ResultSource
 from aeroworkbench_durability import rainflow_count
 from aeroworkbench_vehicle_systems.landing_gear import (
     BrakeSpec,
@@ -23,8 +31,11 @@ from aeroworkbench_vehicle_systems.landing_gear import (
     GearArchitecture,
     GearLegSpec,
     GearRole,
+    GearState,
+    GroundLateralScenario,
     GroundStabilityError,
     GroundVehicleModel,
+    LandingGearAssembly,
     LandingGearError,
     LimitExceeded,
     LoadCaseKind,
@@ -35,7 +46,9 @@ from aeroworkbench_vehicle_systems.landing_gear import (
     WheelSpec,
     apply_ground_effect,
     check_clearance,
+    check_gear_packaging,
     check_ground_stability,
+    evaluate_gear_state,
     evaluate_shock_stroke,
     export_load_cases,
     native_ground_dynamics_status,
@@ -45,6 +58,7 @@ from aeroworkbench_vehicle_systems.landing_gear import (
     require_native_ground_effect,
     require_native_structural,
     require_stable_ground,
+    simulate_ground_lateral,
     simulate_landing,
     simulate_rejected_takeoff,
     simulate_takeoff,
@@ -398,3 +412,73 @@ def test_result_contract_and_determinism() -> None:
 
     changed = simulate_takeoff(_vehicle(static_thrust_n=7000.0), runway=_runway("dry-concrete"))
     assert changed.meta.input_hash != first.meta.input_hash
+
+
+def test_crosswind_and_steering_can_make_ground_scenario_infeasible() -> None:
+    scenario = GroundLateralScenario(
+        scenario_id="crosswind-limit",
+        mass_kg=1200.0,
+        speed_m_s=18.0,
+        wheelbase_m=2.4,
+        track_m=1.8,
+        crosswind_speed_m_s=16.0,
+        steer_angle_rad=0.30,
+        normal_force_n=1200.0 * 9.80665,
+        cornering_stiffness_n_per_rad=900.0,
+        maximum_yaw_rate_rad_s=0.8,
+        maximum_lateral_acceleration_m_s2=2.5,
+    )
+    result = simulate_ground_lateral(scenario)
+    assert not result.feasible
+    assert "LATERAL_FORCE_CAPACITY" in result.infeasibility_constraints
+    assert "YAW_RATE_LIMIT" in result.infeasibility_constraints
+    assert result.meta.provenance.source is ResultSource.ANALYTICAL
+    assert result.meta.fidelity.value == "ground-transient"
+
+
+def test_retractable_gear_state_and_bay_clearance_are_explicit() -> None:
+    leg = _leg("retractable-main", GearRole.MAIN, [0.0, 0.0, 0.4], [0.0, 0.0, 0.6])
+    retractable = GearLegSpec(
+        leg_id=leg.leg_id,
+        role=leg.role,
+        attachment_point=leg.attachment_point,
+        axle_point=leg.axle_point,
+        wheel=leg.wheel,
+        brake=leg.brake,
+        shock=leg.shock,
+        retractable=True,
+        retracted_clearance=Quantity(0.5, "m"),
+    )
+    assembly = LandingGearAssembly("retractable", GearArchitecture.MULTI_BOGEY, (retractable,))
+    source = MassItemSource(
+        source=ResultSource.ANALYTICAL,
+        fidelity=FidelityLevel.ANALYTICAL,
+        method="declared-airframe-packaging",
+        reference="test-airframe",
+    )
+    bay = BoundingBox("body", Vec3(-0.4, -0.4, 0.1, "m", "body"), Vec3(0.4, 0.4, 0.9, "m", "body"))
+    keepout = BoundingBox(
+        "body", Vec3(-0.1, -0.1, 0.2, "m", "body"), Vec3(0.1, 0.1, 0.8, "m", "body")
+    )
+    layout = PackagingLayout(
+        frame="body",
+        volumes=(
+            PackageVolume("gear-bay", PackageVolumeKind.BAY, bay, source),
+            PackageVolume("systems-keepout", PackageVolumeKind.KEEPOUT, keepout, source),
+        ),
+    )
+    result = check_gear_packaging(assembly, layout, state=GearState.UP)
+    assert not result.feasible
+    assert "GEAR_BAY_CLEARANCE" in result.infeasibility_constraints
+    assert "GEAR_KEEPOUT_INTERSECTION" in result.infeasibility_constraints
+    assert result.state is GearState.UP
+    assert result.meta.provenance.source is ResultSource.ANALYTICAL
+    state = evaluate_gear_state(
+        assembly,
+        state=GearState.UP,
+        mission_phase="cruise",
+        aerodynamic_drag_increment_cd=0.0,
+    )
+    assert state.state is GearState.UP
+    assert state.mission_phase == "cruise"
+    assert state.meta.provenance.inputs_hash == state.meta.input_hash

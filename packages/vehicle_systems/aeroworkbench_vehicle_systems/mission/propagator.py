@@ -330,6 +330,9 @@ def _propagate_segment(
             throttle=segment.throttle,
             power_fraction=segment.power_fraction,
             configuration=segment.configuration,
+            rpm=segment.rpm,
+            propulsor_pitch_deg=segment.propulsor_pitch_deg,
+            rotor_pitch_deg=segment.rotor_pitch_deg,
             segment_kind=segment.kind,
             phase=segment.mode.value,
         )

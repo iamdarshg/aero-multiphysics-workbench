@@ -8,6 +8,7 @@ candidate hash, which is the cross-language contract this issue requires.
 from __future__ import annotations
 
 import json
+from typing import Any
 
 import pytest
 from aeroworkbench_optimization import (
@@ -165,6 +166,74 @@ def test_gen02_unit_bearing_bounds_normalize() -> None:
     with pytest.raises(DesignSpaceError, match="PREFLIGHT_FAILED"):
         flatten_design_state(
             space, with_state(thickness={"kind": "number", "value": 20, "unit": "mm"})
+        )
+
+
+@pytest.mark.parametrize(
+    ("declared_unit", "declared_value", "alternate_unit", "alternate_value"),
+    [
+        ("m", 2.0, "ft", 2.0 / 0.3048),
+        ("rad", 0.5, "deg", 0.5 * 180.0 / 3.141592653589793),
+        ("m/s", 40.0, "kt", 40.0 / (1852.0 / 3600.0)),
+        ("kg", 10.0, "lbm", 10.0 / 0.45359237),
+        ("kg/m3", 1.2, "g/cm3", 1.2 / 1000.0),
+        ("m2", 3.0, "ft2", 3.0 / 0.09290304),
+        ("rpm", 1200.0, "rev/s", 20.0),
+    ],
+)
+def test_gen02_shared_units_preserve_equivalent_candidate_hashes(
+    declared_unit: str,
+    declared_value: float,
+    alternate_unit: str,
+    alternate_value: float,
+) -> None:
+    space: dict[str, Any] = {
+        "id": "shared-units",
+        "variables": [
+            {
+                "id": "value",
+                "kind": "continuous",
+                "unit": declared_unit,
+                "bindings": [{"target": "parameter", "path": "value"}],
+                "domain": {
+                    "kind": "continuous",
+                    "lower": declared_value * 0.5,
+                    "upper": declared_value * 1.5,
+                },
+                "baseValue": declared_value,
+            }
+        ],
+    }
+    declared = flatten_design_state(
+        space, {"value": {"kind": "number", "value": declared_value, "unit": declared_unit}}
+    )
+    alternate = flatten_design_state(
+        space, {"value": {"kind": "number", "value": alternate_value, "unit": alternate_unit}}
+    )
+    assert candidate_hash(declared) == candidate_hash(alternate)
+
+
+def test_gen02_shared_units_reject_unknown_and_mixed_units() -> None:
+    space: dict[str, Any] = {
+        "id": "shared-unit-fail-closed",
+        "variables": [
+            {
+                "id": "length",
+                "kind": "continuous",
+                "unit": "m",
+                "bindings": [{"target": "parameter", "path": "length"}],
+                "domain": {"kind": "continuous", "lower": 0.1, "upper": 10.0},
+                "baseValue": 1.0,
+            }
+        ],
+    }
+    unknown = {**space, "variables": [{**space["variables"][0], "unit": "furlong"}]}
+    with pytest.raises(DesignSpaceError, match="UNSUPPORTED_UNIT:length:furlong"):
+        validate_design_space(unknown)
+
+    with pytest.raises(DesignSpaceError, match="UNIT_DIMENSION_MISMATCH"):
+        flatten_design_state(
+            space, {"length": {"kind": "number", "value": 1.0, "unit": "deg"}}
         )
 
 

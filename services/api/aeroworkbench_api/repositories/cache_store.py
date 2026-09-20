@@ -25,11 +25,12 @@ from copy import deepcopy
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 DEFAULT_MAX_BYTES = 64 * 1024 * 1024
 _PROCESS_KEY_LOCKS: dict[str, threading.Lock] = {}
+_PROCESS_KEY_LOCK_REFS: dict[str, int] = {}
 _PROCESS_KEY_LOCKS_GUARD = threading.Lock()
 
 
@@ -42,7 +43,7 @@ def _canonical(value: Any) -> Any:
         if value != value or value in (float("inf"), float("-inf")):
             raise ValueError("cache value contains a non-finite number")
         return 0.0 if value == 0 else value
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_canonical(item) for item in value]
     if isinstance(value, dict):
         return {key: _canonical(value[key]) for key in sorted(value)}
@@ -100,6 +101,14 @@ def cache_key(
     for index, upstream in enumerate(upstream_keys):
         if not HEX64.fullmatch(upstream):
             raise ValueError(f"upstreamKeys[{index}] must be a SHA-256 digest")
+    for name, value in (
+        ("subtreeDigest", subtree_digest), ("boundaryDigest", boundary_digest),
+        ("interfaceDigest", interface_digest), ("transformDigest", transform_digest),
+        ("mappingDigest", mapping_digest), ("harmonicDigest", harmonic_digest),
+        ("temporalDigest", temporal_digest), ("qoiDigest", qoi_digest),
+    ):
+        if value is not None and not HEX64.fullmatch(value):
+            raise ValueError(f"{name} must be a SHA-256 digest")
     if not node_type.strip() or not solver[0].strip() or not solver[1].strip():
         raise ValueError("node type and solver identity must be non-empty")
     for name, value in (
@@ -145,6 +154,19 @@ class CacheReuseError(RuntimeError):
         super().__init__(message)
         self.reason = reason
         self.key = key
+
+
+CacheLookupStatus = Literal["exact_hit", "warm_start", "miss"]
+
+
+@dataclass(frozen=True, slots=True)
+class CacheLookup:
+    """Explainable result of an exact lookup or compatible warm-start lookup."""
+
+    status: CacheLookupStatus
+    value: Any | None
+    source_key: str | None
+    reason: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -232,6 +254,13 @@ class PersistentResultCache:
                   last_accessed_at TEXT NOT NULL
                 );
                 CREATE INDEX IF NOT EXISTS result_cache_family ON result_cache(family);
+                CREATE TABLE IF NOT EXISTS cache_dependency (
+                  upstream_key TEXT NOT NULL,
+                  downstream_key TEXT NOT NULL,
+                  PRIMARY KEY (upstream_key, downstream_key)
+                );
+                CREATE INDEX IF NOT EXISTS cache_dependency_downstream
+                  ON cache_dependency(downstream_key);
                 CREATE TABLE IF NOT EXISTS cache_events (
                   sequence INTEGER PRIMARY KEY AUTOINCREMENT,
                   event_type TEXT NOT NULL,
@@ -244,6 +273,18 @@ class PersistentResultCache:
             columns = {row[1] for row in self._connection.execute("PRAGMA table_info(result_cache)")}  # noqa: E501
             if "compatibility_digest" not in columns:
                 self._connection.execute("ALTER TABLE result_cache ADD COLUMN compatibility_digest TEXT")  # noqa: E501
+            # Older SQLite caches only stored the upstream JSON. Materialize the
+            # reverse index once so existing entries get indexed without rewriting them.
+            rows = self._connection.execute(
+                "SELECT key, upstream_keys FROM result_cache"
+            ).fetchall()
+            for row in rows:
+                for upstream in json.loads(row["upstream_keys"]):
+                    self._connection.execute(
+                        "INSERT OR IGNORE INTO cache_dependency"
+                        "(upstream_key,downstream_key) VALUES(?,?)",
+                        (str(upstream), str(row["key"])),
+                    )
             self._connection.commit()
 
     # -- writes ----------------------------------------------------------
@@ -326,6 +367,11 @@ class PersistentResultCache:
                         timestamp,
                     ),
                 )
+                for upstream in upstream_keys:
+                    self._connection.execute(
+                        "INSERT INTO cache_dependency(upstream_key,downstream_key) VALUES(?,?)",
+                        (upstream, key),
+                    )
                 self._connection.commit()
             except Exception:
                 self._connection.rollback()
@@ -339,19 +385,29 @@ class PersistentResultCache:
 
         with _PROCESS_KEY_LOCKS_GUARD:
             lock = _PROCESS_KEY_LOCKS.setdefault(key, threading.Lock())
-        with lock:
-            loaded = self._load(key)
-            if loaded is not None:
-                return deepcopy(loaded[1])
-            value = factory()
-            try:
-                self.put(key, value, **meta)
-            except sqlite3.IntegrityError:
+            _PROCESS_KEY_LOCK_REFS[key] = _PROCESS_KEY_LOCK_REFS.get(key, 0) + 1
+        try:
+            with lock:
                 loaded = self._load(key)
-                if loaded is None:
-                    raise
-                return deepcopy(loaded[1])
-            return deepcopy(value)
+                if loaded is not None:
+                    return deepcopy(loaded[1])
+                value = factory()
+                try:
+                    self.put(key, value, **meta)
+                except sqlite3.IntegrityError:
+                    loaded = self._load(key)
+                    if loaded is None:
+                        raise
+                    return deepcopy(loaded[1])
+                return deepcopy(value)
+        finally:
+            with _PROCESS_KEY_LOCKS_GUARD:
+                remaining = _PROCESS_KEY_LOCK_REFS[key] - 1
+                if remaining:
+                    _PROCESS_KEY_LOCK_REFS[key] = remaining
+                else:
+                    _PROCESS_KEY_LOCK_REFS.pop(key, None)
+                    _PROCESS_KEY_LOCKS.pop(key, None)
 
     def pin(self, key: str, pinned: bool = True) -> None:
         with self._lock:
@@ -375,22 +431,22 @@ class PersistentResultCache:
         return deepcopy(self._history.get(key))
 
     def lookup(self, key: str, *, warm_start_key: str | None = None,
-               compatibility_digest: str | None = None) -> Any:
+               compatibility_digest: str | None = None) -> CacheLookup:
         loaded = self._load(key)
         if loaded is not None:
-            return type("CacheLookup", (), {"status": "exact_hit", "value": deepcopy(loaded[1]), "source_key": key, "reason": ""})()  # noqa: E501
+            return CacheLookup("exact_hit", deepcopy(loaded[1]), key, "")
         if warm_start_key is not None:
             with self._lock:
                 row = self._get_row(warm_start_key)
             if row is not None and row["compatibility_digest"] == compatibility_digest:
                 value = self.get(warm_start_key)
                 self._record_event("cache.warm_start", warm_start_key, json.dumps({"source": warm_start_key}))  # noqa: E501
-                return type("CacheLookup", (), {"status": "warm_start", "value": value, "source_key": warm_start_key, "reason": ""})()  # noqa: E501
+                return CacheLookup("warm_start", value, warm_start_key, "")
             reason = "INCOMPATIBLE_WARM_START"
         else:
             reason = "INVALIDATED" if key in self._invalidated else "NOT_FOUND"
         self._record_event("cache.miss", key, json.dumps({"reason": reason}))
-        return type("CacheLookup", (), {"status": "miss", "value": None, "source_key": None, "reason": reason})()  # noqa: E501
+        return CacheLookup("miss", None, None, reason)
 
     def describe(self, key: str) -> CacheEntryMetadata | None:
         if not HEX64.fullmatch(key):
@@ -412,24 +468,61 @@ class PersistentResultCache:
 
     # -- invalidation and eviction --------------------------------------
 
+    def downstream_dependencies(
+        self, key: str, *, transitive: bool = True, family: str | None = None
+    ) -> list[str]:
+        """Return active descendants using the indexed reverse dependency graph."""
+
+        self._assert_key(key)
+        with self._lock:
+            if not transitive:
+                rows = self._connection.execute(
+                    "SELECT downstream_key FROM cache_dependency "
+                    "JOIN result_cache ON result_cache.key=downstream_key "
+                    "WHERE upstream_key=? AND (? IS NULL OR family=?) ORDER BY downstream_key",
+                    (key, family, family),
+                ).fetchall()
+                return [str(row["downstream_key"]) for row in rows]
+            rows = self._connection.execute(
+                "WITH RECURSIVE descendants(key) AS ("
+                " SELECT downstream_key FROM cache_dependency WHERE upstream_key=?"
+                " UNION SELECT cache_dependency.downstream_key FROM cache_dependency"
+                " JOIN descendants ON cache_dependency.upstream_key=descendants.key)"
+                " SELECT DISTINCT descendants.key FROM descendants JOIN result_cache"
+                " ON result_cache.key=descendants.key WHERE (? IS NULL OR family=?)"
+                " ORDER BY descendants.key",
+                (key, family, family),
+            ).fetchall()
+            return [str(row["key"]) for row in rows]
+
+    def is_reachable(self, upstream_key: str, downstream_key: str) -> bool:
+        self._assert_key(upstream_key)
+        self._assert_key(downstream_key)
+        return downstream_key in self.downstream_dependencies(upstream_key)
+
+    # Backward/consumer-friendly alias for callers that use graph terminology.
+    def dependents(self, key: str, *, transitive: bool = True) -> list[str]:
+        return self.downstream_dependencies(key, transitive=transitive)
+
     def invalidate(self, key: str) -> list[str]:
         """Drop the changed key and every entry that declares it upstream."""
 
         self._assert_key(key)
         dropped: list[str] = []
         with self._lock:
-            rows = self._connection.execute(
-                "SELECT key, upstream_keys FROM result_cache"
-            ).fetchall()
+            rows = self._connection.execute("SELECT key FROM result_cache").fetchall()
             affected = {key}
-            changed = True
-            while changed:
-                changed = False
-                for row in rows:
-                    upstream = set(json.loads(row["upstream_keys"]))
-                    if str(row["key"]) not in affected and upstream & affected:
-                        affected.add(str(row["key"]))
-                        changed = True
+            frontier = [key]
+            while frontier:
+                current = frontier.pop()
+                children = self._connection.execute(
+                    "SELECT downstream_key FROM cache_dependency WHERE upstream_key=?", (current,)
+                ).fetchall()
+                for child in children:
+                    child_key = str(child["downstream_key"])
+                    if child_key not in affected:
+                        affected.add(child_key)
+                        frontier.append(child_key)
             dropped.extend(affected & {str(row["key"]) for row in rows})
             for dropped_key in dropped:
                 loaded = self._load(dropped_key)
@@ -637,6 +730,9 @@ class PersistentResultCache:
 
     def _delete_locked(self, key: str) -> None:
         self._connection.execute("DELETE FROM result_cache WHERE key=?", (key,))
+        self._connection.execute(
+            "DELETE FROM cache_dependency WHERE downstream_key=?", (key,)
+        )
         (self.values / f"{key}.json").unlink(missing_ok=True)
 
     def _touch(self, key: str) -> None:

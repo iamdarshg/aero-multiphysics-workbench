@@ -13,11 +13,13 @@ from aeroworkbench_vehicle_systems.transonic import (
     FlowRegime,
     NativeCompressibleRequest,
     NativeCompressibleSolution,
+    ShockFeature,
     TransonicCapabilityUnavailable,
     TransonicContractError,
     TransonicFidelity,
     TransonicOutOfScope,
     TransonicValidityError,
+    analytical_shock_feature,
     apply_correction,
     area_rule_assessment,
     assess_drag_rise,
@@ -301,6 +303,77 @@ def test_native_requires_mesh_and_model() -> None:
     assert receipt.envelope.source is ResultSource.NATIVE_SOLVER
     assert receipt.envelope.fidelity is TransonicFidelity.NATIVE
     assert len(receipt.input_hash) == 64
+
+
+def test_native_stub_publishes_canonical_shock_feature_with_provenance() -> None:
+    class StubBackend:
+        solver_name = "stub-cfd"
+        solver_version = "0.0-test"
+
+        def solve(self, request: NativeCompressibleRequest) -> NativeCompressibleSolution:
+            return NativeCompressibleSolution(
+                0.5,
+                0.001,
+                "shock parsed",
+                ("shock.csv",),
+                shock_feature=ShockFeature.native(
+                    location=0.42,
+                    reference_surface="main-wing-upper",
+                    local_mach=1.18,
+                    pressure_ratio=1.35,
+                    strength_indicator=0.35,
+                    confidence=0.93,
+                    inputs=request.canonical(),
+                    solver_name=self.solver_name,
+                    solver_version=self.solver_version,
+                    run_id="run-shock",
+                ),
+            )
+
+    request = NativeCompressibleRequest(
+        "shock-case", 0.9, "geometry-a", True, True, "k-omega-sst", False
+    )
+    receipt = solve_native_compressible(request, backend=StubBackend(), run_id="run-shock")
+    assert receipt.shock_feature is not None
+    assert receipt.shock_feature.location == pytest.approx(0.42)
+    assert receipt.shock_feature.provenance.source is ResultSource.NATIVE_SOLVER
+    assert receipt.canonical()["shockFeature"]["referenceSurface"] == "main-wing-upper"
+
+
+def test_analytical_shock_screening_does_not_fabricate_location() -> None:
+    result = analytical_shock_feature(1.6)
+    assert result.feature.location is None
+    assert result.feature.reference_surface is None
+    assert result.feature.location_status == "unavailable"
+    assert result.feature.source is ResultSource.ANALYTICAL
+
+
+def test_shock_feature_mesh_refinement_identity_is_provenanced() -> None:
+    coarse = ShockFeature.native(
+        location=0.4,
+        reference_surface="wing",
+        local_mach=1.1,
+        pressure_ratio=1.2,
+        strength_indicator=0.2,
+        confidence=0.8,
+        inputs={"geometryDigest": "g", "meshShockRefined": False},
+        solver_name="stub",
+        solver_version="1",
+        run_id="r1",
+    )
+    refined = ShockFeature.native(
+        location=0.4,
+        reference_surface="wing",
+        local_mach=1.1,
+        pressure_ratio=1.2,
+        strength_indicator=0.2,
+        confidence=0.8,
+        inputs={"geometryDigest": "g", "meshShockRefined": True},
+        solver_name="stub",
+        solver_version="1",
+        run_id="r1",
+    )
+    assert coarse.provenance.inputs_hash != refined.provenance.inputs_hash
 
 
 def test_envelope_carries_contract() -> None:

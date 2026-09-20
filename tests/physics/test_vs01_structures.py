@@ -63,6 +63,7 @@ from aeroworkbench_vehicle_systems.structures import (
     SizingOptions,
     StructuralConstraintError,
     StructuralLayoutError,
+    StructuralManufacturingLimits,
     StructuralMassParticipant,
     StructuresCapabilityUnavailable,
     TrimLoadSeam,
@@ -72,7 +73,9 @@ from aeroworkbench_vehicle_systems.structures import (
     generate_control_surface_architecture,
     generate_wing_architecture,
     load_case_from_aero,
+    load_case_from_landing_gear,
     load_case_from_mass,
+    load_case_from_propulsor,
     load_case_from_trim,
     map_structure_to_code_aster,
     margin_of_safety,
@@ -80,6 +83,7 @@ from aeroworkbench_vehicle_systems.structures import (
     participant_ids,
     participant_native_states,
     require_native_structure,
+    screen_structure_manufacturability,
     size_architecture,
     solve_native_structure,
 )
@@ -218,21 +222,25 @@ def test_vs01_wing_layout_generates_typed_members() -> None:
     assert MemberKind.STRINGER in kinds
     assert MemberKind.SKIN in kinds
     assert all(
-        member.geometry.component_id == surface.surface_id for member in architecture.members
+        member.geometry.component_id == surface.surface_id
+        for member in architecture.members
     )
     assert all(
         member.geometry.station_fraction[0] < member.geometry.station_fraction[1]
         for member in architecture.members
     )
     assert len(architecture.digest) == 64
-    assert architecture.digest == generate_wing_architecture(
-        surface,
-        material=_material(),
-        kind=ArchitectureKind(payload["architecture_kind"]),
-        spar_count=payload["spar_count"],
-        rib_count=payload["rib_count"],
-        stringer_count=payload["stringer_count"],
-    ).digest
+    assert (
+        architecture.digest
+        == generate_wing_architecture(
+            surface,
+            material=_material(),
+            kind=ArchitectureKind(payload["architecture_kind"]),
+            spar_count=payload["spar_count"],
+            rib_count=payload["rib_count"],
+            stringer_count=payload["stringer_count"],
+        ).digest
+    )
 
 
 def test_vs01_body_and_control_surface_layouts() -> None:
@@ -299,7 +307,10 @@ def test_vs01_architecture_rejects_invalid_inputs() -> None:
 def test_vs01_load_cases_from_seams_hand_computable() -> None:
     span_m = 6.0
     aero = AeroLoadSeam(
-        component_id="wing", normal_force_n=40000.0, span_m=span_m, tip_to_root_ratio=0.6
+        component_id="wing",
+        normal_force_n=40000.0,
+        span_m=span_m,
+        tip_to_root_ratio=0.6,
     )
     case = load_case_from_aero(aero, case_id="aero")
     assert case.source is LoadSource.EXTERNAL_AERO
@@ -366,7 +377,10 @@ def test_vs01_increased_load_and_span_resize_deterministically() -> None:
     assert loaded.total_mass_kg > baseline.total_mass_kg
     assert loaded.digest != baseline.digest
     assert spanned.total_mass_kg > baseline.total_mass_kg
-    assert spanned.stiffness.bending_stiffness_n_m2 > baseline.stiffness.bending_stiffness_n_m2
+    assert (
+        spanned.stiffness.bending_stiffness_n_m2
+        > baseline.stiffness.bending_stiffness_n_m2
+    )
 
 
 def test_vs01_constraints_reject_infeasible_candidates() -> None:
@@ -393,6 +407,104 @@ def test_vs01_constraints_reject_infeasible_candidates() -> None:
         size_architecture(
             architecture, tight, options=SizingOptions(deflection_limit_fraction=1.0e-4)
         )
+
+
+@pytest.mark.parametrize(
+    "kind",
+    tuple(
+        ArchitectureKind(item)
+        for item in ("wingbox", "multi_spar", "monocoque", "semi_monocoque", "shell")
+    ),
+)
+def test_vs01_structural_branches_are_deterministic(kind: ArchitectureKind) -> None:
+    branch_fixture = _fixture("architecture_branches.json")
+    assert kind.value in branch_fixture["branches"]
+    payload = _fixture("wing_layout.json")
+    surface = _surface(payload)
+    architecture = generate_wing_architecture(
+        surface,
+        material=_material(),
+        kind=kind,
+        spar_count=payload["spar_count"],
+        rib_count=payload["rib_count"],
+        stringer_count=payload["stringer_count"],
+    )
+    loads = _load_set(payload, surface.surface_id)
+    first = size_architecture(architecture, loads)
+    second = size_architecture(architecture, loads)
+    assert first.digest == second.digest
+    assert first.total_mass_kg == pytest.approx(second.total_mass_kg)
+
+
+def test_vs01_manufacturing_gate_rejects_structurally_feasible_design() -> None:
+    sized = _sized_wing()
+    limits = StructuralManufacturingLimits(
+        process="sheet-metal",
+        revision="r1",
+        minimum_gauge_m=0.01,
+        dimensional_tolerance_m=1.0e-6,
+        maximum_dimensional_tolerance_m=1.0e-5,
+    )
+    with pytest.raises(StructuralConstraintError) as excinfo:
+        screen_structure_manufacturability(sized, limits)
+    assert excinfo.value.violations
+    assert any("gauge" in item for item in excinfo.value.violations)
+
+
+def test_vs01_landing_and_propulsion_adapters_change_sizing_mass() -> None:
+    from aeroworkbench_vehicle_systems.landing_gear import (
+        GearLoadCase,
+        LoadCaseKind,
+        result_meta,
+    )
+    from aeroworkbench_vehicle_systems.structures import StructuralLoadSet
+
+    payload = _fixture("wing_layout.json")
+    surface = _surface(payload)
+    architecture = generate_wing_architecture(surface, material=_material())
+    baseline = _sized_wing()
+    landing = GearLoadCase(
+        case_id="touchdown",
+        kind=LoadCaseKind.TOUCHDOWN,
+        gear_id="main",
+        vertical_force_n=5000.0,
+        drag_force_n=1000.0,
+        side_force_n=500.0,
+        sink_rate_m_s=None,
+        meta=result_meta(model="fixture", inputs={"case": "landing"}, valid=True),
+    )
+    landing_loads = load_case_from_landing_gear(
+        landing,
+        component_id=surface.surface_id,
+        span_m=architecture.reference_span_m,
+        station_fraction=0.2,
+    )
+    propulsion_loads = load_case_from_propulsor(
+        type(
+            "PropulsorLoads",
+            (),
+            {
+                "normal_force_n": 2000.0,
+                "thrust_n": 5000.0,
+                "torque_n_m": 1000.0,
+                "pitching_moment_n_m": 500.0,
+                "yawing_moment_n_m": 250.0,
+                "provenance": type("Provenance", (), {"model": "fixture"})(),
+            },
+        )(),
+        component_id=surface.surface_id,
+        span_m=architecture.reference_span_m,
+        station_fraction=0.35,
+        case_id="propulsion",
+    )
+    landing_sized = size_architecture(
+        architecture, StructuralLoadSet("wing", (landing_loads,))
+    )
+    propulsion_sized = size_architecture(
+        architecture, StructuralLoadSet("wing", (propulsion_loads,))
+    )
+    assert landing_sized.total_mass_kg != pytest.approx(baseline.total_mass_kg)
+    assert propulsion_sized.total_mass_kg != pytest.approx(baseline.total_mass_kg)
 
 
 # -- D. margins and checks -----------------------------------------------------
@@ -474,7 +586,9 @@ def test_vs01_composite_members_preserve_ply_semantics() -> None:
     load_set = _load_set(payload, surface.surface_id)
     sized = size_architecture(architecture, load_set)
     laminate_members = [
-        candidate for candidate in sized.members if candidate.member.material.kind == "laminate"
+        candidate
+        for candidate in sized.members
+        if candidate.member.material.kind == "laminate"
     ]
     assert laminate_members
     for candidate in laminate_members:
@@ -608,7 +722,9 @@ def test_vs01_fixtures_generate_and_size(name: str) -> None:
             rib_count=payload["rib_count"],
             stringer_count=payload["stringer_count"],
         )
-    load_set = _load_set(payload, architecture.component_id, span_m=architecture.reference_span_m)
+    load_set = _load_set(
+        payload, architecture.component_id, span_m=architecture.reference_span_m
+    )
     sized = size_architecture(architecture, load_set)
     assert sized.total_mass_kg > 0.0
     assert sized.validity.passed is True

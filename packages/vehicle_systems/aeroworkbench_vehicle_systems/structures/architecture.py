@@ -344,7 +344,13 @@ def generate_wing_architecture(
                 )
             )
 
-    if kind is not ArchitectureKind.SHELL:
+    if kind in (
+        ArchitectureKind.MONOCOQUE,
+        ArchitectureKind.SEMI_MONOCOQUE,
+        ArchitectureKind.MULTI_SPAR,
+        ArchitectureKind.WINGBOX,
+        ArchitectureKind.SHELL,
+    ):
         skin_offset = _airfoil_thickness_m(surface, 0.3, 0.5) * 0.5
         panel_width_m = (
             mean_chord_m / (stringer_count + 1)

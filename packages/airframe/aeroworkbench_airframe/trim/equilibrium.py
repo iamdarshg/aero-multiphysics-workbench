@@ -16,6 +16,7 @@ from enum import StrEnum
 from math import cos, sin
 from typing import Any
 
+from ..state import Controls
 from ..units import Quantity
 from .authority import ControlAuthorityReport, evaluate_control_authority
 from .contract import (
@@ -71,6 +72,57 @@ class TrimVariable(StrEnum):
     VELOCITY = "velocity"
     GAMMA = "gamma"
 
+    @staticmethod
+    def surface(name: str) -> TrimControl:
+        return TrimControl("surface", name)
+
+    @staticmethod
+    def rpm() -> TrimControl:
+        return TrimControl("rpm", "rpm")
+
+    @staticmethod
+    def collective() -> TrimControl:
+        return TrimControl("collective", "collective")
+
+    @staticmethod
+    def cyclic(name: str) -> TrimControl:
+        return TrimControl("cyclic", name)
+
+
+@dataclass(frozen=True, slots=True)
+class TrimControl:
+    """A generic AIRFRAME 01 control that may be selected as a trim unknown."""
+
+    kind: str
+    name: str
+
+    def __post_init__(self) -> None:
+        if self.kind not in {"surface", "rpm", "collective", "cyclic"}:
+            raise ValueError(f"UNKNOWN_TRIM_CONTROL_KIND:{self.kind}")
+        if not self.name.strip():
+            raise ValueError("TRIM_CONTROL_NAME_REQUIRED")
+        if self.kind in {"rpm", "collective"} and self.name != self.kind:
+            raise ValueError(f"TRIM_CONTROL_NAME_MISMATCH:{self.kind}")
+
+    @classmethod
+    def surface(cls, name: str) -> TrimControl:
+        return cls("surface", name)
+
+    @classmethod
+    def rpm(cls) -> TrimControl:
+        return cls("rpm", "rpm")
+
+    @classmethod
+    def collective(cls) -> TrimControl:
+        return cls("collective", "collective")
+
+    @classmethod
+    def cyclic(cls, name: str) -> TrimControl:
+        return cls("cyclic", name)
+
+
+TrimUnknown = TrimVariable | TrimControl
+
 
 @dataclass(frozen=True, slots=True)
 class NewtonSettings:
@@ -94,8 +146,9 @@ class TrimSpec:
     """A trim problem: condition, selected variables, and control limits."""
 
     condition: FlightCondition
-    variables: tuple[TrimVariable, ...]
-    initial: tuple[tuple[TrimVariable, float], ...] = ()
+    variables: tuple[TrimUnknown, ...]
+    initial: tuple[tuple[TrimUnknown, float], ...] = ()
+    controls: Controls = Controls()
     elevator_limit: Quantity | None = None
     aileron_limit: Quantity | None = None
     rudder_limit: Quantity | None = None
@@ -119,6 +172,15 @@ class TrimSpec:
         ):
             if limit is not None and limit.dimension != "angle":
                 raise ValueError(f"TRIM_LIMIT_NOT_ANGLE:{label}")
+        for variable in self.variables:
+            if not isinstance(variable, (TrimVariable, TrimControl)):
+                raise ValueError(f"UNKNOWN_TRIM_VARIABLE:{variable!r}")
+            if isinstance(variable, TrimControl) and not _control_is_bound(
+                variable, self.controls
+            ):
+                raise ValueError(
+                    f"TRIM_CONTROL_UNBOUND:{variable.kind}:{variable.name}"
+                )
 
 
 class _ThrustMode(StrEnum):
@@ -154,6 +216,7 @@ class TrimSolution:
     lift: Quantity
     drag: Quantity
     pitch_moment: Quantity
+    controls: Controls = Controls()
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -166,6 +229,7 @@ class TrimSolution:
             "lift": self.lift.canonical(),
             "drag": self.drag.canonical(),
             "pitchMoment": self.pitch_moment.canonical(),
+            "controls": self.controls.canonical(),
         }
 
 
@@ -197,10 +261,14 @@ class TrimResult:
             "residuals": None if self.residuals is None else self.residuals.as_dict(),
             "iterations": self.iterations,
             "controlAuthority": (
-                None if self.control_authority is None else self.control_authority.as_dict()
+                None
+                if self.control_authority is None
+                else self.control_authority.as_dict()
             ),
             "staticStability": (
-                None if self.static_stability is None else self.static_stability.as_dict()
+                None
+                if self.static_stability is None
+                else self.static_stability.as_dict()
             ),
             "notes": list(self.notes),
             "meta": self.meta.as_dict(),
@@ -213,9 +281,71 @@ class TrimResult:
         return content_digest(self.as_dict())
 
 
-def _initial_values(spec: TrimSpec) -> dict[TrimVariable, float]:
+def _control_is_bound(control: TrimControl, controls: Controls) -> bool:
+    if control.kind == "surface":
+        return control.name in {name for name, _ in controls.surface_deflections}
+    if control.kind == "cyclic":
+        return control.name in {name for name, _ in controls.cyclic}
+    return getattr(controls, control.kind) is not None
+
+
+def _control_value(control: TrimControl, controls: Controls) -> float:
+    if control.kind == "surface":
+        return dict(controls.surface_deflections)[control.name].value_si
+    if control.kind == "cyclic":
+        return dict(controls.cyclic)[control.name].value_si
+    if control.kind == "rpm":
+        quantity = controls.rpm
+    elif control.kind == "collective":
+        quantity = controls.collective
+    else:
+        raise ValueError(f"UNKNOWN_TRIM_CONTROL_KIND:{control.kind}")
+    assert quantity is not None
+    return quantity.value_si
+
+
+def _controls_for_values(
+    baseline: Controls, values: Mapping[TrimUnknown, float]
+) -> Controls:
+    surfaces = dict(baseline.surface_deflections)
+    cyclic = dict(baseline.cyclic)
+    throttle = baseline.throttle
+    rpm = baseline.rpm
+    collective = baseline.collective
+    if TrimVariable.ELEVATOR in values:
+        surfaces.setdefault("elevator", Quantity(values[TrimVariable.ELEVATOR], "rad"))
+        surfaces["elevator"] = Quantity(values[TrimVariable.ELEVATOR], "rad")
+    if TrimVariable.THROTTLE in values:
+        raw = values[TrimVariable.THROTTLE]
+        # Preserve the historical solver's ability to report throttle > 1 as
+        # infeasible; canonical Controls validation is applied to valid/fixed
+        # controls and to the final result below.
+        throttle = Quantity(raw, "dimensionless") if 0.0 <= raw <= 1.0 else None
+    for variable, value in values.items():
+        if not isinstance(variable, TrimControl):
+            continue
+        quantity = Quantity(value, "rad")
+        if variable.kind == "surface":
+            surfaces[variable.name] = quantity
+        elif variable.kind == "cyclic":
+            cyclic[variable.name] = quantity
+        elif variable.kind == "rpm":
+            rpm = Quantity(value, "rev/s")
+        elif variable.kind == "collective":
+            collective = quantity
+    return Controls(
+        surface_deflections=tuple(surfaces.items()),
+        throttle=throttle,
+        rpm=rpm,
+        collective=collective,
+        cyclic=tuple(cyclic.items()),
+        tilt=baseline.tilt,
+    )
+
+
+def _initial_values(spec: TrimSpec) -> dict[TrimUnknown, float]:
     condition = spec.condition
-    values: dict[TrimVariable, float] = {
+    values: dict[TrimUnknown, float] = {
         TrimVariable.ALPHA: 0.0,
         TrimVariable.ELEVATOR: 0.0,
         TrimVariable.THROTTLE: 0.0,
@@ -225,13 +355,16 @@ def _initial_values(spec: TrimSpec) -> dict[TrimVariable, float]:
         TrimVariable.VELOCITY: condition.velocity.value_si,
         TrimVariable.GAMMA: condition.gamma.value_si,
     }
+    for variable in spec.variables:
+        if isinstance(variable, TrimControl):
+            values[variable] = _control_value(variable, spec.controls)
     for variable, value in spec.initial:
         values[variable] = value
     return values
 
 
 def _thrust_mode(
-    spec: TrimSpec, variables: tuple[TrimVariable, ...]
+    spec: TrimSpec, variables: tuple[TrimUnknown, ...]
 ) -> _ThrustMode | None:
     condition = spec.condition
     if TrimVariable.THROTTLE in variables:
@@ -264,16 +397,17 @@ def _make_evaluator(
         for variable, val in zip(order, x, strict=True):
             fixed[variable] = val
         alpha = fixed[TrimVariable.ALPHA]
-        elevator = fixed[TrimVariable.ELEVATOR]
         velocity = fixed[TrimVariable.VELOCITY]
         gamma = fixed[TrimVariable.GAMMA]
         if velocity <= 1e-6:
             raise TrimSolverError("NONPOSITIVE_TRIM_VELOCITY")
         q_dyn = 0.5 * rho * velocity * velocity
+        controls = _controls_for_values(spec.controls, fixed)
         state = AeroState(
             alpha=Quantity(alpha, "rad"),
             velocity=Quantity(velocity, "m/s"),
-            deflections=(("elevator", Quantity(elevator, "rad")),),
+            deflections=tuple(controls.surface_deflections),
+            controls=controls,
         )
         coeff = provider.coefficients(state)
         lift = q_dyn * area * coeff.c_lift
@@ -355,7 +489,7 @@ def _solution_from(
     spec: TrimSpec,
     reference: AeroReference,
     mode: _ThrustMode,
-    values: Mapping[TrimVariable, float],
+    values: Mapping[TrimUnknown, float],
 ) -> tuple[TrimSolution, TrimResiduals, AeroState]:
     condition = spec.condition
     alpha = values[TrimVariable.ALPHA]
@@ -363,10 +497,12 @@ def _solution_from(
     velocity = values[TrimVariable.VELOCITY]
     gamma = values[TrimVariable.GAMMA]
     q_dyn = 0.5 * condition.density.value_si * velocity * velocity
+    controls = _controls_for_values(spec.controls, values)
     state = AeroState(
         alpha=Quantity(alpha, "rad"),
         velocity=Quantity(velocity, "m/s"),
-        deflections=(("elevator", Quantity(elevator, "rad")),),
+        deflections=tuple(controls.surface_deflections),
+        controls=controls,
     )
     coeff = provider.coefficients(state)
     area = reference.area.value_si
@@ -376,7 +512,9 @@ def _solution_from(
     lift = q_dyn * area * coeff.c_lift
     drag = q_dyn * area * coeff.c_drag
     pitch = q_dyn * area * chord * coeff.c_pitch
-    thrust_max = condition.thrust_max.value_si if condition.thrust_max is not None else 0.0
+    thrust_max = (
+        condition.thrust_max.value_si if condition.thrust_max is not None else 0.0
+    )
     if mode is _ThrustMode.THROTTLE:
         thrust = thrust_max * values[TrimVariable.THROTTLE]
         throttle: float | None = values[TrimVariable.THROTTLE]
@@ -410,6 +548,7 @@ def _solution_from(
         lift=Quantity(lift, "N"),
         drag=Quantity(drag, "N"),
         pitch_moment=Quantity(pitch, "N.m"),
+        controls=controls,
     )
     return solution, residuals, state
 
@@ -432,9 +571,17 @@ def _result(
     inputs = {
         "provider": provider.provider_id,
         "condition": spec.condition.as_dict(),
-        "variables": [variable.value for variable in spec.variables],
+        "variables": [
+            variable.value
+            if isinstance(variable, TrimVariable)
+            else f"{variable.kind}:{variable.name}"
+            for variable in spec.variables
+        ],
         "reference": reference.as_dict(),
-        "elevatorLimit": None if spec.elevator_limit is None else spec.elevator_limit.canonical(),
+        "elevatorLimit": None
+        if spec.elevator_limit is None
+        else spec.elevator_limit.canonical(),
+        "controls": spec.controls.canonical(),
         "solution": None if solution is None else solution.as_dict(),
     }
     meta = result_meta(
@@ -505,7 +652,9 @@ def solve_trim(
     for variable, value in zip(spec.variables, x, strict=True):
         values[variable] = value
     try:
-        solution, residuals, state = _solution_from(provider, spec, reference, mode, values)
+        solution, residuals, state = _solution_from(
+            provider, spec, reference, mode, values
+        )
     except (AeroCoefficientError, TrimSolverError) as error:
         return _result(
             spec=spec,
@@ -537,11 +686,15 @@ def solve_trim(
             notes=("TRIM_DID_NOT_CONVERGE",),
         )
     notes: list[str] = []
-    dynamic_pressure = 0.5 * spec.condition.density.value_si * solution.velocity.value_si ** 2
+    dynamic_pressure = (
+        0.5 * spec.condition.density.value_si * solution.velocity.value_si**2
+    )
     if solution.throttle is not None and not 0.0 <= solution.throttle <= 1.0:
         notes.append("THROTTLE_OUT_OF_RANGE")
     stability: StaticStabilityReport | None = None
     bundle = provider.derivatives(state)
+    if not bundle.valid:
+        notes.extend(bundle.notes or ("DERIVATIVE_OPERATING_POINT_INVALID",))
     if reference.cg_mac_fraction is None:
         if spec.require_stability:
             notes.append("CG_UNAVAILABLE_FOR_STATIC_MARGIN")
@@ -550,6 +703,8 @@ def solve_trim(
             bundle.longitudinal,
             bundle.lateral_directional,
             cg_mac_fraction=reference.cg_mac_fraction,
+            high_speed_valid=bundle.valid,
+            high_speed_notes=bundle.notes,
         )
         if not stability.valid:
             notes.append("STATIC_STABILITY_COVERAGE_INSUFFICIENT")
@@ -586,6 +741,8 @@ def solve_trim(
             notes.append(str(error))
     infeasible = False
     invalid = False
+    if not bundle.valid:
+        invalid = True
     if "THROTTLE_OUT_OF_RANGE" in notes:
         infeasible = True
     if authority is not None and not authority.within_authority:
@@ -655,6 +812,8 @@ __all__ = [
     "TrimResult",
     "TrimSolution",
     "TrimSpec",
+    "TrimControl",
+    "TrimUnknown",
     "TrimVariable",
     "solve_trim",
     "trim_level_flight",

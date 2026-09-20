@@ -68,6 +68,11 @@ from .geometry import (
     skid_gear,
     tricycle_gear,
 )
+from .ground_dynamics import (
+    GroundLateralResult,
+    GroundLateralScenario,
+    simulate_ground_lateral,
+)
 from .ground_effect import (
     GroundEffectResult,
     NativeGroundEffectStatus,
@@ -95,6 +100,13 @@ from .native import (
     native_ground_dynamics_status,
     require_native_gear_structure,
     require_native_ground_dynamics,
+)
+from .packaging import (
+    GearPackagingResult,
+    GearState,
+    GearStateResult,
+    check_gear_packaging,
+    evaluate_gear_state,
 )
 from .performance import (
     DragPolar,
@@ -136,9 +148,14 @@ __all__ = [
     "GearReaction",
     "GearRole",
     "GroundEffectResult",
+    "GroundLateralResult",
+    "GroundLateralScenario",
     "GroundStabilityError",
     "GroundStabilityResult",
     "GroundVehicleModel",
+    "GearPackagingResult",
+    "GearState",
+    "GearStateResult",
     "LandingGearAssembly",
     "LandingGearError",
     "LandingGearFidelity",
@@ -166,7 +183,9 @@ __all__ = [
     "braking_load_case",
     "check_clearance",
     "check_ground_stability",
+    "check_gear_packaging",
     "evaluate_shock_stroke",
+    "evaluate_gear_state",
     "export_load_cases",
     "finite",
     "finite_vector",
@@ -188,6 +207,7 @@ __all__ = [
     "rotation_clearance_points",
     "side_friction_force",
     "simulate_landing",
+    "simulate_ground_lateral",
     "simulate_rejected_takeoff",
     "simulate_takeoff",
     "skid_gear",

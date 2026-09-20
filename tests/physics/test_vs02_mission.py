@@ -166,6 +166,97 @@ def test_fixture_files_load_and_are_stable() -> None:
         assert len(first.segments) >= 4
 
 
+def test_propulsor_controls_are_typed_and_unset_payloads_remain_stable() -> None:
+    payload = _load("fixed_wing_mission.json")
+    baseline = _mission(payload)
+    segment = baseline.segment("cruise")
+    assert "rpm" not in segment.canonical()
+    assert "propulsorPitchDeg" not in segment.canonical()
+    assert "rotorPitchDeg" not in segment.canonical()
+
+    controlled = SegmentSpec(
+        segment_id="controlled",
+        kind=SegmentKind.CRUISE,
+        mode=SegmentMode.DURATION,
+        speed_m_s=100.0,
+        altitude_m=3000.0,
+        duration_s=10.0,
+        rpm=2400.0,
+        propulsor_pitch_deg=18.0,
+        rotor_pitch_deg=12.0,
+    )
+    assert controlled.control(ControlName.RPM) == pytest.approx(2400.0)
+    assert controlled.control(ControlName.PROPULSOR_PITCH) == pytest.approx(18.0)
+    assert controlled.control(ControlName.ROTOR_PITCH) == pytest.approx(12.0)
+    assert controlled.canonical()["rpm"] == pytest.approx(2400.0)
+    assert controlled.canonical()["propulsorPitchDeg"] == pytest.approx(18.0)
+    assert controlled.canonical()["rotorPitchDeg"] == pytest.approx(12.0)
+    assert baseline.digest() == _mission(payload).digest()
+
+
+def test_rotorcraft_and_variable_pitch_controls_reach_operating_point() -> None:
+    fixed_payload = _load("fixed_wing_mission.json")
+    fixed_spec = _mission(fixed_payload)
+    fixed_cruise = fixed_spec.segment("cruise").with_control(ControlName.RPM, 2400.0).with_control(
+        ControlName.PROPULSOR_PITCH, 18.0
+    )
+    fixed_result = run_mission(
+        fixed_spec.with_segments(
+            tuple(
+                fixed_cruise if item.segment_id == "cruise" else item
+                for item in fixed_spec.segments
+            )
+        ),
+        _fixed_wing(fixed_payload),
+    )
+    assert fixed_result.valid
+
+    payload = _load("rotorcraft_mission.json")
+    spec = _mission(payload)
+    segment = spec.segment("cruise")
+    controlled = segment.with_control(ControlName.RPM, 420.0).with_control(
+        ControlName.ROTOR_PITCH, 14.0
+    )
+    point = OperatingPoint(
+        altitude_m=controlled.altitude_m,
+        speed_m_s=controlled.speed_m_s,
+        mass_kg=spec.vehicle.initial_mass_kg,
+        climb_rate_m_s=controlled.climb_rate_m_s,
+        throttle=controlled.throttle,
+        power_fraction=controlled.power_fraction,
+        configuration=controlled.configuration,
+        rpm=controlled.rpm,
+        propulsor_pitch_deg=controlled.propulsor_pitch_deg,
+        rotor_pitch_deg=controlled.rotor_pitch_deg,
+        segment_kind=controlled.kind,
+        phase=controlled.mode.value,
+    )
+    assert point.canonical()["rpm"] == pytest.approx(420.0)
+    assert point.canonical()["rotorPitchDeg"] == pytest.approx(14.0)
+
+    variable = TrajectoryOptimization(
+        objective="energy",
+        variables=(
+            ControlVariable("cruise", ControlName.RPM, 300.0, 600.0, 420.0),
+            ControlVariable("cruise", ControlName.PROPULSOR_PITCH, 5.0, 25.0, 14.0),
+        ),
+    )
+    applied = apply_controls(
+        spec,
+        variable.variables,
+        {"cruise:rpm": 500.0, "cruise:propulsor-pitch": 20.0},
+    )
+    assert applied.segment("cruise").rpm == pytest.approx(500.0)
+    assert applied.segment("cruise").propulsor_pitch_deg == pytest.approx(20.0)
+    rotor_result = run_mission(
+        spec.with_segments(
+            tuple(controlled if item.segment_id == "cruise" else item for item in spec.segments)
+        ),
+        _rotorcraft(payload),
+    )
+    assert rotor_result.valid
+
+
 def test_full_mission_closes_mass_fuel_energy() -> None:
     payload = _load("fixed_wing_mission.json")
     result = run_mission(_mission(payload), _fixed_wing(payload))

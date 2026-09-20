@@ -113,6 +113,18 @@ def _reference_value(
     return default
 
 
+def _enforce_bounds(
+    bounds: dict[str, tuple[float | None, float | None]], metric: str, value: float
+) -> None:
+    lower, upper = bounds.get(metric, (None, None))
+    if lower is not None and value < lower - 1e-9:
+        raise SynthesisInfeasibleError(f"{metric.upper()}_BELOW_LOWER:{value}<{lower}")
+    if upper is not None and value > upper + 1e-9:
+        if metric == "span_limit":
+            raise SynthesisInfeasibleError(f"SPAN_LIMIT_EXCEEDED:{value}>{upper}")
+        raise SynthesisInfeasibleError(f"{metric.upper()}_ABOVE_UPPER:{value}>{upper}")
+
+
 def _diverse_values(lower: float, upper: float, count: int) -> tuple[float, ...]:
     if count <= 1 or upper <= lower + 1e-9:
         return (lower,)
@@ -173,14 +185,19 @@ def _build_seed(
     index: int,
 ) -> VehicleSeed:
     payload = _required_lower(bounds, "payload_mass")
+    _enforce_bounds(bounds, "payload_mass", payload)
     stall_speed = _required_upper(bounds, "stall_speed")
+    _enforce_bounds(bounds, "stall_speed", stall_speed)
     cruise_speed = _reference_value(bounds, "cruise_speed", None)
     if cruise_speed is None:
         raise SynthesisInfeasibleError("REQUIRED_METRIC_MISSING:cruise_speed")
+    _enforce_bounds(bounds, "cruise_speed", cruise_speed)
     cruise_altitude = _reference_value(bounds, "cruise_altitude", 0.0)
     assert cruise_altitude is not None
+    _enforce_bounds(bounds, "cruise_altitude", cruise_altitude)
     cl_max = _reference_value(bounds, "max_lift_coefficient", assumptions.max_lift_coefficient)
     assert cl_max is not None
+    _enforce_bounds(bounds, "max_lift_coefficient", cl_max)
 
     density = methods.isa_density(Quantity(value=cruise_altitude, unit="m"))
     speed_of_sound = methods.isa_speed_of_sound(Quantity(value=cruise_altitude, unit="m"))
@@ -195,11 +212,7 @@ def _build_seed(
     span = methods.wing_span(area.quantity, aspect_ratio)
     chord = methods.mean_chord(area.quantity, span.quantity)
 
-    span_limit = bounds.get("span_limit", (None, None))[1]
-    if span_limit is not None and span.quantity.value_si > span_limit + 1e-9:
-        raise SynthesisInfeasibleError(
-            f"SPAN_LIMIT_EXCEEDED:{span.quantity.value_si}>{span_limit}"
-        )
+    _enforce_bounds(bounds, "span_limit", span.quantity.value_si)
 
     climb_gradient = _reference_value(bounds, "climb_gradient", None)
     climb_rate = _reference_value(bounds, "climb_rate", None)
@@ -211,6 +224,10 @@ def _build_seed(
             climb_gradient if climb_gradient is not None else (climb_rate or 0.0) / cruise_speed
         )
         thrust_loading = methods.thrust_to_weight_climb(gradient, assumptions.lift_to_drag)
+    if climb_gradient is not None:
+        _enforce_bounds(bounds, "climb_gradient", gradient)
+    if climb_rate is not None:
+        _enforce_bounds(bounds, "climb_rate", gradient * cruise_speed)
     thrust = methods.required_thrust(
         Quantity(value=weight, unit="N"), thrust_loading.quantity.value_si
     )
@@ -224,6 +241,8 @@ def _build_seed(
 
     max_speed = _reference_value(bounds, "max_speed", None)
     sweep_speed = max_speed if max_speed is not None else cruise_speed
+    if max_speed is not None:
+        _enforce_bounds(bounds, "max_speed", max_speed)
     sweep = methods.sweep_drag_divergence(
         Quantity(value=sweep_speed, unit="m/s"),
         speed_of_sound.quantity,
@@ -231,11 +250,17 @@ def _build_seed(
         radians(assumptions.max_sweep_deg),
     )
 
+    tail_volume = _reference_value(
+        bounds, "tail_volume_coefficient", assumptions.tail_volume_coefficient
+    )
+    assert tail_volume is not None
+    _enforce_bounds(bounds, "tail_volume_coefficient", tail_volume)
     tail_arm = assumptions.tail_arm_to_chord * chord.quantity.value_si
     tail = methods.horizontal_tail_area(
-        assumptions.tail_volume_coefficient, area.quantity, chord.quantity, tail_arm
+        tail_volume, area.quantity, chord.quantity, tail_arm
     )
     pressure = methods.dynamic_pressure(density.quantity, Quantity(value=cruise_speed, unit="m/s"))
+    _enforce_bounds(bounds, "dynamic_pressure", pressure.quantity.value_si)
     ratio = methods.aspect_ratio_choice(aspect_ratio)
 
     quantities: list[methods.SynthesisQuantity] = [

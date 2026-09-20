@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .architecture import ArchitectureKind, StructuralArchitecture
 from .checks import (
@@ -30,6 +30,9 @@ from .errors import SizingError, StructuralConstraintError, StructuresError
 from .loads import LoadEnvelope, StructuralLoadSet
 from .members import StructuralMember
 from .stiffness import StiffnessSeam, build_stiffness_seam
+
+if TYPE_CHECKING:
+    from .manufacturing import StructuralManufacturingLimits
 
 __all__ = [
     "SizedMember",
@@ -56,6 +59,7 @@ class SizingOptions:
     safety_factor: float = 1.5
     max_iterations: int = 60
     relative_tolerance: float = 1.0e-6
+    manufacturing_limits: StructuralManufacturingLimits | None = None
 
     def __post_init__(self) -> None:
         if not 0.0 < self.minimum_thickness_m < self.maximum_thickness_m:
@@ -72,7 +76,7 @@ class SizingOptions:
         if not 0.0 < self.relative_tolerance < 1.0:
             raise SizingError("SIZING_TOLERANCE_INVALID")
 
-    def as_dict(self) -> dict[str, float]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "minimumThicknessM": self.minimum_thickness_m,
             "maximumThicknessM": self.maximum_thickness_m,
@@ -80,6 +84,9 @@ class SizingOptions:
             "safetyFactor": self.safety_factor,
             "maxIterations": float(self.max_iterations),
             "relativeTolerance": self.relative_tolerance,
+            "manufacturingLimits": (
+                None if self.manufacturing_limits is None else self.manufacturing_limits.as_dict()
+            ),
         }
 
 
@@ -302,7 +309,7 @@ def size_architecture(
             "members": [candidate.as_dict() for candidate in sized],
         }
     )
-    return SizedStructure(
+    result = SizedStructure(
         architecture_id=architecture.architecture_id,
         component_id=architecture.component_id,
         kind=architecture.kind,
@@ -315,3 +322,8 @@ def size_architecture(
         meta=meta,
         digest=digest,
     )
+    if controls.manufacturing_limits is not None:
+        from .manufacturing import screen_structure_manufacturability
+
+        screen_structure_manufacturability(result, controls.manufacturing_limits)
+    return result

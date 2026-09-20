@@ -58,9 +58,12 @@ class OperatingPoint:
     configuration: int
     segment_kind: SegmentKind
     phase: str
+    rpm: float | None = None
+    propulsor_pitch_deg: float | None = None
+    rotor_pitch_deg: float | None = None
 
     def canonical(self) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "altitudeM": self.altitude_m,
             "speedMS": self.speed_m_s,
             "massKg": self.mass_kg,
@@ -71,6 +74,13 @@ class OperatingPoint:
             "segmentKind": self.segment_kind.value,
             "phase": self.phase,
         }
+        if self.rpm is not None:
+            payload["rpm"] = self.rpm
+        if self.propulsor_pitch_deg is not None:
+            payload["propulsorPitchDeg"] = self.propulsor_pitch_deg
+        if self.rotor_pitch_deg is not None:
+            payload["rotorPitchDeg"] = self.rotor_pitch_deg
+        return payload
 
 
 @dataclass(frozen=True, slots=True)

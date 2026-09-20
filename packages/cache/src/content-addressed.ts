@@ -57,6 +57,15 @@ export interface ContentKeyInput {
   fidelity?: string;
   /** Version of the accept/reject policy under which a result is reusable. */
   validityPolicyVersion?: string;
+  /** Hierarchy and operator revisions that affect downstream results. */
+  subtreeDigest?: string;
+  boundaryDigest?: string;
+  interfaceDigest?: string;
+  transformDigest?: string;
+  mappingDigest?: string;
+  harmonicDigest?: string;
+  temporalDigest?: string;
+  qoiDigest?: string;
 }
 
 export function createContentKey(input: ContentKeyInput): string {
@@ -71,6 +80,20 @@ export function createContentKey(input: ContentKeyInput): string {
   ];
   if (input.inputDigest !== undefined) digests.push(["inputDigest", input.inputDigest]);
   if (input.meshHash !== undefined) digests.push(["meshHash", input.meshHash]);
+  for (const [name, digest] of [
+    ["subtreeDigest", input.subtreeDigest],
+    ["boundaryDigest", input.boundaryDigest],
+    ["interfaceDigest", input.interfaceDigest],
+    ["transformDigest", input.transformDigest],
+    ["mappingDigest", input.mappingDigest],
+    ["harmonicDigest", input.harmonicDigest],
+    ["temporalDigest", input.temporalDigest],
+    ["qoiDigest", input.qoiDigest],
+  ] as const) {
+    if (digest !== undefined && !SHA256.test(digest)) {
+      throw new TypeError(`${name} must be a SHA-256 digest`);
+    }
+  }
   for (const [name, digest] of digests) {
     if (!SHA256.test(digest)) throw new TypeError(`${name} must be a SHA-256 digest`);
   }

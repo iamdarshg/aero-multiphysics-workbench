@@ -18,7 +18,11 @@ from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 
 from ..canonical import content_digest, normalize_numbers
 from ..units import dimension_of, to_si
-from .errors import RequirementCompileError, RequirementConflict, RequirementConflictError
+from .errors import (
+    RequirementCompileError,
+    RequirementConflict,
+    RequirementConflictError,
+)
 
 REQUIREMENTS_MODEL = "airframe-requirements-compiler"
 REQUIREMENTS_MODEL_VERSION = "1"
@@ -86,6 +90,42 @@ METRIC_CATEGORIES: dict[str, str] = {
     "tail_volume_coefficient": "stability",
     "min_wall_thickness": "manufacturability",
     "packaging_length": "manufacturability",
+}
+
+# A metric is not accepted by the compiler unless this catalog says where its
+# constraint goes.  ``direct`` metrics are consumed while making an initial
+# fixed-wing seed; ``downstream`` metrics are carried as explicit contracts for
+# the named verification layer.  This prevents a syntactically valid metric
+# from becoming dead data after compilation.
+METRIC_ENFORCEMENT_ROUTES: dict[str, tuple[str, str]] = {
+    "payload_mass": ("direct", "fixed_wing_synthesis"),
+    "useful_load": ("downstream", "mission_campaign"),
+    "empty_mass": ("downstream", "mission_campaign"),
+    "empty_mass_fraction": ("downstream", "mission_campaign"),
+    "cruise_speed": ("direct", "fixed_wing_synthesis"),
+    "max_speed": ("direct", "fixed_wing_synthesis"),
+    "stall_speed": ("direct", "fixed_wing_synthesis"),
+    "range": ("direct", "fixed_wing_synthesis"),
+    "endurance": ("downstream", "mission_campaign"),
+    "climb_rate": ("direct", "fixed_wing_synthesis"),
+    "climb_gradient": ("direct", "fixed_wing_synthesis"),
+    "takeoff_distance": ("downstream", "vs06_landing_gear"),
+    "landing_distance": ("downstream", "vs06_landing_gear"),
+    "cruise_altitude": ("direct", "fixed_wing_synthesis"),
+    "service_ceiling": ("downstream", "mission_campaign"),
+    "span_limit": ("direct", "fixed_wing_synthesis"),
+    "diameter_limit": ("downstream", "manufacturing_constraints"),
+    "volume_limit": ("downstream", "manufacturing_constraints"),
+    "load_factor": ("downstream", "trim_control"),
+    "dynamic_pressure": ("direct", "fixed_wing_synthesis"),
+    "power_limit": ("downstream", "mission_campaign"),
+    "energy_limit": ("downstream", "mission_campaign"),
+    "static_margin": ("downstream", "trim_control"),
+    "tail_volume_coefficient": ("direct", "fixed_wing_synthesis"),
+    "max_lift_coefficient": ("direct", "fixed_wing_synthesis"),
+    "aspect_ratio": ("direct", "fixed_wing_synthesis"),
+    "min_wall_thickness": ("downstream", "manufacturing_constraints"),
+    "packaging_length": ("downstream", "manufacturing_constraints"),
 }
 
 _EXTRA_UNITS: dict[str, tuple[str, float]] = {
@@ -161,6 +201,18 @@ class RequirementSpec:
 
 
 @dataclass(frozen=True, slots=True)
+class RequirementEnforcementRoute:
+    """Explicit destination for one registered requirement metric."""
+
+    metric: str
+    mode: str
+    target: str
+
+    def canonical(self) -> dict[str, str]:
+        return {"metric": self.metric, "mode": self.mode, "target": self.target}
+
+
+@dataclass(frozen=True, slots=True)
 class NormalizedRequirement:
     """A normalized SI requirement with declared provenance."""
 
@@ -177,6 +229,11 @@ class NormalizedRequirement:
     rationale: str
     source: str
     assumptions: tuple[str, ...]
+
+    @property
+    def enforcement_route(self) -> RequirementEnforcementRoute:
+        mode, target = METRIC_ENFORCEMENT_ROUTES[self.metric]
+        return RequirementEnforcementRoute(self.metric, mode, target)
 
     def canonical(self) -> dict[str, object]:
         return cast(
@@ -196,6 +253,7 @@ class NormalizedRequirement:
                     "rationale": self.rationale,
                     "source": self.source,
                     "assumptions": list(self.assumptions),
+                    "enforcementRoute": self.enforcement_route.canonical(),
                 }
             ),
         )
@@ -229,6 +287,7 @@ class CompiledRequirements:
                 {
                     "requirements": [item.canonical() for item in self.requirements],
                     "conflicts": [item.canonical() for item in self.conflicts],
+                    "downstreamConstraints": list(self.downstream_constraints()),
                     "feasible": self.feasible,
                     "assumptions": list(self.assumptions),
                     "provenance": self.provenance.model_dump(mode="json"),
@@ -246,6 +305,33 @@ class CompiledRequirements:
             grouped.setdefault(requirement.metric, []).append(requirement)
         return {metric: tuple(items) for metric, items in grouped.items()}
 
+    @property
+    def enforcement_routes(self) -> tuple[RequirementEnforcementRoute, ...]:
+        """Unique metric routes retained for downstream campaign assembly."""
+        routes: list[RequirementEnforcementRoute] = []
+        seen: set[str] = set()
+        for requirement in self.requirements:
+            if requirement.metric in seen:
+                continue
+            seen.add(requirement.metric)
+            routes.append(requirement.enforcement_route)
+        return tuple(routes)
+
+    def downstream_constraints(self) -> tuple[dict[str, object], ...]:
+        """Return explicit constraints for consumers outside initial synthesis."""
+        return tuple(
+            {
+                "metric": requirement.metric,
+                "requirementIds": [
+                    item.requirement_id for item in self.by_metric()[requirement.metric]
+                ],
+                "mode": requirement.mode,
+                "target": requirement.target,
+            }
+            for requirement in self.enforcement_routes
+            if requirement.mode == "downstream"
+        )
+
 
 def _normalize(spec: RequirementSpec) -> NormalizedRequirement:
     requirement_id = spec.requirement_id.strip()
@@ -259,6 +345,10 @@ def _normalize(spec: RequirementSpec) -> NormalizedRequirement:
         raise RequirementCompileError(
             f"UNKNOWN_REQUIREMENT_METRIC:{requirement_id}:{spec.metric}"
         )
+    if spec.metric not in METRIC_ENFORCEMENT_ROUTES:
+        raise RequirementCompileError(
+            f"UNSUPPORTED_REQUIREMENT_METRIC:{requirement_id}:{spec.metric}"
+        )
     if spec.operator not in OPERATORS:
         raise RequirementCompileError(
             f"UNKNOWN_REQUIREMENT_OPERATOR:{requirement_id}:{spec.operator}"
@@ -271,20 +361,30 @@ def _normalize(spec: RequirementSpec) -> NormalizedRequirement:
 
     if spec.operator == "between":
         if spec.lower is None or spec.upper is None:
-            raise RequirementCompileError(f"REQUIREMENT_BOUNDS_REQUIRED:{requirement_id}")
+            raise RequirementCompileError(
+                f"REQUIREMENT_BOUNDS_REQUIRED:{requirement_id}"
+            )
         if spec.value is not None or spec.unit is None:
-            raise RequirementCompileError(f"REQUIREMENT_VALUE_NOT_APPLICABLE:{requirement_id}")
+            raise RequirementCompileError(
+                f"REQUIREMENT_VALUE_NOT_APPLICABLE:{requirement_id}"
+            )
         _check_unit(requirement_id, spec.unit, dimension)
         lower = _requirement_to_si(spec.lower, spec.unit)
         upper = _requirement_to_si(spec.upper, spec.unit)
         if lower > upper:
-            raise RequirementCompileError(f"REQUIREMENT_BOUNDS_INVERTED:{requirement_id}")
+            raise RequirementCompileError(
+                f"REQUIREMENT_BOUNDS_INVERTED:{requirement_id}"
+            )
         target = None
     else:
         if spec.value is None or spec.unit is None:
-            raise RequirementCompileError(f"REQUIREMENT_VALUE_REQUIRED:{requirement_id}")
+            raise RequirementCompileError(
+                f"REQUIREMENT_VALUE_REQUIRED:{requirement_id}"
+            )
         if spec.lower is not None or spec.upper is not None:
-            raise RequirementCompileError(f"REQUIREMENT_BOUNDS_NOT_APPLICABLE:{requirement_id}")
+            raise RequirementCompileError(
+                f"REQUIREMENT_BOUNDS_NOT_APPLICABLE:{requirement_id}"
+            )
         _check_unit(requirement_id, spec.unit, dimension)
         target = _requirement_to_si(spec.value, spec.unit)
         lower = target if spec.operator in {"at_least", "equals"} else None
@@ -318,11 +418,17 @@ def _aggregate(
         if requirement.lower_si is not None:
             current = lower.get(requirement.metric)
             if current is None or requirement.lower_si > current[0]:
-                lower[requirement.metric] = (requirement.lower_si, requirement.requirement_id)
+                lower[requirement.metric] = (
+                    requirement.lower_si,
+                    requirement.requirement_id,
+                )
         if requirement.upper_si is not None:
             current = upper.get(requirement.metric)
             if current is None or requirement.upper_si < current[0]:
-                upper[requirement.metric] = (requirement.upper_si, requirement.requirement_id)
+                upper[requirement.metric] = (
+                    requirement.upper_si,
+                    requirement.requirement_id,
+                )
     return lower, upper, dimensions
 
 
@@ -352,7 +458,9 @@ def detect_conflicts(
         low = lower.get(low_metric)
         high = upper.get(high_metric)
         if low is not None and high is not None and low[0] > high[0] + _TOLERANCE:
-            dimension = dimensions.get(low_metric, dimensions.get(high_metric, "dimensionless"))
+            dimension = dimensions.get(
+                low_metric, dimensions.get(high_metric, "dimensionless")
+            )
             conflicts.append(
                 RequirementConflict(
                     metric=f"{low_metric}>{high_metric}",
@@ -407,12 +515,16 @@ def compile_requirements(
 ) -> CompiledRequirements:
     """Normalize requirements, detect conflicts, and fail closed when strict."""
     normalized = tuple(
-        sorted((_normalize(spec) for spec in specs), key=lambda item: item.requirement_id)
+        sorted(
+            (_normalize(spec) for spec in specs), key=lambda item: item.requirement_id
+        )
     )
     identifiers = [item.requirement_id for item in normalized]
     if len(set(identifiers)) != len(identifiers):
         duplicate = next(
-            identifier for identifier in identifiers if identifiers.count(identifier) > 1
+            identifier
+            for identifier in identifiers
+            if identifiers.count(identifier) > 1
         )
         raise RequirementCompileError(f"DUPLICATE_REQUIREMENT_ID:{duplicate}")
     conflicts = detect_conflicts(normalized)

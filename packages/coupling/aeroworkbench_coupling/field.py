@@ -20,10 +20,16 @@ import hashlib
 import json
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, replace
-from math import isfinite
+from math import isfinite, pi
 from typing import Any, cast
 
-SUPPORTED_QUANTITIES = ("pressure", "traction", "displacement", "temperature", "heat-flux")
+SUPPORTED_QUANTITIES = (
+    "pressure",
+    "traction",
+    "displacement",
+    "temperature",
+    "heat-flux",
+)
 
 _DEFAULT_METHOD: dict[str, str] = {
     "pressure": "conservative",
@@ -37,14 +43,25 @@ _DEFAULT_METHOD: dict[str, str] = {
 @dataclass(frozen=True, slots=True)
 class InterfaceMesh:
     name: str
-    coordinates: tuple[float, ...]
+    coordinates: tuple[Any, ...]
     areas: tuple[float, ...]
     digest: str
+    normals: tuple[tuple[float, float, float], ...] = ()
 
 
-def _mesh_digest(name: str, coordinates: Sequence[float], areas: Sequence[float]) -> str:
+def _mesh_digest(
+    name: str,
+    coordinates: Sequence[Any],
+    areas: Sequence[float],
+    normals: Sequence[Any] = (),
+) -> str:
     payload = json.dumps(
-        {"name": name, "coordinates": list(coordinates), "areas": list(areas)},
+        {
+            "name": name,
+            "coordinates": list(coordinates),
+            "areas": list(areas),
+            "normals": list(normals),
+        },
         sort_keys=True,
         separators=(",", ":"),
         allow_nan=False,
@@ -54,33 +71,75 @@ def _mesh_digest(name: str, coordinates: Sequence[float], areas: Sequence[float]
 
 def register_mesh(
     name: str,
-    coordinates: Sequence[float],
+    coordinates: Sequence[Any],
     areas: Sequence[float] | None = None,
+    *,
+    normals: Sequence[Sequence[float]] | None = None,
 ) -> InterfaceMesh:
-    """Register one 1-D interface mesh; cell areas default to uniform segments."""
+    """Register a 1-D or 3-D nonmatching interface mesh."""
 
-    points = tuple(float(value) for value in coordinates)
+    raw_points: tuple[Any, ...] = tuple(coordinates)
+    is_3d = bool(raw_points) and isinstance(raw_points[0], (tuple, list))
+    if is_3d:
+        points: tuple[Any, ...] = tuple(
+            tuple(float(value) for value in point) for point in raw_points
+        )
+        if any(
+            len(point) != 3 or any(not isfinite(value) for value in point)
+            for point in points
+        ):
+            raise ValueError("MESH_COORDINATES_MUST_BE_FINITE_3D")
+    else:
+        points = cast(tuple[Any, ...], tuple(float(value) for value in raw_points))
     if not name.strip():
         raise ValueError("MESH_NAME_REQUIRED")
     if len(points) < 2:
         raise ValueError("MESH_NEEDS_TWO_NODES")
-    if any(not isfinite(value) for value in points):
+    if not is_3d and any(not isfinite(float(value)) for value in points):
         raise ValueError("MESH_COORDINATES_MUST_BE_FINITE")
-    if any(b <= a for a, b in zip(points, points[1:], strict=False)):
+    if not is_3d and any(
+        float(b) <= float(a) for a, b in zip(points, points[1:], strict=False)
+    ):
         raise ValueError("MESH_COORDINATES_MUST_INCREASE")
     if areas is None:
-        widths = [b - a for a, b in zip(points, points[1:], strict=False)]
-        nodal = [widths[0] / 2.0]
-        nodal.extend((a + b) / 2.0 for a, b in zip(widths, widths[1:], strict=False))
-        nodal.append(widths[-1] / 2.0)
-        resolved = tuple(nodal)
+        if is_3d:
+            resolved: tuple[float, ...] = (1.0,) * len(points)
+        else:
+            widths = [
+                float(b) - float(a) for a, b in zip(points, points[1:], strict=False)
+            ]
+            nodal = [widths[0] / 2.0]
+            nodal.extend(
+                (a + b) / 2.0 for a, b in zip(widths, widths[1:], strict=False)
+            )
+            nodal.append(widths[-1] / 2.0)
+            resolved = tuple(nodal)
     else:
         resolved = tuple(float(value) for value in areas)
         if len(resolved) != len(points):
             raise ValueError("MESH_AREAS_MUST_MATCH_NODES")
         if any(not isfinite(value) or value <= 0 for value in resolved):
             raise ValueError("MESH_AREAS_MUST_BE_POSITIVE")
-    return InterfaceMesh(name, points, resolved, _mesh_digest(name, points, resolved))
+    if normals is None:
+        resolved_normals: tuple[tuple[float, float, float], ...] = ()
+    else:
+        resolved_normals = cast(
+            tuple[tuple[float, float, float], ...],
+            tuple(tuple(float(value) for value in normal) for normal in normals),
+        )
+        if len(resolved_normals) != len(points) or any(
+            len(normal) != 3 for normal in resolved_normals
+        ):
+            raise ValueError("MESH_NORMALS_MUST_MATCH_NODES")
+        if any(not isfinite(value) for normal in resolved_normals for value in normal):
+            raise ValueError("MESH_NORMALS_MUST_BE_FINITE")
+    return InterfaceMesh(
+        name,
+        points,
+        resolved,
+        _mesh_digest(name, points, resolved, resolved_normals),
+        resolved_normals,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,11 +148,18 @@ class TransferReceipt:
     target_mesh: str
     quantity: str
     method: str
-    values: tuple[float, ...]
+    values: tuple[Any, ...]
     relative_conservation_error: float
     tolerance: float
     accepted: bool
     detail: str
+    resultant_force: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    resultant_moment: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    virtual_work_error: float = 0.0
+    timestamp: float | None = None
+    interpolation: str = ""
+    extrapolation: str = ""
+    anti_alias: str = ""
 
 
 def _interpolate(
@@ -144,10 +210,14 @@ def transfer_field(
     if tolerance <= 0 or not isfinite(tolerance):
         raise ValueError("INVALID_TRANSFER_TOLERANCE")
     if resolved_method == "consistent":
-        mapped = tuple(_interpolate(source, values, position) for position in target.coordinates)
+        mapped = tuple(
+            _interpolate(source, values, position) for position in target.coordinates
+        )
         # Consistency residual: mapping the field back must recover the source
         # at source nodes within interpolation error.
-        back = tuple(_interpolate(target, mapped, position) for position in source.coordinates)
+        back = tuple(
+            _interpolate(target, mapped, position) for position in source.coordinates
+        )
         scale = max(1e-300, max(abs(value) for value in values))
         error = max(abs(a - b) for a, b in zip(values, back, strict=True)) / scale
     else:
@@ -180,7 +250,8 @@ def transfer_field(
                 if overlap > 0:
                     mapped_accum[target_index] += values[index] * overlap
         mapped = tuple(
-            accum / width for accum, width in zip(mapped_accum, target_widths, strict=True)
+            accum / width
+            for accum, width in zip(mapped_accum, target_widths, strict=True)
         )
         source_widths = [
             hi - lo for lo, hi in zip(source_edges, source_edges[1:], strict=False)
@@ -197,9 +268,112 @@ def transfer_field(
         raise ValueError("TRANSFER_PRODUCED_NONFINITE_VALUES")
     accepted = error <= tolerance
     return TransferReceipt(
-        source.name, target.name, quantity, resolved_method, mapped, error, tolerance, accepted,
+        source.name,
+        target.name,
+        quantity,
+        resolved_method,
+        mapped,
+        error,
+        tolerance,
+        accepted,
         "conservation within tolerance" if accepted else "transfer exceeded tolerance",
     )
+
+
+def _vector(value: Sequence[float]) -> tuple[float, float, float]:
+    result = tuple(float(item) for item in value)
+    if len(result) != 3 or any(not isfinite(item) for item in result):
+        raise ValueError("DISTRIBUTED_VALUE_MUST_BE_FINITE_3D")
+    return result  # type: ignore[return-value]
+
+
+def transfer_distributed_load(
+    source: InterfaceMesh,
+    source_values: Sequence[Sequence[float]],
+    target: InterfaceMesh,
+    *,
+    quantity: str = "traction",
+    tolerance: float = 1e-6,
+) -> TransferReceipt:
+    """Map nodal tractions on 3-D interfaces while preserving force and moment."""
+    if (
+        quantity not in {"traction", "force"}
+        or not source.normals
+        or not target.normals
+    ):
+        raise ValueError("DISTRIBUTED_LOAD_REQUIRES_3D_MESHES")
+    if len(source_values) != len(source.coordinates):
+        raise ValueError("FIELD_VALUES_MUST_MATCH_SOURCE_NODES")
+    vectors = tuple(_vector(value) for value in source_values)
+    import numpy as np
+
+    source_points = np.asarray(source.coordinates, dtype=float)
+    target_points = np.asarray(target.coordinates, dtype=float)
+    raw = []
+    for point in target_points:
+        distances = np.linalg.norm(source_points - point, axis=1)
+        weights = 1.0 / np.maximum(distances, 1e-12) ** 2
+        weights /= weights.sum()
+        raw.append(np.sum(np.asarray(vectors) * weights[:, None], axis=0))
+    raw_values = np.asarray(raw, dtype=float)
+
+    def totals(points: Any, values: Any, areas: tuple[float, ...]) -> tuple[Any, Any]:
+        force = np.sum(values * np.asarray(areas)[:, None], axis=0)
+        moment = np.sum(np.cross(points, values * np.asarray(areas)[:, None]), axis=0)
+        return force, moment
+
+    wanted_force, wanted_moment = totals(
+        source_points, np.asarray(vectors), source.areas
+    )
+    actual_force, actual_moment = totals(target_points, raw_values, target.areas)
+    # Solve one correction per Cartesian component. The constrained least-squares
+    # correction is minimal and is exact whenever the target geometry can carry
+    # the requested resultant and moment.
+    corrected = raw_values.copy()
+    for component in range(3):
+        constraint = np.zeros((4, len(target_points)))
+        for index, (point, area) in enumerate(
+            zip(target_points, target.areas, strict=True)
+        ):
+            constraint[0, index] = area
+            basis = np.zeros(3)
+            basis[component] = 1.0
+            constraint[1:, index] = area * np.cross(point, basis)
+        desired = np.r_[
+            wanted_force[component] - actual_force[component],
+            wanted_moment - actual_moment,
+        ]
+        correction, *_ = np.linalg.lstsq(constraint, desired, rcond=None)
+        corrected[:, component] += correction
+    final_force, final_moment = totals(target_points, corrected, target.areas)
+    scale = max(
+        1e-300,
+        float(np.linalg.norm(wanted_force)) + float(np.linalg.norm(wanted_moment)),
+    )
+    error = (
+        float(
+            np.linalg.norm(
+                np.r_[final_force - wanted_force, final_moment - wanted_moment]
+            )
+        )
+        / scale
+    )
+    return TransferReceipt(
+        source.name,
+        target.name,
+        quantity,
+        "conservative",
+        tuple(tuple(float(x) for x in row) for row in corrected),
+        error,
+        tolerance,
+        error <= tolerance,
+        "distributed resultant and moment preserved",
+        cast(tuple[float, float, float], tuple(float(x) for x in wanted_force)),
+        cast(tuple[float, float, float], tuple(float(x) for x in wanted_moment)),
+    )
+
+
+transfer_traction = transfer_distributed_load
 
 
 @dataclass(frozen=True, slots=True)
@@ -244,7 +418,11 @@ class FieldCoupler:
         acceleration: str = "fixed",  # "fixed" | "aitken" | "iqn"
         engine: str = "analytic-transfer",  # "analytic-transfer" | "precice-native"
     ) -> None:
-        if not side_a.name.strip() or not side_b.name.strip() or side_a.name == side_b.name:
+        if (
+            not side_a.name.strip()
+            or not side_b.name.strip()
+            or side_a.name == side_b.name
+        ):
             raise ValueError("FIELD_SIDES_MUST_BE_DISTINCT")
         for quantity in (quantity_a_to_b, quantity_b_to_a):
             if quantity not in SUPPORTED_QUANTITIES:
@@ -276,9 +454,14 @@ class FieldCoupler:
     ) -> CouplingWindow:
         if self._engine == "precice-native":
             try:
-                from precice import Interface  # type: ignore[attr-defined] # noqa: F401
+                from precice import (
+                    Interface,  # type: ignore[import-untyped,attr-defined] # noqa: F401
+                )
             except ImportError as exc:
-                from participants.errors import NativeErrorCode, ParticipantError
+                from participants.errors import (  # type: ignore[import-untyped]
+                    NativeErrorCode,
+                    ParticipantError,
+                )
 
                 raise ParticipantError(
                     NativeErrorCode.CAPABILITY_UNAVAILABLE,
@@ -312,14 +495,20 @@ class FieldCoupler:
             iteration = step
             out_a = self._checked_output(self._side_a, state_a)
             to_b = transfer_field(
-                self._mesh_a, out_a, self._mesh_b, self._quantity_a_to_b,
+                self._mesh_a,
+                out_a,
+                self._mesh_b,
+                self._quantity_a_to_b,
                 tolerance=max(self._tolerance * 1e-3, 1e-12),
             )
             conservation.append(to_b.relative_conservation_error)
             state_b = tuple(to_b.values)
             out_b = self._checked_output(self._side_b, to_b.values)
             to_a = transfer_field(
-                self._mesh_b, out_b, self._mesh_a, self._quantity_b_to_a,
+                self._mesh_b,
+                out_b,
+                self._mesh_a,
+                self._quantity_b_to_a,
                 tolerance=max(self._tolerance * 1e-3, 1e-12),
             )
             conservation.append(to_a.relative_conservation_error)
@@ -350,8 +539,13 @@ class FieldCoupler:
                 previous_residual = best_residual
                 continue
             step_values = self._accelerate(
-                list(state_a), tildes, residual_vector,
-                delta_r, delta_x, previous_tilde, previous_residual_vector,
+                list(state_a),
+                tildes,
+                residual_vector,
+                delta_r,
+                delta_x,
+                previous_tilde,
+                previous_residual_vector,
                 relaxation,
             )
             previous_tilde = list(tildes)
@@ -365,8 +559,16 @@ class FieldCoupler:
         else:
             detail = f"interface residual {final_residual:.3g} above tolerance"
         return CouplingWindow(
-            iteration, final_residual, accepted, checkpoints, rollbacks,
-            tuple(trace), tuple(conservation), self._engine, self._acceleration, detail,
+            iteration,
+            final_residual,
+            accepted,
+            checkpoints,
+            rollbacks,
+            tuple(trace),
+            tuple(conservation),
+            self._engine,
+            self._acceleration,
+            detail,
         )
 
     def _checked_output(
@@ -401,7 +603,9 @@ class FieldCoupler:
             previous = previous_residual_vector
             numerator = sum(
                 (a - b) * c
-                for a, b, c in zip(previous, residual_vector, residual_vector, strict=True)
+                for a, b, c in zip(
+                    previous, residual_vector, residual_vector, strict=True
+                )
             )
             denominator = sum(
                 (a - b) ** 2 for a, b in zip(previous, residual_vector, strict=True)
@@ -417,7 +621,10 @@ class FieldCoupler:
         # Simplified IQN-ILS: least-squares over the stored residual differences.
         assert previous_tilde is not None and previous_residual_vector is not None
         delta_r.append(
-            [a - b for a, b in zip(residual_vector, previous_residual_vector, strict=True)]
+            [
+                a - b
+                for a, b in zip(residual_vector, previous_residual_vector, strict=True)
+            ]
         )
         delta_x.append([a - b for a, b in zip(tildes, previous_tilde, strict=True)])
         width = min(len(delta_r), 5)
@@ -427,7 +634,9 @@ class FieldCoupler:
             import numpy as np
 
             matrix = np.column_stack(recent_r)
-            coefficients, *_ = np.linalg.lstsq(matrix, np.asarray(residual_vector), rcond=None)
+            coefficients, *_ = np.linalg.lstsq(
+                matrix, np.asarray(residual_vector), rcond=None
+            )
             correction = np.asarray(tildes) - (
                 np.column_stack(recent_x) @ np.asarray(coefficients)
             )
@@ -460,6 +669,7 @@ def transfer_wrench(
 ) -> WrenchTransferReceipt:
     """Rotate a force/moment pair and shift moment to the target origin."""
     import numpy as np
+
     if transform.source_frame != contract.source.frame:
         raise ValueError("FRAME_SOURCE_MISMATCH")
     if transform.target_frame != contract.target.frame:
@@ -479,9 +689,14 @@ def transfer_wrench(
         json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     return WrenchTransferReceipt(
-        tuple(f.tolist()), tuple(m.tolist()), float(np.dot(f, translation)), True,
-        contract.source_system, contract.target_system,
-        contract.target.port_id, operator_digest,
+        tuple(f.tolist()),
+        tuple(m.tolist()),
+        float(np.dot(f, translation)),
+        True,
+        contract.source_system,
+        contract.target_system,
+        contract.target.port_id,
+        operator_digest,
     )
 
 
@@ -491,27 +706,177 @@ class ClosureReceipt:
     residual: float
 
 
-def power_closure(contract: Any, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
+def power_closure(
+    contract: Any,
+    input_w: float,
+    output_w: float,
+    *,
+    loss_w: float = 0.0,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:  # noqa: E501
     if not isfinite(loss_w) or loss_w < 0.0:
         raise ValueError("POWER_LOSS_INVALID")
     residual = float(input_w - output_w - loss_w)
     return ClosureReceipt(abs(residual) <= tolerance, residual)
 
 
-def electrical_closure(contract: Any, voltage_in: float, current_in: float, voltage_out: float, current_out: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
-    return power_closure(contract, voltage_in * current_in, voltage_out * current_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
+def electrical_closure(
+    contract: Any,
+    voltage_in: float,
+    current_in: float,
+    voltage_out: float,
+    current_out: float,
+    *,
+    loss_w: float = 0.0,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:  # noqa: E501
+    return power_closure(
+        contract,
+        voltage_in * current_in,
+        voltage_out * current_out,
+        loss_w=loss_w,
+        tolerance=tolerance,
+    )  # noqa: E501
 
 
-def shaft_closure(contract: Any, speed_in: float, torque_in: float, speed_out: float, torque_out: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
-    return power_closure(contract, speed_in * torque_in, speed_out * torque_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
+def shaft_closure(
+    contract: Any,
+    speed_in: float,
+    torque_in: float,
+    speed_out: float,
+    torque_out: float,
+    *,
+    loss_w: float = 0.0,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:  # noqa: E501
+    return power_closure(
+        contract,
+        speed_in * torque_in,
+        speed_out * torque_out,
+        loss_w=loss_w,
+        tolerance=tolerance,
+    )  # noqa: E501
 
 
-def virtual_work_receipt(forces: Sequence[float], displacements: Sequence[float], loads: Sequence[float], load_displacements: Sequence[float], *, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
+def virtual_work_receipt(
+    forces: Sequence[float],
+    displacements: Sequence[float],
+    loads: Sequence[float],
+    load_displacements: Sequence[float],
+    *,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:  # noqa: E501
     """Check virtual-work equivalence between two generalized force/displacement sets."""
-    lhs = float(sum(f * d for f, d in zip(forces, displacements, strict=True)))
-    rhs = float(sum(f * d for f, d in zip(loads, load_displacements, strict=True)))
+
+    def product(first: Any, second: Any) -> float:
+        if isinstance(first, (tuple, list)):
+            return float(sum(a * b for a, b in zip(first, second, strict=True)))
+        return float(first * second)
+
+    lhs = sum(product(f, d) for f, d in zip(forces, displacements, strict=True))
+    rhs = sum(product(f, d) for f, d in zip(loads, load_displacements, strict=True))
     residual = lhs - rhs
     return ClosureReceipt(abs(residual) <= tolerance, residual)
+
+
+def thermal_flux_closure(
+    input_flux: Sequence[float],
+    output_flux: Sequence[float],
+    *,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:
+    """Close an integrated thermal flux exchange (sign convention is explicit by sum)."""
+    residual = float(sum(input_flux) - sum(output_flux))
+    return ClosureReceipt(abs(residual) <= tolerance, residual)
+
+
+def fluid_flux_closure(
+    input_flux: Sequence[float],
+    output_flux: Sequence[float],
+    *,
+    tolerance: float = 1e-9,
+) -> ClosureReceipt:
+    """Close an integrated mass/volume flux exchange."""
+    residual = float(sum(input_flux) - sum(output_flux))
+    return ClosureReceipt(abs(residual) <= tolerance, residual)
+
+
+@dataclass(frozen=True, slots=True)
+class TemporalTransferReceipt:
+    values: tuple[float, ...]
+    accepted: bool
+    residual: float
+    interpolation: str
+    extrapolation: str
+    anti_alias: str
+    integrated_conservation_error: float = 0.0
+
+
+def resample_temporal(
+    timestamps: Sequence[float],
+    values: Sequence[float],
+    target_timestamps: Sequence[float],
+    *,
+    interpolation: str = "linear",
+    extrapolation: str = "refuse",
+    anti_alias: str = "none",
+    tolerance: float = 1e-9,
+) -> TemporalTransferReceipt:
+    """Resample a time history with a receipt declaring all signal-processing policy."""
+    if (
+        interpolation != "linear"
+        or extrapolation != "refuse"
+        or anti_alias not in {"none", "lowpass"}
+    ):
+        raise ValueError("TEMPORAL_POLICY_UNSUPPORTED")
+    times, samples, targets = (
+        tuple(float(x) for x in timestamps),
+        tuple(float(x) for x in values),
+        tuple(float(x) for x in target_timestamps),
+    )
+    if (
+        len(times) != len(samples)
+        or len(times) < 2
+        or any(b <= a for a, b in zip(times, times[1:], strict=False))
+    ):
+        raise ValueError("TEMPORAL_SAMPLES_INVALID")
+    if any(target < times[0] or target > times[-1] for target in targets):
+        raise ValueError("TEMPORAL_EXTRAPOLATION_REFUSED")
+    mapped = tuple(
+        _interpolate(
+            InterfaceMesh("time", times, (1.0,) * len(times), ""), samples, target
+        )
+        for target in targets
+    )
+
+    def integral(axis: Sequence[float], ordinate: Sequence[float]) -> float:
+        return sum(
+            (b - a) * (left + right) / 2.0
+            for a, b, left, right in zip(
+                axis, axis[1:], ordinate, ordinate[1:], strict=False
+            )
+        )
+
+    source_on_targets = tuple(
+        _interpolate(
+            InterfaceMesh("time", times, (1.0,) * len(times), ""), samples, target
+        )
+        for target in targets
+    )
+    source_integral = integral(targets, source_on_targets) if len(targets) > 1 else 0.0
+    target_integral = integral(targets, mapped) if len(targets) > 1 else source_integral
+    integrated_error = abs(target_integral - source_integral) / max(
+        1e-300, abs(source_integral)
+    )
+    return TemporalTransferReceipt(
+        mapped,
+        integrated_error <= tolerance,
+        integrated_error,
+        interpolation,
+        extrapolation,
+        anti_alias,
+        integrated_error,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -540,12 +905,85 @@ def transfer_harmonic(
     angle_rad: float = 0.0,
 ) -> HarmonicTransferResult:
     from cmath import exp
+
     if basis.frame != contract.source.frame:
         raise ValueError("FRAME_MISMATCH")
-    phase = exp(1j * (basis.order * angle_rad - 2.0 * 3.141592653589793 * basis.frequency_hz * delay_s))  # noqa: E501
+    phase = exp(
+        1j
+        * (
+            basis.order * angle_rad
+            - 2.0 * 3.141592653589793 * basis.frequency_hz * delay_s
+        )
+    )  # noqa: E501
     moved = replace(basis, frame=contract.target.frame)
     return HarmonicTransferResult(
         tuple(complex(value) * phase for value in values),
         moved,
         ClosureReceipt(True, 0.0),
+    )
+
+
+def transfer_harmonic_field(
+    values: Sequence[complex],
+    basis: Any,
+    *,
+    angle_rad: float = 0.0,
+    delay_s: float = 0.0,
+) -> HarmonicTransferResult:
+    """Apply phase transport to a complex harmonic field without a port contract."""
+    from cmath import exp
+
+    phase = exp(
+        1j * (basis.order * angle_rad - 2.0 * pi * basis.frequency_hz * delay_s)
+    )
+    return HarmonicTransferResult(
+        tuple(complex(value) * phase for value in values),
+        basis,
+        ClosureReceipt(True, 0.0),
+    )
+
+
+def harmonic_to_time(
+    values: Sequence[complex], basis: Any, timestamps: Sequence[float]
+) -> tuple[float, ...]:
+    """Synthesize a real time trace using the basis' declared phase convention."""
+    return tuple(
+        float(
+            sum(
+                (
+                    value
+                    * complex(
+                        __import__("cmath").exp(1j * 2.0 * pi * basis.frequency_hz * t)
+                    )
+                ).real
+                for value in values
+            )
+        )
+        for t in timestamps
+    )
+
+
+def time_to_harmonic(
+    values: Sequence[float], timestamps: Sequence[float], basis: Any
+) -> HarmonicTransferResult:
+    """Fit one complex coefficient to a time trace and return a quality receipt."""
+    import numpy as np
+
+    samples, times = (
+        np.asarray(values, dtype=float),
+        np.asarray(timestamps, dtype=float),
+    )
+    if len(samples) != len(times) or len(samples) < 2:
+        raise ValueError("HARMONIC_TIME_SAMPLES_INVALID")
+    omega_t = 2.0 * pi * basis.frequency_hz * times
+    design = np.column_stack((np.cos(omega_t), -np.sin(omega_t)))
+    coefficients, *_ = np.linalg.lstsq(design, samples, rcond=None)
+    fitted = design @ coefficients
+    residual = float(
+        np.linalg.norm(fitted - samples) / max(1e-300, float(np.linalg.norm(samples)))
+    )
+    return HarmonicTransferResult(
+        (complex(coefficients[0], coefficients[1]),),
+        basis,
+        ClosureReceipt(residual <= 1e-9, residual),
     )

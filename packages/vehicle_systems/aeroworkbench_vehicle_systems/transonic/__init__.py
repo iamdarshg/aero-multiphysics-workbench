@@ -11,6 +11,7 @@ Public API (other workstreams import these exact paths)::
 
     from aeroworkbench_vehicle_systems.transonic import (
         FlowRegime, TransonicFidelity, Validity, ResultEnvelope,
+        ShockFeature, ShockFeatureResult,
         classify_regime, apply_correction, assess_drag_rise,
         sears_haack_wave_drag, assess_area_rule, assess_supersonic_section,
         normal_shock_ratios, required_sweep_deg, escalation_for_mach,
@@ -25,10 +26,13 @@ from .contracts import (
     TRANSONIC_UNITS,
     FlowRegime,
     ResultEnvelope,
+    ShockFeature,
+    ShockFeatureResult,
     SoftwareIdentity,
     TransonicFidelity,
     Validity,
     analytical_envelope,
+    analytical_shock_feature,
     content_digest,
     native_envelope,
 )
@@ -163,6 +167,8 @@ __all__ = [
     "NativeCompressibleSolution",
     "PromotionRequirement",
     "ResultEnvelope",
+    "ShockFeature",
+    "ShockFeatureResult",
     "SearsHaackResult",
     "SoftwareIdentity",
     "SupersonicAssessment",
@@ -176,6 +182,7 @@ __all__ = [
     "Validity",
     "ackeret_lift",
     "analytical_envelope",
+    "analytical_shock_feature",
     "apply_correction",
     "area_rule_assessment",
     "assess_area_rule",

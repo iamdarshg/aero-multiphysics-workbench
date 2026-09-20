@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from math import isfinite
 from typing import Any
 
 from aeroworkbench_core.result_contract import TASK1_ANALYTICAL_RESULT_CONTRACT
 from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 from aeroworkbench_optimization.design_space import content_digest
+
+from .errors import TransonicContractError
 
 __all__ = [
     "SOFTWARE_IDENTITY",
@@ -16,6 +19,8 @@ __all__ = [
     "TRANSONIC_SCHEMA_VERSION",
     "TRANSONIC_UNITS",
     "FlowRegime",
+    "ShockFeature",
+    "ShockFeatureResult",
     "ResultEnvelope",
     "SoftwareIdentity",
     "TransonicFidelity",
@@ -23,6 +28,7 @@ __all__ = [
     "analytical_envelope",
     "content_digest",
     "native_envelope",
+    "analytical_shock_feature",
 ]
 
 TRANSONIC_SCHEMA_VERSION = "vs08-transonic-v1"
@@ -71,6 +77,107 @@ class FlowRegime(StrEnum):
     TRANSONIC = "transonic"
     SUPERSONIC = "supersonic"
     HYPERSONIC = "hypersonic"
+
+
+@dataclass(frozen=True, slots=True)
+class ShockFeature:
+    """A shock observation; location is absent unless a solver observed it."""
+
+    location: float | None
+    reference_surface: str | None
+    local_mach: float | None
+    pressure_ratio: float | None
+    strength_indicator: float | None
+    confidence: float
+    fidelity: TransonicFidelity
+    source: ResultSource
+    provenance: Provenance
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("location", self.location),
+            ("local_mach", self.local_mach),
+            ("pressure_ratio", self.pressure_ratio),
+            ("strength_indicator", self.strength_indicator),
+            ("confidence", self.confidence),
+        ):
+            if value is not None and not isinstance(value, (int, float)):
+                raise TransonicContractError(f"SHOCK_{name.upper()}_MUST_BE_NUMERIC")
+            if value is not None and not isfinite(value):
+                raise TransonicContractError(f"SHOCK_{name.upper()}_NOT_FINITE")
+        if not 0.0 <= self.confidence <= 1.0:
+            raise TransonicContractError("SHOCK_CONFIDENCE_OUT_OF_RANGE")
+        if self.location is not None and not self.reference_surface:
+            raise TransonicContractError("SHOCK_REFERENCE_SURFACE_REQUIRED_WITH_LOCATION")
+
+    @property
+    def location_status(self) -> str:
+        return "observed" if self.location is not None else "unavailable"
+
+    @classmethod
+    def native(
+        cls, *, location: float, reference_surface: str, local_mach: float,
+        pressure_ratio: float, strength_indicator: float, confidence: float,
+        inputs: dict[str, Any], solver_name: str, solver_version: str, run_id: str,
+    ) -> ShockFeature:
+        provenance = Provenance.from_inputs(
+            source=ResultSource.NATIVE_SOLVER,
+            model="vehicle-systems.transonic.shock-feature",
+            model_version=solver_version,
+            fidelity=FidelityLevel.TRANSIENT,
+            inputs=dict(inputs),
+            solver_name=solver_name,
+            solver_version=solver_version,
+            run_id=run_id,
+        )
+        return cls(location, reference_surface, local_mach, pressure_ratio,
+                   strength_indicator, confidence, TransonicFidelity.NATIVE,
+                   ResultSource.NATIVE_SOLVER, provenance)
+
+    def canonical(self) -> dict[str, Any]:
+        return {
+            "location": self.location,
+            "locationStatus": self.location_status,
+            "referenceSurface": self.reference_surface,
+            "localMach": self.local_mach,
+            "pressureRatio": self.pressure_ratio,
+            "strengthIndicator": self.strength_indicator,
+            "confidence": self.confidence,
+            "fidelity": self.fidelity.value,
+            "source": self.source.value,
+            "provenance": dict(self.provenance.model_dump(mode="json")),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class ShockFeatureResult:
+    feature: ShockFeature
+    validity: Validity
+
+    def canonical(self) -> dict[str, Any]:
+        return {"feature": self.feature.canonical(), "validity": self.validity.canonical()}
+
+
+def analytical_shock_feature(mach: float) -> ShockFeatureResult:
+    """Screen a normal shock analytically without inventing its surface location."""
+    if not isfinite(mach) or mach <= 1.0:
+        raise TransonicContractError("ANALYTICAL_SHOCK_REQUIRES_SUPERSONIC_MACH")
+    gamma = 1.4
+    pressure_ratio = 1.0 + 2.0 * gamma / (gamma + 1.0) * (mach * mach - 1.0)
+    inputs = {"mach": float(mach), "gamma": gamma, "location": None}
+    provenance = Provenance.from_inputs(
+        source=ResultSource.ANALYTICAL,
+        model="vehicle-systems.transonic.normal-shock-screening",
+        inputs=inputs,
+        fidelity=FidelityLevel.ANALYTICAL,
+        assumptions=("normal shock relations; shock surface location unavailable",),
+    )
+    feature = ShockFeature(
+        None, None, float(mach), pressure_ratio, pressure_ratio - 1.0, 0.5,
+        TransonicFidelity.ANALYTICAL, ResultSource.ANALYTICAL, provenance,
+    )
+    return ShockFeatureResult(feature, Validity(True, {"location_available": False},
+                                                "analytical screening cannot locate shock"))
 
 
 @dataclass(frozen=True, slots=True)

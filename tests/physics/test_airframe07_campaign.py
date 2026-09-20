@@ -15,6 +15,7 @@ from aeroworkbench_airframe.campaign import (
 from aeroworkbench_airframe.synthesis import compile_requirements_payload, generate_fixed_wing_seeds
 from aeroworkbench_optimization import (
     CampaignBudget,
+    Candidate,
     EvaluationResult,
     FidelityImplementation,
     GenerationRequest,
@@ -125,3 +126,90 @@ def test_airframe07_resume_rejects_policy_or_evaluator_drift() -> None:
     )
     with pytest.raises(ValueError, match="EVALUATOR_IDENTITY_MISMATCH"):
         incompatible.resume(receipt)
+
+
+def test_airframe07_uses_generic_generation_and_declared_fidelity_ladder() -> None:
+    calls: list[tuple[str, str]] = []
+
+    def evaluator(candidate: Candidate, fidelity: str) -> EvaluationResult:
+        calls.append((candidate.candidate_hash, fidelity))
+        return EvaluationResult(
+            outputs={"score": float(candidate.index)},
+            flags=PhysicsFlags(converged=True, closure_passed=True, validity_ok=True),
+            fidelity=fidelity,
+            signals={"disagreement": 1.0} if fidelity == "analytical" else {},
+        )
+
+    spec = build_airframe_campaign_spec(
+        "airframe07-generic",
+        _seed(),
+        generation=GenerationRequest("lhs", count=4, budget=4, seed=19),
+        objectives=(StudyObjective("score", "minimize"),),
+        fidelity_ladder=(
+            FidelityImplementation("analytical", 0, 0.0),
+            FidelityImplementation("native", 1, 1.0),
+        ),
+        budget=CampaignBudget(max_evaluations=8),
+    )
+    receipt = AirframeCampaignSession(
+        spec,
+        evaluator,
+        evaluator_identity="generic-v1",
+        mutation_policy=AirframeMutationPolicy.default(),
+    ).run()
+
+    assert len({candidate_hash for candidate_hash, _ in calls}) == 4
+    assert {fidelity for _, fidelity in calls} == {"analytical", "native"}
+    assert receipt.generic_record is not None
+    assert receipt.generic_record.pareto
+
+
+def test_airframe07_invalid_geometry_is_rejected_before_native_evaluation() -> None:
+    calls: list[str] = []
+    parents: list[object | None] = []
+
+    class Receipt:
+        def __init__(self, valid: bool) -> None:
+            self.validity_state = "valid" if valid else "invalid"
+            self.shape_hash = "shape" if valid else ""
+            self.invalid_reasons = () if valid else ("SHAPE_INVALID",)
+
+    def regenerate(candidate: Candidate, parent: object | None) -> object:
+        parents.append(parent)
+        return Receipt(candidate.index != 1)
+
+    def evaluator(candidate: Candidate, fidelity: str) -> EvaluationResult:
+        calls.append(fidelity)
+        return EvaluationResult(
+            outputs={"score": 1.0},
+            flags=PhysicsFlags(converged=True, closure_passed=True, validity_ok=True),
+            fidelity=fidelity,
+        )
+
+    spec = build_airframe_campaign_spec(
+        "airframe07-geometry",
+        _seed(),
+        generation=GenerationRequest("lhs", count=3, budget=3, seed=3),
+        objectives=(StudyObjective("score", "minimize"),),
+        fidelity_ladder=(
+            FidelityImplementation("analytical", 0, 0.0),
+            FidelityImplementation("native", 1, 1.0),
+        ),
+        budget=CampaignBudget(max_evaluations=6),
+    )
+    receipt = AirframeCampaignSession(
+        spec,
+        evaluator,
+        evaluator_identity="geometry-v1",
+        mutation_policy=AirframeMutationPolicy.default(),
+        geometry_regenerator=regenerate,
+    ).run()
+
+    assert calls.count("native") < 2
+    assert len(parents) == 3
+    assert parents[0] is None
+    assert all(parent is not None for parent in parents[1:])
+    assert any(
+        "GEOMETRY_INVALID" in getattr(result, "detail", "")
+        for result in receipt.record.results
+    )

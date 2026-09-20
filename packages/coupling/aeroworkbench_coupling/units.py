@@ -18,6 +18,7 @@ _UNIT_TABLE: dict[str, tuple[str, float, float]] = {
     "Hz": ("frequency", 1.0, 0.0),
     "rpm": ("frequency", 1.0 / 60.0, 0.0),
     "Pa": ("pressure", 1.0, 0.0),
+    "N/m2": ("traction", 1.0, 0.0),
     "N": ("force", 1.0, 0.0),
     "N/m": ("stiffness", 1.0, 0.0),
     "N.m": ("torque", 1.0, 0.0),
@@ -25,11 +26,15 @@ _UNIT_TABLE: dict[str, tuple[str, float, float]] = {
     "K": ("temperature", 1.0, 0.0),
     "degC": ("temperature", 1.0, 273.15),
     "W": ("power", 1.0, 0.0),
+    "W/m2": ("thermal_flux", 1.0, 0.0),
     "W/m.K": ("conductivity", 1.0, 0.0),
     "V": ("voltage", 1.0, 0.0),
     "A": ("current", 1.0, 0.0),
+    "A/m2": ("electrical_flux", 1.0, 0.0),
     "A.h": ("charge", 3600.0, 0.0),
     "kg/m3": ("density", 1.0, 0.0),
+    "kg/s": ("mass_flux", 1.0, 0.0),
+    "m3/s": ("volume_flux", 1.0, 0.0),
 }
 
 

@@ -70,6 +70,9 @@ class ControlName(StrEnum):
     CLIMB_RATE = "climb-rate"
     THROTTLE = "throttle"
     POWER = "power"
+    RPM = "rpm"
+    PROPULSOR_PITCH = "propulsor-pitch"
+    ROTOR_PITCH = "rotor-pitch"
     CONFIGURATION = "configuration"
 
 
@@ -168,6 +171,9 @@ class SegmentSpec:
     jettison_kg: float = 0.0
     reserve: ReserveSpec | None = None
     label: str = ""
+    rpm: float | None = None
+    propulsor_pitch_deg: float | None = None
+    rotor_pitch_deg: float | None = None
 
     def __post_init__(self) -> None:
         if not self.segment_id.strip():
@@ -182,6 +188,14 @@ class SegmentSpec:
         for name, value in (("throttle", self.throttle), ("power_fraction", self.power_fraction)):
             if not isfinite(value) or not 0.0 <= value <= 1.0:
                 raise MissionContractError(f"SEGMENT_CONTROL_RANGE:{self.segment_id}:{name}")
+        if self.rpm is not None and (not isfinite(self.rpm) or self.rpm <= 0.0):
+            raise MissionContractError(f"SEGMENT_CONTROL_RANGE:{self.segment_id}:rpm")
+        for name, control_value in (
+            ("propulsor_pitch_deg", self.propulsor_pitch_deg),
+            ("rotor_pitch_deg", self.rotor_pitch_deg),
+        ):
+            if control_value is not None and not isfinite(control_value):
+                raise MissionContractError(f"SEGMENT_CONTROL_INVALID:{self.segment_id}:{name}")
         if self.configuration < 0:
             raise MissionContractError(f"SEGMENT_CONFIGURATION_INVALID:{self.segment_id}")
         if not isfinite(self.jettison_kg) or self.jettison_kg < 0.0:
@@ -220,6 +234,20 @@ class SegmentSpec:
             return self.throttle
         if name is ControlName.POWER:
             return self.power_fraction
+        if name is ControlName.RPM:
+            if self.rpm is None:
+                raise MissionContractError(f"SEGMENT_CONTROL_UNSET:{self.segment_id}:rpm")
+            return self.rpm
+        if name is ControlName.PROPULSOR_PITCH:
+            if self.propulsor_pitch_deg is None:
+                raise MissionContractError(
+                    f"SEGMENT_CONTROL_UNSET:{self.segment_id}:propulsor-pitch"
+                )
+            return self.propulsor_pitch_deg
+        if name is ControlName.ROTOR_PITCH:
+            if self.rotor_pitch_deg is None:
+                raise MissionContractError(f"SEGMENT_CONTROL_UNSET:{self.segment_id}:rotor-pitch")
+            return self.rotor_pitch_deg
         return float(self.configuration)
 
     def with_control(self, name: ControlName, value: float) -> SegmentSpec:
@@ -233,6 +261,12 @@ class SegmentSpec:
             return replace(self, throttle=value)
         if name is ControlName.POWER:
             return replace(self, power_fraction=value)
+        if name is ControlName.RPM:
+            return replace(self, rpm=value)
+        if name is ControlName.PROPULSOR_PITCH:
+            return replace(self, propulsor_pitch_deg=value)
+        if name is ControlName.ROTOR_PITCH:
+            return replace(self, rotor_pitch_deg=value)
         return replace(self, configuration=int(round(value)))
 
     def canonical(self) -> dict[str, Any]:
@@ -254,6 +288,12 @@ class SegmentSpec:
             "jettisonKg": self.jettison_kg,
             "label": self.label,
         }
+        if self.rpm is not None:
+            payload["rpm"] = self.rpm
+        if self.propulsor_pitch_deg is not None:
+            payload["propulsorPitchDeg"] = self.propulsor_pitch_deg
+        if self.rotor_pitch_deg is not None:
+            payload["rotorPitchDeg"] = self.rotor_pitch_deg
         if self.reserve is not None:
             payload["reserve"] = self.reserve.canonical()
         return payload

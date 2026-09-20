@@ -201,12 +201,21 @@ def evaluate_static_stability(
     lateral: LateralDirectionalDerivatives,
     *,
     cg_mac_fraction: float | None = None,
+    high_speed_valid: bool | None = None,
+    high_speed_notes: tuple[str, ...] = (),
 ) -> StaticStabilityReport:
     """Evaluate longitudinal and lateral-directional static stability, fail closed."""
 
     lon_findings, lon_coverage, lon_stable = _longitudinal_findings(longitudinal)
     lat_findings, lat_coverage, lat_stable = _lateral_findings(lateral)
     findings = lon_findings + lat_findings
+    if high_speed_valid is False:
+        findings.append(
+            _coverage(
+                "high_speed_derivatives",
+                False,
+            )
+        )
     margin: Quantity | None = None
     neutral: Quantity | None = None
     if lon_coverage:
@@ -221,7 +230,7 @@ def evaluate_static_stability(
                     f"static margin {margin.value_si!r} chord; positive is stable",
                 )
             )
-    valid = lon_coverage and lat_coverage
+    valid = lon_coverage and lat_coverage and high_speed_valid is not False
     inputs = {
         "longitudinal": longitudinal.present(),
         "lateralDirectional": lateral.present(),
@@ -229,7 +238,7 @@ def evaluate_static_stability(
     }
     coverage_failures = tuple(
         finding.detail for finding in findings if finding.kind == COVERAGE and not finding.passed
-    )
+    ) + tuple(high_speed_notes)
     meta = result_meta(
         model=MODEL,
         inputs=inputs,
