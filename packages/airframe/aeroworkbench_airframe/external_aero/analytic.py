@@ -94,8 +94,8 @@ def drag_buildup(
 ) -> float:
     """Parasite drag coefficient from declared component build-up factors."""
 
-    friction = flat_plate_friction_coefficient(reference.reynolds_number)
-    friction *= compressibility_friction_factor(reference.mach_number)
+    friction = flat_plate_friction_coefficient(reference.resolved_reynolds_number)
+    friction *= compressibility_friction_factor(reference.resolved_mach_number)
     total = 0.0
     for component in components:
         total += (

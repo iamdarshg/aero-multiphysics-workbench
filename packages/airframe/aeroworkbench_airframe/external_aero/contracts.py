@@ -166,9 +166,12 @@ class AeroReference:
     mean_chord_m: float
     moment_reference_m: tuple[float, float, float]
     density_kg_m3: float
-    velocity_m_s: float
-    speed_of_sound_m_s: float
-    viscosity_pa_s: float
+    velocity_m_s: float | None = None
+    speed_m_s: float | None = None
+    speed_of_sound_m_s: float | None = None
+    viscosity_pa_s: float | None = None
+    mach_number: float | None = None
+    reynolds_number: float | None = None
     alpha_deg: float = 0.0
     beta_deg: float = 0.0
     angular_rates: tuple[float, float, float] = (0.0, 0.0, 0.0)
@@ -182,13 +185,33 @@ class AeroReference:
             ("SPAN", self.span_m),
             ("MEAN_CHORD", self.mean_chord_m),
             ("DENSITY", self.density_kg_m3),
-            ("SPEED_OF_SOUND", self.speed_of_sound_m_s),
-            ("VISCOSITY", self.viscosity_pa_s),
         ):
             if not isfinite(value) or value <= 0.0:
                 raise ExternalAeroValidationError(f"REFERENCE_{label}_NOT_POSITIVE")
-        if not isfinite(self.velocity_m_s) or self.velocity_m_s < 0.0:
+        velocity = self.velocity_m_s if self.velocity_m_s is not None else self.speed_m_s
+        if velocity is None or not isfinite(velocity) or velocity < 0.0:
             raise ExternalAeroValidationError("REFERENCE_VELOCITY_INVALID")
+        object.__setattr__(self, "velocity_m_s", float(velocity))
+        if self.speed_of_sound_m_s is not None and (
+            not isfinite(self.speed_of_sound_m_s) or self.speed_of_sound_m_s <= 0.0
+        ):
+            raise ExternalAeroValidationError("REFERENCE_SPEED_OF_SOUND_NOT_POSITIVE")
+        if self.viscosity_pa_s is not None and (
+            not isfinite(self.viscosity_pa_s) or self.viscosity_pa_s <= 0.0
+        ):
+            raise ExternalAeroValidationError("REFERENCE_VISCOSITY_NOT_POSITIVE")
+        if self.mach_number is not None and (
+            not isfinite(self.mach_number) or self.mach_number < 0.0
+        ):
+            raise ExternalAeroValidationError("REFERENCE_MACH_INVALID")
+        if self.reynolds_number is not None and (
+            not isfinite(self.reynolds_number) or self.reynolds_number < 0.0
+        ):
+            raise ExternalAeroValidationError("REFERENCE_REYNOLDS_INVALID")
+        if self.mach_number is None and self.speed_of_sound_m_s is None:
+            raise ExternalAeroValidationError("REFERENCE_MACH_UNRESOLVABLE")
+        if self.reynolds_number is None and self.viscosity_pa_s is None:
+            raise ExternalAeroValidationError("REFERENCE_REYNOLDS_UNRESOLVABLE")
         for label, value in (
             ("ALPHA", self.alpha_deg),
             ("BETA", self.beta_deg),
@@ -205,17 +228,28 @@ class AeroReference:
             raise ExternalAeroValidationError("REFERENCE_SOURCE_REQUIRED")
 
     @property
+    def resolved_velocity_m_s(self) -> float:
+        assert self.velocity_m_s is not None
+        return self.velocity_m_s
+
+    @property
     def dynamic_pressure_pa(self) -> float:
-        return 0.5 * self.density_kg_m3 * self.velocity_m_s**2
+        return 0.5 * self.density_kg_m3 * self.resolved_velocity_m_s**2
 
     @property
-    def mach_number(self) -> float:
-        return self.velocity_m_s / self.speed_of_sound_m_s
+    def resolved_mach_number(self) -> float:
+        if self.mach_number is not None:
+            return self.mach_number
+        assert self.speed_of_sound_m_s is not None
+        return self.resolved_velocity_m_s / self.speed_of_sound_m_s
 
     @property
-    def reynolds_number(self) -> float:
+    def resolved_reynolds_number(self) -> float:
+        if self.reynolds_number is not None:
+            return self.reynolds_number
+        assert self.viscosity_pa_s is not None
         return (
-            self.density_kg_m3 * self.velocity_m_s * self.mean_chord_m / self.viscosity_pa_s
+            self.density_kg_m3 * self.resolved_velocity_m_s * self.mean_chord_m / self.viscosity_pa_s  # noqa: E501
         )
 
     def with_state(
@@ -231,9 +265,11 @@ class AeroReference:
             mean_chord_m=self.mean_chord_m,
             moment_reference_m=self.moment_reference_m,
             density_kg_m3=self.density_kg_m3,
-            velocity_m_s=self.velocity_m_s,
+            velocity_m_s=self.resolved_velocity_m_s,
             speed_of_sound_m_s=self.speed_of_sound_m_s,
             viscosity_pa_s=self.viscosity_pa_s,
+            mach_number=self.mach_number,
+            reynolds_number=self.reynolds_number,
             alpha_deg=alpha_deg,
             beta_deg=beta_deg,
             angular_rates=angular_rates,
@@ -249,7 +285,7 @@ class AeroReference:
             "meanChordM": self.mean_chord_m,
             "momentReferenceM": list(self.moment_reference_m),
             "densityKgM3": self.density_kg_m3,
-            "velocityMS": self.velocity_m_s,
+            "velocityMS": self.resolved_velocity_m_s,
             "speedOfSoundMS": self.speed_of_sound_m_s,
             "viscosityPaS": self.viscosity_pa_s,
             "alphaDeg": self.alpha_deg,
@@ -257,8 +293,8 @@ class AeroReference:
             "angularRates": list(self.angular_rates),
             "altitudeM": self.altitude_m,
             "atmosphereModel": self.atmosphere_model,
-            "machNumber": self.mach_number,
-            "reynoldsNumber": self.reynolds_number,
+            "machNumber": self.resolved_mach_number,
+            "reynoldsNumber": self.resolved_reynolds_number,
             "dynamicPressurePa": self.dynamic_pressure_pa,
             "source": self.source,
         }
@@ -295,14 +331,14 @@ def evaluate_aero_validity(
     """Evaluate a reference against declared limits (never optimistic)."""
 
     checks = (
-        ("mach_in_range", limits.mach_min <= reference.mach_number <= limits.mach_max),
+        ("mach_in_range", limits.mach_min <= reference.resolved_mach_number <= limits.mach_max),
         (
             "reynolds_in_range",
-            limits.reynolds_min <= reference.reynolds_number <= limits.reynolds_max,
+            limits.reynolds_min <= reference.resolved_reynolds_number <= limits.reynolds_max,
         ),
         ("alpha_in_range", limits.alpha_min_deg <= reference.alpha_deg <= limits.alpha_max_deg),
         ("beta_in_range", limits.beta_min_deg <= reference.beta_deg <= limits.beta_max_deg),
-        ("velocity_at_least_sonic_margin", reference.mach_number < 1.0),
+        ("velocity_at_least_sonic_margin", reference.resolved_mach_number < 1.0),
     )
     failed = [name for name, ok in checks if not ok]
     passed = not failed

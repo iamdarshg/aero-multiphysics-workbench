@@ -51,6 +51,13 @@ from .profile import (
     AirfoilProfile,
     profile_digest,
 )
+from .refinement import (
+    FfdControl,
+    GeometryRefinementPlan,
+    RefinementReceipt,
+    estimate_body_volume_mm3,
+    refine_assembly,
+)
 from .robustness import (
     GeometryDiagnostic,
     TopologyChangeReceipt,
@@ -60,13 +67,6 @@ from .robustness import (
     check_control_surface,
     check_lifting_surface,
     topology_change_receipt,
-)
-from .refinement import (
-    FfdControl,
-    GeometryRefinementPlan,
-    RefinementReceipt,
-    estimate_body_volume_mm3,
-    refine_assembly,
 )
 from .seam import Point, SurfaceGrid, SurfaceSeam, seam_digest
 from .surface import (

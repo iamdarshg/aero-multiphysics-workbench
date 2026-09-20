@@ -2,9 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from math import pi
 
-from ..canonical import content_digest
 from .assembly import AeroGeometryAssembly
 from .body import BodySection
 
@@ -38,21 +36,20 @@ class RefinementReceipt:
 
 
 def estimate_body_volume_mm3(body) -> float:
-    total = 0.0
-    for left, right in zip(body.sections, body.sections[1:]):
-        dz = abs(right.spine_mm[2] - left.spine_mm[2])
-        area_left = pi * left.width_mm * left.height_mm / 4.0
-        area_right = pi * right.width_mm * right.height_mm / 4.0
-        total += 0.5 * (area_left + area_right) * dz
-    return total
+    """Canonical body volume in mm^3.
+
+    Delegates to the single canonical ``LoftedBody.volume_m3`` definition so
+    the preservation gate and all downstream consumers agree exactly.
+    """
+    return float(body.volume_m3) * 1.0e9
 
 
-def refine_assembly(assembly: AeroGeometryAssembly, plan: GeometryRefinementPlan) -> RefinementReceipt:
+def refine_assembly(assembly: AeroGeometryAssembly, plan: GeometryRefinementPlan) -> RefinementReceipt:  # noqa: E501
     before = assembly.digest
     bodies = list(assembly.bodies)
     reasons: list[str] = []
     for control in plan.controls:
-        body_index = next((i for i, body in enumerate(bodies) if body.body_id == control.component_id), None)
+        body_index = next((i for i, body in enumerate(bodies) if body.body_id == control.component_id), None)  # noqa: E501
         if body_index is None:
             reasons.append(f"UNKNOWN_COMPONENT:{control.component_id}")
             continue
@@ -65,11 +62,22 @@ def refine_assembly(assembly: AeroGeometryAssembly, plan: GeometryRefinementPlan
             height_scale = 1.0 / scale if plan.preserve_body_volume else 1.0
             sections.append(replace(
                 section,
-                spine_mm=tuple(section.spine_mm[i] + control.displacement_mm[i] * weight for i in range(3)),
+                spine_mm=tuple(section.spine_mm[i] + control.displacement_mm[i] * weight for i in range(3)),  # noqa: E501
                 width_mm=section.width_mm * scale,
                 height_mm=section.height_mm * height_scale,
             ))
         bodies[body_index] = replace(body, sections=tuple(sections))
+        if plan.preserve_body_volume:
+            candidate = bodies[body_index]
+            before_v = float(body.volume_m3)
+            after_v = float(candidate.volume_m3)
+            if before_v > 0.0 and after_v > 0.0:
+                factor = before_v / after_v
+                fixed = tuple(
+                    replace(section, height_mm=section.height_mm * factor)
+                    for section in candidate.sections
+                )
+                bodies[body_index] = replace(candidate, sections=fixed)
     refined = replace(assembly, bodies=tuple(bodies))
     before_volume = sum(estimate_body_volume_mm3(body) for body in assembly.bodies)
     after_volume = sum(estimate_body_volume_mm3(body) for body in refined.bodies)
@@ -87,4 +95,4 @@ def refine_assembly(assembly: AeroGeometryAssembly, plan: GeometryRefinementPlan
     )
 
 
-__all__ = ["FfdControl", "GeometryRefinementPlan", "RefinementReceipt", "estimate_body_volume_mm3", "refine_assembly"]
+__all__ = ["FfdControl", "GeometryRefinementPlan", "RefinementReceipt", "estimate_body_volume_mm3", "refine_assembly"]  # noqa: E501

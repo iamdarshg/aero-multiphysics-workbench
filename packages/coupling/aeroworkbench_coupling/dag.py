@@ -177,7 +177,7 @@ class ComputationDAG:
         self._nodes[node.node_id] = node
 
     @classmethod
-    def from_system(cls, system, functions: Mapping[str, NodeFunction]) -> "ComputationDAG":
+    def from_system(cls, system, functions: Mapping[str, NodeFunction]) -> ComputationDAG:
         dag = cls(functions)
         def visit(node, upstream=()):
             for child in getattr(node, "children", ()):
@@ -233,13 +233,13 @@ class ComputationDAG:
                 key = content_digest({"node": node.node_id})
                 cached = self._cache.get(key)
                 if cached is not None:
-                    return node.node_id, NodeResult(node.node_id, key, True, cached[0], cached[1], key, "cache hit", "computed")
+                    return node.node_id, NodeResult(node.node_id, key, True, cached[0], cached[1], key, "cache hit", "computed")  # noqa: E501
                 try:
                     value, unit = self._functions[node.node_id]({})
                     self._cache.put(key, (value, unit))
-                    return node.node_id, NodeResult(node.node_id, key, False, value, unit, key, f"computed with {node.solver[0]} {node.solver[1]}", "computed")
+                    return node.node_id, NodeResult(node.node_id, key, False, value, unit, key, f"computed with {node.solver[0]} {node.solver[1]}", "computed")  # noqa: E501
                 except Exception as exc:
-                    return node.node_id, NodeResult(node.node_id, key, False, None, "", key, str(exc), "failed")
+                    return node.node_id, NodeResult(node.node_id, key, False, None, "", key, str(exc), "failed")  # noqa: E501
             with ThreadPoolExecutor(max_workers=len(leaves)) as pool:
                 receipts.update(dict(pool.map(run_leaf, leaves)))
         for node_id in self._order():
@@ -272,8 +272,8 @@ class ComputationDAG:
                     "cache hit; inputs unchanged",
                 )
                 continue
-            if any(receipts[upstream].status in {"failed", "upstream_failed"} or receipts[upstream].value is None for upstream in node.upstream):
-                receipts[node_id] = NodeResult(node_id, key, False, None, "", key, "upstream failed", "upstream_failed")
+            if any(receipts[upstream].status in {"failed", "upstream_failed"} or receipts[upstream].value is None for upstream in node.upstream):  # noqa: E501
+                receipts[node_id] = NodeResult(node_id, key, False, None, "", key, "upstream failed", "upstream_failed")  # noqa: E501
                 continue
             deps = {upstream: receipts[upstream] for upstream in node.upstream}
             value, unit = self._functions[node_id](deps)

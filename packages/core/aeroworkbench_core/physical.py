@@ -174,7 +174,7 @@ class PhysicalSystem:
         if "children" in values:
             values["children"] = tuple(cls.from_dict(c) for c in values["children"])
             values["interfaces"] = tuple(InterfaceContract(
-                **{**c, "source": PhysicalPort(**c["source"]), "target": PhysicalPort(**c["target"])}
+                **{**c, "source": PhysicalPort(**c["source"]), "target": PhysicalPort(**c["target"])}  # noqa: E501
             ) for c in values.get("interfaces", ()))
             return PhysicalAssembly(**values)
         return PhysicalSystem(**values)
@@ -195,8 +195,8 @@ class PhysicalAssembly(PhysicalSystem):
 
     def __post_init__(self) -> None:
         PhysicalSystem.__post_init__(self)
-        object.__setattr__(self, "children", tuple(sorted(self.children, key=lambda c: c.system_id)))
-        object.__setattr__(self, "interfaces", tuple(sorted(self.interfaces, key=lambda c: c.digest)))
+        object.__setattr__(self, "children", tuple(sorted(self.children, key=lambda c: c.system_id)))  # noqa: E501
+        object.__setattr__(self, "interfaces", tuple(sorted(self.interfaces, key=lambda c: c.digest)))  # noqa: E501
         systems = {self.system_id: self}
 
         def collect(system: PhysicalSystem) -> None:

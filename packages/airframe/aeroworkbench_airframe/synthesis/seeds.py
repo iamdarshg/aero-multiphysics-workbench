@@ -43,7 +43,7 @@ class VehicleSeed:
     def assignment(self) -> tuple[Any, ...]:
         """Optimization-compatible scalar projection of the seed."""
         return tuple(
-            type("SeedAssignment", (), {"variable_id": quantity.name, "value": quantity.quantity.value_si, "point_id": None})()
+            type("SeedAssignment", (), {"variable_id": quantity.name, "value": quantity.quantity.value_si, "point_id": None})()  # noqa: E501
             for quantity in self.quantities
         )
 

@@ -238,8 +238,8 @@ def test_airframe04_result_contract_is_hashable_and_trim_ready() -> None:
     assert canonical["derivatives"]["values"]["dCL/dalpha"] > 0.0
     assert len(result.content_hash) == 64
     assert result.provenance.inputs_hash
-    assert result.reference.mach_number == pytest.approx(60.0 / 340.0)
-    assert result.reference.reynolds_number == pytest.approx(1.225 * 60.0 * 1.0 / 1.81e-5)
+    assert result.reference.resolved_mach_number == pytest.approx(60.0 / 340.0)
+    assert result.reference.resolved_reynolds_number == pytest.approx(1.225 * 60.0 * 1.0 / 1.81e-5)
 
 
 def test_airframe04_wing_tail_vlm_reports_control_derivatives() -> None:
@@ -365,7 +365,7 @@ def test_airframe04_reference_construction_and_limits() -> None:
     assert reference.dynamic_pressure_pa == pytest.approx(0.5 * 1.225 * 3600.0)
     isa = reference_from_altitude(case.geometry_reference(), altitude_m=0.0, velocity_m_s=60.0)
     assert isa.density_kg_m3 == pytest.approx(1.225, rel=0.02)
-    assert isa.mach_number == pytest.approx(60.0 / isa.speed_of_sound_m_s)
+    assert isa.resolved_mach_number == pytest.approx(60.0 / isa.speed_of_sound_m_s)
     assert evaluate_aero_validity(reference, VLM_VALIDITY_LIMITS).passed
     assert not evaluate_aero_validity(
         reference.with_state(alpha_deg=25.0), VLM_VALIDITY_LIMITS

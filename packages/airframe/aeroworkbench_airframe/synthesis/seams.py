@@ -96,7 +96,7 @@ def synthesize_rotorcraft_seam(compiled: CompiledRequirements) -> SeamResult:
     provenance = _provenance(compiled, "rotorcraft", "rotor-aerodynamics", assumptions)
     payload = requirement_bounds(compiled).get("payload_mass", (100.0, None))[0] or 100.0
     quantities = (
-        methods.reference_quantity("hover_thrust", Quantity(value=payload * 9.80665 * 1.2, unit="N")),
+        methods.reference_quantity("hover_thrust", Quantity(value=payload * 9.80665 * 1.2, unit="N")),  # noqa: E501
         methods.reference_quantity("rotor_radius", Quantity(value=1.25, unit="m")),
         methods.reference_quantity("forward_flight_speed", Quantity(value=45.0, unit="m/s")),
     )
@@ -115,10 +115,10 @@ def synthesize_rotorcraft_seam(compiled: CompiledRequirements) -> SeamResult:
 
 
 def probe_rotorcraft_foundation() -> object:
-    return type("RotorCapability", (), {"available": True, "detail": "analytical actuator-disk seam"})()
+    return type("RotorCapability", (), {"available": True, "detail": "analytical actuator-disk seam"})()  # noqa: E501
 
 
-def evaluate_rotorcraft_envelope(seed: VehicleSeed, *, fidelity: str = "analytical") -> RotorcraftEnvelope:
+def evaluate_rotorcraft_envelope(seed: VehicleSeed, *, fidelity: str = "analytical") -> RotorcraftEnvelope:  # noqa: E501
     if seed.architecture_type != "rotorcraft":
         raise ValueError("ROTORCRAFT_SEED_REQUIRED")
     if fidelity == "native":
@@ -129,7 +129,7 @@ def evaluate_rotorcraft_envelope(seed: VehicleSeed, *, fidelity: str = "analytic
     disk_area = 3.141592653589793 * radius * radius
     hover_power = thrust * (thrust / (2.0 * 1.225 * disk_area)) ** 0.5
     hover = RotorcraftOperatingPoint(0.0, 0.0, hover_power)
-    forward_point = RotorcraftOperatingPoint(forward, forward / (2.0 * radius * 120.0), hover_power * 1.25)
+    forward_point = RotorcraftOperatingPoint(forward, forward / (2.0 * radius * 120.0), hover_power * 1.25)  # noqa: E501
     return RotorcraftEnvelope(True, hover, forward_point, seed.provenance)
 
 

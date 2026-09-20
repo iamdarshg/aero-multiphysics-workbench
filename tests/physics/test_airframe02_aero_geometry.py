@@ -487,3 +487,67 @@ def test_airframe02_generic_core_owns_no_product_names() -> None:
         path.read_text(encoding="utf-8").lower() for path in sorted(package.glob("*.py"))
     )
     assert [token for token in forbidden if token in text] == []
+
+def _lifting_body_fixture() -> LoftedBody:
+    return LoftedBody.from_spine(
+        'regression-body',
+        'lifting_body',
+        ((0.0, 0.0, 0.0), (0.0, 0.0, 500.0), (0.0, 0.0, 1000.0)),
+        (100.0, 400.0, 100.0),
+        (40.0, 120.0, 40.0),
+    )
+
+
+def test_airframe02_volume_gate_uses_canonical_body_volume() -> None:
+    body = _lifting_body_fixture()
+    assert estimate_body_volume_mm3(body) == body.volume_m3 * 1.0e9
+    assert body.volume_m3 > 0.0
+
+
+def test_airframe02_pure_z_displacement_gate_matches_downstream_volume() -> None:
+    body = _lifting_body_fixture()
+    assembly = AeroGeometryAssembly('regression', bodies=(body,))
+    receipt = refine_assembly(
+        assembly,
+        GeometryRefinementPlan(
+            plan_id='pure-z-displacement',
+            controls=(
+                FfdControl(
+                    component_id='regression-body',
+                    station_fraction=0.5,
+                    support_fraction=0.4,
+                    width_scale=1.0,
+                    displacement_mm=(0.0, 0.0, 60.0),
+                ),
+            ),
+        ),
+    )
+    after = receipt.assembly.bodies[0]
+    assert estimate_body_volume_mm3(body) == body.volume_m3 * 1.0e9
+    assert estimate_body_volume_mm3(after) == after.volume_m3 * 1.0e9
+    expected = abs(after.volume_m3 - body.volume_m3) / body.volume_m3
+    assert receipt.volume_change_fraction == expected
+
+
+def test_airframe02_reciprocal_scaling_preserves_canonical_volume() -> None:
+    body = _lifting_body_fixture()
+    assembly = AeroGeometryAssembly('regression', bodies=(body,))
+    receipt = refine_assembly(
+        assembly,
+        GeometryRefinementPlan(
+            plan_id='reciprocal-width-height',
+            controls=(
+                FfdControl(
+                    component_id='regression-body',
+                    station_fraction=0.5,
+                    support_fraction=1.0,
+                    width_scale=1.25,
+                    displacement_mm=(0.0, 0.0, 0.0),
+                ),
+            ),
+            preserve_body_volume=True,
+            max_volume_change_fraction=1e-9,
+        ),
+    )
+    assert receipt.valid
+    assert receipt.volume_change_fraction <= 1e-9

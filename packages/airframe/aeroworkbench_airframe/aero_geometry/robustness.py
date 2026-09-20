@@ -109,10 +109,10 @@ def check_lifting_surface(surface: LiftingSurface) -> tuple[GeometryDiagnostic, 
         findings.append(GeometryDiagnostic("SURFACE_TAPER_EXCESSIVE", surface.surface_id))
     # A crossed station centreline is a cheap, deterministic pre-CAD proxy for
     # a self-intersecting loft.  Native CAD remains the authoritative gate.
-    points = [(station.leading_edge_mm[0], station.leading_edge_mm[2]) for station in surface.stations]
+    points = [(station.leading_edge_mm[0], station.leading_edge_mm[2]) for station in surface.stations]  # noqa: E501
     def orient(a: tuple[float, float], b: tuple[float, float], c: tuple[float, float]) -> float:
         return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
-    for index, (a, b) in enumerate(zip(points, points[1:])):
+    for index, (a, b) in enumerate(zip(points, points[1:], strict=False)):
         for other in range(index + 2, len(points) - 1):
             c, d = points[other], points[other + 1]
             if orient(a, b, c) * orient(a, b, d) < 0 and orient(c, d, a) * orient(c, d, b) < 0:

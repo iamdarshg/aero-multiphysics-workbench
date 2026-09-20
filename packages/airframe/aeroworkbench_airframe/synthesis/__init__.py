@@ -48,9 +48,9 @@ from .requirements import (
 from .seams import (
     RotorcraftCapabilityUnavailable,
     RotorcraftEnvelope,
+    SeamResult,
     evaluate_rotorcraft_envelope,
     probe_rotorcraft_foundation,
-    SeamResult,
     synthesize_lifting_body_seam,
     synthesize_rotorcraft_seam,
 )

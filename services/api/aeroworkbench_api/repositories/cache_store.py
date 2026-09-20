@@ -202,7 +202,7 @@ class PersistentResultCache:
         self._connection = sqlite3.connect(self.root / "cache.sqlite3", check_same_thread=False)
         self._connection.row_factory = sqlite3.Row
         self._connection.execute("PRAGMA foreign_keys = ON")
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._key_locks: dict[str, threading.Lock] = {}
         self._invalidated: set[str] = set()
         self._history: dict[str, Any] = {}
@@ -290,6 +290,16 @@ class PersistentResultCache:
                         f"content-addressed cache entry {key} is immutable"
                     )
                 return
+            historical = self._history.get(key)
+            if historical is not None:
+                try:
+                    historical_digest = content_digest(historical)
+                except (TypeError, ValueError):
+                    historical_digest = None
+                if historical_digest is not None and historical_digest != value_digest:
+                    raise CacheImmutabilityError(
+                        f"content-addressed cache entry {key} is immutable"
+                    )
             self._write_value(key, value)
             timestamp = self._now()
             try:

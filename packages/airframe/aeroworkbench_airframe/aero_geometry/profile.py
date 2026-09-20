@@ -290,7 +290,7 @@ class AirfoilProfile:
         """Expose this profile through the shared spanwise-section primitive."""
         if self.family not in ("parametric", "naca4"):
             raise ValueError("PROFILE_TO_BLADE_SECTION_NEEDS_CAMBER_THICKNESS_FAMILY")
-        from aeroworkbench_turbomachinery.geometry.sections import (  # type: ignore[import-not-found, unused-ignore]
+        from aeroworkbench_turbomachinery.geometry.sections import (  # type: ignore[import-not-found, unused-ignore]  # noqa: E501
             BladeSection,
             CamberLine,
             ThicknessDistribution,

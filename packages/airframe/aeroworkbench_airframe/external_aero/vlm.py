@@ -234,7 +234,7 @@ def _fourier_induced_drag(
 
     count = len(panels)
     span = reference.span_m
-    velocity = reference.velocity_m_s
+    velocity = reference.resolved_velocity_m_s
     aspect_ratio = span * span / reference.area_m2
     if count < 2 or velocity <= 0.0 or span <= 0.0:
         return 0.0, tuple(0.0 for _ in panels)
@@ -287,7 +287,7 @@ def _fourier_induced_drag(
 
 def _rate_velocity(point: Vec, rates: tuple[float, float, float], reference: AeroReference) -> Vec:
     roll, pitch, yaw = rates
-    speed = reference.velocity_m_s
+    speed = reference.resolved_velocity_m_s
     omega: Vec = (
         roll * 2.0 * speed / reference.span_m,
         pitch * 2.0 * speed / reference.mean_chord_m,
@@ -416,7 +416,7 @@ class _Solver:
         rates: tuple[float, float, float],
         deflections: tuple[tuple[str, float], ...] | None,
     ) -> list[float]:
-        freestream = _scale(_freestream(alpha_deg, beta_deg), self.reference.velocity_m_s)
+        freestream = _scale(_freestream(alpha_deg, beta_deg), self.reference.resolved_velocity_m_s)
         components: list[float] = []
         for panel in self.panels:
             control = control_alpha_increment_deg(
@@ -438,7 +438,7 @@ class _Solver:
         gamma = _solve([list(row) for row in self.influence], rhs)
         freestream = _freestream(alpha_deg, beta_deg)
         lift_unit = _lift_direction(freestream)
-        velocity = self.reference.velocity_m_s
+        velocity = self.reference.resolved_velocity_m_s
         density = self.reference.density_kg_m3
         dynamic = self.reference.dynamic_pressure_pa
         area = self.reference.area_m2
@@ -569,7 +569,7 @@ def solve_vlm(
     """Solve the vortex-lattice case and return the canonical result contract."""
 
     resolved = options or VlmOptions()
-    if reference.velocity_m_s <= 0.0:
+    if reference.resolved_velocity_m_s <= 0.0:
         raise ExternalAeroValidationError("VLM_REQUIRES_POSITIVE_VELOCITY")
     validity = evaluate_aero_validity(reference, VLM_VALIDITY_LIMITS)
     if resolved.require_valid and not validity.passed:

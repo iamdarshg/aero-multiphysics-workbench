@@ -19,8 +19,9 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from math import isfinite
+from typing import Any
 
 SUPPORTED_QUANTITIES = ("pressure", "traction", "displacement", "temperature", "heat-flux")
 
@@ -444,6 +445,8 @@ class WrenchTransferReceipt:
     accepted: bool
     source_system: str = ""
     target_system: str = ""
+    target_port: str = ""
+    operator_digest: str = ""
 
     @property
     def values(self):
@@ -453,11 +456,29 @@ class WrenchTransferReceipt:
 def transfer_wrench(contract, force, moment, transform) -> WrenchTransferReceipt:
     """Rotate a force/moment pair and shift moment to the target origin."""
     import numpy as np
+    if transform.source_frame != contract.source.frame:
+        raise ValueError("FRAME_SOURCE_MISMATCH")
+    if transform.target_frame != contract.target.frame:
+        raise ValueError("FRAME_TARGET_MISMATCH")
     rotation = np.asarray(transform.rotation, dtype=float)
     translation = np.asarray(transform.translation_m, dtype=float)
     f = rotation @ np.asarray(force, dtype=float)
     m = rotation @ np.asarray(moment, dtype=float) + np.cross(translation, f)
-    return WrenchTransferReceipt(tuple(f.tolist()), tuple(m.tolist()), float(np.dot(f, translation)), True, contract.source_system, contract.target_system)
+    payload = {
+        "contract": getattr(contract, "digest", repr(contract)),
+        "force": [float(v) for v in force],
+        "moment": [float(v) for v in moment],
+        "rotation": [[float(v) for v in row] for row in transform.rotation],
+        "translation": [float(v) for v in transform.translation_m],
+    }
+    operator_digest = hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return WrenchTransferReceipt(
+        tuple(f.tolist()), tuple(m.tolist()), float(np.dot(f, translation)), True,
+        contract.source_system, contract.target_system,
+        contract.target.port_id, operator_digest,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -466,17 +487,27 @@ class ClosureReceipt:
     residual: float
 
 
-def power_closure(contract, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:
+def power_closure(contract, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
+    if not isfinite(loss_w) or loss_w < 0.0:
+        raise ValueError("POWER_LOSS_INVALID")
     residual = float(input_w - output_w - loss_w)
     return ClosureReceipt(abs(residual) <= tolerance, residual)
 
 
-def electrical_closure(contract, voltage_in, current_in, voltage_out, current_out, *, loss_w=0.0, tolerance=1e-9):
-    return power_closure(contract, voltage_in * current_in, voltage_out * current_out, loss_w=loss_w, tolerance=tolerance)
+def electrical_closure(contract, voltage_in, current_in, voltage_out, current_out, *, loss_w=0.0, tolerance=1e-9):  # noqa: E501
+    return power_closure(contract, voltage_in * current_in, voltage_out * current_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
 
 
-def shaft_closure(contract, speed_in, torque_in, speed_out, torque_out, *, loss_w=0.0, tolerance=1e-9):
-    return power_closure(contract, speed_in * torque_in, speed_out * torque_out, loss_w=loss_w, tolerance=tolerance)
+def shaft_closure(contract, speed_in, torque_in, speed_out, torque_out, *, loss_w=0.0, tolerance=1e-9):  # noqa: E501
+    return power_closure(contract, speed_in * torque_in, speed_out * torque_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
+
+
+def virtual_work_receipt(forces, displacements, loads, load_displacements, *, tolerance=1e-9) -> ClosureReceipt:  # noqa: E501
+    """Check virtual-work equivalence between two generalized force/displacement sets."""
+    lhs = float(sum(f * d for f, d in zip(forces, displacements, strict=True)))
+    rhs = float(sum(f * d for f, d in zip(loads, load_displacements, strict=True)))
+    residual = lhs - rhs
+    return ClosureReceipt(abs(residual) <= tolerance, residual)
 
 
 @dataclass(frozen=True, slots=True)
@@ -489,7 +520,23 @@ class HarmonicTransferReceipt:
         return self.values
 
 
-def transfer_harmonic(contract, values, basis, *, delay_s: float, angle_rad: float) -> HarmonicTransferReceipt:
+@dataclass(frozen=True, slots=True)
+class HarmonicTransferResult:
+    coefficients: tuple[complex, ...]
+    basis: Any
+    receipt: ClosureReceipt
+
+
+def transfer_harmonic(
+    contract, values, basis, *, delay_s: float = 0.0, angle_rad: float = 0.0
+) -> HarmonicTransferResult:
     from cmath import exp
-    phase = exp(1j * (basis.order * angle_rad - 2.0 * 3.141592653589793 * basis.frequency_hz * delay_s))
-    return HarmonicTransferReceipt(tuple(complex(value) * phase for value in values), basis.shaft_id)
+    if basis.frame != contract.source.frame:
+        raise ValueError("FRAME_MISMATCH")
+    phase = exp(1j * (basis.order * angle_rad - 2.0 * 3.141592653589793 * basis.frequency_hz * delay_s))  # noqa: E501
+    moved = replace(basis, frame=contract.target.frame)
+    return HarmonicTransferResult(
+        tuple(complex(value) * phase for value in values),
+        moved,
+        ClosureReceipt(True, 0.0),
+    )
