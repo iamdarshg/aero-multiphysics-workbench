@@ -1,0 +1,32 @@
+{
+  "assembly_id": "fixture-tricycle",
+  "frame": "body",
+  "wheel": {
+    "radius_m": 0.3,
+    "width_m": 0.15,
+    "mass_kg": 20.0,
+    "spin_inertia_kg_m2": 1.0,
+    "rolling_resistance_coefficient": 0.02,
+    "max_brake_friction_coefficient": 0.7,
+    "cornering_stiffness_n_per_rad": 50000.0
+  },
+  "brake": {
+    "max_torque_n_m": 5000.0,
+    "friction_coefficient": 0.7,
+    "anti_skid": true
+  },
+  "shock": {
+    "gas_charge_pressure_pa": 2000000.0,
+    "piston_area_m2": 0.005,
+    "initial_gas_length_m": 0.5,
+    "polytropic_index": 1.0,
+    "hydraulic_damping_coefficient": 40000.0,
+    "max_stroke_m": 0.35
+  },
+  "nose": {"leg_id": "nose", "attachment": [1.2, 0.0, 0.4], "axle": [1.2, 0.0, 0.6]},
+  "main": [
+    {"leg_id": "main-left", "attachment": [-0.3, -0.9, 0.4], "axle": [-0.3, -0.9, 0.6]},
+    {"leg_id": "main-right", "attachment": [-0.3, 0.9, 0.4], "axle": [-0.3, 0.9, 0.6]}
+  ],
+  "runway": {"runway_id": "fixture-runway", "surface": "dry-concrete", "length_m": 2500.0, "slope_deg": 0.0}
+}

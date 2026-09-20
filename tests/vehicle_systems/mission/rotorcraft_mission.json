@@ -1,0 +1,83 @@
+{
+  "missionId": "vs02-rotorcraft",
+  "label": "tiny deterministic rotorcraft mission",
+  "vehicle": {
+    "vehicleId": "rw-demo",
+    "emptyMassKg": 1500.0,
+    "initialFuelKg": 120.0,
+    "fuelLhvJKg": 43000000.0,
+    "batteryCapacityJ": 0.0,
+    "initialStateOfCharge": 1.0,
+    "referenceAreaM2": 4.0,
+    "stepSizeS": 10.0,
+    "maxSteps": 20000,
+    "groundSpeedMS": 0.0,
+    "envelope": {
+      "maxAltitudeM": 4000.0,
+      "minSpeedMS": 0.0,
+      "maxSpeedMS": 90.0,
+      "maxClimbRateMS": 12.0,
+      "maxThermalK": 900.0
+    }
+  },
+  "segments": [
+    {
+      "segmentId": "takeoff",
+      "kind": "takeoff",
+      "mode": "target-state",
+      "speedMS": 10.0,
+      "altitudeM": 0.0,
+      "climbRateMS": 3.0,
+      "throttle": 1.0,
+      "targetAltitudeM": 100.0,
+      "targetSpeedMS": 10.0
+    },
+    {
+      "segmentId": "cruise",
+      "kind": "cruise",
+      "mode": "distance",
+      "speedMS": 40.0,
+      "altitudeM": 300.0,
+      "distanceM": 8000.0
+    },
+    {
+      "segmentId": "loiter",
+      "kind": "loiter",
+      "mode": "duration",
+      "speedMS": 20.0,
+      "altitudeM": 300.0,
+      "durationS": 60.0
+    },
+    {
+      "segmentId": "descent",
+      "kind": "descent",
+      "mode": "target-state",
+      "speedMS": 20.0,
+      "altitudeM": 300.0,
+      "climbRateMS": 3.0,
+      "targetAltitudeM": 0.0,
+      "targetSpeedMS": 5.0
+    },
+    {
+      "segmentId": "landing",
+      "kind": "landing",
+      "mode": "duration",
+      "speedMS": 5.0,
+      "altitudeM": 0.0,
+      "durationS": 20.0
+    }
+  ],
+  "reserves": [
+    {"kind": "fuel", "amount": 5.0, "label": "final-fuel"}
+  ],
+  "participant": {
+    "diskAreaM2": 80.0,
+    "figureOfMerit": 0.75,
+    "profilePowerW": 50000.0,
+    "parasiteFlatPlateM2": 2.0,
+    "maxShaftPowerW": 2000000.0,
+    "maxHorizontalThrustN": 20000.0,
+    "tsfcKgWS": 8.0e-08,
+    "powerModel": "turbofan"
+  }
+}

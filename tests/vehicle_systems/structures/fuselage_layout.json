@@ -1,0 +1,15 @@
+{
+  "fixture_id": "vs01-body",
+  "spine_mm": [[0.0, 0.0, 0.0], [0.0, 0.0, 800.0], [0.0, 0.0, 1600.0], [0.0, 0.0, 2400.0]],
+  "widths_mm": [600.0, 900.0, 900.0, 500.0],
+  "heights_mm": [700.0, 1000.0, 1000.0, 600.0],
+  "exponent": 2.0,
+  "frame_count": 3,
+  "stringer_count": 6,
+  "architecture_kind": "semi_monocoque",
+  "material_id": "aluminium-6061-t6",
+  "load": {
+    "normal_force_n": 400.0,
+    "tip_to_root_ratio": 0.5
+  }
+}

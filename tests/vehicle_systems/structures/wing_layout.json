@@ -1,0 +1,21 @@
+{
+  "fixture_id": "vs01-wing",
+  "span_mm": 6000.0,
+  "root_chord_mm": 1200.0,
+  "tip_chord_mm": 600.0,
+  "sweep_deg": 3.0,
+  "dihedral_deg": 2.0,
+  "n_stations": 5,
+  "profile_thickness_ratio": 0.12,
+  "architecture_kind": "wingbox",
+  "spar_count": 2,
+  "rib_count": 4,
+  "stringer_count": 3,
+  "plane": "aerodynamic",
+  "material_id": "aluminium-6061-t6",
+  "load": {
+    "normal_force_n": 400.0,
+    "tip_to_root_ratio": 0.6,
+    "axial_force_n": 2000.0
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "missionId": "vs02-fixed-wing",
+  "label": "tiny deterministic fixed-wing mission",
+  "vehicle": {
+    "vehicleId": "fw-demo",
+    "emptyMassKg": 1000.0,
+    "initialFuelKg": 200.0,
+    "fuelLhvJKg": 43000000.0,
+    "batteryCapacityJ": 0.0,
+    "initialStateOfCharge": 1.0,
+    "referenceAreaM2": 16.0,
+    "stepSizeS": 10.0,
+    "maxSteps": 20000,
+    "groundSpeedMS": 0.0,
+    "envelope": {
+      "maxAltitudeM": 12000.0,
+      "minSpeedMS": 0.0,
+      "maxSpeedMS": 300.0,
+      "maxClimbRateMS": 30.0,
+      "maxThermalK": 900.0
+    }
+  },
+  "segments": [
+    {
+      "segmentId": "takeoff",
+      "kind": "takeoff",
+      "mode": "target-state",
+      "speedMS": 80.0,
+      "altitudeM": 0.0,
+      "climbRateMS": 10.0,
+      "throttle": 1.0,
+      "targetAltitudeM": 500.0,
+      "targetSpeedMS": 80.0
+    },
+    {
+      "segmentId": "climb",
+      "kind": "climb",
+      "mode": "target-state",
+      "speedMS": 100.0,
+      "altitudeM": 500.0,
+      "climbRateMS": 10.0,
+      "throttle": 1.0,
+      "targetAltitudeM": 3000.0,
+      "targetSpeedMS": 100.0
+    },
+    {
+      "segmentId": "cruise",
+      "kind": "cruise",
+      "mode": "distance",
+      "speedMS": 100.0,
+      "altitudeM": 3000.0,
+      "distanceM": 20000.0
+    },
+    {
+      "segmentId": "descent",
+      "kind": "descent",
+      "mode": "target-state",
+      "speedMS": 90.0,
+      "altitudeM": 3000.0,
+      "climbRateMS": 10.0,
+      "targetAltitudeM": 0.0,
+      "targetSpeedMS": 60.0
+    },
+    {
+      "segmentId": "landing",
+      "kind": "landing",
+      "mode": "duration",
+      "speedMS": 50.0,
+      "altitudeM": 0.0,
+      "durationS": 20.0
+    }
+  ],
+  "reserves": [
+    {"kind": "fuel", "amount": 10.0, "label": "final-fuel"}
+  ],
+  "participant": {
+    "cd0": 0.02,
+    "oswaldE": 0.8,
+    "aspectRatio": 8.0,
+    "referenceAreaM2": 16.0,
+    "maxThrustN": 30000.0,
+    "tsfcKgNS": 1.5e-05,
+    "powerModel": "turbofan"
+  }
+}

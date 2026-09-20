@@ -2385,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "4f246a9b3780516444b524ca4836760be6d92f5e3e6931918c2c6fd50a7149ac"
+          "sha256": "f8e2be3e105d938332ae4c9af107a509744f08fcda127e3d20febefe26732e0f"
         },
         {
           "kind": "file",

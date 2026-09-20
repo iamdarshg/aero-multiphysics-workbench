@@ -1,0 +1,35 @@
+{
+  "caseId": "rectangular-wing-ar6",
+  "symmetry": "mirror",
+  "surfaces": [
+    {
+      "surfaceId": "wing",
+      "role": "wing",
+      "frame": "body",
+      "nStations": 3,
+      "planform": {
+        "spanMm": 3000.0,
+        "rootChordMm": 1000.0,
+        "tipChordMm": 1000.0,
+        "sweepDeg": 0.0,
+        "dihedralDeg": 0.0,
+        "twistRootDeg": 0.0,
+        "twistTipDeg": 0.0
+      },
+      "profile": {
+        "family": "naca4",
+        "thicknessRatio": 0.12
+      }
+    }
+  ],
+  "controls": [],
+  "reference": {
+    "densityKgM3": 1.225,
+    "velocityMS": 60.0,
+    "speedOfSoundMS": 340.0,
+    "viscosityPaS": 1.81e-5,
+    "altitudeM": 0.0,
+    "atmosphereModel": "declared"
+  },
+  "alphaSweepDeg": [0.0, 4.0, 8.0]
+}

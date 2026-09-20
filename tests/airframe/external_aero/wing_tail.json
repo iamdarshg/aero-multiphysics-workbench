@@ -1,0 +1,71 @@
+{
+  "caseId": "wing-tail-trainer",
+  "symmetry": "mirror",
+  "surfaces": [
+    {
+      "surfaceId": "wing",
+      "role": "wing",
+      "frame": "body",
+      "nStations": 3,
+      "planform": {
+        "spanMm": 3000.0,
+        "rootChordMm": 1000.0,
+        "tipChordMm": 700.0,
+        "sweepDeg": 2.0,
+        "dihedralDeg": 3.0,
+        "twistRootDeg": 0.0,
+        "twistTipDeg": -1.0
+      },
+      "profile": {
+        "family": "parametric",
+        "thicknessRatio": 0.12,
+        "camberRatio": 0.02,
+        "thicknessFamily": "naca4",
+        "camberFamily": "parabolic"
+      }
+    },
+    {
+      "surfaceId": "tail",
+      "role": "tail",
+      "frame": "body",
+      "nStations": 2,
+      "planform": {
+        "spanMm": 1200.0,
+        "rootChordMm": 600.0,
+        "tipChordMm": 400.0,
+        "sweepDeg": 10.0
+      },
+      "profile": {
+        "family": "naca4",
+        "thicknessRatio": 0.1
+      }
+    }
+  ],
+  "controls": [
+    {
+      "controlId": "elevator",
+      "parentId": "tail",
+      "kind": "elevator",
+      "hingeFraction": 0.7,
+      "spanFraction": [0.0, 1.0],
+      "deflectionDeg": 0.0
+    },
+    {
+      "controlId": "aileron",
+      "parentId": "wing",
+      "kind": "aileron",
+      "hingeFraction": 0.75,
+      "spanFraction": [0.55, 0.95],
+      "deflectionDeg": 0.0
+    }
+  ],
+  "reference": {
+    "densityKgM3": 1.225,
+    "velocityMS": 60.0,
+    "speedOfSoundMS": 340.0,
+    "viscosityPaS": 1.81e-5,
+    "altitudeM": 0.0,
+    "atmosphereModel": "declared"
+  },
+  "alphaSweepDeg": [-2.0, 0.0, 4.0]
+}

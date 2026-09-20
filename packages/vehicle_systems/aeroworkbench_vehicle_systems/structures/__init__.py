@@ -1,0 +1,233 @@
+"""Generative airframe structural architecture and automatic sizing (VS 01).
+
+This subpackage generates internal airframe structure (spars, caps, webs, ribs,
+frames/bulkheads, stringers, skins/panels, control-surface structure) from the
+semantic outer geometry, sizes it against declared aero/trim/mass load cases by
+bounded deterministic bisection, checks strength, buckling, and deflection with
+material allowables, feeds the resulting mass back into the AIRFRAME mass/CG/
+inertia breakdown, publishes equivalent stiffness for the aeroelastic loop, and
+maps the result to a capability-gated native Code_Aster seam that fails closed.
+
+Public API (other workstreams import these exact paths)::
+
+    from aeroworkbench_vehicle_systems.structures import (
+        ArchitectureKind, StructuralArchitecture,
+        generate_wing_architecture, generate_body_architecture,
+        generate_control_surface_architecture,
+        MemberKind, MemberOrientation, MemberSection, SectionShape,
+        SectionProperties, GeometryBinding, StructuralMember, MemberMaterial,
+        LoadSource, DistributedLoad, PointLoad, StructuralLoadCase,
+        StructuralLoadSet, LoadEnvelope, AeroLoadSeam, TrimLoadSeam,
+        MassLoadSeam, load_case_from_aero, load_case_from_trim,
+        load_case_from_mass,
+        MemberDemand, MarginResult, evaluate_member_margins, margin_of_safety,
+        SizingOptions, SizedMember, SizedStructure, size_architecture,
+        StiffnessSeam, build_stiffness_seam, cantilever_bending_frequency_hz,
+        StructuralMassParticipant, structure_mass_updates, apply_structure_mass,
+        CodeAsterStructureMapping, map_structure_to_code_aster,
+        native_structure_capability, require_native_structure,
+        solve_native_structure, NativeStructureRequest, NativeStructureReceipt,
+        STRUCTURAL_PARTICIPANTS, structural_participants, participant_ids,
+        ResultEnvelope, Validity, StructuralFidelity, SoftwareIdentity,
+        analytical_envelope, native_envelope,
+        StructuresError, StructuralContractError, StructuralLayoutError,
+        LoadCaseError, SizingError, StructuralConstraintError,
+        StructuresCapabilityUnavailable,
+    )
+
+Every result carries source/fidelity/units/validity/input-hash/software-identity/
+provenance. Native FEA is capability-gated and fails closed; no solver output is
+fabricated and no product-specific constant is embedded.
+"""
+
+from .architecture import (
+    ArchitectureKind,
+    StructuralArchitecture,
+    generate_body_architecture,
+    generate_control_surface_architecture,
+    generate_wing_architecture,
+)
+from .checks import (
+    BEAM_KINDS,
+    DEFAULT_DEFLECTION_LIMIT_FRACTION,
+    MarginResult,
+    MemberDemand,
+    axial_stress_pa,
+    bending_stress_pa,
+    cantilever_tip_deflection_m,
+    euler_buckling_stress_pa,
+    evaluate_member_margins,
+    margin_of_safety,
+    material_has_allowable,
+    member_is_feasible,
+    plate_buckling_stress_pa,
+)
+from .contracts import (
+    SOFTWARE_IDENTITY,
+    SOFTWARE_VERSION,
+    STRUCTURAL_UNITS,
+    STRUCTURES_SCHEMA_VERSION,
+    ResultEnvelope,
+    SoftwareIdentity,
+    StructuralFidelity,
+    Validity,
+    analytical_envelope,
+    content_digest,
+    native_envelope,
+)
+from .errors import (
+    LoadCaseError,
+    SizingError,
+    StructuralConstraintError,
+    StructuralContractError,
+    StructuralLayoutError,
+    StructuresCapabilityUnavailable,
+    StructuresError,
+)
+from .loads import (
+    STANDARD_GRAVITY_M_S2,
+    AeroLoadSeam,
+    DistributedLoad,
+    LoadEnvelope,
+    LoadSource,
+    MassLoadSeam,
+    PointLoad,
+    StructuralLoadCase,
+    StructuralLoadSet,
+    TrimLoadSeam,
+    load_case_from_aero,
+    load_case_from_mass,
+    load_case_from_trim,
+)
+from .mass_feedback import (
+    StructuralMassParticipant,
+    apply_structure_mass,
+    member_inertia,
+    structure_mass_updates,
+)
+from .materials import MemberMaterial
+from .members import (
+    GeometryBinding,
+    MemberKind,
+    MemberOrientation,
+    MemberSection,
+    SectionProperties,
+    SectionShape,
+    StructuralMember,
+)
+from .native import (
+    CodeAsterGroup,
+    CodeAsterStructureMapping,
+    NativeStructureCapability,
+    NativeStructureReceipt,
+    NativeStructureRequest,
+    map_structure_to_code_aster,
+    native_structure_capability,
+    require_native_structure,
+    solve_native_structure,
+)
+from .participants import (
+    STRUCTURAL_PARTICIPANTS,
+    StructuralParticipant,
+    StructuralPort,
+    participant_ids,
+    participant_native_states,
+    structural_participants,
+)
+from .sizing import (
+    SizedMember,
+    SizedStructure,
+    SizingOptions,
+    size_architecture,
+)
+from .stiffness import (
+    StiffnessSeam,
+    build_stiffness_seam,
+    cantilever_bending_frequency_hz,
+)
+
+__all__ = [
+    "BEAM_KINDS",
+    "DEFAULT_DEFLECTION_LIMIT_FRACTION",
+    "SOFTWARE_IDENTITY",
+    "SOFTWARE_VERSION",
+    "STANDARD_GRAVITY_M_S2",
+    "STRUCTURAL_PARTICIPANTS",
+    "STRUCTURAL_UNITS",
+    "STRUCTURES_SCHEMA_VERSION",
+    "AeroLoadSeam",
+    "ArchitectureKind",
+    "CodeAsterGroup",
+    "CodeAsterStructureMapping",
+    "DistributedLoad",
+    "GeometryBinding",
+    "LoadCaseError",
+    "LoadEnvelope",
+    "LoadSource",
+    "MarginResult",
+    "MassLoadSeam",
+    "MemberDemand",
+    "MemberKind",
+    "MemberMaterial",
+    "MemberOrientation",
+    "MemberSection",
+    "NativeStructureCapability",
+    "NativeStructureReceipt",
+    "NativeStructureRequest",
+    "PointLoad",
+    "ResultEnvelope",
+    "SectionProperties",
+    "SectionShape",
+    "SizedMember",
+    "SizedStructure",
+    "SizingError",
+    "SizingOptions",
+    "SoftwareIdentity",
+    "StiffnessSeam",
+    "StructuralArchitecture",
+    "StructuralConstraintError",
+    "StructuralContractError",
+    "StructuralFidelity",
+    "StructuralLayoutError",
+    "StructuralLoadCase",
+    "StructuralLoadSet",
+    "StructuralMassParticipant",
+    "StructuralMember",
+    "StructuralParticipant",
+    "StructuralPort",
+    "StructuresCapabilityUnavailable",
+    "StructuresError",
+    "TrimLoadSeam",
+    "Validity",
+    "analytical_envelope",
+    "apply_structure_mass",
+    "axial_stress_pa",
+    "bending_stress_pa",
+    "build_stiffness_seam",
+    "cantilever_bending_frequency_hz",
+    "cantilever_tip_deflection_m",
+    "content_digest",
+    "euler_buckling_stress_pa",
+    "evaluate_member_margins",
+    "generate_body_architecture",
+    "generate_control_surface_architecture",
+    "generate_wing_architecture",
+    "load_case_from_aero",
+    "load_case_from_mass",
+    "load_case_from_trim",
+    "map_structure_to_code_aster",
+    "margin_of_safety",
+    "material_has_allowable",
+    "member_inertia",
+    "member_is_feasible",
+    "native_envelope",
+    "native_structure_capability",
+    "participant_ids",
+    "participant_native_states",
+    "plate_buckling_stress_pa",
+    "require_native_structure",
+    "size_architecture",
+    "solve_native_structure",
+    "structural_participants",
+    "structure_mass_updates",
+]

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "architectureId": "turbo09-two-spool-core",
+  "defaultFluid": { "identity": "dry-air" },
+  "nodes": [
+    { "id": "ambient", "kind": "ambient" },
+    { "id": "inlet", "kind": "inlet" },
+    { "id": "fan", "kind": "fan_stage" },
+    { "id": "stator", "kind": "stator_row" },
+    { "id": "compressor", "kind": "compressor_stage" },
+    { "id": "combustor", "kind": "combustor" },
+    { "id": "turbine", "kind": "turbine_stage" },
+    { "id": "nozzle", "kind": "nozzle" },
+    { "id": "exhaust", "kind": "exhaust" }
+  ],
+  "edges": [
+    { "from": "ambient", "to": "inlet", "kind": "flow", "station": "0" },
+    { "from": "inlet", "to": "fan", "kind": "flow", "station": "1" },
+    { "from": "fan", "to": "stator", "kind": "flow", "station": "2" },
+    { "from": "stator", "to": "compressor", "kind": "flow", "station": "3" },
+    { "from": "compressor", "to": "combustor", "kind": "flow", "station": "4" },
+    { "from": "combustor", "to": "turbine", "kind": "flow", "station": "5" },
+    { "from": "turbine", "to": "nozzle", "kind": "flow", "station": "6" },
+    { "from": "nozzle", "to": "exhaust", "kind": "flow", "station": "7" }
+  ],
+  "stations": [
+    { "id": "0", "state": { "totalPressure": { "value": 101325, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "1", "state": { "massFlow": { "value": 30, "unit": "kg/s" }, "totalPressure": { "value": 99000, "unit": "Pa" }, "totalTemperature": { "value": 288.15, "unit": "K" } } },
+    { "id": "2", "state": { "totalPressure": { "value": 115000, "unit": "Pa" }, "totalTemperature": { "value": 300, "unit": "K" } } },
+    { "id": "3", "state": { "totalPressure": { "value": 113000, "unit": "Pa" }, "totalTemperature": { "value": 302, "unit": "K" } } },
+    { "id": "4", "state": { "totalPressure": { "value": 360000, "unit": "Pa" }, "totalTemperature": { "value": 520, "unit": "K" } } },
+    { "id": "5", "state": { "totalPressure": { "value": 340000, "unit": "Pa" }, "totalTemperature": { "value": 1250, "unit": "K" } } },
+    { "id": "6", "state": { "totalPressure": { "value": 180000, "unit": "Pa" }, "totalTemperature": { "value": 950, "unit": "K" } } },
+    { "id": "7", "state": { "totalPressure": { "value": 105000, "unit": "Pa" }, "totalTemperature": { "value": 700, "unit": "K" } } }
+  ],
+  "rows": [
+    { "id": "fan-rotor", "node": "fan", "role": "work_adding", "frame": "rotating", "shaft": "lp-spool", "stationIn": "1", "stationOut": "2", "rowCount": 1, "periodicity": 18, "family": "axial" },
+    { "id": "stator-1", "node": "stator", "role": "turning_only", "frame": "stationary", "stationIn": "2", "stationOut": "3", "rowCount": 1, "periodicity": 24, "family": "axial" },
+    { "id": "comp-rotor", "node": "compressor", "role": "work_adding", "frame": "rotating", "shaft": "hp-spool", "stationIn": "3", "stationOut": "4", "rowCount": 1, "periodicity": 29, "family": "axial", "materialRef": "ti-alloy@2" },
+    { "id": "turbine-rotor", "node": "turbine", "role": "work_extracting", "frame": "rotating", "shaft": "hp-spool", "stationIn": "5", "stationOut": "6", "rowCount": 1, "periodicity": 37, "family": "axial", "materialRef": "ni-superalloy@4" }
+  ],
+  "shafts": [
+    {
+      "id": "lp-spool",
+      "kind": "common",
+      "members": ["fan-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 3600, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.01,
+      "couplings": []
+    },
+    {
+      "id": "hp-spool",
+      "kind": "common",
+      "members": ["comp-rotor", "turbine-rotor"],
+      "speed": { "kind": "speed", "value": { "value": 24000, "unit": "rpm" } },
+      "mechanicalLossFraction": 0.02,
+      "couplings": [
+        { "id": "hp-to-lp-gearbox", "kind": "geared", "targetShaft": "lp-spool", "ratio": 6.0, "efficiency": 0.99 }
+      ]
+    }
+  ]
+}
