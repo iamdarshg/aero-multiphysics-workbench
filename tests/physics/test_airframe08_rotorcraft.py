@@ -17,9 +17,9 @@ def _compiled():
     return compile_requirements_payload(
         {
             "requirements": [
-                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 100.0, "unit": "kg"},
-                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 28.0, "unit": "m/s"},
-                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 45.0, "unit": "m/s"},
+                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 100.0, "unit": "kg"},  # noqa: E501
+                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 28.0, "unit": "m/s"},  # noqa: E501
+                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 45.0, "unit": "m/s"},  # noqa: E501
             ]
         }
     )

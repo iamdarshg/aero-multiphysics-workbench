@@ -5,7 +5,12 @@ from __future__ import annotations
 from dataclasses import replace
 
 import pytest
-from aeroworkbench_airframe.aero_geometry import AirfoilProfile, LiftingSurface, LoftedBody, Planform
+from aeroworkbench_airframe.aero_geometry import (  # noqa: E501
+    AirfoilProfile,
+    LiftingSurface,
+    LoftedBody,
+    Planform,
+)
 from aeroworkbench_airframe.external_aero import (
     AeroReference,
     ExternalAeroCase,

@@ -595,7 +595,7 @@
           "kind": "file",
           "path": "packages/mesh/aeroworkbench_mesh/native_mesh.py",
           "detail": "PARTIAL: native mesh generation path from semantic geometry.",
-          "sha256": "e99cbc3147b2acb4aa474206451f750942913db82be859a68508e48eefcdbb5e"
+          "sha256": "5d22ab9c3902911f085ebfb050973fe701144023b94f73fb07a0297fb3d8f6bf"
         },
         {
           "kind": "file",
@@ -637,7 +637,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: SQLite-backed persistent result cache with pinning and trusted-native reuse (PERF 06).",
-          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
+          "sha256": "810ab161334e2fa049058265367bedb95c3f9b1e5b7ce0ac39f4372cd639af1e"
         }
       ],
       "lastVerifiedAt": null
@@ -1642,7 +1642,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: persistent content-addressed result store with pinning and trusted reuse.",
-          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
+          "sha256": "810ab161334e2fa049058265367bedb95c3f9b1e5b7ce0ac39f4372cd639af1e"
         }
       ],
       "lastVerifiedAt": null
@@ -1672,7 +1672,7 @@
           "kind": "file",
           "path": "services/api/aeroworkbench_api/repositories/cache_store.py",
           "detail": "PARTIAL: content-addressed storage of result values with digests.",
-          "sha256": "8fb2b75bf1739bcae6b94ba5c0cd866348c52f378909a37b7e4b8409433e7431"
+          "sha256": "810ab161334e2fa049058265367bedb95c3f9b1e5b7ce0ac39f4372cd639af1e"
         }
       ],
       "lastVerifiedAt": null
@@ -2385,7 +2385,7 @@
           "kind": "file",
           "path": "package.json",
           "detail": "PARTIAL: product commands (doctor, start:local, dev:all, test:product-e2e) wired and validated by unit + release E2E runs.",
-          "sha256": "f8e2be3e105d938332ae4c9af107a509744f08fcda127e3d20febefe26732e0f"
+          "sha256": "87276b3406da83e0ee44cfa8459e12e0868cb35278919c5886fa9c846f519570"
         },
         {
           "kind": "file",

@@ -1,0 +1,26 @@
+{
+  "contributor": "trailing-edge",
+  "velocityMS": 68.0,
+  "referenceVelocityMS": 60.0,
+  "referenceLevelDb": 78.5,
+  "exponent": 5.0,
+  "frequencyHz": 800.0,
+  "machNumber": 0.2,
+  "broadband": {
+    "contributor": "propulsor-broadband",
+    "declared": [[120.0, 0.11], [240.0, 0.05], [360.0, 0.02]]
+  },
+  "interaction": {"63.0": 0.09, "125.0": 0.04},
+  "trade": {
+    "referenceRpm": 1200.0,
+    "referenceNoiseDb": 84.0,
+    "rpmExponent": 5.0,
+    "referenceDistanceM": 100.0,
+    "thrustPerRpmN": 0.5,
+    "rpmLower": 800.0,
+    "rpmUpper": 1600.0,
+    "distanceLower": 80.0,
+    "distanceUpper": 200.0,
+    "noiseLimitDb": 88.0
+  }
+}

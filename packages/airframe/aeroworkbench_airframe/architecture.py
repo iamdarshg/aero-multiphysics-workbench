@@ -492,7 +492,7 @@ def airframe_invalidated_families(
     from aeroworkbench_coupling.dag import invalidated_families
 
     families = invalidated_families(vehicle_state_change_sections(before, after))
-    return cast(tuple[str, ...], families)
+    return tuple(str(family) for family in families)
 
 
 def vehicle_design_parameters(

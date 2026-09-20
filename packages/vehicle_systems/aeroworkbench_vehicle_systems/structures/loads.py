@@ -138,7 +138,7 @@ class StructuralLoadCase:
             raise LoadCaseError("LOAD_CASE_SPAN_MUST_BE_POSITIVE")
         if not isfinite(self.load_factor) or self.load_factor <= 0.0:
             raise LoadCaseError("LOAD_CASE_FACTOR_MUST_BE_POSITIVE")
-        if len(self.applied_moments_n_m) != 3 or any(not isfinite(value) for value in self.applied_moments_n_m):
+        if len(self.applied_moments_n_m) != 3 or any(not isfinite(value) for value in self.applied_moments_n_m):  # noqa: E501
             raise LoadCaseError("LOAD_CASE_APPLIED_MOMENTS_INVALID")
 
     def normal_force_n(self) -> float:
@@ -408,19 +408,19 @@ def load_case_from_mass(seam: MassLoadSeam, *, case_id: str) -> StructuralLoadCa
     )
 
 
-def load_case_from_landing_gear(gear_case, *, component_id: str, span_m: float, station_fraction: float, load_factor: float = 1.0) -> StructuralLoadCase:
+def load_case_from_landing_gear(gear_case: Any, *, component_id: str, span_m: float, station_fraction: float, load_factor: float = 1.0) -> StructuralLoadCase:  # noqa: E501
     from aeroworkbench_vehicle_systems.landing_gear import GearLoadCase
     if not isinstance(gear_case, GearLoadCase):
         raise LoadCaseError("LANDING_GEAR_CASE_REQUIRED")
     return StructuralLoadCase(
         case_id=f"landing:{gear_case.case_id}", source=LoadSource.LANDING,
         component_id=component_id, span_m=span_m, load_factor=load_factor,
-        point=(PointLoad(station_fraction, gear_case.vertical_force_n, gear_case.drag_force_n, gear_case.side_force_n),),
+        point=(PointLoad(station_fraction, gear_case.vertical_force_n, gear_case.drag_force_n, gear_case.side_force_n),),  # noqa: E501
         reference=f"{gear_case.gear_id}:{gear_case.kind.value}",
     )
 
 
-def load_case_from_propulsor(loads, *, component_id: str, span_m: float, station_fraction: float, case_id: str, load_factor: float = 1.0) -> StructuralLoadCase:
+def load_case_from_propulsor(loads: Any, *, component_id: str, span_m: float, station_fraction: float, case_id: str, load_factor: float = 1.0) -> StructuralLoadCase:  # noqa: E501
     return StructuralLoadCase(
         case_id=case_id, source=LoadSource.PROPULSION, component_id=component_id,
         span_m=span_m, load_factor=load_factor,
@@ -433,11 +433,11 @@ def load_case_from_propulsor(loads, *, component_id: str, span_m: float, station
     )
 
 
-def ground_load_set_for_segment(segment, export, *, component_id: str, span_m: float, station_fraction: float) -> StructuralLoadSet:
+def ground_load_set_for_segment(segment: Any, export: Any, *, component_id: str, span_m: float, station_fraction: float) -> StructuralLoadSet:  # noqa: E501
     from aeroworkbench_vehicle_systems.mission import SegmentKind
     if segment.kind not in {SegmentKind.TAXI, SegmentKind.TAKEOFF, SegmentKind.LANDING}:
         raise ValueError("GROUND_SEGMENT_REQUIRED")
     return StructuralLoadSet(component_id, tuple(
-        load_case_from_landing_gear(case, component_id=component_id, span_m=span_m, station_fraction=station_fraction)
+        load_case_from_landing_gear(case, component_id=component_id, span_m=span_m, station_fraction=station_fraction)  # noqa: E501
         for case in export.cases
     ))

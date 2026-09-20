@@ -1,0 +1,1 @@
+{"alphaDeg": 2.0, "caseId": "vs08-transonic-wing", "kappa": 0.87, "liftCoefficient": 0.45, "mach": 0.76, "meanChordM": 1.2, "referenceAreaM2": 12.0, "spanM": 10.0, "stations": [[0.0, 1.1], [1.5, 1.35], [3.0, 1.5], [4.5, 1.42], [6.0, 1.15], [7.5, 0.8], [9.0, 0.45]], "sweepDeg": 25.0, "thicknessRatio": 0.1}

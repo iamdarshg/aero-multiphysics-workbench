@@ -124,11 +124,11 @@ def expand_coupling_strength(
         strength=strength,
         nonlinear_tolerance=float(derived["nonlinear_tolerance"]),  # type: ignore[arg-type]
         linear_tolerance=float(derived["linear_tolerance"]),  # type: ignore[arg-type]
-        max_iterations=int(derived["max_iterations"]),  # type: ignore[arg-type]
-        field_exchange_frequency=int(derived["field_exchange_frequency"]),  # type: ignore[arg-type]
-        geometry_feedback_interval=int(derived["geometry_feedback_interval"]),  # type: ignore[arg-type]  # noqa: E501
-        thermal_feedback_interval=int(derived["thermal_feedback_interval"]),  # type: ignore[arg-type]  # noqa: E501
-        electrical_feedback_interval=int(derived["electrical_feedback_interval"]),  # type: ignore[arg-type]  # noqa: E501
+        max_iterations=int(derived["max_iterations"]),  # type: ignore[call-overload]
+        field_exchange_frequency=int(derived["field_exchange_frequency"]),  # type: ignore[call-overload]
+        geometry_feedback_interval=int(derived["geometry_feedback_interval"]),  # type: ignore[call-overload]  # noqa: E501
+        thermal_feedback_interval=int(derived["thermal_feedback_interval"]),  # type: ignore[call-overload]  # noqa: E501
+        electrical_feedback_interval=int(derived["electrical_feedback_interval"]),  # type: ignore[call-overload]  # noqa: E501
         time_resolution_s=float(derived["time_resolution_s"]),  # type: ignore[arg-type]
         precice_acceleration=str(derived["precice_acceleration"]),
         dynamic_activation=bool(derived["dynamic_activation"]),

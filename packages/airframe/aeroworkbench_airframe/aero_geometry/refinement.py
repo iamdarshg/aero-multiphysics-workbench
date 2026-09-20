@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 
 from .assembly import AeroGeometryAssembly
-from .body import BodySection
+from .body import BodySection, LoftedBody
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,7 +35,7 @@ class RefinementReceipt:
     reasons: tuple[str, ...] = ()
 
 
-def estimate_body_volume_mm3(body) -> float:
+def estimate_body_volume_mm3(body: LoftedBody) -> float:
     """Canonical body volume in mm^3.
 
     Delegates to the single canonical ``LoftedBody.volume_m3`` definition so
@@ -62,7 +62,11 @@ def refine_assembly(assembly: AeroGeometryAssembly, plan: GeometryRefinementPlan
             height_scale = 1.0 / scale if plan.preserve_body_volume else 1.0
             sections.append(replace(
                 section,
-                spine_mm=tuple(section.spine_mm[i] + control.displacement_mm[i] * weight for i in range(3)),  # noqa: E501
+                spine_mm=(
+                    section.spine_mm[0] + control.displacement_mm[0] * weight,
+                    section.spine_mm[1] + control.displacement_mm[1] * weight,
+                    section.spine_mm[2] + control.displacement_mm[2] * weight,
+                ),  # noqa: E501
                 width_mm=section.width_mm * scale,
                 height_mm=section.height_mm * height_scale,
             ))

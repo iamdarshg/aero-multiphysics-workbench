@@ -7,8 +7,6 @@ than a parallel mechanism. Unknown sections still fail closed there.
 
 from __future__ import annotations
 
-from typing import cast
-
 from ..architecture import MASS_SECTION
 from ..state import MassProperties
 from .aggregate import mass_properties_digest
@@ -35,4 +33,5 @@ def mass_invalidated_families(before: MassProperties, after: MassProperties) -> 
     """Invalidated node families for an aggregate mass-property delta."""
     from aeroworkbench_coupling.dag import invalidated_families
 
-    return cast(tuple[str, ...], invalidated_families(mass_change_sections(before, after)))
+    families = invalidated_families(mass_change_sections(before, after))
+    return tuple(str(family) for family in families)

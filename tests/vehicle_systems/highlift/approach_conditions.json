@@ -1,0 +1,1 @@
+{"approach":{"alpha_deg":8.0,"condition":"approach","dynamic_pressure_pa":1800.0},"check_alphas_deg":[6.0,8.0,12.0,14.0,18.0,24.0],"control":{"axis":"pitch","deflection_limit_deg":25.0,"moment_per_rad_n_m":-320.0,"surface_id":"elevator"},"required_cl_approach":1.1,"required_cl_beyond_stall":1.9,"stall":{"alpha_deg":16.0,"condition":"stall-entry","dynamic_pressure_pa":1500.0}}

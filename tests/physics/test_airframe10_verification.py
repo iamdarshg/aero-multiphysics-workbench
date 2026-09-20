@@ -24,9 +24,9 @@ def _fixed_requirements():
     return compile_requirements_payload(
         {
             "requirements": [
-                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 100.0, "unit": "kg"},
-                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 30.0, "unit": "m/s"},
-                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 65.0, "unit": "m/s"},
+                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 100.0, "unit": "kg"},  # noqa: E501
+                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 30.0, "unit": "m/s"},  # noqa: E501
+                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 65.0, "unit": "m/s"},  # noqa: E501
             ]
         }
     )
@@ -36,9 +36,9 @@ def _lifting_requirements():
     return compile_requirements_payload(
         {
             "requirements": [
-                {"id": "span", "kind": "constraint", "metric": "span_limit", "operator": "at_most", "value": 12.0, "unit": "m"},
-                {"id": "volume", "kind": "constraint", "metric": "volume_limit", "operator": "at_most", "value": 8.0, "unit": "m3"},
-                {"id": "speed", "kind": "performance", "metric": "max_speed", "operator": "at_least", "value": 90.0, "unit": "m/s"},
+                {"id": "span", "kind": "constraint", "metric": "span_limit", "operator": "at_most", "value": 12.0, "unit": "m"},  # noqa: E501
+                {"id": "volume", "kind": "constraint", "metric": "volume_limit", "operator": "at_most", "value": 8.0, "unit": "m3"},  # noqa: E501
+                {"id": "speed", "kind": "performance", "metric": "max_speed", "operator": "at_least", "value": 90.0, "unit": "m/s"},  # noqa: E501
             ]
         }
     )

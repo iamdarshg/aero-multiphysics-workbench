@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import acos, cos, isfinite, pi, sin
+from typing import Any, cast
 
 from ..aero_geometry import ControlSurface, LiftingSurface, SpanwiseStation
 from ..canonical import content_digest
@@ -169,7 +170,7 @@ class ExternalAeroCase:
                 {"surfaceId": name, "drag": value}
                 for name, value in self.section_profile_drag
             ],
-            "bodies": [body.canonical_payload() for body in self.bodies],
+            "bodies": [cast(Any, body).canonical_payload() for body in self.bodies],
         }
 
     @property

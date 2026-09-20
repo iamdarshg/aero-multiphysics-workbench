@@ -461,9 +461,9 @@ def _render_contract_config(
         scheme, "relative-convergence-measure", {"limit": repr(tolerance)}
     )
     for field in fields:
-        interface = _interface_of(interfaces, field)
-        from_mesh = mesh_names[f"{interface}:{field.write}"]
-        to_mesh = mesh_names[f"{interface}:{field.read}"]
+        interface_name = _interface_of(interfaces, field)
+        from_mesh = mesh_names[f"{interface_name}:{field.write}"]
+        to_mesh = mesh_names[f"{interface_name}:{field.read}"]
         ElementTree.SubElement(
             scheme,
             "exchange",

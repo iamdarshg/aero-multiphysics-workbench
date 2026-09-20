@@ -1,0 +1,26 @@
+{
+  "gridId": "vs07-community",
+  "originM": [50.0, -50.0, 0.0],
+  "spacingM": 50.0,
+  "countX": 3,
+  "countY": 3,
+  "observerHeightM": 1.2,
+  "environment": {
+    "speedOfSoundMS": 340.0,
+    "densityKgM3": 1.225,
+    "absorptionDbPerM": 0.0,
+    "referenceDistanceM": 1.0
+  },
+  "samples": [
+    {
+      "timeS": 0.0,
+      "positionM": [0.0, 0.0, 60.0],
+      "velocityMS": [30.0, 0.0, 0.0]
+    },
+    {
+      "timeS": 5.0,
+      "positionM": [150.0, 0.0, 60.0],
+      "velocityMS": [30.0, 0.0, 0.0]
+    }
+  ]
+}

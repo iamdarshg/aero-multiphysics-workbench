@@ -28,7 +28,7 @@ def evaluate_tailless_closure(spec: TaillessClosureSpec) -> TaillessClosureRepor
     margin = spec.neutral_point_mac_fraction - spec.cg_mac_fraction
     required = 0.0
     if spec.elevon_pitch_derivative_per_rad == 0.0:
-        reasons = ("TAILESS_ELEVON_AUTHORITY_ZERO",)
+        reasons: tuple[str, ...] = ("TAILESS_ELEVON_AUTHORITY_ZERO",)
     else:
         required = -spec.zero_control_pitch_coefficient / spec.elevon_pitch_derivative_per_rad
         reasons = ()

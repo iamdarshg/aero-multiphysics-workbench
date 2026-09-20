@@ -197,7 +197,7 @@ class PhysicalAssembly(PhysicalSystem):
         PhysicalSystem.__post_init__(self)
         object.__setattr__(self, "children", tuple(sorted(self.children, key=lambda c: c.system_id)))  # noqa: E501
         object.__setattr__(self, "interfaces", tuple(sorted(self.interfaces, key=lambda c: c.digest)))  # noqa: E501
-        systems = {self.system_id: self}
+        systems: dict[str, PhysicalSystem] = {self.system_id: self}
 
         def collect(system: PhysicalSystem) -> None:
             if system.system_id in systems:

@@ -2,7 +2,6 @@ from dataclasses import replace
 from threading import Barrier
 
 import pytest
-
 from aeroworkbench_core import physical
 from aeroworkbench_coupling.dag import ComputationDAG
 

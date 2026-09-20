@@ -1,0 +1,1 @@
+{"alpha_stall_deg":14.0,"alpha_zero_lift_deg":-2.0,"cd0":0.008,"cl_max":1.45,"deep_stall_alpha_deg":26.0,"drag_k":0.012,"lift_slope_per_rad":5.8,"post_stall_drag_rise_per_deg":0.006,"post_stall_drop_per_deg":0.045,"alpha_envelope_deg":[-10.0,30.0],"cm0":-0.08,"section_id":"simple-airfoil","source":"vs04 canonical simple-airfoil fixture"}

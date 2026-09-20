@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import Any, cast
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,12 +66,12 @@ class AirframeVerificationLedger:
     @classmethod
     def from_dict(cls, payload: dict[str, object]) -> AirframeVerificationLedger:
         ledger = cls(str(payload["verificationId"]))
-        for item in payload.get("entries", []):
-            data = dict(item)
+        for item in cast(Sequence[Any], payload.get("entries", [])):
+            data: dict[str, Any] = dict(cast(Mapping[str, Any], item))
             ledger.entries.append(VerificationEntry(str(data["family"]), str(data["status"]), str(data["source"]), str(data["evidenceDigest"]), data.get("nativeReceipt")))  # noqa: E501
-        for item in payload.get("costs", []):
-            data = dict(item)
-            ledger.costs.append(VerificationCostReceipt(data["provider"], data["resource"], data.get("wallTimeSeconds", data.get("wall_time_seconds")), data.get("actualCostUsd", data.get("actual_cost_usd")), data["runId"]))  # noqa: E501
+        for item in cast(Sequence[Any], payload.get("costs", [])):
+            data = dict(cast(Mapping[str, Any], item))
+            ledger.costs.append(VerificationCostReceipt(str(data["provider"]), str(data["resource"]), cast(float, data.get("wallTimeSeconds", data.get("wall_time_seconds"))), cast(float, data.get("actualCostUsd", data.get("actual_cost_usd"))), str(data["runId"])))  # noqa: E501
         return ledger
 
     @property

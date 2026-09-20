@@ -95,12 +95,12 @@ from .loads import (
     StructuralLoadCase,
     StructuralLoadSet,
     TrimLoadSeam,
-    load_case_from_aero,
-    load_case_from_mass,
-    load_case_from_trim,
-    load_case_from_landing_gear,
-    load_case_from_propulsor,
     ground_load_set_for_segment,
+    load_case_from_aero,
+    load_case_from_landing_gear,
+    load_case_from_mass,
+    load_case_from_propulsor,
+    load_case_from_trim,
 )
 from .mass_feedback import (
     StructuralMassParticipant,

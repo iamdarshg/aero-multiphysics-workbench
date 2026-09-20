@@ -17,6 +17,7 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from math import isfinite
+from typing import Any
 
 # Parity with packages/schema/src/design.ts CHANGE_IMPACT. The TS table maps
 # changed design sections to invalidated downstream node families; this copy
@@ -177,9 +178,9 @@ class ComputationDAG:
         self._nodes[node.node_id] = node
 
     @classmethod
-    def from_system(cls, system, functions: Mapping[str, NodeFunction]) -> ComputationDAG:
+    def from_system(cls, system: Any, functions: Mapping[str, NodeFunction]) -> ComputationDAG:
         dag = cls(functions)
-        def visit(node, upstream=()):
+        def visit(node: Any, upstream: tuple[str, ...] = ()) -> None:
             for child in getattr(node, "children", ()):
                 visit(child, upstream)
             deps = tuple(child.system_id for child in getattr(node, "children", ()))
@@ -214,7 +215,7 @@ class ComputationDAG:
         self,
         base_hashes: Mapping[str, str],
         changed_sections: tuple[str, ...] = (),
-        **_options,
+        **_options: Any,
     ) -> dict[str, NodeResult]:
         import re
 
@@ -229,7 +230,7 @@ class ComputationDAG:
         leaves = [node for node in self._nodes.values() if not node.upstream]
         if len(leaves) > 1:
             from concurrent.futures import ThreadPoolExecutor
-            def run_leaf(node):
+            def run_leaf(node: NodeSpec) -> tuple[str, NodeResult]:
                 key = content_digest({"node": node.node_id})
                 cached = self._cache.get(key)
                 if cached is not None:

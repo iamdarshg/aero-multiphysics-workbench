@@ -1,0 +1,22 @@
+{
+  "rotorId": "vs07-demo-prop",
+  "bladeCount": 3,
+  "rpm": 1200.0,
+  "radiusM": 0.9,
+  "thrustN": 420.0,
+  "harmonics": 3,
+  "amplitudesPaByHarmonic": {"1": 0.42, "2": 0.18, "3": 0.07},
+  "referencePressurePa": 2.0e-5,
+  "observer": {"observerId": "community-north", "positionM": [120.0, 0.0, 1.2]},
+  "environment": {
+    "speedOfSoundMS": 340.0,
+    "densityKgM3": 1.225,
+    "absorptionDbPerM": 0.0,
+    "referenceDistanceM": 1.0
+  },
+  "flight": {
+    "sourcePositionM": [0.0, 0.0, 60.0],
+    "sourceVelocityMS": [30.0, 0.0, 0.0],
+    "timeS": 0.0
+  }
+}

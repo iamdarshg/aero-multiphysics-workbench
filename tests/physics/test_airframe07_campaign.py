@@ -27,10 +27,10 @@ def _seed():
     compiled = compile_requirements_payload(
         {
             "requirements": [
-                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 120.0, "unit": "kg"},
-                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 30.0, "unit": "m/s"},
-                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 65.0, "unit": "m/s"},
-                {"id": "range", "kind": "mission", "metric": "range", "operator": "at_least", "value": 300.0, "unit": "km"},
+                {"id": "payload", "kind": "mission", "metric": "payload_mass", "operator": "at_least", "value": 120.0, "unit": "kg"},  # noqa: E501
+                {"id": "stall", "kind": "performance", "metric": "stall_speed", "operator": "at_most", "value": 30.0, "unit": "m/s"},  # noqa: E501
+                {"id": "cruise", "kind": "performance", "metric": "cruise_speed", "operator": "at_least", "value": 65.0, "unit": "m/s"},  # noqa: E501
+                {"id": "range", "kind": "mission", "metric": "range", "operator": "at_least", "value": 300.0, "unit": "km"},  # noqa: E501
             ]
         }
     )

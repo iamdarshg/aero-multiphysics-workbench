@@ -24,7 +24,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from math import isfinite
 from time import perf_counter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from participants.manifest import ParticipantManifest
 
@@ -413,7 +413,7 @@ class ManifestCoordinator:
             first_unit = next(iter(units))
             if any(not units_compatible(unit, first_unit) for unit in units):
                 raise ValueError(f"SHARED_INPUT_UNIT_MISMATCH:{name}")
-        self._problem_cache: dict[str, object] | None = None
+        self._problem_cache: dict[str, Any] | None = None
 
     @property
     def policy(self) -> CoordinatorPolicy:
@@ -558,10 +558,10 @@ class ManifestCoordinator:
 
     def _problem_for(
         self,
-        om: object,
+        om: Any,
         start_values: dict[str, dict[str, float]],
         reuse: ProblemReusePolicy | None,
-    ) -> tuple[object, dict[str, str], dict[str, str], dict[str, str], float, bool]:
+    ) -> tuple[Any, dict[str, str], dict[str, str], dict[str, str], float, bool]:
         """Build+setup a Problem, or reuse the cached one for this graph.
 
         Returns ``(problem, comp_paths, indep_map, output_paths, setup_seconds,
@@ -576,16 +576,16 @@ class ManifestCoordinator:
             and cache["signature"] == signature
         ):
             return (
-                cache["problem"],  # type: ignore[return-value]
-                cache["comp_paths"],  # type: ignore[return-value]
-                cache["indep_map"],  # type: ignore[return-value]
-                cache["output_paths"],  # type: ignore[return-value]
+                cache["problem"],
+                cache["comp_paths"],
+                cache["indep_map"],
+                cache["output_paths"],
                 0.0,
                 False,
             )
         started = perf_counter()
         problem, comp_paths, indep_map, output_paths = self._build_problem(om, start_values)
-        problem.setup()  # type: ignore[attr-defined]
+        problem.setup()
         setup_seconds = perf_counter() - started
         entry = {
             "signature": signature,
@@ -599,16 +599,16 @@ class ManifestCoordinator:
 
     @staticmethod
     def _apply_values(
-        problem: object,
+        problem: Any,
         start_values: Mapping[str, Mapping[str, float]],
         indep_map: Mapping[str, str],
         output_paths: Mapping[str, str],
     ) -> None:
         """Set candidate values on a (possibly reused) Problem, no rebuild."""
         for key, value in start_values["indep"].items():
-            problem.set_val(indep_map[key], value)  # type: ignore[attr-defined]
+            problem.set_val(indep_map[key], value)
         for qualified, value in start_values["outputs"].items():
-            problem.set_val(output_paths[qualified], value)  # type: ignore[attr-defined]
+            problem.set_val(output_paths[qualified], value)
 
     def _resolve_start_values(
         self,
@@ -660,8 +660,8 @@ class ManifestCoordinator:
         return {"indep": resolved, "outputs": output_guesses, "set": {}}
 
     def _build_problem(
-        self, om: object, start_values: dict[str, dict[str, float]]
-    ) -> tuple[object, dict[str, str], dict[str, str], dict[str, str]]:
+        self, om: Any, start_values: dict[str, dict[str, float]]
+    ) -> tuple[Any, dict[str, str], dict[str, str], dict[str, str]]:
         participants = self._participants
         connection_unit: dict[tuple[str, str], str] = {}
         for (target_id, target_var), (source_id, source_var) in self._targets.items():
@@ -674,7 +674,7 @@ class ManifestCoordinator:
 
         coordinator = self
 
-        class _ParticipantComp(om.ExplicitComponent):  # type: ignore[valid-type, misc]
+        class _ParticipantComp(om.ExplicitComponent):  # type: ignore[misc]
             def __init__(self, spec: ScalarParticipantSpec) -> None:
                 super().__init__()
                 self._spec = spec
@@ -799,13 +799,13 @@ class ManifestCoordinator:
 
     def _read_values(
         self,
-        problem: object,
+        problem: Any,
         comp_paths: dict[str, str],
         indep_map: dict[str, str],
         output_paths: dict[str, str],
     ) -> dict[str, float]:
         values: dict[str, float] = {}
-        get_val = problem.get_val  # type: ignore[attr-defined]
+        get_val = problem.get_val
         for qualified, path in output_paths.items():
             values[qualified] = _as_float(get_val(path))
         for key, path in indep_map.items():
@@ -821,7 +821,7 @@ class ManifestCoordinator:
                         if item.name == source_var
                     )
                     raw = _as_float(
-                        get_val(  # type: ignore[attr-defined]
+                        get_val(
                             f"{comp_paths[participant.participant_id]}.{_sanitize(var.name)}"
                         )
                     )
@@ -872,7 +872,7 @@ def make_geometry_regeneration_component(
         raise ValueError("DUPLICATE_GEOMETRY_VARIABLE")
     engine = regenerator or GeometryRegenerator(request)
 
-    class _GeometryRegenerationComponent(om.ExplicitComponent):  # type: ignore[valid-type, misc]
+    class _GeometryRegenerationComponent(om.ExplicitComponent):  # type: ignore[misc]
         def __init__(self) -> None:
             super().__init__()
             self._engine = engine

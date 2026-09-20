@@ -20,7 +20,6 @@ import re
 import sqlite3
 import threading
 import uuid
-from contextlib import contextmanager
 from collections.abc import Callable
 from copy import deepcopy
 from dataclasses import asdict, dataclass
@@ -242,9 +241,9 @@ class PersistentResultCache:
                 );
                 """
             )
-            columns = {row[1] for row in self._connection.execute("PRAGMA table_info(result_cache)")}
+            columns = {row[1] for row in self._connection.execute("PRAGMA table_info(result_cache)")}  # noqa: E501
             if "compatibility_digest" not in columns:
-                self._connection.execute("ALTER TABLE result_cache ADD COLUMN compatibility_digest TEXT")
+                self._connection.execute("ALTER TABLE result_cache ADD COLUMN compatibility_digest TEXT")  # noqa: E501
             self._connection.commit()
 
     # -- writes ----------------------------------------------------------
@@ -305,7 +304,7 @@ class PersistentResultCache:
             try:
                 self._connection.execute(
                     "INSERT INTO result_cache(key,node_type,family,upstream_keys,solver_id,"
-                    "solver_version,participant,source,validity_policy_version,compatibility_digest,artifacts,"
+                    "solver_version,participant,source,validity_policy_version,compatibility_digest,artifacts,"  # noqa: E501
                     "value_digest,value_bytes,pinned,created_at,last_accessed_at) "
                     "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (
@@ -379,19 +378,19 @@ class PersistentResultCache:
                compatibility_digest: str | None = None) -> Any:
         loaded = self._load(key)
         if loaded is not None:
-            return type("CacheLookup", (), {"status": "exact_hit", "value": deepcopy(loaded[1]), "source_key": key, "reason": ""})()
+            return type("CacheLookup", (), {"status": "exact_hit", "value": deepcopy(loaded[1]), "source_key": key, "reason": ""})()  # noqa: E501
         if warm_start_key is not None:
             with self._lock:
                 row = self._get_row(warm_start_key)
             if row is not None and row["compatibility_digest"] == compatibility_digest:
                 value = self.get(warm_start_key)
-                self._record_event("cache.warm_start", warm_start_key, json.dumps({"source": warm_start_key}))
-                return type("CacheLookup", (), {"status": "warm_start", "value": value, "source_key": warm_start_key, "reason": ""})()
+                self._record_event("cache.warm_start", warm_start_key, json.dumps({"source": warm_start_key}))  # noqa: E501
+                return type("CacheLookup", (), {"status": "warm_start", "value": value, "source_key": warm_start_key, "reason": ""})()  # noqa: E501
             reason = "INCOMPATIBLE_WARM_START"
         else:
             reason = "INVALIDATED" if key in self._invalidated else "NOT_FOUND"
         self._record_event("cache.miss", key, json.dumps({"reason": reason}))
-        return type("CacheLookup", (), {"status": "miss", "value": None, "source_key": None, "reason": reason})()
+        return type("CacheLookup", (), {"status": "miss", "value": None, "source_key": None, "reason": reason})()  # noqa: E501
 
     def describe(self, key: str) -> CacheEntryMetadata | None:
         if not HEX64.fullmatch(key):

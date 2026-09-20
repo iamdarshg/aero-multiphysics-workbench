@@ -21,7 +21,7 @@ import json
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, replace
 from math import isfinite
-from typing import Any
+from typing import Any, cast
 
 SUPPORTED_QUANTITIES = ("pressure", "traction", "displacement", "temperature", "heat-flux")
 
@@ -125,7 +125,9 @@ def transfer_field(
     # Backward-compatible positional form: transfer_field(source, target,
     # quantity, values).
     if isinstance(target, str) and not isinstance(quantity, str):
-        legacy_target, legacy_quantity, legacy_values = source_values, target, quantity
+        legacy_values = quantity
+        legacy_target = cast(InterfaceMesh, source_values)
+        legacy_quantity: str | Sequence[float] = target
         source_values, target, quantity = legacy_values, legacy_target, legacy_quantity
     if not isinstance(target, InterfaceMesh) or not isinstance(quantity, str):
         raise ValueError("FIELD_TRANSFER_ARGUMENTS_INVALID")
@@ -274,7 +276,7 @@ class FieldCoupler:
     ) -> CouplingWindow:
         if self._engine == "precice-native":
             try:
-                from precice import Interface  # type: ignore[import-not-found] # noqa: F401
+                from precice import Interface  # type: ignore[attr-defined] # noqa: F401
             except ImportError as exc:
                 from participants.errors import NativeErrorCode, ParticipantError
 
@@ -449,11 +451,13 @@ class WrenchTransferReceipt:
     operator_digest: str = ""
 
     @property
-    def values(self):
+    def values(self) -> tuple[float, ...]:
         return self.force + self.moment
 
 
-def transfer_wrench(contract, force, moment, transform) -> WrenchTransferReceipt:
+def transfer_wrench(
+    contract: Any, force: Sequence[float], moment: Sequence[float], transform: Any
+) -> WrenchTransferReceipt:
     """Rotate a force/moment pair and shift moment to the target origin."""
     import numpy as np
     if transform.source_frame != contract.source.frame:
@@ -487,22 +491,22 @@ class ClosureReceipt:
     residual: float
 
 
-def power_closure(contract, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
+def power_closure(contract: Any, input_w: float, output_w: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
     if not isfinite(loss_w) or loss_w < 0.0:
         raise ValueError("POWER_LOSS_INVALID")
     residual = float(input_w - output_w - loss_w)
     return ClosureReceipt(abs(residual) <= tolerance, residual)
 
 
-def electrical_closure(contract, voltage_in, current_in, voltage_out, current_out, *, loss_w=0.0, tolerance=1e-9):  # noqa: E501
+def electrical_closure(contract: Any, voltage_in: float, current_in: float, voltage_out: float, current_out: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
     return power_closure(contract, voltage_in * current_in, voltage_out * current_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
 
 
-def shaft_closure(contract, speed_in, torque_in, speed_out, torque_out, *, loss_w=0.0, tolerance=1e-9):  # noqa: E501
+def shaft_closure(contract: Any, speed_in: float, torque_in: float, speed_out: float, torque_out: float, *, loss_w: float = 0.0, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
     return power_closure(contract, speed_in * torque_in, speed_out * torque_out, loss_w=loss_w, tolerance=tolerance)  # noqa: E501
 
 
-def virtual_work_receipt(forces, displacements, loads, load_displacements, *, tolerance=1e-9) -> ClosureReceipt:  # noqa: E501
+def virtual_work_receipt(forces: Sequence[float], displacements: Sequence[float], loads: Sequence[float], load_displacements: Sequence[float], *, tolerance: float = 1e-9) -> ClosureReceipt:  # noqa: E501
     """Check virtual-work equivalence between two generalized force/displacement sets."""
     lhs = float(sum(f * d for f, d in zip(forces, displacements, strict=True)))
     rhs = float(sum(f * d for f, d in zip(loads, load_displacements, strict=True)))
@@ -516,7 +520,7 @@ class HarmonicTransferReceipt:
     shaft_id: str
 
     @property
-    def coefficients(self):
+    def coefficients(self) -> tuple[complex, ...]:
         return self.values
 
 
@@ -528,7 +532,12 @@ class HarmonicTransferResult:
 
 
 def transfer_harmonic(
-    contract, values, basis, *, delay_s: float = 0.0, angle_rad: float = 0.0
+    contract: Any,
+    values: Sequence[complex],
+    basis: Any,
+    *,
+    delay_s: float = 0.0,
+    angle_rad: float = 0.0,
 ) -> HarmonicTransferResult:
     from cmath import exp
     if basis.frame != contract.source.frame:
