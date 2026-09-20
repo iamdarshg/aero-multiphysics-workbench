@@ -14,6 +14,7 @@ supplied when a project convention differs.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from math import acos, cos, isfinite, pi, sin
 from typing import Any, cast
@@ -156,6 +157,18 @@ class ExternalAeroCase:
         return derive_geometry_reference(self)
 
     def canonical(self) -> dict[str, object]:
+        bodies = []
+        for body in self.bodies:
+            payload = dict(cast(Any, body).canonical_payload())
+            payload.setdefault(
+                "semanticIdentity",
+                {
+                    "bodyId": payload.get("bodyId"),
+                    "role": payload.get("role"),
+                    "semanticKey": f"{payload.get('bodyId')}.solid",
+                },
+            )
+            bodies.append(payload)
         return {
             "caseId": self.case_id,
             "symmetry": self.symmetry,
@@ -170,7 +183,20 @@ class ExternalAeroCase:
                 {"surfaceId": name, "drag": value}
                 for name, value in self.section_profile_drag
             ],
-            "bodies": [cast(Any, body).canonical_payload() for body in self.bodies],
+            "bodies": bodies,
+        }
+
+    def native_payload(self, reference: Mapping[str, object]) -> dict[str, object]:
+        """Return the solver-neutral canonical payload for a native adapter."""
+
+        return {
+            "caseId": self.case_id,
+            "caseDigest": self.digest,
+            "symmetry": self.symmetry,
+            "reference": dict(reference),
+            "surfaces": [surface.canonical_payload() for surface in self.surfaces],
+            "controls": [control.canonical_payload() for control in self.controls],
+            "bodies": self.canonical()["bodies"],
         }
 
     @property

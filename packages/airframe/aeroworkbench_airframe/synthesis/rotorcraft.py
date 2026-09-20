@@ -16,6 +16,8 @@ from aeroworkbench_core.types import Provenance
 from aeroworkbench_propulsors import RotorSpec
 from aeroworkbench_propulsors.provenance import analytical_provenance
 
+_Vector3 = tuple[float, float, float]
+
 
 class RotorcraftNativeUnavailable(RuntimeError):
     """Native/free-wake rotorcraft capability is not available at this seam."""
@@ -28,6 +30,14 @@ def _finite(value: float, name: str, *, minimum: float | None = None) -> float:
     return value
 
 
+def _vector3(value: Iterable[float], name: str) -> _Vector3:
+    result = tuple(float(item) for item in value)
+    if len(result) != 3 or any(not isfinite(item) for item in result):
+        raise ValueError(f"{name}_INVALID")
+    first, second, third = result
+    return (first, second, third)
+
+
 @dataclass(frozen=True, slots=True)
 class RotorcraftControls:
     collective_rad: float = 0.0
@@ -37,7 +47,7 @@ class RotorcraftControls:
 
 @dataclass(frozen=True, slots=True)
 class RotorcraftFlightCondition:
-    velocity_m_s: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    velocity_m_s: _Vector3 = (0.0, 0.0, 0.0)
     density_kg_m3: float = 1.225
     speed_of_sound_m_s: float = 340.29
 
@@ -59,7 +69,7 @@ class RotorcraftLimits:
 @dataclass(frozen=True, slots=True)
 class RotorcraftRotor:
     spec: RotorSpec
-    position_m: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    position_m: _Vector3 = (0.0, 0.0, 0.0)
     flapping_stiffness: float = 1.0
     lead_lag_hook: Callable[[float, float], float] | None = None
     torsion_hook: Callable[[float, float], float] | None = None
@@ -77,8 +87,8 @@ class FlappingState:
 class RotorcraftLoads:
     thrust_n: float
     torque_n_m: float
-    hub_force_n: tuple[float, float, float]
-    hub_moment_n_m: tuple[float, float, float]
+    hub_force_n: _Vector3
+    hub_moment_n_m: _Vector3
 
 
 @dataclass(frozen=True, slots=True)
@@ -101,6 +111,17 @@ class RotorcraftResult:
     flapping: FlappingState
     valid: bool
     violations: tuple[str, ...]
+    provenance: Provenance
+
+
+@dataclass(frozen=True, slots=True)
+class RotorWakeField:
+    """Analytical installed-wake samples in a declared source frame."""
+
+    source_frame: str
+    points_m: tuple[_Vector3, ...]
+    local_velocities_m_s: tuple[_Vector3, ...]
+    induced_flow_m_s: tuple[_Vector3, ...]
     provenance: Provenance
 
 
@@ -265,6 +286,58 @@ def evaluate_rotorcraft(
     )
 
 
+def rotor_wake_field(
+    rotor: RotorcraftRotor,
+    result: RotorcraftResult,
+    condition: RotorcraftFlightCondition,
+    points_m: Iterable[_Vector3],
+    *,
+    source_frame: str | None = None,
+) -> RotorWakeField:
+    """Sample a bounded analytical actuator-disk wake at installed surfaces.
+
+    The existing rotorcraft convention places the downstream direction at lower
+    body ``z``.  Native free-wake transport is intentionally not approximated by
+    this helper and remains capability-gated by :func:`evaluate_rotorcraft`.
+    """
+    samples: tuple[_Vector3, ...] = tuple(
+        _vector3(point, "ROTOR_WAKE_POINTS") for point in points_m
+    )
+    frame = source_frame or f"rotor:{rotor.spec.rotor_id}"
+    radius = max(rotor.spec.tip_radius_m, 1e-9)
+    induced: list[tuple[float, float, float]] = []
+    local: list[tuple[float, float, float]] = []
+    for point in samples:
+        radial = sqrt((point[0] - rotor.position_m[0]) ** 2 + (point[1] - rotor.position_m[1]) ** 2)
+        downstream = rotor.position_m[2] - point[2]
+        if downstream <= 0.0 or radial >= radius:
+            factor = 0.0
+        else:
+            factor = exp(-downstream / radius) * max(0.0, 1.0 - radial / radius)
+        flow: _Vector3 = (
+            0.0,
+            result.induced_velocity_m_s * 0.1 * rotor.spec.direction_sign * factor,
+            -result.induced_velocity_m_s * factor,
+        )
+        induced.append(flow)
+        local.append(
+            (
+                condition.velocity_m_s[0] + flow[0],
+                condition.velocity_m_s[1] + flow[1],
+                condition.velocity_m_s[2] + flow[2],
+            )
+        )
+    provenance = analytical_provenance(
+        "airframe.rotorcraft.installed-wake",
+        {"rotor": rotor.spec.rotor_id, "sourceFrame": frame, "points": list(samples)},
+        assumptions=(
+            "Analytical actuator-disk wake with exponential downstream decay.",
+            "Native/free-wake capability is not used.",
+        ),
+    )
+    return RotorWakeField(frame, samples, tuple(local), tuple(induced), provenance)
+
+
 def _wake(
     source: RotorcraftRotor,
     target: RotorcraftRotor,
@@ -365,8 +438,10 @@ __all__ = [
     "RotorcraftResult",
     "RotorcraftRotor",
     "RotorcraftTrimResult",
+    "RotorWakeField",
     "WakeExchange",
     "evaluate_rotorcraft",
     "evaluate_rotorcraft_assembly",
     "trim_rotorcraft",
+    "rotor_wake_field",
 ]

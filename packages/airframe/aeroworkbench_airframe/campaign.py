@@ -23,7 +23,7 @@ from aeroworkbench_optimization import (
 )
 from aeroworkbench_optimization import CampaignRecord as GenericCampaignRecord
 
-from .synthesis import VehicleSeed, build_seed_design_space
+from .synthesis.seeds import VehicleSeed, build_seed_design_space
 
 
 class MutationStage(StrEnum):

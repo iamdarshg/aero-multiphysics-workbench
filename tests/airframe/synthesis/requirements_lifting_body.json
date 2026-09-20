@@ -47,6 +47,14 @@
       "operator": "at_most",
       "value": 15.0,
       "unit": "m3"
+    },
+    {
+      "id": "REQ-STATIC-MARGIN",
+      "kind": "constraint",
+      "metric": "static_margin",
+      "operator": "at_least",
+      "value": 0.1,
+      "unit": "dimensionless"
     }
   ]
 }

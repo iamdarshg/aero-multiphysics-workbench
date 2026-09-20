@@ -71,7 +71,7 @@ def test_airframe10_final_verification_budget_is_hard_capped_at_ten_cents() -> N
     assert ledger.total_cost_usd == pytest.approx(0.06)
 
 
-def test_airframe10_family_verification_is_analytical_and_replayable() -> None:
+def test_airframe10_seed_only_inputs_are_not_a_passed_verification() -> None:
     fixed = generate_fixed_wing_seeds(_fixed_requirements(), seed_count=1)[0]
     lifting = synthesize_lifting_body_seam(_lifting_requirements()).seeds[0]
     rotor = synthesize_rotorcraft_seam(_fixed_requirements()).seeds[0]
@@ -87,14 +87,44 @@ def test_airframe10_family_verification_is_analytical_and_replayable() -> None:
         "lifting_body",
         "rotorcraft",
     }
-    assert all(entry.status == "passed" for entry in ledger.entries)
-    assert all(entry.source == "analytical" for entry in ledger.entries)
-    assert all(entry.native_receipt is None for entry in ledger.entries)
+    assert not ledger.passed
+    assert {entry.stage for entry in ledger.entries} == {
+        "requirements", "synthesis", "campaign", "mass_cg_trim", "aero_rotor",
+        "fidelity_promotion", "provenance_replay",
+    }
+    assert all(entry.status != "passed" for entry in ledger.entries if entry.stage != "synthesis")
+    assert all(entry.source != "native_solver" for entry in ledger.entries)
     rebuilt = AirframeVerificationLedger.from_dict(
         json.loads(json.dumps(ledger.as_dict()))
     )
     assert rebuilt.as_dict() == ledger.as_dict()
     assert rebuilt.digest == ledger.digest
+
+
+def test_airframe10_capability_absence_is_explicit(monkeypatch) -> None:
+    fixed = generate_fixed_wing_seeds(_fixed_requirements(), seed_count=1)[0]
+
+    class Capability:
+        available = False
+        detail = "test VSPAERO is not installed"
+
+        def canonical(self):
+            return {"available": self.available, "detail": self.detail}
+
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: Capability(),
+    )
+    ledger = verify_airframe_families(
+        verification_id="capability-proof",
+        fixed_wing=fixed,
+        lifting_body=fixed,
+        rotorcraft=fixed,
+    )
+    promotions = [entry for entry in ledger.entries if entry.stage == "fidelity_promotion"]
+    assert len(promotions) == 3
+    assert all(entry.status == "unavailable" for entry in promotions)
+    assert all("not installed" in entry.detail for entry in promotions)
 
 
 def test_airframe10_native_claim_requires_a_trusted_native_receipt() -> None:

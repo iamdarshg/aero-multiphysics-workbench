@@ -16,6 +16,8 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import subprocess
+import tempfile
 from collections.abc import Mapping
 from dataclasses import dataclass
 from math import isfinite
@@ -83,8 +85,35 @@ class VspaeroCapability:
         }
 
 
-def probe_vspaero_capability(executable: str = "vspaero") -> VspaeroCapability:
-    """Probe for a native VSPAERO executable without running it."""
+def _version_for(executable: str) -> str | None:
+    """Read executable identity without invoking a solver case."""
+
+    try:
+        completed = subprocess.run(
+            (executable, "--version"),
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=5.0,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    for stream in (completed.stdout, completed.stderr):
+        for line in stream.splitlines():
+            if line.strip():
+                return line.strip()
+    return None
+
+
+def resolve_vspaero_executable(executable: str | None = None) -> VspaeroCapability:
+    """Resolve one configured executable or the first known native binary."""
+
+    if executable is None:
+        for candidate in VSPAERO_EXECUTABLES:
+            capability = resolve_vspaero_executable(candidate)
+            if capability.available:
+                return capability
+        return resolve_vspaero_executable(VSPAERO_EXECUTABLES[0])
 
     resolved = shutil.which(executable)
     if resolved is None:
@@ -99,19 +128,21 @@ def probe_vspaero_capability(executable: str = "vspaero") -> VspaeroCapability:
         backend=executable,
         available=True,
         executable=resolved,
-        version=None,
+        version=_version_for(resolved),
         detail=f"{executable} present at {resolved}",
     )
+
+
+def probe_vspaero_capability(executable: str = "vspaero") -> VspaeroCapability:
+    """Probe and resolve a native VSPAERO executable."""
+
+    return resolve_vspaero_executable(executable)
 
 
 def probe_any_vspaero_capability() -> VspaeroCapability:
     """Probe the known VSPAERO/OpenVSP executables and return the first present."""
 
-    for executable in VSPAERO_EXECUTABLES:
-        capability = probe_vspaero_capability(executable)
-        if capability.available:
-            return capability
-    return probe_vspaero_capability(VSPAERO_EXECUTABLES[0])
+    return resolve_vspaero_executable()
 
 
 def require_vspaero_capability(executable: str = "vspaero") -> VspaeroCapability:
@@ -151,8 +182,11 @@ class VspaeroSolution:
 class VspaeroBackend(Protocol):
     """A real VSPAERO execution backend (case deck -> parsed coefficients)."""
 
-    solver_name: str
-    solver_version: str
+    @property
+    def solver_name(self) -> str: ...
+
+    @property
+    def solver_version(self) -> str: ...
 
     def solve(self, case: ExternalAeroCase, reference: AeroReference) -> VspaeroSolution: ...
 
@@ -253,14 +287,7 @@ def prepare_vspaero_case(
 
     directory.mkdir(parents=True, exist_ok=True)
     target = directory / f"{case.case_id}.vspaero-case.json"
-    payload: dict[str, object] = {
-        "caseId": case.case_id,
-        "caseDigest": case.digest,
-        "symmetry": case.symmetry,
-        "reference": reference.canonical(),
-        "surfaces": [surface.canonical_payload() for surface in case.surfaces],
-        "controls": [control.canonical_payload() for control in case.controls],
-    }
+    payload = case.native_payload(reference.canonical())
     target.write_text(json.dumps(payload, sort_keys=True, separators=(",", ":")), encoding="utf-8")
     return target
 
@@ -379,26 +406,34 @@ def solve_vspaero(
     backend: VspaeroBackend | None = None,
     run_id: str | None = None,
     executable: str = "vspaero",
+    job_root: Path | None = None,
 ) -> ExternalAeroResult:
     """Run the governed native path, or fail closed with no fabricated values."""
 
     if backend is None:
-        capability = probe_any_vspaero_capability()
-        if capability.available:
-            raise ExternalAeroCapabilityUnavailableError(
-                "NATIVE_VSPAERO_EXECUTION_BACKEND_NOT_WIRED:"
-                f"{capability.executable}:no parser backend is wired"
-            )
-        capability = probe_vspaero_capability(executable)
-        raise ExternalAeroCapabilityUnavailableError(
-            f"NATIVE_VSPAERO_UNAVAILABLE:{executable}:{capability.detail}"
+        capability = (
+            probe_any_vspaero_capability()
+            if executable == "vspaero"
+            else probe_vspaero_capability(executable)
         )
+        if not capability.available or capability.executable is None:
+            raise ExternalAeroCapabilityUnavailableError(
+                f"NATIVE_VSPAERO_UNAVAILABLE:{executable}:{capability.detail}"
+            )
+        resolved_backend: VspaeroBackend = GovernedVspaeroBackend(
+            executable=capability.executable,
+            job_root=job_root or Path(tempfile.mkdtemp(prefix="aeroworkbench-vspaero-")),
+            solver_name=capability.backend,
+            solver_version=capability.version or "unknown",
+        )
+    else:
+        resolved_backend = backend
     if run_id is None or not run_id.strip():
         raise ExternalAeroValidationError("NATIVE_VSPAERO_RUN_ID_REQUIRED")
-    if not backend.solver_name.strip() or not backend.solver_version.strip():
+    if not resolved_backend.solver_name.strip() or not resolved_backend.solver_version.strip():
         raise ExternalAeroValidationError("NATIVE_VSPAERO_SOLVER_IDENTITY_REQUIRED")
 
-    solution = backend.solve(case, reference)
+    solution = resolved_backend.solve(case, reference)
     for label, value in (
         ("CL", solution.coefficients.lift),
         ("CD", solution.coefficients.drag),
@@ -424,8 +459,8 @@ def solve_vspaero(
             "native OpenVSP/VSPAERO lifting-surface solve",
             "validity and artifacts as reported by the native run",
         ),
-        solver_name=backend.solver_name,
-        solver_version=backend.solver_version,
+        solver_name=resolved_backend.solver_name,
+        solver_version=resolved_backend.solver_version,
         run_id=run_id,
     )
     return ExternalAeroResult(
@@ -438,8 +473,8 @@ def solve_vspaero(
         distributed_loads=solution.distributed_loads,
         validity=_native_validity(solution),
         artifacts=solution.artifacts,
-        solver_name=backend.solver_name,
-        solver_version=backend.solver_version,
+        solver_name=resolved_backend.solver_name,
+        solver_version=resolved_backend.solver_version,
         run_id=run_id,
         provenance=provenance,
     )
@@ -448,14 +483,7 @@ def solve_vspaero(
 def vspaero_case_manifest(case: ExternalAeroCase, reference: AeroReference) -> dict[str, Any]:
     """Canonical case manifest as a plain mapping (same content as the file)."""
 
-    return {
-        "caseId": case.case_id,
-        "caseDigest": case.digest,
-        "symmetry": case.symmetry,
-        "reference": reference.canonical(),
-        "surfaces": [surface.canonical_payload() for surface in case.surfaces],
-        "controls": [control.canonical_payload() for control in case.controls],
-    }
+    return case.native_payload(reference.canonical())
 
 
 __all__ = [
@@ -469,6 +497,7 @@ __all__ = [
     "prepare_vspaero_case",
     "probe_any_vspaero_capability",
     "probe_vspaero_capability",
+    "resolve_vspaero_executable",
     "require_vspaero_capability",
     "solve_vspaero",
     "vspaero_case_manifest",

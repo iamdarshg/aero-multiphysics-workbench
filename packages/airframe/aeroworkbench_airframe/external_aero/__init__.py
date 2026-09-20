@@ -101,6 +101,7 @@ from .native import (
     probe_any_vspaero_capability,
     probe_vspaero_capability,
     require_vspaero_capability,
+    resolve_vspaero_executable,
     solve_vspaero,
     vspaero_case_manifest,
 )
@@ -182,6 +183,7 @@ __all__ = [
     "parse_vspaero_result",
     "probe_any_vspaero_capability",
     "probe_vspaero_capability",
+    "resolve_vspaero_executable",
     "reference_from_altitude",
     "reference_from_conditions",
     "require_vspaero_capability",

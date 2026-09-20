@@ -8,6 +8,13 @@ existing design-space and design-state contracts. All results are deterministic,
 hashable, screening evidence only, and fail closed.
 """
 
+from ..constraints import (
+    DOWNSTREAM_CONSTRAINT_ADAPTERS,
+    ConstraintEvaluation,
+    ConstraintFinding,
+    ConstraintObservation,
+    evaluate_downstream_requirements,
+)
 from .errors import (
     RequirementCompileError,
     RequirementConflict,
@@ -20,6 +27,10 @@ from .fixed_wing import (
     FixedWingAssumptions,
     generate_fixed_wing_seeds,
     requirement_bounds,
+)
+from .lifting_body import (
+    LiftingBodyCampaignFixture,
+    build_lifting_body_campaign_fixture,
 )
 from .methods import (
     METHODS,
@@ -47,6 +58,14 @@ from .requirements import (
     detect_conflicts,
     requirement_spec_from_payload,
 )
+from .rotor_airframe import (
+    RotorAirframeCouplingResult,
+    RotorAirframeNativeUnavailable,
+    RotorAirframeSurface,
+    RotorSurfaceLoad,
+    VehicleTrimEffects,
+    couple_rotor_airframe,
+)
 from .rotorcraft import (
     FlappingState,
     RotorcraftAssemblyResult,
@@ -58,9 +77,11 @@ from .rotorcraft import (
     RotorcraftResult,
     RotorcraftRotor,
     RotorcraftTrimResult,
+    RotorWakeField,
     WakeExchange,
     evaluate_rotorcraft,
     evaluate_rotorcraft_assembly,
+    rotor_wake_field,
     trim_rotorcraft,
 )
 from .seams import (
@@ -86,7 +107,12 @@ __all__ = [
     "SYNTHESIS_MODEL",
     "SYNTHESIS_MODEL_VERSION",
     "CompiledRequirements",
+    "ConstraintEvaluation",
+    "ConstraintFinding",
+    "ConstraintObservation",
+    "DOWNSTREAM_CONSTRAINT_ADAPTERS",
     "FixedWingAssumptions",
+    "LiftingBodyCampaignFixture",
     "MethodValidity",
     "NormalizedRequirement",
     "RequirementEnforcementRoute",
@@ -107,10 +133,18 @@ __all__ = [
     "RotorcraftResult",
     "RotorcraftRotor",
     "RotorcraftTrimResult",
+    "RotorWakeField",
     "WakeExchange",
     "evaluate_rotorcraft",
     "evaluate_rotorcraft_assembly",
     "trim_rotorcraft",
+    "rotor_wake_field",
+    "RotorAirframeCouplingResult",
+    "RotorAirframeNativeUnavailable",
+    "RotorAirframeSurface",
+    "RotorSurfaceLoad",
+    "VehicleTrimEffects",
+    "couple_rotor_airframe",
     "RotorcraftEnvelope",
     "evaluate_rotorcraft_envelope",
     "probe_rotorcraft_foundation",
@@ -124,7 +158,9 @@ __all__ = [
     "compile_requirements",
     "compile_requirements_payload",
     "detect_conflicts",
+    "evaluate_downstream_requirements",
     "generate_fixed_wing_seeds",
+    "build_lifting_body_campaign_fixture",
     "requirement_bounds",
     "requirement_spec_from_payload",
     "synthesize_initial_seeds",

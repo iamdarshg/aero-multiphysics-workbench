@@ -1,0 +1,19 @@
+{
+  "policy": {
+    "currency": "USD",
+    "cumulativeCapUsd": 0.1,
+    "paidCalls": 0
+  },
+  "families": ["fixed_wing", "rotorcraft", "lifting_body"],
+  "stages": [
+    "requirements",
+    "synthesis",
+    "campaign",
+    "mass_cg_trim",
+    "aero_rotor",
+    "fidelity_promotion",
+    "provenance_replay"
+  ],
+  "seedOnlyRule": "family ledger is not passed",
+  "nativeEvidenceRule": "missing capability is unavailable or blocked"
+}

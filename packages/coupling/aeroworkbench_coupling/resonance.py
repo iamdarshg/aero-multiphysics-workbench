@@ -12,14 +12,22 @@ capability for the fidelity planner.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from math import isfinite
+from hashlib import sha256
+from json import dumps
+from math import fmod, isfinite, pi
 from typing import Literal
 
 
 @dataclass(frozen=True, slots=True)
 class HarmonicBasis:
-    """Identity and normalization metadata for a complex harmonic line."""
+    """Identity and normalization metadata for a complex harmonic line.
+
+    ``base_orders`` and ``base_frequencies_hz`` describe a line as a signed
+    integer/real combination of asynchronous bases.  The original
+    ``base_id``/``order`` form remains valid for one-base callers.
+    """
 
     shaft_id: str
     frame: str
@@ -31,22 +39,142 @@ class HarmonicBasis:
     normalization: Literal["one-sided", "two-sided"] = "two-sided"
     spectral_kind: Literal["line", "PSD", "CSD"] = "line"
     base_id: str = ""
+    base_orders: tuple[tuple[str, float], ...] | Mapping[str, float] = ()
+    base_frequencies_hz: tuple[tuple[str, float], ...] | Mapping[str, float] = ()
+    phase_references_rad: tuple[tuple[str, float], ...] | Mapping[str, float] = ()
+    nodal_diameter: int | None = None
 
     def __post_init__(self) -> None:
-        if (
-            not self.shaft_id.strip()
-            or not self.frame.strip()
-            or not self.base_id.strip()
-            or not isfinite(self.frequency_hz)
-            or self.frequency_hz < 0
-            or not isfinite(self.order)
-            or self.order < 0
-        ):
+        if not self.shaft_id.strip() or not self.frame.strip():
             raise ValueError("HARMONIC_BASIS_INVALID")
+        supplied_orders = _canonical_pairs(self.base_orders, signed=True)
+        if not supplied_orders:
+            if not self.base_id.strip():
+                raise ValueError("HARMONIC_BASIS_INVALID")
+            if not isfinite(self.order):
+                raise ValueError("HARMONIC_BASIS_INVALID")
+            supplied_orders = ((self.base_id.strip(), float(self.order)),)
+        frequencies = _canonical_pairs(self.base_frequencies_hz, signed=False)
+        if frequencies and {name for name, _ in frequencies} != {
+            name for name, _ in supplied_orders
+        }:
+            raise ValueError("HARMONIC_BASES_MISMATCH")
+        phases = _canonical_phases(self.phase_references_rad, supplied_orders)
+        if frequencies:
+            calculated_frequency = sum(
+                coefficient * dict(frequencies)[name]
+                for name, coefficient in supplied_orders
+            )
+        else:
+            calculated_frequency = self.frequency_hz
+        if not isfinite(calculated_frequency) or calculated_frequency < 0:
+            raise ValueError("HARMONIC_BASIS_INVALID")
+        if self.nodal_diameter is not None and (
+            not isinstance(self.nodal_diameter, int) or self.nodal_diameter < 0
+        ):
+            raise ValueError("HARMONIC_NODAL_DIAMETER_INVALID")
+        object.__setattr__(self, "base_id", supplied_orders[0][0])
+        object.__setattr__(self, "base_orders", supplied_orders)
+        object.__setattr__(self, "base_frequencies_hz", frequencies)
+        object.__setattr__(self, "phase_references_rad", phases)
+        object.__setattr__(self, "frequency_hz", float(calculated_frequency))
+        object.__setattr__(self, "order", float(sum(value for _, value in supplied_orders)))
 
     @property
-    def order_identity(self) -> tuple[str, float]:
-        return self.base_id, self.order
+    def order_identity(self) -> tuple[str, float] | tuple[tuple[str, float], ...]:
+        """Canonical order identity, retaining the legacy one-base shape."""
+        if len(self.base_orders) == 1 and not self.base_frequencies_hz:
+            return self.base_orders[0]
+        return self.base_orders
+
+    @property
+    def phase_identity(self) -> tuple[tuple[str, float], ...]:
+        return self.phase_references_rad
+
+    @property
+    def base_ids(self) -> tuple[str, ...]:
+        return tuple(name for name, _ in self.base_orders)
+
+    @property
+    def coefficients(self) -> tuple[float, ...]:
+        return tuple(value for _, value in self.base_orders)
+
+    @property
+    def phase_references(self) -> tuple[tuple[str, float], ...]:
+        return self.phase_references_rad
+
+    @property
+    def calculated_frequency_hz(self) -> float:
+        return self.frequency_hz
+
+    def transform_phase_identity(self, *, angle_rad: float = 0.0, delay_s: float = 0.0) -> float:
+        """Return the deterministic phase applied by a frame/time transfer."""
+        if not isfinite(angle_rad) or not isfinite(delay_s):
+            raise ValueError("HARMONIC_TRANSFORM_PHASE_INVALID")
+        return sum(phase for _, phase in self.phase_references_rad) + self.order * angle_rad - (
+            2.0 * pi * self.frequency_hz * delay_s
+        )
+
+    transfer_phase_identity = transform_phase_identity
+
+    @property
+    def cache_digest(self) -> str:
+        payload = {
+            "shaft_id": self.shaft_id.strip(),
+            "frame": self.frame.strip(),
+            "frequency_hz": self.frequency_hz,
+            "order_identity": self.base_orders,
+            "base_frequencies_hz": self.base_frequencies_hz,
+            "phase_identity": self.phase_references_rad,
+            "nodal_diameter": self.nodal_diameter,
+            "convention": self.convention,
+            "amplitude_convention": self.amplitude_convention,
+            "phase_reference": self.phase_reference,
+            "normalization": self.normalization,
+            "spectral_kind": self.spectral_kind,
+        }
+        return sha256(dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+    @property
+    def digest(self) -> str:
+        return self.cache_digest
+
+
+def _canonical_pairs(
+    values: tuple[tuple[str, float], ...] | Mapping[str, float], *, signed: bool
+) -> tuple[tuple[str, float], ...]:
+    items = values.items() if isinstance(values, Mapping) else values
+    result: list[tuple[str, float]] = []
+    for name, value in items:
+        canonical_name = str(name).strip()
+        if not canonical_name or not isfinite(value) or (not signed and value < 0):
+            raise ValueError("HARMONIC_BASIS_INVALID")
+        result.append((canonical_name, 0.0 if value == 0 else float(value)))
+    if len({name for name, _ in result}) != len(result):
+        raise ValueError("HARMONIC_BASES_NOT_UNIQUE")
+    return tuple(sorted(result, key=lambda item: item[0]))
+
+
+def _canonical_phases(
+    values: tuple[tuple[str, float], ...] | Mapping[str, float],
+    orders: tuple[tuple[str, float], ...],
+) -> tuple[tuple[str, float], ...]:
+    supplied = _canonical_pairs(values, signed=True)
+    expected = {name for name, _ in orders}
+    if supplied and {name for name, _ in supplied} != expected:
+        raise ValueError("HARMONIC_PHASE_BASES_MISMATCH")
+    phase_by_name = dict(supplied)
+    return tuple(
+        (name, _canonical_angle(phase_by_name.get(name, 0.0)))
+        for name, _ in orders
+    )
+
+
+def _canonical_angle(value: float) -> float:
+    if not isfinite(value):
+        raise ValueError("HARMONIC_PHASE_INVALID")
+    normalized = fmod(value, 2.0 * pi)
+    return 0.0 if abs(normalized) < 1e-15 else normalized % (2.0 * pi)
 
 
 @dataclass(frozen=True, slots=True)

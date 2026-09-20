@@ -12,7 +12,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from math import isfinite
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 
@@ -23,6 +23,9 @@ from .errors import (
     RequirementConflict,
     RequirementConflictError,
 )
+
+if TYPE_CHECKING:
+    from ..constraints import ConstraintEvaluation
 
 REQUIREMENTS_MODEL = "airframe-requirements-compiler"
 REQUIREMENTS_MODEL_VERSION = "1"
@@ -318,7 +321,9 @@ class CompiledRequirements:
         return tuple(routes)
 
     def downstream_constraints(self) -> tuple[dict[str, object], ...]:
-        """Return explicit constraints for consumers outside initial synthesis."""
+        """Return the executable downstream constraints and their consumers."""
+        from ..constraints import DOWNSTREAM_CONSTRAINT_ADAPTERS
+
         return tuple(
             {
                 "metric": requirement.metric,
@@ -327,10 +332,32 @@ class CompiledRequirements:
                 ],
                 "mode": requirement.mode,
                 "target": requirement.target,
+                "consumerId": (
+                    DOWNSTREAM_CONSTRAINT_ADAPTERS[requirement.metric].consumer_id
+                    if requirement.metric in DOWNSTREAM_CONSTRAINT_ADAPTERS
+                    else None
+                ),
             }
             for requirement in self.enforcement_routes
             if requirement.mode == "downstream"
         )
+
+    def evaluate_downstream(
+        self, observations: Mapping[str, object]
+    ) -> ConstraintEvaluation:
+        """Evaluate downstream requirements through typed consumer adapters."""
+        from ..constraints import (
+            ConstraintObservation,
+            evaluate_downstream_requirements,
+        )
+
+        typed: dict[str, ConstraintObservation] = {}
+        for metric, value in observations.items():
+            if isinstance(value, ConstraintObservation):
+                typed[metric] = value
+            elif isinstance(value, (int, float)) and not isinstance(value, bool):
+                typed[metric] = ConstraintObservation(metric=metric, value_si=float(value))
+        return evaluate_downstream_requirements(self, typed)
 
 
 def _normalize(spec: RequirementSpec) -> NormalizedRequirement:

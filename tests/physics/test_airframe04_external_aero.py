@@ -40,6 +40,7 @@ from aeroworkbench_airframe.external_aero import (
     reference_from_altitude,
     reference_from_conditions,
     require_vspaero_capability,
+    resolve_vspaero_executable,
     section_model_for_profile,
     solve_external_aero,
     solve_vlm,
@@ -47,6 +48,7 @@ from aeroworkbench_airframe.external_aero import (
     study_vlm_convergence,
     with_vlm_convergence,
 )
+from aeroworkbench_airframe.external_aero import native as native_module
 from aeroworkbench_airframe.external_aero.analytic import DragComponent
 from aeroworkbench_airframe.external_aero.contracts import (
     ANALYTICAL_VALIDITY_LIMITS,
@@ -284,6 +286,59 @@ def test_airframe04_vspaero_fails_closed_without_executable() -> None:
         solve_external_aero(case, reference, fidelity="full_field")
     with pytest.raises(ExternalAeroValidationError):
         solve_external_aero(case, reference, fidelity="not-a-fidelity")
+
+
+def test_airframe04_vspaero_resolution_records_path_and_version(monkeypatch) -> None:  # noqa: ANN001
+    monkeypatch.setattr(native_module.shutil, "which", lambda _: "C:/tools/vspaero.exe")
+    monkeypatch.setattr(
+        native_module.subprocess,
+        "run",
+        lambda *args, **kwargs: type("Completed", (), {"stdout": "VSPAERO 7.1\n", "stderr": ""})(),
+    )
+    capability = resolve_vspaero_executable("vspaero")
+    assert capability.available
+    assert capability.executable == "C:/tools/vspaero.exe"
+    assert capability.version == "VSPAERO 7.1"
+
+
+def test_airframe04_vspaero_auto_backend_is_governed(monkeypatch, tmp_path: Path) -> None:
+    case, reference, _ = rectangular_case()
+    captured: dict[str, object] = {}
+
+    class _AutoBackend:
+        solver_name = "resolved-vspaero"
+        solver_version = "7.1"
+
+        def solve(self, _case: ExternalAeroCase, _reference: AeroReference) -> VspaeroSolution:
+            return VspaeroSolution(
+                coefficients=AeroCoefficients(
+                    lift=0.42, drag=0.025, side=0.0, roll=0.0, pitch=-0.05, yaw=0.0
+                ),
+                artifacts=(),
+                detail="temporary harness backend; not native solver evidence",
+            )
+
+    def construct(**kwargs: object) -> _AutoBackend:
+        captured.update(kwargs)
+        return _AutoBackend()
+
+    monkeypatch.setattr(
+        native_module,
+        "probe_any_vspaero_capability",
+        lambda: native_module.VspaeroCapability(
+            backend="vspaero", available=True, executable="C:/tools/vspaero.exe",
+            version="7.1", detail="test harness capability",
+        ),
+    )
+    monkeypatch.setattr(native_module, "GovernedVspaeroBackend", construct)
+    result = solve_vspaero(case, reference, run_id="auto-harness", job_root=tmp_path)
+    assert result.solver_name == "resolved-vspaero"
+    assert captured == {
+        "executable": "C:/tools/vspaero.exe",
+        "job_root": tmp_path,
+        "solver_name": "vspaero",
+        "solver_version": "7.1",
+    }
 
 
 def test_airframe04_native_envelope_carries_solver_identity() -> None:
