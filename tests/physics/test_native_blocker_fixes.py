@@ -466,6 +466,22 @@ def test_code_aster_generic_tableau_is_parsed(tmp_path: Path) -> None:
     assert parsed.scalars["max_displacement_m"] == pytest.approx(2.0e-3)
 
 
+def test_code_aster_flattens_run_aster_repe_output(tmp_path: Path) -> None:
+    case_dir = tmp_path / "run"
+    case_dir.mkdir()
+    (case_dir / "solver.log").write_text("run_aster\nFIN\n", encoding="utf-8")
+    result_dir = case_dir / "result_table.txt"
+    result_dir.mkdir()
+    (result_dir / "fort.80").write_text(
+        "# NODE DX DY DZ\nN1 0.0 3.0e-3 0.0\n", encoding="utf-8"
+    )
+
+    parsed = parse_comm_result(case_dir)
+
+    assert parsed.scalars["max_displacement_m"] == pytest.approx(3.0e-3)
+    assert (case_dir / "result_table.txt").is_file()
+
+
 def test_code_aster_resultat_listing_is_parsed() -> None:
     from code_aster.comm import _parse_resultat_listing
 

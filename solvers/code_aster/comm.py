@@ -20,6 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -823,6 +824,7 @@ def parse_comm_result(case_dir: Path) -> ParseReceipt:
             NativeErrorCode.PARSER_FAILED,
             "result table is missing (expected result_table.txt or result.rmed)",
         )
+    table_path = _flatten_result_table(case_dir, table_path)
     try:
         table_text = table_path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:
@@ -961,7 +963,24 @@ def _result_table_path(case_dir: Path) -> Path | None:
         candidate = case_dir / name
         if candidate.is_file():
             return candidate
+        if candidate.is_dir() and name == "result_table.txt":
+            nested = candidate / "fort.80"
+            if nested.is_file():
+                return nested
     return None
+
+
+def _flatten_result_table(case_dir: Path, table_path: Path) -> Path:
+    """Normalize run_aster's ``repe`` directory output to the declared file."""
+
+    declared = case_dir / "result_table.txt"
+    if table_path != declared / "fort.80":
+        return table_path
+    temporary = case_dir / ".result_table.txt.tmp"
+    shutil.copyfile(table_path, temporary)
+    shutil.rmtree(declared)
+    temporary.replace(declared)
+    return declared
 
 
 _KNOWN_COLUMN_TOKENS = frozenset(
