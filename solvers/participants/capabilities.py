@@ -8,6 +8,7 @@ the heavy module. A missing probe yields ``unavailable``; never a substitute.
 from __future__ import annotations
 
 import dataclasses
+import importlib
 import os
 import re
 import shutil
@@ -130,6 +131,25 @@ def _probe_library(distribution: str) -> tuple[str, str | None, str]:
     return ("ready", version, f"{distribution} {version} installed")
 
 
+def _probe_importable_library(
+    distribution: str, module: str
+) -> tuple[str, str | None, str]:
+    """Require an in-process binding to import, not merely have metadata."""
+
+    state, version, detail = _probe_library(distribution)
+    if state != "ready":
+        return state, version, detail
+    try:
+        importlib.import_module(module)
+    except Exception as exc:  # noqa: BLE001
+        return (
+            "unavailable",
+            None,
+            f"{module} import failed:{type(exc).__name__}:{exc}",
+        )
+    return state, version, f"{detail}; {module} import succeeded"
+
+
 def _probe_precice_interpreter() -> tuple[str | None, list[str]]:
     """Find a python interpreter that imports the native ``precice`` binding."""
 
@@ -161,7 +181,11 @@ def probe_solver(solver_id: str) -> CapabilityProbe:
                 detail=detail,
             )
     for distribution in _LIBRARY_PROBES.get(solver_id, ()):
-        state, version, detail = _probe_library(distribution)
+        state, version, detail = (
+            _probe_importable_library(distribution, "gmsh")
+            if solver_id == "gmsh"
+            else _probe_library(distribution)
+        )
         if state == "ready":
             return CapabilityProbe(
                 participant_id=solver_id,
@@ -191,7 +215,7 @@ def probe_participant(participant_id: str) -> CapabilityProbe:
     solver_id = manifest.executable.solver_id
     if manifest.executable.execution_mode == "in-process" and solver_id in {"gmsh", "freecad"}:
         if solver_id == "gmsh":
-            state, version, detail = _probe_library("gmsh")
+            state, version, detail = _probe_importable_library("gmsh", "gmsh")
             if state == "ready":
                 return CapabilityProbe(
                     participant_id, solver_id, "gmsh", state, version, detail

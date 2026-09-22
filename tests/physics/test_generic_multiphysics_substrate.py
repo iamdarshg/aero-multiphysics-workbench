@@ -267,7 +267,9 @@ def test_interchange_roundtrip_is_real(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("n_rotating", [1, 2])
 def test_native_fluid_and_structural_meshes(tmp_path: Path, n_rotating: int) -> None:
-    assert probe_gmsh().available, "gmsh python API is required for native meshing"
+    capability = probe_gmsh()
+    if not capability.available:
+        pytest.skip(capability.detail)
     built = build_duct_system(n_rotating=n_rotating, n_solids=1, **COMPACT).build()
     records = export_artifacts(
         live_shapes(built), built.kernel, tmp_path / "cad",
@@ -326,7 +328,9 @@ def test_native_fluid_and_structural_meshes(tmp_path: Path, n_rotating: int) -> 
 
 
 def test_morph_and_remesh_policy(tmp_path: Path) -> None:
-    assert probe_gmsh().available
+    capability = probe_gmsh()
+    if not capability.available:
+        pytest.skip(capability.detail)
     built = build_duct_system(n_rotating=1, n_solids=1, **COMPACT).build()
     records = export_artifacts(
         live_shapes(built), built.kernel, tmp_path / "cad", basename="duct",

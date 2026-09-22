@@ -725,6 +725,29 @@ def test_precice_capability_requires_binding(
     assert "native precice binding" in probe.detail
 
 
+def test_gmsh_capability_requires_importable_binding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import importlib
+
+    monkeypatch.setattr(
+        capabilities,
+        "_probe_library",
+        lambda distribution: ("ready", "4.13.1", f"{distribution} metadata present"),
+    )
+
+    def fail_import(_module: str) -> object:
+        raise OSError("libXft.so.2 is unavailable")
+
+    monkeypatch.setattr(importlib, "import_module", fail_import)
+
+    probe = capabilities.probe_participant("domain-mesh")
+
+    assert probe.state == "unavailable"
+    assert probe.version is None
+    assert "libXft.so.2" in probe.detail
+
+
 # -- Elmer: bare SaveScalars values with a .names sidecar -------------------
 
 

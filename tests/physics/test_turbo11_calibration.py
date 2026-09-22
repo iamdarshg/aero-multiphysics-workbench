@@ -345,7 +345,7 @@ def test_turbo11_end_to_end_design_proof() -> None:
     assert proof.fidelity == "calibrated-screening"
     assert "unavailable" in proof.native_status
     assert proof.result_hash == run_design_proof().result_hash
-    assert proof.result_hash == "8d159c9518094c37a8d0f2da250173f83e8ca30621e6eebfc7b3f9e927e2a583"
+    assert proof.result_hash == "deae9499e74c60b34f3835199713b1e6808919302a8db09320dde5b695fbe507"
     assert proof.calibration.validity.passed
     with pytest.raises(CalibrationInputError):
         run_design_proof("no-such-case")
