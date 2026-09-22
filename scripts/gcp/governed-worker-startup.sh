@@ -61,13 +61,14 @@ fi
 /opt/py312/bin/python --version 2>&1 | tail -1
 
 # A stale PyPI distribution named `ross` can shadow the module supplied by the
-# locked `ross-rotordynamics` distribution. Remove the collision and reinstall
-# the locked wheel explicitly before probing the governed participant.
+# locked `ross-rotordynamics` distribution. Reinstall the locked wheel and
+# require the API used by the governed participant before continuing.
+/opt/py312/bin/python -m pip uninstall -y ross ross-rotordynamics 2>&1 | tail -5 || true
 rm -rf /opt/py312/lib/python3.12/site-packages/ross \
   /opt/py312/lib/python3.12/site-packages/ross-*.dist-info
-/opt/py312/bin/python -m pip uninstall -y ross 2>&1 | tail -3 || true
-timeout 900 /opt/py312/bin/python -m pip install --force-reinstall --no-deps \
-  "ross-rotordynamics==2.3.0" 2>&1 | tail -3
+timeout 900 /opt/py312/bin/python -m pip install --no-cache-dir \
+  "ross-rotordynamics==2.3.0" 2>&1 | tail -5
+/opt/py312/bin/python -c "import ross; assert hasattr(ross, 'Material'); print('ROSS API OK', ross.__file__)" 2>&1 | tail -2
 
 echo "--- D: pyprecice into the repo interpreter (best-effort, bounded) ---"
 if [ -x /opt/precice/bin/python ]; then
