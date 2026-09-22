@@ -147,7 +147,10 @@ def probe_solver(solver_id: str) -> CapabilityProbe:
         if solver_id == "openfoam":
             state, version, detail = _probe_openfoam(executable)
         else:
-            state, version, detail = _probe_executable(executable)
+            state, version, detail = _probe_executable(
+                executable,
+                accept_output_on_nonzero=executable == "run_aster",
+            )
         if state == "ready":
             return CapabilityProbe(
                 participant_id=solver_id,

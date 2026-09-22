@@ -24,11 +24,16 @@ class StructuralCase:
     constraint_mode: str = "fixed"
 
 
-def inspect_code_aster(executable: str = "as_run") -> CodeAsterCapability:
-    resolved = shutil.which(executable)
-    if resolved is None:
-        return CodeAsterCapability("unavailable", executable, "Code_Aster is not installed")
-    return CodeAsterCapability("ready", resolved, "native Code_Aster executable is discoverable")
+def inspect_code_aster(executable: str | None = None) -> CodeAsterCapability:
+    candidates = (executable,) if executable is not None else ("as_run", "run_aster")
+    for candidate in candidates:
+        resolved = shutil.which(candidate)
+        if resolved is not None:
+            return CodeAsterCapability(
+                "ready", resolved, "native Code_Aster executable is discoverable"
+            )
+    selected = executable or "as_run"
+    return CodeAsterCapability("unavailable", selected, "Code_Aster is not installed")
 
 
 def prepare_structural_case(

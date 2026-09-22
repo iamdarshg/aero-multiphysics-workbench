@@ -462,6 +462,16 @@ def test_airframe04_vspaero_case_preparation_is_deterministic(tmp_path: Path) ->
     assert manifest["caseDigest"] == case.digest
 
 
+def test_airframe04_vspaero_prepares_official_openvsp_script(tmp_path: Path) -> None:
+    case, reference, _ = rectangular_case()
+    manifest = prepare_vspaero_case(case, reference, tmp_path / "native")
+    script = manifest.with_name("run-openvsp.vspscript")
+    assert script.is_file()
+    contents = script.read_text(encoding="utf-8")
+    assert 'ExecAnalysis("VSPAEROSweep")' in contents
+    assert 'WriteResultsCSVFile' in contents
+
+
 def test_airframe04_governed_vspaero_fake_process_parses_native_artifacts(
     tmp_path: Path,
 ) -> None:

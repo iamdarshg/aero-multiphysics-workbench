@@ -438,6 +438,20 @@ def test_build_command_prefers_available_run_aster(monkeypatch: pytest.MonkeyPat
     assert build_command("structural-static", "case-aster01") == ("run_aster", "case.export")
 
 
+def test_code_aster_capability_accepts_run_aster_when_as_run_is_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from code_aster.adapter import inspect_code_aster
+
+    monkeypatch.setattr(
+        "code_aster.adapter.shutil.which",
+        lambda name: "/opt/aster/bin/run_aster" if name == "run_aster" else None,
+    )
+    capability = inspect_code_aster()
+    assert capability.state == "ready"
+    assert capability.executable == "/opt/aster/bin/run_aster"
+
+
 def test_code_aster_generic_tableau_is_parsed(tmp_path: Path) -> None:
     case_dir = tmp_path / "run"
     case_dir.mkdir()

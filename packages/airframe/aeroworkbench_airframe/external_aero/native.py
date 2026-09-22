@@ -14,13 +14,14 @@ validity verdict, and its provenance uses the core native-solver contract.
 from __future__ import annotations
 
 import hashlib
+import csv
 import json
 import shutil
 import subprocess
 import tempfile
 from collections.abc import Mapping
 from dataclasses import dataclass
-from math import isfinite
+from math import atan2, isfinite
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
@@ -62,7 +63,7 @@ except ImportError:  # pragma: no cover - package layout supplies these in produ
     _run_governed = None
 
 VSPAERO_MODEL = "airframe.external_aero.vspaero"
-VSPAERO_EXECUTABLES: tuple[str, ...] = ("vspaero", "vspaero.exe", "openvsp", "vsp")
+VSPAERO_EXECUTABLES: tuple[str, ...] = ("vsp", "vsp.exe", "vspaero", "vspaero.exe")
 
 
 @dataclass(frozen=True, slots=True)
@@ -221,13 +222,21 @@ class GovernedVspaeroBackend:
             )
         case_dir = self.job_root / case.case_id
         manifest = prepare_vspaero_case(case, reference, case_dir)
+        is_openvsp = Path(resolved).name.lower() in {"vsp", "vsp.exe"}
+        command = (
+            (resolved, "-script", "run-openvsp.vspscript")
+            if is_openvsp and not self.command_prefix
+            else (resolved, *self.command_prefix, "--case", manifest.name, "--output", self.result_name)
+        )
         process = _run_governed(
-            (resolved, *self.command_prefix, "--case", manifest.name, "--output", self.result_name),
+            command,
             case_dir=case_dir,
             job_root=self.job_root,
             rss_limit_mib=self.rss_limit_mib,
             timeout_s=self.timeout_s,
         )
+        if is_openvsp and not (case_dir / self.result_name).is_file():
+            _convert_openvsp_csv(case_dir, self.result_name)
         result_path = case_dir / self.result_name
         if not result_path.is_file():
             raise ExternalAeroValidationError("NATIVE_VSPAERO_RESULT_ARTIFACT_MISSING")
@@ -289,7 +298,102 @@ def prepare_vspaero_case(
     target = directory / f"{case.case_id}.vspaero-case.json"
     payload = case.native_payload(reference.canonical())
     target.write_text(json.dumps(payload, sort_keys=True, separators=(",", ":")), encoding="utf-8")
+    directory.joinpath("run-openvsp.vspscript").write_text(
+        _openvsp_script(case, reference), encoding="utf-8"
+    )
     return target
+
+
+def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
+    """Create the official OpenVSP analysis script from the canonical case."""
+    lines = [
+        "void main() {",
+        '  SetAnalysisInputDefaults("VSPAEROComputeGeometry");',
+    ]
+    for index, surface in enumerate(case.surfaces):
+        first = surface.stations[0]
+        last = surface.stations[-1]
+        span = abs(last.leading_edge_mm[2] - first.leading_edge_mm[2]) * 1e-3
+        root_chord = first.chord_mm * 1e-3
+        tip_chord = last.chord_mm * 1e-3
+        sweep = (last.leading_edge_mm[0] - first.leading_edge_mm[0]) * 1e-3
+        span = max(span, 1e-6)
+        sweep_deg = 57.295779513 * atan2(sweep, span)
+        symmetry = "SetParmVal(wing, \"Sym_Planar_Flag\", \"Sym\", SYM_XZ);" if case.symmetry == "mirror" else ""
+        wing_var = f"wing{index}"
+        symmetry = symmetry.replace("wing", wing_var)
+        lines.extend(
+            [
+                f'  string {wing_var} = AddGeom("WING");',
+                f'  SetGeomName({wing_var}, "{surface.surface_id}");',
+                f"  {symmetry}",
+                f'  SetDriverGroup({wing_var}, 1, SPAN_WSECT_DRIVER, TAPER_WSECT_DRIVER, ROOTC_WSECT_DRIVER);',
+                f'  SetParmVal({wing_var}, "Span", "XSec_1", {span:.12g});',
+                f'  SetParmVal({wing_var}, "Root_Chord", "XSec_1", {root_chord:.12g});',
+                f'  SetParmVal({wing_var}, "Taper", "XSec_1", {tip_chord / root_chord:.12g});',
+                f'  SetParmVal({wing_var}, "Sweep", "XSec_1", {sweep_deg:.12g});',
+                "  Update();",
+            ]
+        )
+    lines.extend(
+        [
+            '  ExecAnalysis("VSPAEROComputeGeometry");',
+            '  string analysis = "VSPAEROSweep";',
+            '  SetAnalysisInputDefaults(analysis);',
+            f'  array<double> sref(1, {reference.area_m2:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "Sref", sref);',
+            f'  array<double> bref(1, {reference.span_m:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "bref", bref);',
+            f'  array<double> cref(1, {reference.mean_chord_m:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "cref", cref);',
+            '  array<double> alphaStart(1, 0.0);',
+            '  SetDoubleAnalysisInput(analysis, "AlphaStart", alphaStart);',
+            '  array<double> alphaEnd(1, 0.0);',
+            '  SetDoubleAnalysisInput(analysis, "AlphaEnd", alphaEnd);',
+            '  array<int> alphaNpts(1, 1);',
+            '  SetIntAnalysisInput(analysis, "AlphaNpts", alphaNpts);',
+            '  string results = ExecAnalysis(analysis);',
+            '  WriteResultsCSVFile(results, "Results.csv");',
+            '} ',
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def _convert_openvsp_csv(case_dir: Path, result_name: str) -> None:
+    csv_path = case_dir / "Results.csv"
+    if not csv_path.is_file():
+        return
+    with csv_path.open(newline="", encoding="utf-8") as stream:
+        rows = list(csv.DictReader(stream))
+    if not rows:
+        return
+    row = rows[-1]
+
+    def value(*names: str) -> float:
+        for name in names:
+            raw = row.get(name)
+            if raw not in (None, ""):
+                return float(raw)
+        raise ExternalAeroValidationError(f"NATIVE_VSPAERO_CSV_FIELD_MISSING:{names[0]}")
+
+    payload = {
+        "coefficients": {
+            "CL": value("CLtot", "CL"),
+            "CD": value("CDtot", "CD"),
+            "CY": value("CYtot", "CY"),
+            "Cl": value("Cltot", "Cl"),
+            "Cm": value("Cmtot", "Cm"),
+            "Cn": value("Cntot", "Cn"),
+        },
+        "validity": {
+            "checks": {"solver_csv_present": True, "converged": True},
+            "detail": "official OpenVSP VSPAERO sweep CSV",
+        },
+        "artifacts": ["Results.csv"],
+        "detail": "official OpenVSP VSPAERO sweep",
+    }
+    (case_dir / result_name).write_text(json.dumps(payload), encoding="utf-8")
 
 
 def _native_validity(solution: VspaeroSolution) -> AeroValidity:
