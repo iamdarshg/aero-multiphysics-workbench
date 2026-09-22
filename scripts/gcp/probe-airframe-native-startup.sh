@@ -6,10 +6,19 @@ mkdir -p "$LOGDIR"
 exec > >(tee -a "$LOGDIR/airframe-native-probe.log") 2>&1
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl bzip2 ca-certificates
-curl -sL https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xj -C /usr/local/bin bin/micromamba
-/usr/local/bin/bin/micromamba create -y -p /opt/openvsp -c conda-forge openvsp || true
-PATH=/opt/openvsp/bin:$PATH python3 - <<'PY' > "$LOGDIR/airframe-native-capability.json" 2>&1 || true
+apt-get install -y -qq curl bzip2 ca-certificates gdebi-core libglu1-mesa libgl1
+
+# OpenVSP is not published on conda-forge. Install the official, versioned
+# Ubuntu package before probing; absence remains an honest capability result.
+OPENVSP_VERSION=3.52.1
+OPENVSP_DEB=/tmp/OpenVSP-${OPENVSP_VERSION}-Ubuntu-24.04_amd64.deb
+curl -fL "https://openvsp.org/download.php?file=zips/current/linux/OpenVSP-${OPENVSP_VERSION}-Ubuntu-24.04_amd64.deb" -o "$OPENVSP_DEB" || true
+if [ -s "$OPENVSP_DEB" ]; then
+  apt-get install -y -qq "$OPENVSP_DEB" || dpkg -i "$OPENVSP_DEB" || true
+  apt-get install -f -y -qq || true
+fi
+
+PATH=/opt/openvsp/bin:/usr/bin:/usr/local/bin:$PATH python3 - <<'PY' > "$LOGDIR/airframe-native-capability.json" 2>&1 || true
 import json, shutil, subprocess
 names = ("vspaero", "vspaero.exe", "openvsp", "vsp")
 observed = []

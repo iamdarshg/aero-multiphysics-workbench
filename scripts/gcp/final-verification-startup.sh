@@ -14,8 +14,9 @@ rm -rf /opt/repo
 git clone --depth 1 https://github.com/iamdarshg/aero-multiphysics-workbench.git /opt/repo
 cd /opt/repo
 
-# The existing installer and benchmark driver are bounded and fail closed.
-timeout 3600 bash scripts/gcp/install-solvers.sh || echo "INSTALL_RC=$?"
+# Use the prior governed bootstrap: it installs the frozen services/api Python
+# environment, separate native prefixes, and records capability versions.
+timeout 5400 bash scripts/gcp/governed-worker-startup.sh || echo "INSTALL_RC=$?"
 timeout 2400 bash scripts/gcp/run-benchmarks.sh || echo "BENCHMARK_RC=$?"
 
 cd "$LOGDIR"
