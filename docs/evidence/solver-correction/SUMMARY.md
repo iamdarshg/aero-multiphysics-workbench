@@ -1,4 +1,18 @@
-# SOLVER-CORR 01–05 native correctness evidence (GCP)
+# SOLVER-CORR native correctness evidence (GCP)
+
+## Current-head update (2026-09-22, commit `58ba9c2`)
+
+- AIRFRAME 04 OpenVSP/VSPAERO now has a governed native 3.52.1 receipt from
+  `aero-openvsp-native-20260922e`; the official AngelScript workflow maps
+  alpha, beta, Mach, Reynolds, references, and thick-body geometry.
+- The EDF example now builds actual patterned rotor/stator solids and cuts them
+  from the generic fluid zones. Local CAD builds pass for the 70 mm/2-stage,
+  80 mm/3-stage, and 90 mm/4-stage variants with distinct topology hashes.
+- The native OpenVSP result is recorded in
+  `final-verification-20260922/SUMMARY.md` and is not being used as evidence
+  for the still-unproven EDF OpenFOAM/AMI/Code_Aster/preCICE chain.
+- The remaining solver rows below are historical receipts and remain honest:
+  current-head reruns are required before changing their status.
 
 Short-lived Spot `e2-standard-2` VM `aero-solvercorr-202609190517`
 (us-central1-a, Ubuntu 22.04, 60 GB) — created 2026-09-19T05:18Z, **deleted

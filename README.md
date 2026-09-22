@@ -71,7 +71,7 @@ Capability tiers used below — a `READY` capability means only that the named e
 | pyCycle | manifest + probe only | no | no | no |
 | CadQuery | manifest + probe (+ OCC fallback path) | yes as a library — 2.8.0 via the `cad-interchange` fallback | partial — `cad-interchange` COMPLETED via fallback, honestly labelled | partial |
 | Gmsh | yes | yes — 4.8.4 on GCP; 4.15.2 governed execution | yes — `domain-mesh` COMPLETED (119852 elements) | yes — governed API jobs |
-| OpenVSP | manifest + probe only | no | no | no |
+| OpenVSP/VSPAERO 3.52.1 | governed official AngelScript + `Results.csv` adapter | yes (native fixture) | yes | yes |
 | FreeCAD | yes | no full run — exit 0 under `xvfb-run` only; no STEP roundtrip yet | partial via the CadQuery fallback above | no (native path) |
 
 OpenMDAO 3.45.1 is the scalar coordinator rather than a catalogued solver: paraboloid SLSQP convergence verified on GCP, and convergence/optimization drivers verified in `docs/evidence/milestone-3/summary.json`.

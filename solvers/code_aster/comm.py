@@ -954,7 +954,10 @@ def _clean_finish(log_text: str) -> bool:
 
 
 def _result_table_path(case_dir: Path) -> Path | None:
-    for name in ("result_table.txt", "result.rmed"):
+    # run_aster may leave the TABLEAU on its native unit name before the
+    # export-file copy step completes. Accept that observed artifact without
+    # treating a solver exit code as a result.
+    for name in ("result_table.txt", "fort.80", "result.rmed"):
         candidate = case_dir / name
         if candidate.is_file():
             return candidate
