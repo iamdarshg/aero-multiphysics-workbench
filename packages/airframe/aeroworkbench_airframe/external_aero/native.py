@@ -335,6 +335,25 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
                 "  Update();",
             ]
         )
+    for index, body in enumerate(case.canonical()["bodies"]):
+        body_payload = dict(body)
+        sections = [dict(section) for section in body_payload.get("sections", [])]
+        if len(sections) < 2:
+            raise ExternalAeroValidationError("OPENVSP_BODY_NEEDS_TWO_SECTIONS")
+        body_var = f"body{index}"
+        z_values = [float(section["spineMm"][2]) for section in sections]
+        widths = [float(section["widthMm"]) * 1e-3 for section in sections]
+        heights = [float(section["heightMm"]) * 1e-3 for section in sections]
+        lines.extend(
+            [
+                f'  string {body_var} = AddGeom("FUSELAGE");',
+                f'  SetGeomName({body_var}, "{body_payload["bodyId"]}");',
+                f'  SetParmVal({body_var}, "Length", "Design", {max(z_values) - min(z_values):.12g});',
+                f'  SetParmVal({body_var}, "Diameter", "Design", {max(max(widths), max(heights)):.12g});',
+                f'  SetParmVal({body_var}, "XLoc", "XForm", {min(z_values) * 1e-3:.12g});',
+                "  Update();",
+            ]
+        )
     lines.extend(
         [
             '  ExecAnalysis("VSPAEROComputeGeometry");',
@@ -346,12 +365,22 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
             '  SetDoubleAnalysisInput(analysis, "bref", bref);',
             f'  array<double> cref(1, {reference.mean_chord_m:.12g});',
             '  SetDoubleAnalysisInput(analysis, "cref", cref);',
-            '  array<double> alphaStart(1, 0.0);',
+            f'  array<double> alphaStart(1, {reference.alpha_deg:.12g});',
             '  SetDoubleAnalysisInput(analysis, "AlphaStart", alphaStart);',
-            '  array<double> alphaEnd(1, 0.0);',
+            f'  array<double> alphaEnd(1, {reference.alpha_deg:.12g});',
             '  SetDoubleAnalysisInput(analysis, "AlphaEnd", alphaEnd);',
             '  array<int> alphaNpts(1, 1);',
             '  SetIntAnalysisInput(analysis, "AlphaNpts", alphaNpts);',
+            f'  array<double> betaStart(1, {reference.beta_deg:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "BetaStart", betaStart);',
+            f'  array<double> betaEnd(1, {reference.beta_deg:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "BetaEnd", betaEnd);',
+            '  array<int> betaNpts(1, 1);',
+            '  SetIntAnalysisInput(analysis, "BetaNpts", betaNpts);',
+            f'  array<double> mach(1, {reference.resolved_mach_number:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "Mach", mach);',
+            f'  array<double> reynolds(1, {reference.resolved_reynolds_number:.12g});',
+            '  SetDoubleAnalysisInput(analysis, "ReCref", reynolds);',
             '  string results = ExecAnalysis(analysis);',
             '  WriteResultsCSVFile(results, "Results.csv");',
             '} ',

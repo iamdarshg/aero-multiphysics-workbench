@@ -473,6 +473,41 @@ def test_airframe04_vspaero_prepares_official_openvsp_script(tmp_path: Path) -> 
     assert 'WriteResultsCSVFile' in contents
 
 
+def test_airframe04_openvsp_script_preserves_operating_state(tmp_path: Path) -> None:
+    case, reference, _ = rectangular_case()
+    level = reference.with_state(alpha_deg=6.0, beta_deg=2.0)
+    manifest = prepare_vspaero_case(case, level, tmp_path / "state")
+    contents = manifest.with_name("run-openvsp.vspscript").read_text(encoding="utf-8")
+    assert "alphaStart(1, 6)" in contents
+    assert "alphaEnd(1, 6)" in contents
+    assert "betaStart(1, 2)" in contents
+    assert f"mach(1, {level.resolved_mach_number:.12g})" in contents
+    assert f"reynolds(1, {level.resolved_reynolds_number:.12g})" in contents
+
+
+def test_airframe04_openvsp_script_emits_thick_body_geometry(tmp_path: Path) -> None:
+    from aeroworkbench_airframe.aero_geometry import LoftedBody
+
+    case, reference, _ = rectangular_case()
+    body = LoftedBody.from_spine(
+        "centerbody",
+        "lifting_body",
+        ((0.0, 0.0, -400.0), (0.0, 0.0, 400.0)),
+        (300.0, 240.0),
+        (180.0, 120.0),
+    )
+    body_case = type(case)(
+        case_id=case.case_id,
+        surfaces=case.surfaces,
+        symmetry=case.symmetry,
+        bodies=(body,),
+    )
+    manifest = prepare_vspaero_case(body_case, reference, tmp_path / "body")
+    contents = manifest.with_name("run-openvsp.vspscript").read_text(encoding="utf-8")
+    assert 'AddGeom("FUSELAGE")' in contents
+    assert 'SetGeomName(body0, "centerbody")' in contents
+
+
 def test_airframe04_governed_vspaero_fake_process_parses_native_artifacts(
     tmp_path: Path,
 ) -> None:
