@@ -155,10 +155,16 @@ def test_api_capability_report_and_participant_catalog() -> None:
         capabilities = client.get("/v1/native/capabilities")
         catalog = client.get("/v1/native/participants")
     assert capabilities.status_code == 200
-    ready = {entry["participant_id"] for entry in capabilities.json()["ready"]}
+    capability_payload = capabilities.json()
+    ready = {entry["participant_id"] for entry in capability_payload["ready"]}
+    unavailable = {
+        entry["participant_id"] for entry in capability_payload["unavailable"]
+    }
     assert "rotor-campbell" in ready
     assert "cell-spm-discharge" in ready
-    assert "domain-mesh" in ready
+    gmsh_state = probe_participant("domain-mesh").state
+    assert ("domain-mesh" in ready) is (gmsh_state == "ready")
+    assert ("domain-mesh" in unavailable) is (gmsh_state != "ready")
     assert catalog.status_code == 200
     assert catalog.json()["manifest_version"] == "2"
     assert len(catalog.json()["participants"]) == len(
