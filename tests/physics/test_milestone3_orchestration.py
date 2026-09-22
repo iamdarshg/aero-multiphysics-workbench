@@ -727,6 +727,57 @@ def test_pareto_front_keeps_only_nondominated_valid_samples() -> None:
     )
 
 
+def test_study_cache_never_reuses_a_different_evaluator(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import aeroworkbench_optimization.drivers as drivers
+
+    monkeypatch.setattr(drivers, "id", lambda _value: 7, raising=False)
+
+    def evaluate_a(
+        point: dict[str, float], operating_point: str
+    ) -> tuple[dict[str, float], PhysicsFlags]:
+        del operating_point
+        return {"fa": point["x"]}, PhysicsFlags(True, True, True)
+
+    def evaluate_b(
+        point: dict[str, float], operating_point: str
+    ) -> tuple[dict[str, float], PhysicsFlags]:
+        del operating_point
+        return {"fb": point["x"] + 1.0}, PhysicsFlags(True, True, True)
+
+    common = {
+        "variables": (DesignVariable("x", "dimensionless", "continuous", 0.0, 1.0),),
+        "constraints": (),
+        "operating_points": (OperatingPointEval("identity-regression", 1.0),),
+    }
+    first = drivers.run_sweep(
+        common
+        | {
+            "objectives": (
+                StudyObjective("fa", "minimize", 1.0, "dimensionless"),
+            )
+        },
+        evaluate_a,
+        {"x": 2},
+        source="identity-regression",
+    )
+    second = drivers.run_sweep(
+        common
+        | {
+            "objectives": (
+                StudyObjective("fb", "minimize", 1.0, "dimensionless"),
+            )
+        },
+        evaluate_b,
+        {"x": 2},
+        source="identity-regression",
+    )
+
+    assert first.best is not None and "fa" in first.best.outputs
+    assert second.best is not None and "fb" in second.best.outputs
+
+
 def test_quality_policy_marks_mesh_dependent_samples_invalid() -> None:
     policy = QualityPolicy(max_mesh_sensitivity=0.05)
     assert assess_sample(PhysicsFlags(True, True, True, 0.01, 0.0, None), policy).state == "valid"

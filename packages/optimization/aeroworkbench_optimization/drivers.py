@@ -226,7 +226,9 @@ class _StudyCache:
     reports.
     """
 
-    _GLOBAL: dict[tuple[int, str, int, str], SampleReport] = {}
+    _GLOBAL: dict[
+        tuple[int, str, int, str], tuple[EvaluateFunction, SampleReport]
+    ] = {}
 
     def __init__(self, evaluate: EvaluateFunction, policy: QualityPolicy, source: str) -> None:
         self._entries: dict[str, SampleReport] = {}
@@ -250,10 +252,10 @@ class _StudyCache:
             return hit
         global_key = (self._evaluate_id, key, self._policy_hash, self._source)
         remembered = _StudyCache._GLOBAL.get(global_key)
-        if remembered is not None:
+        if remembered is not None and remembered[0] is evaluate:
             self.hits += 1
-            self._entries[key] = remembered
-            return remembered
+            self._entries[key] = remembered[1]
+            return remembered[1]
         outputs, flags = evaluate(dict(point), operating_point)
         for name, value in outputs.items():
             if not isfinite(value):
@@ -264,7 +266,10 @@ class _StudyCache:
             verdict.state, verdict.reasons, source,
         )
         self._entries[key] = report
-        _StudyCache._GLOBAL[global_key] = report
+        # Retaining the callable alongside the report prevents CPython from
+        # recycling its ``id()`` and aliasing an unrelated evaluator to this
+        # cache entry later in the process.
+        _StudyCache._GLOBAL[global_key] = (evaluate, report)
         return report
 
 
