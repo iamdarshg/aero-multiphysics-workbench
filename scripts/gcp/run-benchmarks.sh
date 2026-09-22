@@ -18,9 +18,9 @@ export REPO_ROOT="$REPO"
 export RECEIPTS="$RECEIPTS"
 PY=/opt/py312/bin/python
 
-# --- OpenFOAM environment ---
-export PATH=/opt/solvers/bin:$PATH
-export LD_LIBRARY_PATH=/opt/solvers/lib:${LD_LIBRARY_PATH:-}
+# --- native solver environment ---
+export PATH=/opt/solvers/bin:/opt/aster/bin:/opt/precice/bin:/opt/py312/bin:$PATH
+export LD_LIBRARY_PATH=/opt/solvers/lib:/opt/aster/lib:/opt/precice/lib:${LD_LIBRARY_PATH:-}
 source /opt/solvers/etc/bashrc 2>/dev/null || true
 echo "WM_PROJECT_VERSION=${WM_PROJECT_VERSION:-none} simpleFoam=$(command -v simpleFoam)"
 echo "gmsh=$(command -v gmsh) gmshToFoam=$(command -v gmshToFoam)"
