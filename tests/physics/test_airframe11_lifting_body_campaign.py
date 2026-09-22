@@ -5,15 +5,23 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from aeroworkbench_airframe.external_aero import (
+    prepare_vspaero_case,
+    reference_from_altitude,
+)
 from aeroworkbench_airframe.synthesis import (
     build_lifting_body_campaign_fixture,
     compile_requirements_payload,
 )
-from aeroworkbench_airframe.external_aero import prepare_vspaero_case
 
 
 def _requirements():
-    path = Path(__file__).resolve().parents[1] / "airframe" / "synthesis" / "requirements_lifting_body.json"
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "airframe"
+        / "synthesis"
+        / "requirements_lifting_body.json"
+    )
     return compile_requirements_payload(json.loads(path.read_text(encoding="utf-8")))
 
 
@@ -48,7 +56,12 @@ def test_lifting_body_fixture_uses_generic_medium_native_ladder() -> None:
 
 def test_lifting_body_native_payload_preserves_body_identity(tmp_path: Path) -> None:
     fixture = build_lifting_body_campaign_fixture(_requirements(), evaluations=1)
-    manifest = prepare_vspaero_case(fixture.case, fixture.case.geometry_reference(), tmp_path)
+    reference = reference_from_altitude(
+        fixture.case.geometry_reference(), altitude_m=0.0, velocity_m_s=60.0
+    )
+    manifest = prepare_vspaero_case(fixture.case, reference, tmp_path)
     serialized = json.loads(manifest.read_text(encoding="utf-8"))
     assert serialized["bodies"] == fixture.case.canonical()["bodies"]
     assert serialized["bodies"][0]["semanticIdentity"]["role"] == "lifting_body"
+    script = manifest.with_name("run-openvsp.vspscript").read_text(encoding="utf-8")
+    assert 'SetParmVal(body0, "Length", "Design", 6);' in script

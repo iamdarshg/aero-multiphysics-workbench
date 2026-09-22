@@ -37,6 +37,10 @@ STEEL = {
     "density_kg_m3": 7850.0,
 }
 
+JEFFCOTT_REFERENCE_REL_TOL = 0.25
+MODAL_CAMPBELL_REL_TOL = 0.05
+FORCED_PEAK_REL_TOL = 0.20
+
 
 def gov_case(analysis: str, model: dict, speed_rpm: float, max_speed_rpm: float, name: str) -> dict:
     ndir = WORK / name
@@ -130,7 +134,13 @@ def jeffcott_analytic_rpm(model: dict) -> float:
 
 
 def bench_ross() -> dict:
-    out: dict = {"solver": "ROSS", "status": "BLOCKED", "cases": []}
+    out: dict = {
+        "solver": "ROSS",
+        "status": "BLOCKED",
+        "verificationPassed": False,
+        "checks": {},
+        "cases": [],
+    }
     if not RUN_SCRIPT.is_file():
         out["reason"] = f"governed run script missing: {RUN_SCRIPT}"
         return out
@@ -141,10 +151,18 @@ def bench_ross() -> dict:
         analytic_rigid = jeffcott_analytic_rpm(m_rigid)
 
         camp = gov_case("campbell", m_rigid, 3000.0, 60000.0, "jeffcott_campbell")
+        crit_rigid = camp.get("critical_speeds_rpm") or []
+        forced_target_rpm = float(crit_rigid[0]) if crit_rigid else 3000.0
         soft = gov_case("campbell", m_soft, 3000.0, 60000.0, "soft_bearing_campbell")
         modal = gov_case("modal", m_rigid, 3000.0, 60000.0, "jeffcott_modal")
         short = gov_case("campbell", m_short, 3000.0, 120000.0, "short_stiff_campbell")
-        forced = gov_case("forced", m_rigid, 3000.0, 60000.0, "jeffcott_forced")
+        forced = gov_case(
+            "forced",
+            m_rigid,
+            forced_target_rpm,
+            max(60000.0, forced_target_rpm * 1.5),
+            "jeffcott_forced",
+        )
 
         cases = {
             "jeffcottCampbell": camp,
@@ -155,7 +173,6 @@ def bench_ross() -> dict:
         }
         out["cases"] = cases
         out["analyticFirstCriticalRpm"] = analytic_rigid
-        crit_rigid = camp.get("critical_speeds_rpm") or []
         crit_soft = soft.get("critical_speeds_rpm") or []
         crit_short = short.get("critical_speeds_rpm") or []
         if crit_rigid:
@@ -174,6 +191,29 @@ def bench_ross() -> dict:
             out["unbalancePeakRpm"] = forced["peak_speed_rpm"]
             out["peakNearCritical"] = abs(forced["peak_speed_rpm"] - crit_rigid[0]) / crit_rigid[0]
         executed = all(c.get("exit") == 0 for c in cases.values())
+        checks = {
+            "all_cases_executed": executed,
+            "jeffcott_reference_within_tolerance": (
+                out.get("criticalRelError", float("inf")) <= JEFFCOTT_REFERENCE_REL_TOL
+            ),
+            "soft_bearing_lowers_first_critical": out.get("softBearingDropsCritical") is True,
+            "short_stiff_raises_first_critical": (
+                bool(crit_rigid)
+                and out.get("shortStiffCriticalRpm", 0.0) > float(crit_rigid[0])
+            ),
+            "modal_campbell_agree": (
+                out.get("modalVsCampbellRelDelta", float("inf"))
+                <= MODAL_CAMPBELL_REL_TOL
+            ),
+            "forced_peak_near_first_critical": (
+                out.get("peakNearCritical", float("inf")) <= FORCED_PEAK_REL_TOL
+            ),
+        }
+        out["checks"] = checks
+        out["verificationPassed"] = all(checks.values())
+        out["verificationFailureReasons"] = [
+            name for name, passed in checks.items() if not passed
+        ]
         out["status"] = "EXECUTED" if executed else "PARTIAL"
     except Exception as exc:  # noqa: BLE001
         out["reason"] = f"{type(exc).__name__}:{exc}"
@@ -269,11 +309,13 @@ def main() -> int:
     WORK.mkdir(parents=True, exist_ok=True)
     out = bench_ross()
     out["directUnbalance"] = direct_unbalance()
-    if out["status"] == "PARTIAL" and out["directUnbalance"].get("status") == "EXECUTED":
-        out["status"] = "EXECUTED"
     (RECEIPTS / "issue38_ross.json").write_text(json.dumps(out, indent=2, sort_keys=True))
-    print("WROTE issue38_ross.json status=", out["status"])
-    return 0
+    print(
+        "WROTE issue38_ross.json",
+        f"status={out['status']}",
+        f"verificationPassed={out.get('verificationPassed', False)}",
+    )
+    return 0 if out["status"] == "EXECUTED" and out.get("verificationPassed") is True else 1
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ validity verdict, and its provenance uses the core native-solver contract.
 
 from __future__ import annotations
 
-import hashlib
 import csv
+import hashlib
 import json
 import shutil
 import subprocess
@@ -226,7 +226,14 @@ class GovernedVspaeroBackend:
         command = (
             (resolved, "-script", "run-openvsp.vspscript")
             if is_openvsp and not self.command_prefix
-            else (resolved, *self.command_prefix, "--case", manifest.name, "--output", self.result_name)
+            else (
+                resolved,
+                *self.command_prefix,
+                "--case",
+                manifest.name,
+                "--output",
+                self.result_name,
+            )
         )
         process = _run_governed(
             command,
@@ -284,9 +291,7 @@ class GovernedVspaeroBackend:
         )
 
 
-def prepare_vspaero_case(
-    case: ExternalAeroCase, reference: AeroReference, directory: Path
-) -> Path:
+def prepare_vspaero_case(case: ExternalAeroCase, reference: AeroReference, directory: Path) -> Path:
     """Write the canonical case manifest a VSPAERO backend consumes.
 
     This is platform case *preparation* only: it records the geometry,
@@ -319,7 +324,11 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
         sweep = (last.leading_edge_mm[0] - first.leading_edge_mm[0]) * 1e-3
         span = max(span, 1e-6)
         sweep_deg = 57.295779513 * atan2(sweep, span)
-        symmetry = "SetParmVal(wing, \"Sym_Planar_Flag\", \"Sym\", SYM_XZ);" if case.symmetry == "mirror" else ""
+        symmetry = (
+            'SetParmVal(wing, "Sym_Planar_Flag", "Sym", SYM_XZ);'
+            if case.symmetry == "mirror"
+            else ""
+        )
         wing_var = f"wing{index}"
         symmetry = symmetry.replace("wing", wing_var)
         lines.extend(
@@ -327,7 +336,8 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
                 f'  string {wing_var} = AddGeom("WING");',
                 f'  SetGeomName({wing_var}, "{surface.surface_id}");',
                 f"  {symmetry}",
-                f'  SetDriverGroup({wing_var}, 1, SPAN_WSECT_DRIVER, TAPER_WSECT_DRIVER, ROOTC_WSECT_DRIVER);',
+                f"  SetDriverGroup({wing_var}, 1, SPAN_WSECT_DRIVER, "
+                + "TAPER_WSECT_DRIVER, ROOTC_WSECT_DRIVER);",
                 f'  SetParmVal({wing_var}, "Span", "XSec_1", {span:.12g});',
                 f'  SetParmVal({wing_var}, "Root_Chord", "XSec_1", {root_chord:.12g});',
                 f'  SetParmVal({wing_var}, "Taper", "XSec_1", {tip_chord / root_chord:.12g});',
@@ -344,12 +354,14 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
         z_values = [float(section["spineMm"][2]) for section in sections]
         widths = [float(section["widthMm"]) * 1e-3 for section in sections]
         heights = [float(section["heightMm"]) * 1e-3 for section in sections]
+        body_length_m = (max(z_values) - min(z_values)) * 1e-3
+        body_diameter_m = max(max(widths), max(heights))
         lines.extend(
             [
                 f'  string {body_var} = AddGeom("FUSELAGE");',
                 f'  SetGeomName({body_var}, "{body_payload["bodyId"]}");',
-                f'  SetParmVal({body_var}, "Length", "Design", {max(z_values) - min(z_values):.12g});',
-                f'  SetParmVal({body_var}, "Diameter", "Design", {max(max(widths), max(heights)):.12g});',
+                f'  SetParmVal({body_var}, "Length", "Design", {body_length_m:.12g});',
+                f'  SetParmVal({body_var}, "Diameter", "Design", {body_diameter_m:.12g});',
                 f'  SetParmVal({body_var}, "XLoc", "XForm", {min(z_values) * 1e-3:.12g});',
                 "  Update();",
             ]
@@ -358,32 +370,32 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
         [
             '  ExecAnalysis("VSPAEROComputeGeometry");',
             '  string analysis = "VSPAEROSweep";',
-            '  SetAnalysisInputDefaults(analysis);',
-            f'  array<double> sref(1, {reference.area_m2:.12g});',
+            "  SetAnalysisInputDefaults(analysis);",
+            f"  array<double> sref(1, {reference.area_m2:.12g});",
             '  SetDoubleAnalysisInput(analysis, "Sref", sref);',
-            f'  array<double> bref(1, {reference.span_m:.12g});',
+            f"  array<double> bref(1, {reference.span_m:.12g});",
             '  SetDoubleAnalysisInput(analysis, "bref", bref);',
-            f'  array<double> cref(1, {reference.mean_chord_m:.12g});',
+            f"  array<double> cref(1, {reference.mean_chord_m:.12g});",
             '  SetDoubleAnalysisInput(analysis, "cref", cref);',
-            f'  array<double> alphaStart(1, {reference.alpha_deg:.12g});',
+            f"  array<double> alphaStart(1, {reference.alpha_deg:.12g});",
             '  SetDoubleAnalysisInput(analysis, "AlphaStart", alphaStart);',
-            f'  array<double> alphaEnd(1, {reference.alpha_deg:.12g});',
+            f"  array<double> alphaEnd(1, {reference.alpha_deg:.12g});",
             '  SetDoubleAnalysisInput(analysis, "AlphaEnd", alphaEnd);',
-            '  array<int> alphaNpts(1, 1);',
+            "  array<int> alphaNpts(1, 1);",
             '  SetIntAnalysisInput(analysis, "AlphaNpts", alphaNpts);',
-            f'  array<double> betaStart(1, {reference.beta_deg:.12g});',
+            f"  array<double> betaStart(1, {reference.beta_deg:.12g});",
             '  SetDoubleAnalysisInput(analysis, "BetaStart", betaStart);',
-            f'  array<double> betaEnd(1, {reference.beta_deg:.12g});',
+            f"  array<double> betaEnd(1, {reference.beta_deg:.12g});",
             '  SetDoubleAnalysisInput(analysis, "BetaEnd", betaEnd);',
-            '  array<int> betaNpts(1, 1);',
+            "  array<int> betaNpts(1, 1);",
             '  SetIntAnalysisInput(analysis, "BetaNpts", betaNpts);',
-            f'  array<double> mach(1, {reference.resolved_mach_number:.12g});',
+            f"  array<double> mach(1, {reference.resolved_mach_number:.12g});",
             '  SetDoubleAnalysisInput(analysis, "Mach", mach);',
-            f'  array<double> reynolds(1, {reference.resolved_reynolds_number:.12g});',
+            f"  array<double> reynolds(1, {reference.resolved_reynolds_number:.12g});",
             '  SetDoubleAnalysisInput(analysis, "ReCref", reynolds);',
-            '  string results = ExecAnalysis(analysis);',
+            "  string results = ExecAnalysis(analysis);",
             '  WriteResultsCSVFile(results, "Results.csv");',
-            '} ',
+            "} ",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -482,9 +494,12 @@ def parse_vspaero_result(
     if not isinstance(coefficients, dict):
         raise ExternalAeroValidationError("NATIVE_VSPAERO_COEFFICIENTS_REQUIRED")
     result = AeroCoefficients(
-        lift=_number(coefficients, "CL"), drag=_number(coefficients, "CD"),
-        side=_number(coefficients, "CY"), roll=_number(coefficients, "Cl"),
-        pitch=_number(coefficients, "Cm"), yaw=_number(coefficients, "Cn"),
+        lift=_number(coefficients, "CL"),
+        drag=_number(coefficients, "CD"),
+        side=_number(coefficients, "CY"),
+        roll=_number(coefficients, "Cl"),
+        pitch=_number(coefficients, "Cm"),
+        yaw=_number(coefficients, "Cn"),
     )
     derivatives_payload = payload.get("derivatives")
     derivatives = None
@@ -494,8 +509,10 @@ def parse_vspaero_result(
         ):
             raise ExternalAeroValidationError("NATIVE_VSPAERO_DERIVATIVES_INVALID")
         derivatives = AeroDerivatives(
-            values=tuple((str(key), _number(derivatives_payload["values"], str(key)))
-                         for key in derivatives_payload["values"]),
+            values=tuple(
+                (str(key), _number(derivatives_payload["values"], str(key)))
+                for key in derivatives_payload["values"]
+            ),
             method=str(derivatives_payload.get("method", "native")),
             step_deg=float(derivatives_payload.get("stepDeg", 1.0)),
         )
@@ -516,17 +533,23 @@ def parse_vspaero_result(
     for item in payload.get("loads", []):
         if not isinstance(item, dict):
             raise ExternalAeroValidationError("NATIVE_VSPAERO_LOAD_INVALID")
-        loads.append(SpanLoad(
-            surface_id=str(item["surfaceId"]), span_fraction=_number(item, "spanFraction"),
-            arc_m=_number(item, "arcM"), chord_m=_number(item, "chordM"),
-            section_lift_coefficient=_number(item, "sectionLiftCoefficient"),
-            circulation_m2_s=_number(item, "circulationM2S"),
-            lift_per_span_n_m=_number(item, "liftPerSpanNm"),
-            induced_alpha_deg=_number(item, "inducedAlphaDeg"),
-        ))
+        loads.append(
+            SpanLoad(
+                surface_id=str(item["surfaceId"]),
+                span_fraction=_number(item, "spanFraction"),
+                arc_m=_number(item, "arcM"),
+                chord_m=_number(item, "chordM"),
+                section_lift_coefficient=_number(item, "sectionLiftCoefficient"),
+                circulation_m2_s=_number(item, "circulationM2S"),
+                lift_per_span_n_m=_number(item, "liftPerSpanNm"),
+                induced_alpha_deg=_number(item, "inducedAlphaDeg"),
+            )
+        )
     parsed = _ParseReceipt(
-        "airframe-external-aero", "vspaero-json",
-        {key: float(value) for key, value in result.canonical().items()}, detail=detail
+        "airframe-external-aero",
+        "vspaero-json",
+        {key: float(value) for key, value in result.canonical().items()},
+        detail=detail,
     )
     validity = _ValidityReport(
         "airframe-external-aero",
@@ -631,16 +654,16 @@ def vspaero_case_manifest(case: ExternalAeroCase, reference: AeroReference) -> d
 __all__ = [
     "VSPAERO_EXECUTABLES",
     "VSPAERO_MODEL",
+    "GovernedVspaeroBackend",
     "VspaeroBackend",
     "VspaeroCapability",
-    "GovernedVspaeroBackend",
     "VspaeroSolution",
     "parse_vspaero_result",
     "prepare_vspaero_case",
     "probe_any_vspaero_capability",
     "probe_vspaero_capability",
-    "resolve_vspaero_executable",
     "require_vspaero_capability",
+    "resolve_vspaero_executable",
     "solve_vspaero",
     "vspaero_case_manifest",
 ]

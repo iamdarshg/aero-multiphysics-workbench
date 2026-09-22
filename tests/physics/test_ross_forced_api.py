@@ -9,6 +9,7 @@ select the supported keyword from the callable signature so the governed
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 from typing import Any
 
@@ -22,10 +23,22 @@ RUN_SCRIPT = (
     / "run_scripts"
     / "run_ross.py"
 )
+BENCH_SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "gcp" / "bench_ross.py"
 
 
 def _load_run_script() -> Any:
     spec = importlib.util.spec_from_file_location("run_ross_under_test", RUN_SCRIPT)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_bench_script(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
+    monkeypatch.setenv("RECEIPTS", str(tmp_path / "receipts"))
+    monkeypatch.setenv("ROSS_WORK", str(tmp_path / "work"))
+    monkeypatch.setenv("REPO_ROOT", str(Path(__file__).resolve().parents[2]))
+    spec = importlib.util.spec_from_file_location("bench_ross_under_test", BENCH_SCRIPT)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -100,3 +113,86 @@ def test_unbalance_response_rejects_unsupported_signature() -> None:
             np.linspace(1.0, 2.0, 3),
             {"node": 1, "magnitude_kg_m": 1e-4, "phase_deg": 0.0},
         )
+
+
+def test_benchmark_targets_forced_sweep_at_detected_critical_and_passes_checks(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    module = _load_bench_script(monkeypatch, tmp_path)
+    forced_targets: list[float] = []
+
+    def native_case(
+        analysis: str, model: dict[str, Any], speed_rpm: float,
+        max_speed_rpm: float, name: str,
+    ) -> dict[str, Any]:
+        del model, max_speed_rpm
+        if name == "jeffcott_campbell":
+            return {"exit": 0, "critical_speeds_rpm": [10000.0, 20000.0]}
+        if name == "soft_bearing_campbell":
+            return {"exit": 0, "critical_speeds_rpm": [6000.0, 18000.0]}
+        if name == "jeffcott_modal":
+            return {"exit": 0, "first_whirl_hz": 10000.0 / 60.0}
+        if name == "short_stiff_campbell":
+            return {"exit": 0, "critical_speeds_rpm": [25000.0]}
+        assert analysis == "forced"
+        forced_targets.append(speed_rpm)
+        return {"exit": 0, "peak_speed_rpm": speed_rpm, "peak_response_m": 1e-4}
+
+    monkeypatch.setattr(module, "gov_case", native_case)
+
+    receipt = module.bench_ross()
+
+    assert forced_targets == [pytest.approx(10000.0)]
+    assert receipt["status"] == "EXECUTED"
+    assert receipt["verificationPassed"] is True
+    assert all(receipt["checks"].values())
+
+
+def test_benchmark_rejects_executed_forced_case_that_misses_resonance(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    module = _load_bench_script(monkeypatch, tmp_path)
+
+    def native_case(
+        analysis: str, model: dict[str, Any], speed_rpm: float,
+        max_speed_rpm: float, name: str,
+    ) -> dict[str, Any]:
+        del analysis, model, speed_rpm, max_speed_rpm
+        cases = {
+            "jeffcott_campbell": {"exit": 0, "critical_speeds_rpm": [10000.0, 20000.0]},
+            "soft_bearing_campbell": {"exit": 0, "critical_speeds_rpm": [6000.0]},
+            "jeffcott_modal": {"exit": 0, "first_whirl_hz": 10000.0 / 60.0},
+            "short_stiff_campbell": {"exit": 0, "critical_speeds_rpm": [25000.0]},
+            "jeffcott_forced": {
+                "exit": 0, "peak_speed_rpm": 3000.0, "peak_response_m": 1e-4,
+            },
+        }
+        return cases[name]
+
+    monkeypatch.setattr(module, "gov_case", native_case)
+
+    receipt = module.bench_ross()
+
+    assert receipt["status"] == "EXECUTED"
+    assert receipt["verificationPassed"] is False
+    assert receipt["checks"]["forced_peak_near_first_critical"] is False
+
+
+def test_main_returns_nonzero_and_direct_probe_cannot_mask_governed_failure(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    module = _load_bench_script(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        module,
+        "bench_ross",
+        lambda: {
+            "solver": "ROSS", "status": "PARTIAL", "verificationPassed": False,
+            "checks": {"all_cases_executed": False},
+        },
+    )
+    monkeypatch.setattr(module, "direct_unbalance", lambda: {"status": "EXECUTED"})
+
+    assert module.main() == 1
+    receipt = json.loads((module.RECEIPTS / "issue38_ross.json").read_text())
+    assert receipt["status"] == "PARTIAL"
+    assert receipt["verificationPassed"] is False

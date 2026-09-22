@@ -253,7 +253,7 @@
           "kind": "file",
           "path": "solvers/code_aster/adapter.py",
           "detail": "PARTIAL: Code_Aster adapter contracts and fail-closed gating verified. No native structural solve has executed.",
-          "sha256": "2409c907574372ff97bac6942f0269e80e6e3020ef24da989b888a87196c41b5"
+          "sha256": "1d10cb0dcdc0bd58190ead2d12ea59abc2d6286cc6aff46d8175f03d2e346792"
         },
         {
           "kind": "file",
@@ -2364,7 +2364,7 @@
           "kind": "file",
           "path": "README.md",
           "detail": "PARTIAL: Repository exists, is public, main is pushed and tree is clean as of this turn. Full system completion is not claimed.",
-          "sha256": "6bfe7c46636f90a77d24ea178d8f7d5a0fee8b5c4be1d92233ca34f4b433f43c"
+          "sha256": "bb31e67344838f1aaeeda572a84ab8c3d432f2f0dd381ce2bb0d1462beda3c8d"
         }
       ],
       "lastVerifiedAt": "2026-09-14T17:20:00Z"

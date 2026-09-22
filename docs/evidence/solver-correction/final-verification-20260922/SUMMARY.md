@@ -46,3 +46,31 @@ Observed receipts:
 - Native artifacts: `vspaero-result.json`, `stdout.log`, `stderr.log`, and
   official `Results.csv`.
 - The Spot worker was deleted after receipt collection.
+
+## Current-head local ROSS re-verification
+
+ROSS was re-run locally after repairing the benchmark harness so that process
+success cannot be mistaken for scientific acceptance. The governed forced
+response is now centred on the Campbell-detected first critical instead of a
+3,000 rpm operating point whose sweep ended before resonance.
+
+- Commit under verification: `7354ee7f678060f9bc1931b4b30dcafeff31d939`.
+- Solver: `ross-rotordynamics 2.3.0`; all five governed cases exited zero.
+- Jeffcott first critical: 8,697.998 rpm versus the 10,693.425 rpm analytical
+  reference (`18.66%`, inside the declared `25%` cross-model tolerance).
+- Modal/Campbell first-mode difference: `0.458%` (limit `5%`).
+- Soft-bearing first critical: 2,887.080 rpm, below the rigid-bearing result.
+- Short/stiff first critical: 46,858.809 rpm, above the rigid reference.
+- Forced-response peak: 8,806.723 rpm, `1.25%` from the Campbell first critical
+  (limit `20%`).
+- Direct-library unbalance probe: `EXECUTED` and retained as supplementary
+  evidence; it cannot promote a failed governed run.
+- Scientific checks: 6/6 passed; `verificationPassed=true`.
+- Focused governed tests: 55 passed, 1 Windows-only RSS probe skipped; EDF ROSS
+  tests: 2 passed, 27 deselected.
+- Wall time: 65.3 s for the bounded benchmark; GCP spend: US$0.00.
+- Receipt: `ross-current.json` in this directory.
+
+The optional `ccp` dependency emitted a missing-REFPROP warning and selected its
+CoolProp/HEOS fallback. The warning is preserved in the case receipts; it did
+not prevent any ROSS case or acceptance check from executing.
