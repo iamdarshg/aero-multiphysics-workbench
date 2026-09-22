@@ -468,7 +468,8 @@ def test_airframe04_vspaero_prepares_official_openvsp_script(tmp_path: Path) -> 
     script = manifest.with_name("run-openvsp.vspscript")
     assert script.is_file()
     contents = script.read_text(encoding="utf-8")
-    assert 'ExecAnalysis("VSPAEROSweep")' in contents
+    assert 'string analysis = "VSPAEROSweep";' in contents
+    assert "ExecAnalysis(analysis)" in contents
     assert 'WriteResultsCSVFile' in contents
 
 
