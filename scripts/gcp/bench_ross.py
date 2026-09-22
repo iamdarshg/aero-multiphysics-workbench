@@ -308,7 +308,13 @@ def direct_unbalance() -> dict:
 def main() -> int:
     WORK.mkdir(parents=True, exist_ok=True)
     out = bench_ross()
-    out["directUnbalance"] = direct_unbalance()
+    try:
+        out["directUnbalance"] = direct_unbalance()
+    except Exception as exc:  # noqa: BLE001 - supplementary probe must not erase receipt
+        out["directUnbalance"] = {
+            "status": "BLOCKED",
+            "reason": f"{type(exc).__name__}:{exc}",
+        }
     (RECEIPTS / "issue38_ross.json").write_text(json.dumps(out, indent=2, sort_keys=True))
     print(
         "WROTE issue38_ross.json",

@@ -196,3 +196,31 @@ def test_main_returns_nonzero_and_direct_probe_cannot_mask_governed_failure(
     receipt = json.loads((module.RECEIPTS / "issue38_ross.json").read_text())
     assert receipt["status"] == "PARTIAL"
     assert receipt["verificationPassed"] is False
+
+
+def test_main_contains_supplementary_direct_probe_failure(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    module = _load_bench_script(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        module,
+        "bench_ross",
+        lambda: {
+            "solver": "ROSS",
+            "status": "EXECUTED",
+            "verificationPassed": True,
+            "checks": {"all_cases_executed": True},
+        },
+    )
+
+    def fail_direct_probe() -> dict[str, Any]:
+        raise RuntimeError("optional probe failed")
+
+    monkeypatch.setattr(module, "direct_unbalance", fail_direct_probe)
+
+    assert module.main() == 0
+    receipt = json.loads((module.RECEIPTS / "issue38_ross.json").read_text())
+    assert receipt["directUnbalance"] == {
+        "status": "BLOCKED",
+        "reason": "RuntimeError:optional probe failed",
+    }
