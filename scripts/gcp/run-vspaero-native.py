@@ -14,10 +14,47 @@ sys.path.insert(0, str(REPO / "packages" / "semantics"))
 sys.path.insert(0, str(REPO / "solvers"))
 
 from aeroworkbench_airframe.external_aero import (  # noqa: E402
-    case_from_payload,
     reference_from_conditions,
     solve_vspaero,
 )
+from aeroworkbench_airframe.aero_geometry import AirfoilProfile, LiftingSurface, Planform  # noqa: E402
+from aeroworkbench_airframe.external_aero import ExternalAeroCase  # noqa: E402
+
+
+def case_from_payload(payload: dict[str, object]) -> ExternalAeroCase:
+    surfaces = []
+    for item in payload["surfaces"]:  # type: ignore[index]
+        item = dict(item)  # type: ignore[arg-type]
+        plan = dict(item["planform"])  # type: ignore[index]
+        profile = dict(item["profile"])  # type: ignore[index]
+        surfaces.append(
+            LiftingSurface.from_planform(
+                str(item["surfaceId"]),
+                str(item["role"]),
+                Planform(
+                    span_mm=float(plan["spanMm"]),
+                    root_chord_mm=float(plan["rootChordMm"]),
+                    tip_chord_mm=float(plan["tipChordMm"]),
+                    sweep_deg=float(plan.get("sweepDeg", 0.0)),
+                    dihedral_deg=float(plan.get("dihedralDeg", 0.0)),
+                    twist_root_deg=float(plan.get("twistRootDeg", 0.0)),
+                    twist_tip_deg=float(plan.get("twistTipDeg", 0.0)),
+                ),
+                AirfoilProfile(
+                    family=str(profile.get("family", "parametric")),
+                    thickness_ratio=float(profile.get("thicknessRatio", 0.12)),
+                    camber_ratio=float(profile.get("camberRatio", 0.0)),
+                    camber_position=float(profile.get("camberPosition", 0.4)),
+                ),
+                frame=str(item.get("frame", "surface-local")),
+                n_stations=int(item.get("nStations", 3)),
+            )
+        )
+    return ExternalAeroCase(
+        case_id=str(payload["caseId"]),
+        surfaces=tuple(surfaces),
+        symmetry=str(payload.get("symmetry", "mirror")),
+    )
 
 
 def main() -> int:
