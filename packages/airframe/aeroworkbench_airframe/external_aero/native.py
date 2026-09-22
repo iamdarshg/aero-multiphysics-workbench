@@ -365,14 +365,23 @@ def _convert_openvsp_csv(case_dir: Path, result_name: str) -> None:
     if not csv_path.is_file():
         return
     with csv_path.open(newline="", encoding="utf-8") as stream:
-        rows = list(csv.DictReader(stream))
-    if not rows:
+        rows = list(csv.reader(stream))
+    section: dict[str, str] = {}
+    in_polar = False
+    for row in rows:
+        if not row:
+            continue
+        if row[0] == "Results_Name":
+            in_polar = len(row) > 1 and row[1] == "VSPAERO_Polar"
+            continue
+        if in_polar and len(row) > 1:
+            section[row[0]] = row[1]
+    if not section:
         return
-    row = rows[-1]
 
     def value(*names: str) -> float:
         for name in names:
-            raw = row.get(name)
+            raw = section.get(name)
             if raw not in (None, ""):
                 return float(raw)
         raise ExternalAeroValidationError(f"NATIVE_VSPAERO_CSV_FIELD_MISSING:{names[0]}")
@@ -381,10 +390,10 @@ def _convert_openvsp_csv(case_dir: Path, result_name: str) -> None:
         "coefficients": {
             "CL": value("CLtot", "CL"),
             "CD": value("CDtot", "CD"),
-            "CY": value("CYtot", "CY"),
-            "Cl": value("Cltot", "Cl"),
-            "Cm": value("Cmtot", "Cm"),
-            "Cn": value("Cntot", "Cn"),
+            "CY": value("CYtot", "CY", "CStot"),
+            "Cl": value("Cltot", "Cl", "CMxtot"),
+            "Cm": value("Cmtot", "Cm", "CMytot"),
+            "Cn": value("Cntot", "Cn", "CMztot"),
         },
         "validity": {
             "checks": {"solver_csv_present": True, "converged": True},
