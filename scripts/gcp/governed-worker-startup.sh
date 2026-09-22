@@ -68,6 +68,10 @@ rm -rf /opt/py312/lib/python3.12/site-packages/ross \
   /opt/py312/lib/python3.12/site-packages/ross-*.dist-info
 timeout 900 /opt/py312/bin/python -m pip install --no-cache-dir \
   "git+https://github.com/petrobras/ross.git@v2.3.0" 2>&1 | tail -5
+if ! /opt/py312/bin/python -c "import ross; assert hasattr(ross, 'Material')" 2>/dev/null; then
+  timeout 900 /opt/py312/bin/python -m pip install --force-reinstall --no-cache-dir \
+    "ross-rotordynamics==2.3.0" 2>&1 | tail -5
+fi
 /opt/py312/bin/python -c "import ross; assert hasattr(ross, 'Material'); print('ROSS API OK', ross.__file__)" 2>&1 | tail -2
 
 echo "--- D: pyprecice into the repo interpreter (best-effort, bounded) ---"
