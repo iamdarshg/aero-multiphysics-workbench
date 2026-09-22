@@ -63,6 +63,8 @@ fi
 # A stale PyPI distribution named `ross` can shadow the module supplied by the
 # locked `ross-rotordynamics` distribution. Remove the collision and reinstall
 # the locked wheel explicitly before probing the governed participant.
+rm -rf /opt/py312/lib/python3.12/site-packages/ross \
+  /opt/py312/lib/python3.12/site-packages/ross-*.dist-info
 /opt/py312/bin/python -m pip uninstall -y ross 2>&1 | tail -3 || true
 timeout 900 /opt/py312/bin/python -m pip install --force-reinstall --no-deps \
   "ross-rotordynamics==2.3.0" 2>&1 | tail -3
