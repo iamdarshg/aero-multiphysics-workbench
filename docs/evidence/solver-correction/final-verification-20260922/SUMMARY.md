@@ -30,20 +30,19 @@ Observed receipts:
 - Cross-solver gate: executed and correctly returned `validatedFinal=false` with
   missing participant, closure, field-coupling, and independence blockers.
 
-## AIRFRAME native capability probe
+## AIRFRAME native capability and solve
 
-- Worker: `aero-airframe-native-probe-20260922`
+- Worker: `aero-openvsp-native-20260922e`
 - Machine: Spot `e2-small`
 - OpenVSP/VSPAERO package: official OpenVSP `3.52.1` Ubuntu 24.04 package,
   installed with its `desktop-file-utils` prerequisite.
 - Observed executables: `/usr/local/bin/vspaero` and `/usr/local/bin/vsp`.
-- Capability: available, but no native result was published.
-- Remaining adapter issue: the governed AIRFRAME backend currently invokes
-  `vspaero --case <manifest> --output <result>`, while the installed official
-  executable expects its native OpenVSP/VSPAERO input-file workflow and rejects
-  the wrapper arguments. A result cannot be promoted until that invocation
-  contract is implemented and exercised.
-
-The AIRFRAME governed adapter therefore remains fail-closed for result
-publication. The capability probe is evidence that the binary is installed, not
-evidence of a completed aerodynamic solve.
+- Capability: available and exercised through the official OpenVSP AngelScript
+  workflow under the governed participant runner.
+- Native receipt: `source=native_solver`, `validity.passed=true`,
+  `validity.checks.converged=true`, and `solver_csv_present=true`.
+- Native coefficients: `CL=-0.006175042038`, `CD=0.009902860619`,
+  `CY=0`, `Cl=0`, `Cm=0.011089761547`, `Cn=0`.
+- Native artifacts: `vspaero-result.json`, `stdout.log`, `stderr.log`, and
+  official `Results.csv`.
+- The Spot worker was deleted after receipt collection.
