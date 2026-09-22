@@ -6,7 +6,7 @@ mkdir -p "$LOGDIR"
 exec > >(tee -a "$LOGDIR/airframe-native-probe.log") 2>&1
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl bzip2 ca-certificates gdebi-core libglu1-mesa libgl1
+apt-get install -y -qq curl bzip2 ca-certificates gdebi-core desktop-file-utils libglu1-mesa libgl1
 
 # OpenVSP is not published on conda-forge. Install the official, versioned
 # Ubuntu package before probing; absence remains an honest capability result.
