@@ -22,6 +22,7 @@ from aeroworkbench_airframe.external_aero import (  # noqa: E402
     solve_vspaero,
 )
 from aeroworkbench_airframe.aero_geometry import AirfoilProfile, LiftingSurface, Planform  # noqa: E402
+from aeroworkbench_airframe.aero_geometry import LoftedBody  # noqa: E402
 from aeroworkbench_airframe.external_aero import ExternalAeroCase  # noqa: E402
 
 
@@ -54,10 +55,25 @@ def case_from_payload(payload: dict[str, object]) -> ExternalAeroCase:
                 n_stations=int(item.get("nStations", 3)),
             )
         )
+    bodies = []
+    for item in payload.get("bodies", []):
+        body = dict(item)  # type: ignore[arg-type]
+        sections = [dict(section) for section in body["sections"]]  # type: ignore[index]
+        bodies.append(
+            LoftedBody.from_spine(
+                str(body["bodyId"]),
+                str(body["role"]),
+                tuple(tuple(float(value) for value in section["spineMm"]) for section in sections),
+                tuple(float(section["widthMm"]) for section in sections),
+                tuple(float(section["heightMm"]) for section in sections),
+                frame=str(body.get("frame", "body")),
+            )
+        )
     return ExternalAeroCase(
         case_id=str(payload["caseId"]),
         surfaces=tuple(surfaces),
         symmetry=str(payload.get("symmetry", "mirror")),
+        bodies=tuple(bodies),
     )
 
 
@@ -72,6 +88,8 @@ def main() -> int:
         velocity_m_s=float(conditions["velocityMS"]),
         speed_of_sound_m_s=float(conditions["speedOfSoundMS"]),
         viscosity_pa_s=float(conditions["viscosityPaS"]),
+        alpha_deg=float(payload.get("alphaDeg", 4.0)),
+        beta_deg=float(payload.get("betaDeg", 2.0)),
         altitude_m=conditions.get("altitudeM"),
         atmosphere_model=conditions.get("atmosphereModel", "declared"),
     )

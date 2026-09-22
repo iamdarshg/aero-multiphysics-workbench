@@ -23,6 +23,17 @@
     }
   ],
   "controls": [],
+  "bodies": [
+    {
+      "bodyId": "native-centerbody",
+      "role": "lifting_body",
+      "frame": "body",
+      "sections": [
+        {"stationFraction": 0.0, "spineMm": [0.0, 0.0, -500.0], "widthMm": 280.0, "heightMm": 180.0},
+        {"stationFraction": 1.0, "spineMm": [0.0, 0.0, 500.0], "widthMm": 220.0, "heightMm": 120.0}
+      ]
+    }
+  ],
   "reference": {
     "densityKgM3": 1.225,
     "velocityMS": 60.0,
