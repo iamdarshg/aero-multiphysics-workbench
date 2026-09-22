@@ -17,7 +17,7 @@ git clone --depth 1 https://github.com/iamdarshg/aero-multiphysics-workbench.git
 cd /opt/repo
 curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
 UV_PROJECT_ENVIRONMENT=/opt/py312 uv sync --frozen --directory services/api
-export PYTHONPATH="/opt/repo:/opt/repo/packages/airframe:/opt/repo/packages/core:/opt/repo/packages/geometry:/opt/repo/packages/semantics:/opt/repo/solvers"
+export PYTHONPATH="/opt/repo:/opt/repo/packages/airframe:/opt/repo/packages/core:/opt/repo/packages/geometry:/opt/repo/packages/semantics:/opt/repo/packages/fluid_properties:/opt/repo/solvers"
 timeout 900 xvfb-run -a /opt/py312/bin/python scripts/gcp/run-vspaero-native.py \
   > "$LOGDIR/vspaero-native-result.json"
 test -s "$LOGDIR/vspaero-native-result.json"
