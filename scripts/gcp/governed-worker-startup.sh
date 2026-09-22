@@ -103,7 +103,7 @@ report = {
     "as_run": probe(["as_run", "--version"]),
     "run_aster": probe(["run_aster", "--version"]),
 }
-for name in ("numpy", "scipy", "ross", "pybamm", "cantera", "openmdao", "gmsh", "fastapi", "cadquery", "meshio"):
+for name in ("numpy", "scipy", "ross-rotordynamics", "pybamm", "cantera", "openmdao", "gmsh", "fastapi", "cadquery", "meshio"):
     try:
         import importlib.metadata as md
         report[f"py:{name}"] = {"present": True, "version": md.version(name)}
