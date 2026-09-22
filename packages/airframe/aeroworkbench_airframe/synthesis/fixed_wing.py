@@ -18,7 +18,7 @@ from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 from ..canonical import content_digest
 from ..units import Quantity
 from . import methods
-from .errors import SynthesisInfeasibleError
+from .errors import RequirementConflictError, SynthesisInfeasibleError
 from .requirements import CompiledRequirements
 from .seeds import VehicleSeed
 
@@ -98,6 +98,18 @@ def _required_upper(
     if upper is None:
         raise SynthesisInfeasibleError(f"REQUIRED_METRIC_MISSING:{metric}")
     return upper
+
+
+def _required_value(
+    bounds: dict[str, tuple[float | None, float | None]], metric: str
+) -> float:
+    """Choose a value inside a declared one-sided hard bound without inventing a limit."""
+    lower, upper = bounds.get(metric, (None, None))
+    if lower is not None:
+        return lower
+    if upper is not None:
+        return upper
+    raise SynthesisInfeasibleError(f"REQUIRED_METRIC_MISSING:{metric}")
 
 
 def _reference_value(
@@ -184,9 +196,9 @@ def _build_seed(
     aspect_ratio: float,
     index: int,
 ) -> VehicleSeed:
-    payload = _required_lower(bounds, "payload_mass")
+    payload = _required_value(bounds, "payload_mass")
     _enforce_bounds(bounds, "payload_mass", payload)
-    stall_speed = _required_upper(bounds, "stall_speed")
+    stall_speed = _required_value(bounds, "stall_speed")
     _enforce_bounds(bounds, "stall_speed", stall_speed)
     cruise_speed = _reference_value(bounds, "cruise_speed", None)
     if cruise_speed is None:
@@ -201,6 +213,12 @@ def _build_seed(
 
     density = methods.isa_density(Quantity(value=cruise_altitude, unit="m"))
     speed_of_sound = methods.isa_speed_of_sound(Quantity(value=cruise_altitude, unit="m"))
+    for atmospheric_quantity in (density, speed_of_sound):
+        if not atmospheric_quantity.validity.valid:
+            raise SynthesisInfeasibleError(
+                f"VALIDITY_ENVELOPE_VIOLATION:{atmospheric_quantity.name}:"
+                f"{','.join(atmospheric_quantity.validity.violations)}"
+            )
     takeoff_mass = methods.max_takeoff_mass(
         Quantity(value=payload, unit="kg"), assumptions.empty_mass_fraction
     )
@@ -340,6 +358,8 @@ def generate_fixed_wing_seeds(
     """Generate diverse fixed-wing seeds; fail closed on any unmet requirement."""
     if seed_count <= 0:
         raise SynthesisInfeasibleError("SEED_COUNT_MUST_BE_POSITIVE")
+    if compiled.conflicts:
+        raise RequirementConflictError(compiled.conflicts)
     settings = assumptions if assumptions is not None else FixedWingAssumptions()
     bounds = requirement_bounds(compiled)
     raw_lower, raw_upper = bounds.get("aspect_ratio", (None, None))
@@ -350,7 +370,9 @@ def generate_fixed_wing_seeds(
     if raw_upper is None and raw_lower is not None:
         aspect_upper = max(aspect_upper, raw_lower)
     if aspect_lower > aspect_upper:
-        aspect_lower, aspect_upper = aspect_upper, aspect_lower
+        raise SynthesisInfeasibleError(
+            f"ASPECT_RATIO_BOUNDS_INFEASIBLE:{aspect_lower}>{aspect_upper}"
+        )
 
     seeds: list[VehicleSeed] = []
     failures: list[str] = []

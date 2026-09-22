@@ -213,3 +213,70 @@ def test_airframe07_invalid_geometry_is_rejected_before_native_evaluation() -> N
         "GEOMETRY_INVALID" in getattr(result, "detail", "")
         for result in receipt.record.results
     )
+
+
+def test_airframe07_compiled_downstream_requirement_makes_violation_invalid() -> None:
+    compiled = compile_requirements_payload(
+        {
+            "requirements": [
+                {
+                    "id": "payload",
+                    "kind": "mission",
+                    "metric": "payload_mass",
+                    "operator": "at_least",
+                    "value": 120.0,
+                    "unit": "kg",
+                },
+                {
+                    "id": "stall",
+                    "kind": "performance",
+                    "metric": "stall_speed",
+                    "operator": "at_most",
+                    "value": 30.0,
+                    "unit": "m/s",
+                },
+                {
+                    "id": "cruise",
+                    "kind": "performance",
+                    "metric": "cruise_speed",
+                    "operator": "at_least",
+                    "value": 65.0,
+                    "unit": "m/s",
+                },
+                {
+                    "id": "power",
+                    "kind": "constraint",
+                    "metric": "power_limit",
+                    "operator": "at_most",
+                    "value": 1.0,
+                    "unit": "W",
+                },
+            ]
+        }
+    )
+    seed = generate_fixed_wing_seeds(compiled, seed_count=1)[0]
+    spec = build_airframe_campaign_spec(
+        "airframe07-downstream",
+        seed,
+        generation=GenerationRequest("lhs", count=1, budget=1, seed=1),
+        objectives=(StudyObjective("score", "minimize"),),
+        fidelity_ladder=(FidelityImplementation("analytical", 0, 0.0),),
+        budget=CampaignBudget(max_evaluations=1),
+        requirements=compiled,
+    )
+
+    def evaluator(candidate: Candidate, fidelity: str) -> EvaluationResult:
+        return EvaluationResult(
+            outputs={"score": 1.0, "power_limit": 2.0},
+            flags=PhysicsFlags(converged=True, closure_passed=True, validity_ok=True),
+            fidelity=fidelity,
+        )
+
+    receipt = AirframeCampaignSession(
+        spec,
+        evaluator,
+        evaluator_identity="downstream-v1",
+        mutation_policy=AirframeMutationPolicy.default(),
+    ).run()
+    assert receipt.record.best is None
+    assert receipt.record.results[0].detail.startswith("REQUIREMENT_CONSTRAINT_VIOLATED")

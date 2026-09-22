@@ -386,6 +386,68 @@ def test_airframe06_missing_or_impossible_requirements_fail_closed() -> None:
         generate_fixed_wing_seeds(tight)
 
 
+def test_airframe06_synthesis_rejects_compiled_conflicts_even_when_inspected() -> None:
+    compiled = compile_requirements(
+        [
+            _requirement("REQ-PAYLOAD-MIN", "payload_mass", "at_least", value=500.0, unit="kg"),
+            _requirement("REQ-PAYLOAD-MAX", "payload_mass", "at_most", value=100.0, unit="kg"),
+            _requirement("REQ-STALL", "stall_speed", "at_most", value=30.0, unit="m/s"),
+            _requirement("REQ-CRUISE", "cruise_speed", "at_least", value=65.0, unit="m/s"),
+        ],
+        strict=False,
+    )
+    with pytest.raises(RequirementConflictError, match="REQUIREMENT_CONFLICT"):
+        generate_fixed_wing_seeds(compiled)
+
+
+def test_airframe06_aspect_ratio_bounds_are_not_rewritten() -> None:
+    compiled = compile_requirements(
+        [
+            _requirement("REQ-PAYLOAD", "payload_mass", "at_least", value=100.0, unit="kg"),
+            _requirement("REQ-STALL", "stall_speed", "at_most", value=30.0, unit="m/s"),
+            _requirement("REQ-CRUISE", "cruise_speed", "at_least", value=65.0, unit="m/s"),
+            _requirement(
+                "REQ-AR-MIN", "aspect_ratio", "at_least", value=12.0, unit="dimensionless"
+            ),
+            _requirement("REQ-AR-MAX", "aspect_ratio", "at_most", value=8.0, unit="dimensionless"),
+        ],
+        strict=False,
+    )
+    with pytest.raises(RequirementConflictError):
+        generate_fixed_wing_seeds(compiled)
+
+
+@pytest.mark.parametrize(
+    ("metric", "operator", "value", "unit", "error"),
+    [
+        ("stall_speed", "at_least", 130.0, "m/s", "VALIDITY_ENVELOPE_VIOLATION"),
+        ("cruise_altitude", "at_least", 12000.0, "m", "VALIDITY_ENVELOPE_VIOLATION"),
+        ("max_lift_coefficient", "at_most", 0.5, "dimensionless", "VALIDITY_ENVELOPE_VIOLATION"),
+        ("tail_volume_coefficient", "at_most", 0.2, "dimensionless", "VALIDITY_ENVELOPE_VIOLATION"),
+        ("dynamic_pressure", "at_most", 1.0, "Pa", "DYNAMIC_PRESSURE_ABOVE_UPPER"),
+        ("range", "at_least", 100000000000.0, "m", "RANGE_ENERGY_INFEASIBLE"),
+    ],
+)
+def test_airframe06_hard_metric_violation_makes_seed_infeasible(
+    metric: str, operator: str, value: float, unit: str, error: str
+) -> None:
+    specs = [
+        _requirement("REQ-PAYLOAD", "payload_mass", "at_least", value=100.0, unit="kg"),
+        _requirement(
+            "REQ-STALL",
+            "stall_speed",
+            "at_most",
+            value=200.0 if metric == "stall_speed" else 30.0,
+            unit="m/s",
+        ),
+        _requirement("REQ-CRUISE", "cruise_speed", "at_least", value=65.0, unit="m/s"),
+        _requirement("REQ-HARD", metric, operator, value=value, unit=unit),
+    ]
+    compiled = compile_requirements(specs)
+    with pytest.raises(SynthesisInfeasibleError, match=error):
+        generate_fixed_wing_seeds(compiled)
+
+
 def test_airframe06_rotorcraft_seam_uses_available_analytical_propulsor_foundation() -> (
     None
 ):

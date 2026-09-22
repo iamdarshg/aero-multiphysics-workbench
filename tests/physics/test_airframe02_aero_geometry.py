@@ -11,6 +11,7 @@ fixed-wing (wing + fuselage + controls) and a flying-wing assembly.
 from __future__ import annotations
 
 import json
+from math import pi
 from pathlib import Path
 from typing import Any
 
@@ -551,3 +552,47 @@ def test_airframe02_reciprocal_scaling_preserves_canonical_volume() -> None:
     )
     assert receipt.valid
     assert receipt.volume_change_fraction <= 1e-9
+
+
+def test_airframe02_body_volume_uses_nonuniform_spine_spacing() -> None:
+    body = LoftedBody.from_spine(
+        "nonuniform-body",
+        "lifting_body",
+        ((0.0, 0.0, 0.0), (0.0, 0.0, 100.0), (0.0, 0.0, 500.0)),
+        (100.0, 300.0, 100.0),
+        (40.0, 100.0, 40.0),
+    )
+    expected_mm3 = (
+        pi * 100.0 / 3.0 * (50.0 * 20.0 + (50.0 * 50.0 + 150.0 * 20.0) / 2.0 + 150.0 * 50.0)
+        + pi * 400.0 / 3.0 * (150.0 * 50.0 + (150.0 * 20.0 + 50.0 * 50.0) / 2.0 + 50.0 * 20.0)
+    )
+    assert estimate_body_volume_mm3(body) == pytest.approx(expected_mm3)
+
+
+def test_airframe02_refinement_gate_equals_downstream_body_volume_before_and_after() -> None:
+    body = _lifting_body_fixture()
+    assembly = AeroGeometryAssembly("regression", bodies=(body,))
+    receipt = refine_assembly(
+        assembly,
+        GeometryRefinementPlan(
+            plan_id="exact-volume-agreement",
+            controls=(
+                FfdControl(
+                    component_id="regression-body",
+                    station_fraction=0.5,
+                    support_fraction=0.4,
+                    width_scale=1.2,
+                    displacement_mm=(0.0, 0.0, 60.0),
+                ),
+            ),
+            preserve_body_volume=True,
+            max_volume_change_fraction=1e-12,
+        ),
+    )
+    after = receipt.assembly.bodies[0]
+    assert estimate_body_volume_mm3(body) == body.volume_m3 * 1.0e9
+    assert estimate_body_volume_mm3(after) == after.volume_m3 * 1.0e9
+    assert receipt.volume_change_fraction == abs(
+        after.volume_m3 - body.volume_m3
+    ) / body.volume_m3
+    assert receipt.volume_change_fraction == 0.0

@@ -179,12 +179,14 @@ class LoftedBody:
 
     @property
     def volume_m3(self) -> float:
-        from math import pi
         total_mm3 = 0.0
         for left, right in zip(self.sections, self.sections[1:], strict=False):
             a0, b0 = left.width_mm / 2.0, left.height_mm / 2.0
             a1, b1 = right.width_mm / 2.0, right.height_mm / 2.0
-            length = (right.station_fraction - left.station_fraction) * self.length_mm
+            # The loft consumes the section Z offsets directly. Use the same
+            # adjacent distances here rather than reconstructing a uniform
+            # station spacing from the body's total reach.
+            length = abs(right.spine_mm[2] - left.spine_mm[2])
             total_mm3 += pi * length / 3.0 * (a0*b0 + (a0*b1 + a1*b0) / 2.0 + a1*b1)
         return total_mm3 / 1.0e9
 

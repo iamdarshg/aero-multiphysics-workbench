@@ -71,6 +71,19 @@ def test_hard_downstream_violation_is_campaign_infeasible_with_margin() -> None:
     assert finding.requirement_ids == ("REQ-power_limit",)
 
 
+@pytest.mark.parametrize("metric", DOWNSTREAM_METRICS)
+def test_every_downstream_hard_violation_is_infeasible(metric: str) -> None:
+    compiled = compile_requirements([RequirementSpec(**_spec(metric))])
+    result = evaluate_downstream_requirements(
+        compiled,
+        {metric: ConstraintObservation(metric=metric, value_si=2.0)},
+    )
+    assert result.feasible is False
+    assert result.campaign_status == "campaign-infeasible"
+    assert result.findings[0].status == "violated"
+    assert result.findings[0].passed is False
+
+
 def test_missing_consumer_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
     compiled = compile_requirements([RequirementSpec(**_spec("service_ceiling"))])
     monkeypatch.delitem(DOWNSTREAM_CONSTRAINT_ADAPTERS, "service_ceiling")

@@ -7,7 +7,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
 from enum import StrEnum
 from types import SimpleNamespace
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from aeroworkbench_optimization import (
     CampaignBudget,
@@ -24,6 +24,9 @@ from aeroworkbench_optimization import (
 from aeroworkbench_optimization import CampaignRecord as GenericCampaignRecord
 
 from .synthesis.seeds import VehicleSeed, build_seed_design_space
+
+if TYPE_CHECKING:
+    from .synthesis.requirements import CompiledRequirements
 
 
 class MutationStage(StrEnum):
@@ -69,6 +72,7 @@ class AirframeCampaignSpec:
     evaluations: int
     evaluator_identity: str
     generic: CampaignSpec
+    requirements: CompiledRequirements | None = None
 
     @property
     def generic_spec(self) -> CampaignSpec:
@@ -101,6 +105,7 @@ def build_airframe_campaign_spec(
     objectives: tuple[StudyObjective, ...],
     fidelity_ladder: tuple[FidelityImplementation, ...],
     budget: CampaignBudget | None = None,
+    requirements: CompiledRequirements | None = None,
 ) -> AirframeCampaignSpec:
     # The generic stochastic strategies require an explicit sample count. A
     # legacy airframe caller may provide only its bounded evaluation budget;
@@ -120,7 +125,11 @@ def build_airframe_campaign_spec(
         budget=active_budget,
     )
     evaluations = int(active_budget.max_evaluations or generation.budget or generation.count or 1)
-    return AirframeCampaignSpec(campaign_id, seed, evaluations, "", generic)
+    if requirements is not None and requirements.conflicts:
+        from .synthesis.errors import RequirementConflictError
+
+        raise RequirementConflictError(requirements.conflicts)
+    return AirframeCampaignSpec(campaign_id, seed, evaluations, "", generic, requirements)
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,11 +155,13 @@ class AirframeCampaignReceipt:
     evaluator_identity: str
     digest: str
     generic_record: GenericCampaignRecord | None = None
+    requirements_hash: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         payload = {"metrics": self.record.metrics, "evaluatorIdentity": self.evaluator_identity,
                    "results": [getattr(result, "outputs", {}) for result in self.record.results],
-                   "mutation": [decision.reason for decision in self.mutation_decisions]}
+                   "mutation": [decision.reason for decision in self.mutation_decisions],
+                   "requirementsHash": self.requirements_hash}
         return {**payload, "digest": self.digest}
 
     @classmethod
@@ -167,7 +178,13 @@ class AirframeCampaignReceipt:
             MutationDecision(True, None, (), str(reason))
             for reason in payload.get("mutation", ())
         )
-        return cls(record, decisions, payload.get("evaluatorIdentity", ""), digest)
+        return cls(
+            record,
+            decisions,
+            payload.get("evaluatorIdentity", ""),
+            digest,
+            requirements_hash=payload.get("requirementsHash"),
+        )
 
 
 class AirframeCampaignSession:
@@ -181,6 +198,10 @@ class AirframeCampaignSession:
         geometry_regenerator: GeometryRegenerator | None = None,
     ) -> None:
         self.spec = spec
+        if spec.requirements is not None and spec.requirements.conflicts:
+            from .synthesis.errors import RequirementConflictError
+
+            raise RequirementConflictError(spec.requirements.conflicts)
         self.evaluator = evaluator
         self.evaluator_identity = evaluator_identity
         self.mutation_policy = mutation_policy
@@ -216,6 +237,7 @@ class AirframeCampaignSession:
                     detail=f"GEOMETRY_INVALID:{reasons}",
                 )
             result = self.evaluator(candidate, fidelity)
+            result = self._enforce_requirements(result)
             return EvaluationResult(
                 outputs=result.outputs,
                 flags=result.flags,
@@ -226,7 +248,44 @@ class AirframeCampaignSession:
                 signals=result.signals,
                 detail=result.detail,
             )
-        return self.evaluator(candidate, fidelity)
+        return self._enforce_requirements(self.evaluator(candidate, fidelity))
+
+    def _enforce_requirements(self, result: EvaluationResult) -> EvaluationResult:
+        requirements = self.spec.requirements
+        if requirements is None:
+            return result
+        from .constraints import ConstraintObservation
+
+        observations = {
+            metric: ConstraintObservation(
+                metric=metric, value_si=float(value), source=self.evaluator_identity
+            )
+            for metric, value in result.outputs.items()
+            if isinstance(value, (int, float)) and not isinstance(value, bool)
+        }
+        evaluation = requirements.evaluate_downstream(observations)
+        if evaluation.feasible:
+            return result
+        details = ";".join(
+            finding.detail for finding in evaluation.findings if not finding.passed
+        )
+        return EvaluationResult(
+            outputs=result.outputs,
+            flags=PhysicsFlags(
+                converged=result.flags.converged,
+                closure_passed=result.flags.closure_passed,
+                validity_ok=False,
+                mesh_sensitivity=result.flags.mesh_sensitivity,
+                timestep_sensitivity=result.flags.timestep_sensitivity,
+                resonance_margin_hz=result.flags.resonance_margin_hz,
+            ),
+            fidelity=result.fidelity,
+            source=result.source,
+            cost=result.cost,
+            geometry_hash=result.geometry_hash,
+            signals=result.signals,
+            detail=f"REQUIREMENT_CONSTRAINT_VIOLATED:{details}",
+        )
 
     def run(self) -> AirframeCampaignReceipt:
         generic_record = run_campaign(
@@ -251,17 +310,32 @@ class AirframeCampaignSession:
         decisions = tuple(self._decisions.values())
         canonical = {"metrics": record.metrics, "evaluatorIdentity": self.evaluator_identity,
                      "results": [item.outputs for item in evaluations],
-                     "mutation": [decision.reason for decision in decisions]}
+                     "mutation": [decision.reason for decision in decisions],
+                     "requirementsHash": (
+                         self.spec.requirements.content_hash
+                         if self.spec.requirements is not None
+                         else None
+                     )}
         digest = hashlib.sha256(
             json.dumps(canonical, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
         return AirframeCampaignReceipt(
-            record, decisions, self.evaluator_identity, digest, generic_record
+            record,
+            decisions,
+            self.evaluator_identity,
+            digest,
+            generic_record,
+            self.spec.requirements.content_hash if self.spec.requirements is not None else None,
         )
 
     def resume(self, receipt: AirframeCampaignReceipt) -> AirframeCampaignReceipt:
         if receipt.evaluator_identity != self.evaluator_identity:
             raise ValueError("EVALUATOR_IDENTITY_MISMATCH")
+        requirements_hash = (
+            self.spec.requirements.content_hash if self.spec.requirements is not None else None
+        )
+        if receipt.requirements_hash != requirements_hash:
+            raise ValueError("REQUIREMENTS_HASH_MISMATCH")
         if receipt.generic_record is None:
             record = CampaignRecord(
                 receipt.record.best,
@@ -269,7 +343,11 @@ class AirframeCampaignSession:
                 receipt.record.results,
             )
             return AirframeCampaignReceipt(
-                record, receipt.mutation_decisions, self.evaluator_identity, receipt.digest
+                record,
+                receipt.mutation_decisions,
+                self.evaluator_identity,
+                receipt.digest,
+                requirements_hash=receipt.requirements_hash,
             )
         return self.run()
 
