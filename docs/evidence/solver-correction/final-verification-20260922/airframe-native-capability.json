@@ -1,7 +1,20 @@
 {
-  "available": false,
+  "available": true,
   "native_result_published": false,
-  "observed": [],
-  "worker": "aero-airframe-native-probe-20260922",
+  "observed": [
+    {
+      "name": "vspaero",
+      "path": "/usr/local/bin/vspaero",
+      "returncode": 1,
+      "version": "Could not open the file: --version.vspaero for input!"
+    },
+    {
+      "name": "vsp",
+      "path": "/usr/local/bin/vsp",
+      "returncode": 1,
+      "version": "Can't open display:"
+    }
+  ],
+  "worker": "aero-airframe-native-probe-20260922e",
   "provenance": "gcp-spot-capability-probe-2026-09-22"
 }

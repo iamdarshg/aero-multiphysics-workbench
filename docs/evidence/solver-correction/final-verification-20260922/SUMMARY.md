@@ -34,10 +34,16 @@ Observed receipts:
 
 - Worker: `aero-airframe-native-probe-20260922`
 - Machine: Spot `e2-small`
-- OpenVSP/VSPAERO package probe: conda-forge has no `openvsp` package in the
-  worker environment.
-- Observed executables: none (`vspaero`, `vspaero.exe`, `openvsp`, `vsp`).
-- Native result published: `false`.
+- OpenVSP/VSPAERO package: official OpenVSP `3.52.1` Ubuntu 24.04 package,
+  installed with its `desktop-file-utils` prerequisite.
+- Observed executables: `/usr/local/bin/vspaero` and `/usr/local/bin/vsp`.
+- Capability: available, but no native result was published.
+- Remaining adapter issue: the governed AIRFRAME backend currently invokes
+  `vspaero --case <manifest> --output <result>`, while the installed official
+  executable expects its native OpenVSP/VSPAERO input-file workflow and rejects
+  the wrapper arguments. A result cannot be promoted until that invocation
+  contract is implemented and exercised.
 
-The AIRFRAME governed adapter therefore remains capability-gated and fail
-closed. This probe is evidence of unavailable capability, not a native result.
+The AIRFRAME governed adapter therefore remains fail-closed for result
+publication. The capability probe is evidence that the binary is installed, not
+evidence of a completed aerodynamic solve.
