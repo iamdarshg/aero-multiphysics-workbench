@@ -14,6 +14,7 @@ sys.path.insert(0, str(REPO / "packages" / "semantics"))
 sys.path.insert(0, str(REPO / "packages" / "fluid_properties"))
 sys.path.insert(0, str(REPO / "packages" / "convergence"))
 sys.path.insert(0, str(REPO / "packages" / "optimization"))
+sys.path.insert(0, str(REPO / "services" / "api"))
 sys.path.insert(0, str(REPO / "solvers"))
 
 from aeroworkbench_airframe.external_aero import (  # noqa: E402
