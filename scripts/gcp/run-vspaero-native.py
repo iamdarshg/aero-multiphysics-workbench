@@ -17,13 +17,17 @@ sys.path.insert(0, str(REPO / "packages" / "optimization"))
 sys.path.insert(0, str(REPO / "services" / "api"))
 sys.path.insert(0, str(REPO / "solvers"))
 
+from aeroworkbench_airframe.aero_geometry import (  # noqa: E402
+    AirfoilProfile,
+    LiftingSurface,
+    LoftedBody,  # noqa: E402
+    Planform,
+)
 from aeroworkbench_airframe.external_aero import (  # noqa: E402
+    ExternalAeroCase,  # noqa: E402
     reference_from_conditions,
     solve_vspaero,
 )
-from aeroworkbench_airframe.aero_geometry import AirfoilProfile, LiftingSurface, Planform  # noqa: E402
-from aeroworkbench_airframe.aero_geometry import LoftedBody  # noqa: E402
-from aeroworkbench_airframe.external_aero import ExternalAeroCase  # noqa: E402
 
 
 def case_from_payload(payload: dict[str, object]) -> ExternalAeroCase:

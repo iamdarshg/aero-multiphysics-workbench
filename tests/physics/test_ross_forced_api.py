@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -81,6 +82,14 @@ class _RotorWithFrequency:
         return type("Forced", (), {"forced_resp": np.ones((1, size), dtype=complex)})
 
 
+def test_governed_run_module_restores_solver_import_path() -> None:
+    before = list(sys.path)
+
+    _load_run_script()
+
+    assert sys.path == before
+
+
 @pytest.mark.parametrize("rotor_cls", [_RotorWithSpeedRange, _RotorWithFrequency])
 def test_unbalance_response_selects_supported_keyword(rotor_cls: type) -> None:
     module = _load_run_script()
@@ -115,6 +124,19 @@ def test_unbalance_response_rejects_unsupported_signature() -> None:
         )
 
 
+def test_direct_probe_restores_solver_import_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    module = _load_bench_script(monkeypatch, Path("/tmp"))
+    solver_path = str(Path(__file__).resolve().parents[2] / "solvers")
+    monkeypatch.setattr(sys, "path", [solver_path, *sys.path])
+    monkeypatch.setitem(sys.modules, "ross", type("WrongRoss", (), {"__file__": "fake"})())
+    before = list(sys.path)
+
+    result = module.direct_unbalance()
+
+    assert result["status"] == "BLOCKED"
+    assert sys.path == before
+
+
 def test_benchmark_targets_forced_sweep_at_detected_critical_and_passes_checks(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -128,6 +150,8 @@ def test_benchmark_targets_forced_sweep_at_detected_critical_and_passes_checks(
         del model, max_speed_rpm
         if name == "jeffcott_campbell":
             return {"exit": 0, "critical_speeds_rpm": [10000.0, 20000.0]}
+        if name == "jeffcott_refined_campbell":
+            return {"exit": 0, "critical_speeds_rpm": [10050.0, 20020.0]}
         if name == "soft_bearing_campbell":
             return {"exit": 0, "critical_speeds_rpm": [6000.0, 18000.0]}
         if name == "jeffcott_modal":
@@ -145,6 +169,7 @@ def test_benchmark_targets_forced_sweep_at_detected_critical_and_passes_checks(
     assert forced_targets == [pytest.approx(10000.0)]
     assert receipt["status"] == "EXECUTED"
     assert receipt["verificationPassed"] is True
+    assert receipt["discretizationIndependencePassed"] is True
     assert all(receipt["checks"].values())
 
 
@@ -160,6 +185,9 @@ def test_benchmark_rejects_executed_forced_case_that_misses_resonance(
         del analysis, model, speed_rpm, max_speed_rpm
         cases = {
             "jeffcott_campbell": {"exit": 0, "critical_speeds_rpm": [10000.0, 20000.0]},
+            "jeffcott_refined_campbell": {
+                "exit": 0, "critical_speeds_rpm": [10050.0, 20020.0],
+            },
             "soft_bearing_campbell": {"exit": 0, "critical_speeds_rpm": [6000.0]},
             "jeffcott_modal": {"exit": 0, "first_whirl_hz": 10000.0 / 60.0},
             "short_stiff_campbell": {"exit": 0, "critical_speeds_rpm": [25000.0]},

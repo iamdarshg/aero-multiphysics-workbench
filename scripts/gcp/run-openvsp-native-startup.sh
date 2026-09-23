@@ -18,7 +18,15 @@ cd /opt/repo
 curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
 UV_PROJECT_ENVIRONMENT=/opt/py312 uv sync --frozen --directory services/api
 export PYTHONPATH="/opt/repo:/opt/repo/services/api:/opt/repo/packages/airframe:/opt/repo/packages/core:/opt/repo/packages/geometry:/opt/repo/packages/semantics:/opt/repo/packages/fluid_properties:/opt/repo/packages/convergence:/opt/repo/packages/optimization:/opt/repo/solvers"
-timeout 900 xvfb-run -a /opt/py312/bin/python scripts/gcp/run-vspaero-native.py \
-  > "$LOGDIR/vspaero-native-result.json"
-test -s "$LOGDIR/vspaero-native-result.json"
-touch "$LOGDIR/openvsp-native.done"
+mkdir -p "$LOGDIR/receipts"
+if timeout 900 xvfb-run -a /opt/py312/bin/python scripts/gcp/run-vspaero-native.py \
+    > "$LOGDIR/vspaero-native-result.json" \
+  && test -s "$LOGDIR/vspaero-native-result.json" \
+  && VSPAERO_RECEIPT="$LOGDIR/vspaero-native-result.json" \
+    RECEIPTS="$LOGDIR/receipts" \
+    timeout 900 /opt/py312/bin/python scripts/gcp/bench_airframe_families.py; then
+  touch "$LOGDIR/openvsp-native.done"
+else
+  touch "$LOGDIR/openvsp-native.failed"
+  exit 1
+fi

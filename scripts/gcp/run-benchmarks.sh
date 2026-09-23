@@ -44,7 +44,9 @@ if ! command -v "$PRECICE_PY" >/dev/null; then PRECICE_PY=$PY; fi
 ( cd /tmp && env -u PYTHONPATH timeout 900 "$PRECICE_PY" "$REPO/scripts/gcp/bench_precice.py" ) || echo "preCICE bench rc=$?"
 
 echo "--- issue41 promotion gate ---"
-timeout 300 "$PY" "$REPO/scripts/gcp/bench_promotion.py" || echo "Gate bench rc=$?"
+GATE_RC=0
+timeout 300 "$PY" "$REPO/scripts/gcp/bench_promotion.py" || GATE_RC=$?
+echo "Gate bench rc=$GATE_RC"
 
 echo "--- collect evidence ---"
 cd "$LOGDIR"
@@ -59,4 +61,9 @@ for f in sorted(glob.glob('/var/log/proofs/receipts/*.json')):
         print(os.path.basename(f), 'PARSE_ERR', e)
 PY
 echo "=== BENCHMARKS DONE $(date -u +%FT%TZ) ==="
-touch "$LOGDIR/benchmarks.done"
+if [ "$GATE_RC" -eq 0 ]; then
+  touch "$LOGDIR/benchmarks.done"
+else
+  touch "$LOGDIR/benchmarks.failed"
+fi
+exit "$GATE_RC"

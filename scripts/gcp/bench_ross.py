@@ -40,6 +40,7 @@ STEEL = {
 JEFFCOTT_REFERENCE_REL_TOL = 0.25
 MODAL_CAMPBELL_REL_TOL = 0.05
 FORCED_PEAK_REL_TOL = 0.20
+DISCRETIZATION_REL_TOL = 0.05
 
 
 def gov_case(analysis: str, model: dict, speed_rpm: float, max_speed_rpm: float, name: str) -> dict:
@@ -146,11 +147,15 @@ def bench_ross() -> dict:
         return out
     try:
         m_rigid = jeffcott_model(bearing_k=1e9)
+        m_refined = jeffcott_model(nseg=8, bearing_k=1e9)
         m_soft = jeffcott_model(bearing_k=1e5)
         m_short = jeffcott_model(length_m=0.15, dia_m=0.03, bearing_k=1e9)
         analytic_rigid = jeffcott_analytic_rpm(m_rigid)
 
         camp = gov_case("campbell", m_rigid, 3000.0, 60000.0, "jeffcott_campbell")
+        refined = gov_case(
+            "campbell", m_refined, 3000.0, 60000.0, "jeffcott_refined_campbell"
+        )
         crit_rigid = camp.get("critical_speeds_rpm") or []
         forced_target_rpm = float(crit_rigid[0]) if crit_rigid else 3000.0
         soft = gov_case("campbell", m_soft, 3000.0, 60000.0, "soft_bearing_campbell")
@@ -166,6 +171,7 @@ def bench_ross() -> dict:
 
         cases = {
             "jeffcottCampbell": camp,
+            "jeffcottRefinedCampbell": refined,
             "softBearingCampbell": soft,
             "jeffcottModal": modal,
             "shortStiffCampbell": short,
@@ -175,6 +181,7 @@ def bench_ross() -> dict:
         out["analyticFirstCriticalRpm"] = analytic_rigid
         crit_soft = soft.get("critical_speeds_rpm") or []
         crit_short = short.get("critical_speeds_rpm") or []
+        crit_refined = refined.get("critical_speeds_rpm") or []
         if crit_rigid:
             out["nativeFirstCriticalRpm"] = crit_rigid[0]
             out["criticalRelError"] = abs(crit_rigid[0] - analytic_rigid) / analytic_rigid
@@ -182,6 +189,13 @@ def bench_ross() -> dict:
             out["softBearingDropsCritical"] = crit_soft[0] < crit_rigid[0]
         if crit_rigid and crit_short:
             out["shortStiffCriticalRpm"] = crit_short[0]
+        if crit_rigid and crit_refined:
+            out["discretizationRelDelta"] = abs(
+                float(crit_refined[0]) - float(crit_rigid[0])
+            ) / max(abs(float(crit_refined[0])), 1e-9)
+            out["discretizationIndependencePassed"] = (
+                out["discretizationRelDelta"] <= DISCRETIZATION_REL_TOL
+            )
         if modal.get("first_whirl_hz"):
             out["modalFirstWhirlRpm"] = modal["first_whirl_hz"] * 60.0
             out["modalVsCampbellRelDelta"] = abs(
@@ -208,6 +222,9 @@ def bench_ross() -> dict:
             "forced_peak_near_first_critical": (
                 out.get("peakNearCritical", float("inf")) <= FORCED_PEAK_REL_TOL
             ),
+            "discretization_independence": (
+                out.get("discretizationIndependencePassed") is True
+            ),
         }
         out["checks"] = checks
         out["verificationPassed"] = all(checks.values())
@@ -227,8 +244,9 @@ def direct_unbalance() -> dict:
 
     # The workspace puts solvers/ on sys.path, which shadows the pip ROSS with
     # the workbench's own `ross` package; drop it so the real library resolves.
-    sys.path[:] = [p for p in sys.path if Path(p).name.lower() != "solvers"]
+    original_path = list(sys.path)
     try:
+        sys.path[:] = [p for p in sys.path if Path(p).name.lower() != "solvers"]
         import numpy as np
         import ross as rs
 
@@ -239,6 +257,8 @@ def direct_unbalance() -> dict:
             }
     except Exception as exc:  # noqa: BLE001
         return {"status": "BLOCKED", "reason": f"import:{type(exc).__name__}:{exc}"}
+    finally:
+        sys.path[:] = original_path
     m = jeffcott_model()
     mat = rs.Material(
         STEEL["name"],

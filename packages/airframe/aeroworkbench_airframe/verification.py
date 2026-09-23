@@ -177,6 +177,39 @@ def _evidence(
                         detail="observed evidence", native_receipt=native_receipt)
 
 
+def _native_receipt_passed(receipt: object) -> bool:
+    if isinstance(receipt, Mapping):
+        source = receipt.get("source")
+        validity = receipt.get("validity")
+    else:
+        source = getattr(receipt, "source", None)
+        validity = getattr(receipt, "validity", None)
+    source_ok = str(source) == "native_solver"
+    if isinstance(validity, Mapping):
+        validity_ok = validity.get("passed") is True
+    else:
+        validity_ok = getattr(validity, "passed", None) is True
+    return source_ok and validity_ok
+
+
+def _trusted_promotion_passed(receipt: object) -> bool:
+    if isinstance(receipt, Mapping):
+        source = receipt.get("source")
+        fidelity = receipt.get("fidelity")
+        validity = receipt.get("validity")
+    else:
+        source = getattr(receipt, "source", None)
+        fidelity = getattr(receipt, "fidelity", None)
+        validity = getattr(receipt, "validity", None)
+    if str(source) not in {"analytical", "benchmark", "native_solver"}:
+        return False
+    if str(fidelity) not in {"medium", "high", "native", "vlm", "vspaero"}:
+        return False
+    if isinstance(validity, Mapping):
+        return validity.get("passed") is True
+    return getattr(validity, "passed", None) is True
+
+
 def verify_airframe_families(*, verification_id: str, fixed_wing: object, lifting_body: object, rotorcraft: object) -> AirframeVerificationLedger:  # noqa: E501
     """Run the bounded local verification matrix; never promote seed bookkeeping."""
     ledger = AirframeVerificationLedger(verification_id)
@@ -186,6 +219,7 @@ def verify_airframe_families(*, verification_id: str, fixed_wing: object, liftin
         ("rotorcraft", rotorcraft),
     )
     for family, item in families:
+        campaign_receipt: object | None = None
         seed = getattr(item, "seed", item)
         compiled = next(
             (
@@ -225,6 +259,7 @@ def verify_airframe_families(*, verification_id: str, fixed_wing: object, liftin
             try:
                 session = session_factory()
                 receipt = session.run() if hasattr(session, "run") else session
+                campaign_receipt = receipt
                 _evidence(receipt, stage="campaign", family=family, ledger=ledger)
             except Exception as exc:  # capability and evaluator failures remain explicit
                 ledger.record_stage(
@@ -288,15 +323,21 @@ def verify_airframe_families(*, verification_id: str, fixed_wing: object, liftin
                     detail="trusted result not supplied",
                 )
 
-        try:
-            from .external_aero.native import probe_any_vspaero_capability
-            capability = probe_any_vspaero_capability()
+        promotion_receipt = getattr(item, "promotion_receipt", None)
+        if (
+            family in {"lifting_body", "rotorcraft"}
+            and promotion_receipt is not None
+            and _trusted_promotion_passed(promotion_receipt)
+        ):
+            _evidence(
+                promotion_receipt,
+                stage="fidelity_promotion",
+                family=family,
+                ledger=ledger,
+            )
+        else:
             native_receipt = getattr(item, "native_receipt", None)
-            if capability.available and native_receipt is None:
-                solver = getattr(item, "solve_vspaero", None)
-                if callable(solver):
-                    native_receipt = solver(capability)
-            if capability.available and native_receipt is not None:
+            if native_receipt is not None and _native_receipt_passed(native_receipt):
                 _evidence(
                     native_receipt,
                     stage="fidelity_promotion",
@@ -306,34 +347,111 @@ def verify_airframe_families(*, verification_id: str, fixed_wing: object, liftin
                     source_override="native_solver",
                     fidelity_override="vspaero",
                 )
-            else:
+            elif native_receipt is not None:
                 ledger.record_stage(
                     family=family,
                     stage="fidelity_promotion",
-                    status="unavailable",
-                    source="native_capability",
+                    status="blocked",
+                    source="native_solver",
                     fidelity="vspaero",
-                    evidence_digest=_digest(capability.canonical()),
-                    detail=capability.detail,
+                    evidence_digest=_digest(native_receipt),
+                    detail="native receipt validity did not pass",
+                    native_receipt=native_receipt,
                 )
-        except Exception as exc:
+            else:
+                try:
+                    from .external_aero.native import probe_any_vspaero_capability
+                    capability = probe_any_vspaero_capability()
+                    solver = getattr(item, "solve_vspaero", None)
+                    if capability.available and callable(solver):
+                        native_receipt = solver(capability)
+                    if native_receipt is not None and _native_receipt_passed(native_receipt):
+                        _evidence(
+                            native_receipt,
+                            stage="fidelity_promotion",
+                            family=family,
+                            ledger=ledger,
+                            native_receipt=native_receipt,
+                            source_override="native_solver",
+                            fidelity_override="vspaero",
+                        )
+                    elif native_receipt is not None:
+                        ledger.record_stage(
+                            family=family,
+                            stage="fidelity_promotion",
+                            status="blocked",
+                            source="native_solver",
+                            fidelity="vspaero",
+                            evidence_digest=_digest(native_receipt),
+                            detail="native receipt validity did not pass",
+                            native_receipt=native_receipt,
+                        )
+                    else:
+                        ledger.record_stage(
+                            family=family,
+                            stage="fidelity_promotion",
+                            status="unavailable",
+                            source="native_capability",
+                            fidelity="vspaero",
+                            evidence_digest=_digest(capability.canonical()),
+                            detail=capability.detail,
+                        )
+                except Exception as exc:
+                    ledger.record_stage(
+                        family=family,
+                        stage="fidelity_promotion",
+                        status="blocked",
+                        source="native_capability",
+                        fidelity="vspaero",
+                        evidence_digest=_digest(seed),
+                        detail=f"VSPAERO capability probe blocked: {type(exc).__name__}",
+                    )
+        replay_receipt = getattr(item, "replay_receipt", None)
+        replay_factory = getattr(item, "replay", None)
+        if replay_receipt is None and callable(replay_factory) and campaign_receipt is not None:
+            try:
+                replay_receipt = replay_factory(campaign_receipt)
+            except Exception as exc:
+                ledger.record_stage(
+                    family=family,
+                    stage="provenance_replay",
+                    status="blocked",
+                    source="replay",
+                    fidelity="unknown",
+                    evidence_digest=_digest(seed),
+                    detail=f"replay blocked: {type(exc).__name__}",
+                )
+                continue
+        if replay_receipt is None:
             ledger.record_stage(
                 family=family,
-                stage="fidelity_promotion",
-                status="blocked",
-                source="native_capability",
-                fidelity="vspaero",
+                stage="provenance_replay",
+                status="pending",
+                source="analytical",
+                fidelity="analytical",
                 evidence_digest=_digest(seed),
-                detail=f"VSPAERO capability probe blocked: {type(exc).__name__}",
+                detail="replay receipt required for promotion",
             )
-        ledger.record_stage(
-            family=family,
+            continue
+        campaign_digest = getattr(campaign_receipt, "digest", None)
+        replay_digest = getattr(replay_receipt, "digest", None)
+        if not campaign_digest or replay_digest != campaign_digest:
+            ledger.record_stage(
+                family=family,
+                stage="provenance_replay",
+                status="blocked",
+                source=str(getattr(replay_receipt, "source", "replay")),
+                fidelity=str(getattr(replay_receipt, "fidelity", "unknown")),
+                evidence_digest=_digest(replay_receipt),
+                replay_hash=str(replay_digest or ""),
+                detail="replay digest does not match campaign digest",
+            )
+            continue
+        _evidence(
+            replay_receipt,
             stage="provenance_replay",
-            status="pending",
-            source="analytical",
-            fidelity="analytical",
-            evidence_digest=_digest(seed),
-            detail="replay receipt required for promotion",
+            family=family,
+            ledger=ledger,
         )
     return ledger
 

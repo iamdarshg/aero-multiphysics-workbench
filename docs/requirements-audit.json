@@ -2733,7 +2733,7 @@
           "kind": "file",
           "path": "solvers/participants/run_scripts/run_ross.py",
           "detail": "PARTIAL: governed ROSS run script used by the executed rotor-dynamic proofs.",
-          "sha256": "c895997194408f71dadba4ea7982f3393cbbeca53d62779a46645d11848138db"
+          "sha256": "14b678fe70066063512fddb92e6264bbc6a9ab150568828c8ad2efbb331aa310"
         },
         {
           "kind": "file",

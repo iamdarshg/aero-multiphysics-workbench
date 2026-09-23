@@ -472,7 +472,7 @@ def issue_06_ami(driver: Driver) -> dict:
 # -- GEN 07: Code_Aster ------------------------------------------------------
 
 
-def _aster_mesh(work: Path) -> dict:
+def _aster_mesh(work: Path, mesh_size_m: float = 0.02) -> dict:
     import gmsh  # type: ignore
 
     work.mkdir(parents=True, exist_ok=True)
@@ -490,8 +490,8 @@ def _aster_mesh(work: Path) -> dict:
                 gmsh.model.addPhysicalGroup(dim, [tag], name="clamp-face")
             elif abs(xmax - 0.4) < 1e-6:
                 gmsh.model.addPhysicalGroup(dim, [tag], name="tip-face")
-        gmsh.option.setNumber("Mesh.MeshSizeMin", 0.02)
-        gmsh.option.setNumber("Mesh.MeshSizeMax", 0.04)
+        gmsh.option.setNumber("Mesh.MeshSizeMin", mesh_size_m)
+        gmsh.option.setNumber("Mesh.MeshSizeMax", mesh_size_m)
         gmsh.model.mesh.generate(3)
         for dim, tag in gmsh.model.getPhysicalGroups(2):
             if gmsh.model.getPhysicalName(dim, tag) == "tip-face":
@@ -500,7 +500,12 @@ def _aster_mesh(work: Path) -> dict:
         gmsh.write(str(med_path))
     finally:
         gmsh.finalize()
-    return {"mesh": med_path, "mesh_hash": sha256_file(med_path), "tip_nodes": tip_nodes}
+    return {
+        "mesh": med_path,
+        "mesh_hash": sha256_file(med_path),
+        "tip_nodes": tip_nodes,
+        "mesh_size_m": mesh_size_m,
+    }
 
 
 def _aster_inputs(built: dict, analysis: str) -> dict:
@@ -539,6 +544,107 @@ def _aster_inputs(built: dict, analysis: str) -> dict:
         ],
         "n_modes": 4,
     }
+
+
+def summarize_structural_static(levels: list[dict]) -> dict:
+    """Build one fail-closed native structural mesh-independence receipt."""
+    required = (
+        len(levels) == 3
+        and all(
+            level.get("state") == "COMPLETED"
+            and level.get("envelope_source") == "native_solver"
+            and level.get("envelope_validity", {}).get("passed") is True
+            and isinstance(level.get("scalars", {}).get("max_displacement_m"), (int, float))
+            for level in levels
+        )
+    )
+    summary: dict = {
+        "issue": "07_code_aster_static",
+        "participant": "structural-static",
+        "state": "FAILED",
+        "envelope_source": "native_solver",
+        "envelope_validity": {"passed": False},
+        "mesh_independence_passed": False,
+        "levels": levels,
+    }
+    if not required:
+        summary["reason"] = "three completed trusted native levels required"
+        return summary
+
+    from aeroworkbench_convergence import (
+        QuantityOfInterest,
+        RefinementLevel,
+        StudyRun,
+        run_mesh_independence,
+    )
+
+    by_name = {str(level["issue"]): level for level in levels}
+
+    def execute(level: RefinementLevel) -> StudyRun:
+        record = by_name[level.name]
+        return StudyRun(
+            level=level.name,
+            run_id=str(record["run_id"]),
+            input_hash=str(record["inputs_digest"]),
+            qoi=(("max_displacement_m", float(record["scalars"]["max_displacement_m"])),),
+            source="native-code-aster",
+        )
+
+    report = run_mesh_independence(
+        tuple(
+            RefinementLevel(
+                str(level["issue"]),
+                float(level["mesh_size_m"]),
+                (("mesh_size_m", float(level["mesh_size_m"])),),
+            )
+            for level in levels
+        ),
+        (QuantityOfInterest("max_displacement_m", "m", relative_tolerance=0.05),),
+        execute,
+    )
+    summary["independence"] = report.as_dict()
+    summary["mesh_independence_passed"] = report.accepted
+    summary["envelope_validity"] = {
+        "passed": report.accepted,
+        "checks": {"mesh_independence": report.accepted},
+    }
+    summary["state"] = "COMPLETED" if report.accepted else "FAILED"
+    if report.accepted:
+        summary["scalars"] = levels[-1]["scalars"]
+        summary["run_id"] = levels[-1]["run_id"]
+        summary["inputs_digest"] = levels[-1]["inputs_digest"]
+    else:
+        summary["reason"] = report.reason
+    return summary
+
+
+def issue_07_static_study(driver: Driver) -> dict:
+    """Run Code_Aster static on three meshes and publish independence evidence."""
+    levels: list[dict] = []
+    for name, mesh_size_m in (("coarse", 0.04), ("medium", 0.03), ("fine", 0.02)):
+        issue = f"07_code_aster_static_{name}"
+        built = _aster_mesh(driver.out / f"gen07_static_{name}_work", mesh_size_m)
+        mesh_source = built["mesh"]
+
+        def pre(case_dir: Path, source: Path = mesh_source) -> None:
+            case_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, case_dir / "mesh.med")
+
+        record = driver.governed(
+            issue,
+            "structural-static",
+            _aster_inputs(built, "static"),
+            analysis="static",
+            pre=pre,
+            extra={
+                "mesh_hash": built["mesh_hash"],
+                "mesh_size_m": mesh_size_m,
+            },
+        )
+        levels.append(record)
+        if hasattr(driver, "write"):
+            driver.write(f"{issue}.json", record)
+    return summarize_structural_static(levels)
 
 
 def issue_07_aster(driver: Driver, analysis: str) -> dict:
@@ -785,9 +891,9 @@ def main() -> int:
                     },
                 )
         if "07static" in selected:
-            print("== GEN 07 governed Code_Aster static ==")
+            print("== GEN 07 governed Code_Aster static mesh study ==")
             try:
-                driver.write("07_code_aster_static.json", issue_07_aster(driver, "static"))
+                driver.write("07_code_aster_static.json", issue_07_static_study(driver))
             except Exception as exc:  # noqa: BLE001
                 driver.write(
                     "07_code_aster_static.json",

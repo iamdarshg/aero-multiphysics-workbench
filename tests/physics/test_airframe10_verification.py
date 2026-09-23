@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from types import SimpleNamespace
 
 import pytest
 from aeroworkbench_airframe.synthesis import (
@@ -136,3 +137,222 @@ def test_airframe10_native_claim_requires_a_trusted_native_receipt() -> None:
             source="native_solver",
             evidence_digest="a" * 64,
         )
+
+
+def _complete_family(*, replay_digest: str = "c" * 64, native_passed: bool = True):
+    campaign = SimpleNamespace(
+        digest="c" * 64,
+        source="analytical",
+        fidelity="medium",
+    )
+
+    class Session:
+        def run(self):
+            return campaign
+
+    return SimpleNamespace(
+        seed=SimpleNamespace(content_hash="a" * 64),
+        requirements=SimpleNamespace(digest="b" * 64),
+        session=lambda: Session(),
+        mass_cg_trim=SimpleNamespace(
+            digest="d" * 64, source="analytical", fidelity="analytical"
+        ),
+        aero_result=SimpleNamespace(
+            digest="e" * 64, source="analytical", fidelity="medium"
+        ),
+        native_receipt={
+            "source": "native_solver",
+            "validity": {"passed": native_passed},
+            "digest": "f" * 64,
+        },
+        replay_receipt=SimpleNamespace(
+            digest=replay_digest, source="replay", fidelity="medium"
+        ),
+    )
+
+
+def test_airframe10_complete_observed_replay_passes_all_three_families(monkeypatch) -> None:
+    capability = SimpleNamespace(
+        available=True,
+        detail="native VSPAERO test capability",
+        canonical=lambda: {"available": True},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+
+    ledger = verify_airframe_families(
+        verification_id="complete-three-family-proof",
+        fixed_wing=_complete_family(),
+        lifting_body=_complete_family(),
+        rotorcraft=_complete_family(),
+    )
+
+    assert ledger.passed is True
+    replay = [entry for entry in ledger.entries if entry.stage == "provenance_replay"]
+    assert len(replay) == 3
+    assert all(entry.status == "passed" for entry in replay)
+    assert all(entry.replay_hash == "c" * 64 for entry in replay)
+
+
+def test_airframe10_mismatched_replay_digest_fails_closed(monkeypatch) -> None:
+    capability = SimpleNamespace(
+        available=True,
+        detail="native VSPAERO test capability",
+        canonical=lambda: {"available": True},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+
+    ledger = verify_airframe_families(
+        verification_id="bad-replay-proof",
+        fixed_wing=_complete_family(replay_digest="0" * 64),
+        lifting_body=_complete_family(),
+        rotorcraft=_complete_family(),
+    )
+
+    assert ledger.passed is False
+    failed = [
+        entry
+        for entry in ledger.entries
+        if entry.family == "fixed_wing" and entry.stage == "provenance_replay"
+    ]
+    assert len(failed) == 1
+    assert failed[0].status == "blocked"
+    assert failed[0].detail == "replay digest does not match campaign digest"
+
+
+def test_airframe10_failed_native_receipt_cannot_promote(monkeypatch) -> None:
+    capability = SimpleNamespace(
+        available=True,
+        detail="native VSPAERO test capability",
+        canonical=lambda: {"available": True},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+
+    ledger = verify_airframe_families(
+        verification_id="failed-native-proof",
+        fixed_wing=_complete_family(native_passed=False),
+        lifting_body=_complete_family(),
+        rotorcraft=_complete_family(),
+    )
+
+    promotion = [
+        entry
+        for entry in ledger.entries
+        if entry.family == "fixed_wing" and entry.stage == "fidelity_promotion"
+    ]
+    assert len(promotion) == 1
+    assert promotion[0].status == "blocked"
+    assert promotion[0].detail == "native receipt validity did not pass"
+
+
+def test_airframe10_rotorcraft_and_lifting_body_accept_trusted_medium_promotion(
+    monkeypatch,
+) -> None:
+    capability = SimpleNamespace(
+        available=True,
+        detail="native VSPAERO test capability",
+        canonical=lambda: {"available": True},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+    medium = SimpleNamespace(
+        digest="9" * 64,
+        source="benchmark",
+        fidelity="medium",
+        validity=SimpleNamespace(passed=True),
+    )
+    lifting = _complete_family()
+    rotor = _complete_family()
+    lifting.native_receipt = None
+    rotor.native_receipt = None
+    lifting.promotion_receipt = medium
+    rotor.promotion_receipt = medium
+
+    ledger = verify_airframe_families(
+        verification_id="family-specific-promotion",
+        fixed_wing=_complete_family(),
+        lifting_body=lifting,
+        rotorcraft=rotor,
+    )
+
+    assert ledger.passed is True
+    promotions = {
+        entry.family: entry
+        for entry in ledger.entries
+        if entry.stage == "fidelity_promotion"
+    }
+    assert promotions["fixed_wing"].source == "native_solver"
+    assert promotions["lifting_body"].source == "benchmark"
+    assert promotions["rotorcraft"].source == "benchmark"
+
+
+def test_airframe10_rejects_untrusted_or_low_fidelity_promotion(monkeypatch) -> None:
+    capability = SimpleNamespace(
+        available=False,
+        detail="VSPAERO not installed",
+        canonical=lambda: {"available": False},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+    lifting = _complete_family()
+    lifting.native_receipt = None
+    lifting.promotion_receipt = SimpleNamespace(
+        digest="9" * 64,
+        source="self_asserted",
+        fidelity="analytical",
+        validity=SimpleNamespace(passed=True),
+    )
+
+    ledger = verify_airframe_families(
+        verification_id="reject-untrusted-promotion",
+        fixed_wing=_complete_family(),
+        lifting_body=lifting,
+        rotorcraft=_complete_family(),
+    )
+
+    promotion = next(
+        entry
+        for entry in ledger.entries
+        if entry.family == "lifting_body" and entry.stage == "fidelity_promotion"
+    )
+    assert promotion.status == "unavailable"
+
+
+def test_airframe10_observed_native_receipt_replays_without_local_binary(monkeypatch) -> None:
+    capability = SimpleNamespace(
+        available=False,
+        detail="VSPAERO not installed on replay host",
+        canonical=lambda: {"available": False},
+    )
+    monkeypatch.setattr(
+        "aeroworkbench_airframe.external_aero.native.probe_any_vspaero_capability",
+        lambda: capability,
+    )
+
+    ledger = verify_airframe_families(
+        verification_id="native-receipt-replay",
+        fixed_wing=_complete_family(),
+        lifting_body=_complete_family(),
+        rotorcraft=_complete_family(),
+    )
+
+    assert ledger.passed is True
+    fixed = next(
+        entry
+        for entry in ledger.entries
+        if entry.family == "fixed_wing" and entry.stage == "fidelity_promotion"
+    )
+    assert fixed.status == "passed"
+    assert fixed.source == "native_solver"

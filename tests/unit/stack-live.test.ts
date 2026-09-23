@@ -52,6 +52,16 @@ const probeFree = (port) => new Promise((resolveProbe) => {
   socket.once("error", () => { socket.destroy(); resolveProbe(true); });
 });
 
+const waitForPortState = async (port, expectedFree, timeoutMs = 5_000) => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() <= deadline) {
+    const free = await probeFree(port);
+    if (free === expectedFree) return free;
+    await new Promise((resolveSleep) => setTimeout(resolveSleep, 100));
+  }
+  return probeFree(port);
+};
+
 const pidGone = (pid) => {
   try {
     process.kill(pid, 0);
@@ -195,11 +205,15 @@ test("live stack reports ready only after gates respond, then cleans a dead chil
 test("live stack fails fast with an actionable port-conflict error", async () => {
   const apiPort = 18082;
   const webPort = 13002;
+  assert.equal(await probeFree(apiPort), true, `port ${apiPort} must be free for the live test`);
   const holder = spawn(process.execPath, ["-e", `require('node:http').createServer((q,r)=>r.end('x')).listen(${apiPort},'127.0.0.1');setInterval(()=>{},1000);`],
     { shell: false, windowsHide: true, stdio: "ignore" });
   try {
-    await new Promise((resolveSleep) => setTimeout(resolveSleep, 500));
-    assert.equal(await probeFree(apiPort), false, "holder stub did not bind its port");
+    assert.equal(
+      await waitForPortState(apiPort, false),
+      false,
+      `holder stub did not bind its port (exitCode=${holder.exitCode})`,
+    );
     const stack = startStackProcess(apiPort, webPort);
     try {
       const code = await stack.waitExit(60_000);

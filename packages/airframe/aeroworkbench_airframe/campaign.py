@@ -23,8 +23,6 @@ from aeroworkbench_optimization import (
 )
 from aeroworkbench_optimization import CampaignRecord as GenericCampaignRecord
 
-from .synthesis.seeds import VehicleSeed, build_seed_design_space
-
 if TYPE_CHECKING:
     from .synthesis.requirements import CompiledRequirements
 
@@ -80,6 +78,10 @@ class AirframeCampaignSpec:
 
 
 def _seed_space(seed: Any) -> Mapping[str, Any]:
+    # Import lazily: synthesis.lifting_body consumes this module while the
+    # synthesis package is still initializing.
+    from .synthesis.seeds import VehicleSeed, build_seed_design_space
+
     if isinstance(seed, VehicleSeed):
         return build_seed_design_space(seed)
     if isinstance(seed, Mapping):

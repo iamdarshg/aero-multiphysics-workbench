@@ -13,6 +13,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 
 def _isolate() -> None:
@@ -24,16 +25,24 @@ def _isolate() -> None:
     if len(cleaned) != len(sys.path):
         sys.path[:] = cleaned
 
-_isolate()
-
 os.environ.setdefault("NUMBA_DISABLE_JIT", "1")
 
-import importlib  # noqa: E402
-from typing import Any  # noqa: E402
 
-import numpy as np  # noqa: E402
+def _load_native_dependencies() -> tuple[Any, Any]:
+    """Import pip ROSS without permanently mutating the host interpreter."""
+    original_path = list(sys.path)
+    try:
+        _isolate()
+        import importlib
 
-rs: Any = importlib.import_module("ross")
+        import numpy
+
+        return numpy, importlib.import_module("ross")
+    finally:
+        sys.path[:] = original_path
+
+
+np, rs = _load_native_dependencies()
 
 CASE_FILE = Path("case.json")
 RESULT_FILE = Path("result.json")
