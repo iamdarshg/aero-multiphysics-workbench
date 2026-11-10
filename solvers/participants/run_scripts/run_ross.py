@@ -13,7 +13,10 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import numpy as npt
 
 
 def _isolate() -> None:
@@ -106,7 +109,7 @@ def _build_rotor(case: dict[str, Any]) -> Any:
 
 
 def _critical_speeds(
-    camp: Any, speeds_rpm: np.ndarray, *, forward_only: bool = True
+    camp: Any, speeds_rpm: npt.ndarray, *, forward_only: bool = True
 ) -> list[float]:
     speeds_rad = speeds_rpm * TWO_PI / 60.0
     wd = np.asarray(camp.wd, dtype=float)
@@ -155,8 +158,8 @@ def _resolved_forcing(line: dict[str, Any], speed_rpm: float) -> dict[str, Any] 
 
 
 def _assess_forcing(
-    mode_rows: list[np.ndarray],
-    speeds_rpm: np.ndarray,
+    mode_rows: list[npt.ndarray],
+    speeds_rpm: npt.ndarray,
     forcings: list[dict[str, Any]],
     warning_margin_hz: float,
     critical_margin_hz: float,
@@ -217,8 +220,8 @@ def _case_forcings(case: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _with_forcing(
     payload: dict[str, Any],
-    mode_rows: list[np.ndarray],
-    speeds_rpm: np.ndarray,
+    mode_rows: list[npt.ndarray],
+    speeds_rpm: npt.ndarray,
     case: dict[str, Any],
 ) -> dict[str, Any]:
     forcings = _case_forcings(case)
@@ -298,7 +301,7 @@ def _unbalance(case: dict[str, Any]) -> dict[str, Any]:
     return dict(definition)
 
 
-def _unbalance_response(rotor: Any, sweep: np.ndarray, unbalance: dict[str, Any]) -> Any:
+def _unbalance_response(rotor: Any, sweep: npt.ndarray, unbalance: dict[str, Any]) -> Any:
     """Call ROSS unbalance response with the supported frequency keyword.
 
     ROSS 2.x uses ``frequency`` while ROSS 3.x uses ``speed_range`` (both in
