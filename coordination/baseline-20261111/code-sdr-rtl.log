@@ -1,0 +1,22 @@
+v2_mdio_tb                 PASS  PASS: MDIO 20 transactions, including 16 checked MMD wire frames
+v2_mdio_single_read_tb     PASS  PASS: isolated MDIO read 0x1234, 64 bits, one-cycle done
+v2_phy_manager_tb          PASS  PASS: manager ready=1 link_up=0 error=0
+v2_cdc_fifo_tb             PASS  PASS: v2_cdc_fifo (capacity, sustained 800 Mbps, max rate)
+v2_eth_mac_tx_tb           PASS  PASS: v2_eth_mac_tx (framing, FCS, IFG, throughput)
+v2_udp_ip_tx_tb            PASS  PASS: v2_udp_ip_tx (IPv4/UDP framing, checksum, throughput)
+v2_raw_path_tb             PASS  PASS: v2_raw_path (10-bit, 4 samples/word, jumbo MTU)
+v2_raw_drop_tb             PASS  PASS: v2_raw_drop (exact delta-sigma average 109/2048, no overflow, dithered)
+v2_spi_regs_tb             PASS  PASS: v2_spi_regs (config write/read, telemetry read)
+v2_cic_decimator_tb        PASS  PASS: v2_cic_decimator (DC gain, rate, tone)
+v2_fft1024_tb              PASS  PASS: v2_fft1024 (impulse flat, tone at bin 64, BFP full-scale)
+v2_fft_pipe_tb             PASS  PASS: v2_fft_pipe (impulse, DC, tone@1/8/17/31 all match the DFT, 1 bin/clk)
+v2_fft_packetizer_tb       PASS  PASS: v2_fft_packetizer (header, bins, byte order)
+v2_rgmii_tb                PASS  PASS: v2_rgmii (TX split + RX assembly consistent)
+app_stream_cdc_tb          PASS  PASS: app_stream_cdc (no duplicate transfers under continuous rd_ready)
+v2_top_tb                  PASS  PASS: v2_top (PHY bring-up, RGMII framing, SPI telemetry)
+v2_top_tb_mode0            PASS  PASS: v2_top (PHY bring-up, RGMII framing, SPI telemetry)
+v2_top_tb_mode1            PASS  PASS: v2_top (PHY bring-up, RGMII framing, SPI telemetry)
+v2_raw_path_tb_8bit        PASS  PASS: v2_raw_path (8-bit, 5 samples/word, jumbo MTU)
+v2_fft_pipe_tb_n256        PASS  PASS: v2_fft_pipe (impulse, DC, tone@1/8/17/31 all match the DFT, 1 bin/clk)
+v2_fft_pipe_tb_n1024       PASS  PASS: v2_fft_pipe (impulse, DC, tone@1/8/17/31 all match the DFT, 1 bin/clk)
+--- 21/21 passed ---

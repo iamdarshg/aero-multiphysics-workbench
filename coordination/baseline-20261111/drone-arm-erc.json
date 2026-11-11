@@ -1,0 +1,570 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-11T23:08:34+0530",
+    "kicad_version": "9.0.7",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/47cb4a4e-cda4-44d8-b95e-102d18a7b9e1",
+            "violations": [
+                {
+                    "description": "Hierarchical label \"3V3\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label '3V3'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.2032
+                            },
+                            "uuid": "b39066d4-8a3b-4022-ae0c-158d640887c9"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Hierarchical label \"GND\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'GND'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.2286
+                            },
+                            "uuid": "1050f706-22ae-4896-9d84-704e477e2bf4"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_SCLK'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.254
+                            },
+                            "uuid": "9ce351bf-a865-4dd7-a8dc-530d4e4aabf9"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_SCLK\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_SCLK'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.254
+                            },
+                            "uuid": "9ce351bf-a865-4dd7-a8dc-530d4e4aabf9"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_MOSI'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.2794
+                            },
+                            "uuid": "8d55bb4c-a926-4ba7-93fc-d273e30a9d24"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_SCLK'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.254
+                            },
+                            "uuid": "376bef93-727d-41f3-a4a8-e739d93aef99"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_MISO'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.3048
+                            },
+                            "uuid": "cc8be7ae-a7bc-4202-82ae-1206d2126081"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_MOSI'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.2794
+                            },
+                            "uuid": "a1d3e449-0949-4c67-877b-6f142842ce85"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_nCS\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_nCS'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.3302
+                            },
+                            "uuid": "ec2e879d-3cae-46e1-9d7a-b383cdf97deb"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_MISO'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.3048
+                            },
+                            "uuid": "e0ce5ce1-b2c8-4585-81ac-7efc0b53aa0f"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_RESET_N\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_RESET_N'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.3556
+                            },
+                            "uuid": "3229b593-69fc-4264-bf96-e0d16915de76"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO0'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.381
+                            },
+                            "uuid": "0b278c96-c0c3-4725-8ae3-daf43e12535e"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_GPIO0\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO0'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.381
+                            },
+                            "uuid": "0b278c96-c0c3-4725-8ae3-daf43e12535e"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO2'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4064
+                            },
+                            "uuid": "cc6d6e18-db25-41a7-825d-11c402c8b7d6"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_GPIO2\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO2'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4064
+                            },
+                            "uuid": "cc6d6e18-db25-41a7-825d-11c402c8b7d6"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO0'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.381
+                            },
+                            "uuid": "f65dd901-a456-47f5-966b-02fa61228afb"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO3'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4318
+                            },
+                            "uuid": "c80f0fb6-ed3f-4683-ae2b-7b88b186a42c"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"RF_GPIO3\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'RF_GPIO3'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4318
+                            },
+                            "uuid": "c80f0fb6-ed3f-4683-ae2b-7b88b186a42c"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO2'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.4064
+                            },
+                            "uuid": "b4bd4722-6346-4705-8687-caf1723af11d"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"PA_EN\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'PA_EN'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4572
+                            },
+                            "uuid": "f3018722-7b0c-400d-9968-69d53a55f3d0"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO3'",
+                            "pos": {
+                                "x": 0.254,
+                                "y": 0.4318
+                            },
+                            "uuid": "1d7e8abd-586f-4621-beef-bbf64f168eac"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label \"LNA_EN\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'LNA_EN'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.4826
+                            },
+                            "uuid": "eee2690d-b8b1-4b7a-ab6f-7f0b26140aaf"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Hierarchical label \"HGM\" in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'HGM'",
+                            "pos": {
+                                "x": 0.2032,
+                                "y": 0.508
+                            },
+                            "uuid": "9d3cadcf-784e-4174-8c84-8a5c0c5162f5"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO3'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.6731
+                            },
+                            "uuid": "282e2911-e597-442e-8663-da0956e482e0"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO2'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.6985
+                            },
+                            "uuid": "9ea1f422-7ba7-4296-9be6-cd44b83f77d0"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_MOSI'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.7747
+                            },
+                            "uuid": "ecd87a55-8bda-43f1-a676-c86e4ddd59b3"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_SCLK'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.8001
+                            },
+                            "uuid": "f6b2c9c1-3763-488b-845b-cd0315605b49"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_MISO'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.8255
+                            },
+                            "uuid": "e1ab898c-0252-4151-a308-f58d253dc8ae"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected to anything",
+                    "items": [
+                        {
+                            "description": "Label 'RF_GPIO0'",
+                            "pos": {
+                                "x": 0.5969,
+                                "y": 0.8509
+                            },
+                            "uuid": "1b43b7a6-4965-4d5f-8c74-d19ee2433608"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol Y40 Pin 2 [GND, Power input, Line]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 1.9812
+                            },
+                            "uuid": "6d0cf932-4037-4e64-9db1-724ee69d32f3"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "The current configuration does not include the symbol library 'revb'",
+                    "items": [
+                        {
+                            "description": "Symbol U40 [CC1121]",
+                            "pos": {
+                                "x": 0.7747,
+                                "y": 0.8255
+                            },
+                            "uuid": "f1088049-ba28-4629-b0aa-f29216df7ebb"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'revb'.",
+                    "items": [
+                        {
+                            "description": "Symbol FL40 [LFD21868MMF1D386]",
+                            "pos": {
+                                "x": 1.1811,
+                                "y": 1.0795
+                            },
+                            "uuid": "e3b10d89-69a4-4084-8ec3-1d24147d4e6e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the symbol library 'revb'",
+                    "items": [
+                        {
+                            "description": "Symbol FL40 [LFD21868MMF1D386]",
+                            "pos": {
+                                "x": 1.1811,
+                                "y": 1.0795
+                            },
+                            "uuid": "e3b10d89-69a4-4084-8ec3-1d24147d4e6e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "The current configuration does not include the symbol library 'revb'",
+                    "items": [
+                        {
+                            "description": "Symbol U41 [CC1190]",
+                            "pos": {
+                                "x": 1.6764,
+                                "y": 0.8255
+                            },
+                            "uuid": "b46c5eb5-9fdf-4259-a992-4ba767b9ee3b"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'revb'.",
+                    "items": [
+                        {
+                            "description": "Symbol FL41 [RF_FILTER_4PORT]",
+                            "pos": {
+                                "x": 1.4478,
+                                "y": 1.3208
+                            },
+                            "uuid": "6e2394a9-efd9-49d8-9278-c3e150b0aa4b"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the symbol library 'revb'",
+                    "items": [
+                        {
+                            "description": "Symbol FL41 [RF_FILTER_4PORT]",
+                            "pos": {
+                                "x": 1.4478,
+                                "y": 1.3208
+                            },
+                            "uuid": "6e2394a9-efd9-49d8-9278-c3e150b0aa4b"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                },
+                {
+                    "description": "The current configuration does not include the symbol library 'revb'",
+                    "items": [
+                        {
+                            "description": "Symbol J40 [UFL]",
+                            "pos": {
+                                "x": 3.4036,
+                                "y": 0.6223
+                            },
+                            "uuid": "355aa017-d0d6-46ef-adc3-51130d5dedf1"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_issues"
+                }
+            ]
+        }
+    ],
+    "source": "rf_915.kicad_sch"
+}
