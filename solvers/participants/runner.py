@@ -8,6 +8,7 @@ No shell, no caller-supplied arguments, no analytical fallback.
 from __future__ import annotations
 
 import os
+import sys
 import time
 from collections.abc import Mapping
 from pathlib import Path
@@ -24,6 +25,8 @@ from participants.errors import NativeErrorCode, ParticipantError
 
 if os.name == "nt":
     from participants.win_rss import windows_process_tree_rss_mib as _tree_probe
+elif sys.platform == "darwin":
+    from participants.mac_rss import macos_process_tree_rss_mib as _tree_probe
 else:
     _tree_probe = None  # type: ignore[assignment]
 
@@ -119,7 +122,7 @@ def run_governed(
         env = dict(os.environ)
         env.update(extra_env)
     supervisor = ProcessSupervisor(
-        policy, rss_probe=_resilient_probe if os.name == "nt" else None
+        policy, rss_probe=_resilient_probe if _tree_probe is not None else None
     )
     try:
         receipt = supervisor.run(command, cwd=case_dir, cancel=cancel, env=env)

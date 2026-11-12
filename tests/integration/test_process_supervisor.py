@@ -76,7 +76,11 @@ def test_supervisor_does_not_treat_missing_rss_as_zero(tmp_path: Path) -> None:
         raise SupervisorError("missing")
 
     supervisor = ProcessSupervisor(_policy(tmp_path), rss_probe=missing_rss)
-    receipt = supervisor.run(_command("import time; time.sleep(.2)"), cwd=tmp_path)
+    # The child must outlive the supervisor's bounded retry window (10 x 20 ms
+    # nominal; measured 0.30 s on macOS 26.5 because each sleep overshoots), or
+    # it exits mid-window and is correctly finalized as "exited", not "missing".
+    # A 0.2 s child raced that window on macOS; 1.0 s stays under the 2 s timeout.
+    receipt = supervisor.run(_command("import time; time.sleep(1.0)"), cwd=tmp_path)
     assert receipt.reason == "RSS_MONITOR_UNAVAILABLE"
 
 

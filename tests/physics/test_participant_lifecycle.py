@@ -837,6 +837,66 @@ def test_windows_tree_rss_probe_measures_live_process() -> None:
         windows_process_tree_rss_mib(-1)
 
 
+def test_macos_tree_rss_probe_measures_live_process() -> None:
+    import sys
+
+    if sys.platform != "darwin":
+        pytest.skip("macOS-only RSS probe")
+    import os
+
+    from participants.mac_rss import macos_process_tree_rss_mib
+
+    from aeroworkbench_api.process_supervisor import SupervisorError
+
+    assert macos_process_tree_rss_mib(os.getpid()) > 0
+    with pytest.raises(SupervisorError):
+        macos_process_tree_rss_mib(-1)
+    with pytest.raises(SupervisorError):
+        macos_process_tree_rss_mib(2**31 - 2)  # no such process
+
+
+def test_macos_tree_rss_probe_includes_descendants() -> None:
+    import sys
+
+    if sys.platform != "darwin":
+        pytest.skip("macOS-only RSS probe")
+    import os
+    import subprocess
+    import time
+
+    from participants.mac_rss import macos_process_tree_rss_mib
+
+    # A child that holds ~64 MiB resident must raise the tree total for our pid.
+    child = subprocess.Popen(
+        [sys.executable, "-c", "b = bytearray(64 * 1024 * 1024); import time; time.sleep(30)"]
+    )
+    try:
+        own = macos_process_tree_rss_mib(child.pid)
+        deadline = time.monotonic() + 10.0
+        while own < 60.0 and time.monotonic() < deadline:
+            time.sleep(0.1)
+            own = macos_process_tree_rss_mib(child.pid)
+        tree = macos_process_tree_rss_mib(os.getpid())
+        assert own >= 60.0
+        assert tree >= own
+    finally:
+        child.kill()
+        child.wait()
+
+
+def test_runner_injects_a_tree_probe_on_macos() -> None:
+    import sys
+
+    if sys.platform != "darwin":
+        pytest.skip("macOS-only wiring")
+    import os
+
+    from participants import runner
+
+    assert runner._tree_probe is not None
+    assert runner._resilient_probe(os.getpid()) > 0
+
+
 def test_missing_binary_fails_closed_with_capability_code(tmp_path: Path) -> None:
     from participants.capabilities import probe_participant
 
