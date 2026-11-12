@@ -97,14 +97,18 @@ import sys
 import FreeCAD
 import Part
 
-source, product = sys.argv[1], sys.argv[2]
+source, product = sys.argv[2], sys.argv[3]
 shape = Part.Shape()
 shape.read(source)
-doc = FreeCAD.newDocument("convert")
-feature = doc.addObject("Part::Feature", "shape")
-feature.Shape = shape
-doc.recompute()
-feature.Shape.write(product)
+product_suffix = product.lower()
+if product_suffix.endswith((".brep", ".brp")) and hasattr(shape, "exportBrep"):
+    shape.exportBrep(product)
+elif product_suffix.endswith((".step", ".stp")) and hasattr(shape, "exportStep"):
+    shape.exportStep(product)
+elif hasattr(shape, "write"):
+    shape.write(product)
+else:
+    raise RuntimeError(f"no exporter available for {product}")
 print("CONVERT_OK")
 """
 
@@ -144,7 +148,7 @@ def convert_with_freecad(
         script = handle.name
     try:
         completed = subprocess.run(
-            [resolved, "--run-script", script, str(source), str(product)],
+            [resolved, script, str(source), str(product)],
             capture_output=True,
             text=True,
             timeout=timeout_s,
