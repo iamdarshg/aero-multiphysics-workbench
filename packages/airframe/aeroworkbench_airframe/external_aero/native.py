@@ -19,11 +19,11 @@ import json
 import shutil
 import subprocess
 import tempfile
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from math import atan2, isfinite
 from pathlib import Path
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 from aeroworkbench_core.types import FidelityLevel, Provenance, ResultSource
 
@@ -345,7 +345,8 @@ def _openvsp_script(case: ExternalAeroCase, reference: AeroReference) -> str:
                 "  Update();",
             ]
         )
-    for index, body in enumerate(case.canonical()["bodies"]):
+    bodies = cast(Iterable[Mapping[str, Any]], case.canonical()["bodies"])
+    for index, body in enumerate(bodies):
         body_payload = dict(body)
         sections = [dict(section) for section in body_payload.get("sections", [])]
         if len(sections) < 2:
@@ -423,7 +424,7 @@ def _convert_openvsp_csv(case_dir: Path, result_name: str) -> None:
     def value(*names: str) -> float:
         for name in names:
             raw = section.get(name)
-            if raw not in (None, ""):
+            if raw is not None and raw != "":
                 return float(raw)
         raise ExternalAeroValidationError(f"NATIVE_VSPAERO_CSV_FIELD_MISSING:{names[0]}")
 
