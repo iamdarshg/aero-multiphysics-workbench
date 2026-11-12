@@ -10,22 +10,40 @@ that is wrong**. Corrections run in both directions; where Fable was wrong I say
 
 **What this bundle said:** `code-sdr-lint.log` shows `5/5 tops clean`, reported as a pass.
 
-**What is actually true:** the measurement is real but meaningless as a gate. The host's
-Verilator is **5.040**, which does not implement the `MULTIDRIVENPROC` warning code.
-`tannmay-python` ran **5.054**, which does, and `v2_top` in FFT mode fails with
-`MULTIDRIVENPROC` — two drivers on one register.
+**What is actually true:** the RTL has a genuine two-driver defect that the gate never checked.
 
 **Verified independently by reading the RTL** (`verilog/v2_fft_packetizer.v`): two separate
 `always @(posedge clk or negedge rst_n)` blocks, at L78 (intake) and L140 (TX), both drive
 `wr_idx` (L80, L94 vs L168) and `bins_dropped` (L96 vs L148). Icarus resolves the conflict by
-statement order, which is why all simulations passed.
+statement order, which is why all simulations passed. Per Verilator's manual this is legal
+SystemVerilog but "typically a synthesis error".
 
 **Status:** CS-G7 is **not a pass**. Icarus 21/21 and the firmware compile stand; the Verilator
-leg does not. Fix is `tannmay-python`'s PR #71 (single-writer intake block, `MULTIDRIVENPROC`
-added to the lint gate's FATAL codes).
+leg does not. Fix is `tannmay-python`'s PR #71 (single-writer intake block).
 
-**Lesson:** a tool-version-dependent gate is not a gate. `tools/lint_verilog.py` should assert a
-minimum Verilator version and fail closed below it.
+### C-1b. Both explanations of *why* it was missed were wrong
+- **This bundle's first explanation** — "5.040 does not implement `MULTIDRIVENPROC`" — is
+  **false**. 5.040 implements it.
+- **`tannmay-python`'s explanation** — "5.054 flags it, your Verilator predates the check" — is
+  **unverified**. 5.054 is not obtainable here, and 5.48 (newer) does not fire it either.
+
+**What is actually true, settled by a control module:** Verilator's manual states
+`MULTIDRIVENPROC` is *"Disabled by default as this is a code-style warning; it will simulate
+correctly."* A deliberately double-driven control register fails to trigger it under **both**
+5.040 and 5.48 with `-Wall`. (Contrast `MULTIDRIVEN`, which *is* on by default but only covers
+`always_comb`/`always_ff` intent, which this code does not use.)
+
+Evidence: `evidence/code-sdr-agent/verilator-version-matrix-CORRECTED.log` (control module, both
+versions), `docs-multidrivenproc.log` (manual extract).
+
+**Lesson — corrected:** a version check would not have helped. The gate needs to (a) **pass
+`-Wmultidrivenproc` explicitly**, because a code in `FATAL_CODES` cannot fire if the warning
+itself is disabled, and (b) include a **control module that is deliberately multi-driven**,
+asserting the gate reports a FATAL code on it. Without that control, a warning default changing
+between releases silently disables the gate — which is exactly what happened.
+
+A first attempt at the version matrix was itself invalid: the "5.48" runs were no-op failures
+(`Can't exec "verilator_bin"`, `rev vUNKNOWN`), and were discarded rather than reported.
 
 ---
 
@@ -135,3 +153,73 @@ volume disappeared, during a 14-epoch training run. Windows logged `disk 51` pag
 `NTFS 140/50` "corruption may occur" on VolumeId E:. Nothing was lost permanently; artefacts were
 verified after recovery (git `fsck`, checkpoint load at `global_step=1320`, 756 corpus voxels
 readable). Recorded because any run spanning that window lost its tail.
+---
+
+## C-7. Copperline C-G1 "42/52 cannot be re-derived" — understated, and the diagnosis was wrong
+
+Two worker agents re-measured this. Both parts of the original claim needed correcting.
+
+**On the corpus.** This bundle said the 52-board corpus "is not committed" and 42/52 "cannot be
+re-derived". Accurate but soft. What a full inventory shows:
+
+- `tests/corpus_manifest.json` has **10 boards** (4 `short`, 10 `long`); all 10 inputs resolve.
+- `docs/validation/corpus/2026-10-29/boards/` holds **15** files — **5 are inert** (`b009`,
+  `b013`–`b016`) because no manifest entry references them.
+- The strings `42/52`, `80.8`, `82.4` appear **nowhere in the repository**.
+- The repo's own flagship figure is `docs/validation/corpus.md:155`: **11/21 = 52.4%**.
+- Historical result files hold 38 / 21 / 118 / 15 entries — **none has 52**.
+- **11/21 = 52.4%** vs **42/52 = 80.8%**: transposed digits, shared decimal digits. An 11/21
+  measurement most likely became a remembered "42/52".
+- 11/21 cannot be re-run either: **8 of 21** source paths survive.
+
+**Maximum evaluable: 10 boards.**
+
+**On the diagnosis.** This bundle said the completion shortfall was "consistent with the
+handoff's geometric-cap explanation". **Wrong.** Across 202 failed task-routes: 181 produced no
+candidate (89.6%), 21 searched and blocked (10.4%), **0** arbiter-rejected. And:
+
+1. Only **5 of 390** unconnected terminals (1.3%) are geometrically unescapable.
+2. All 181 "no candidate" records carry **`expansions = 0`** and no hierarchy guidance guard —
+   the search contributed **nothing at all** on tasks nonetheless marked attempted.
+3. All 181 carry `UNROUTABLE_UNDER_CONFIGURED_CONSTRAINTS_AND_BUDGET` while showing
+   `ripup_attempts > 0` and `modes_attempted = (FAST, RECOVERY, EXHAUSTIVE_LOCAL_RECOVERY)`.
+
+This is an **algorithmic / control-flow defect**, not a geometric bound. `expansions = 0` is the
+signature. Caveats that must travel with it: the 4 short boards are a deliberately hard survivor
+subset, so "0/4" is not a general rate.
+
+Evidence: `evidence/copperline-agent/REPORT.md` and raw logs.
+
+---
+
+## C-8. Drone-arm DA-G2 RF reference plane — right conclusion, sloppy measurement
+
+The original drone-arm RF claim was built by **net-name matching** (`RF`, `915`, `ANT`, `GNSS`),
+which swept in DC/rail nets under the `/915 MHz RF/` sheet (`VDD_CC112` 58 mm, `VDD_CC119` 27 mm,
+`3V3_GNSS` 43 mm). Those dominated the length and inflated the total to 603.61 mm.
+
+The board declares netclass **`RF_50R`** in `main_rev_b.kicad_pro` — the authoritative set, 16
+nets. Re-measured on that: **102.354 mm**, of which **0.00% over `/GND`**, **88.91% over
+`/3V3`**, **11.09% over pour voids**.
+
+So "0% ground" was right; "100% over 3V3" was wrong, and the 11.09% over **voids** is worse than
+over the power plane, because a void is no reference at all. Cross-validated with two independent
+APIs (`Contains` vs `HitTestFilledArea`, agreeing 8000/8000 samples).
+
+A first containment implementation failed its own self-test (misclassified a through-hole pad)
+and was discarded, not reported.
+
+---
+
+## C-9. Drone-arm FL50 CAN choke — downgraded from "likely crossed" to open question
+
+Geometry pairs FL50's pads **by column**: {1,2} at x = 13.175 mm and {3,4} at x = 16.825 mm, with
+row pitch 2.25 mm and diagonal 4.2878 mm. Column pairing is the natural winding pair, which gives
+**one winding in series with each CAN line and no swap** — the intended CMC topology, agreeing
+with the schematic `L_Coupled` symbol and the ESC board's `FL201`.
+
+Whether the part is actually {1,4}/{2,3} depends on the TDK ACT45B terminal map, which is **not in
+the repository** (37 PDFs checked). An ohmmeter across pads 1–2 vs 1–4 settles it.
+
+This bundle and `tannmay-python`'s PR #39 both frame it as closer to "likely crossed"; the
+geometry points the other way. Record it as an **open question for the owner**, not a defect.
