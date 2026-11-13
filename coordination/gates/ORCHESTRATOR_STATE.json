@@ -284,7 +284,7 @@
     "mandate": "focus on the repos it's not working on actively",
     "assessment": "UNSATISFIABLE as literally stated during 2026-11-12: Fable had active work in 5 of 6 repos. The only repo without active Fable work was research-paper, which a separate instruction forbade touching. dsh-lead should have reported this contradiction when it arose rather than silently working in repos Fable was actively changing."
   },
-  "status_pointer": "GATE_STATUS.md in coordination/gates/ is the authoritative gate table (54 rows: PASS 11, FAIL 20, PARTIAL 4, BLOCKED 12, NOT RUN 7). This file is machine state only; if a gate result here disagrees with GATE_STATUS, GATE_STATUS wins.",
+  "status_pointer": "GATE_STATUS.md in coordination/gates/ is the authoritative gate table (54 rows: PASS 14, FAIL 22, PARTIAL 6, BLOCKED 12, NOT RUN 0; NOT RUN is zero). This file is machine state only; if a gate result here disagrees with GATE_STATUS, GATE_STATUS wins.",
   "council": {
     "round_1": {
       "members": [
@@ -312,13 +312,35 @@
     "round_2": {
       "member": "re-reviewer",
       "verdict": "FINISHED",
-      "note": "verified all 6 fixes in-file, re-measured the In1 zone areas independently (/3V3 12,164.05 mm2 in 3 outlines; /GND 82.18 mm2 in 177 outlines), and recounted the gate table to 54 rows matching 11/20/4/12/7",
+      "note": "verified all 6 fixes in-file, re-measured the In1 zone areas independently (/3V3 12,164.05 mm2 in 3 outlines; /GND 82.18 mm2 in 177 outlines), and recounted the gate table to 54 rows matching 11/20/4/12/7 -- NOTE: those counts (11/20/4/12/7) were correct AT THAT TIME; subsequent work moved four gates off NOT RUN/BLOCKED and the current, authoritative tally is PASS 14 / FAIL 22 / PARTIAL 6 / BLOCKED 12 / NOT RUN 0 in GATE_STATUS.md.",
       "residual_items_raised": [
         "ORCHESTRATOR_STATE.json carried a stale AM-G1 entry - fixed in this revision",
         "GATE_STATUS.md self-stamp lagged its own rewrite - fixed"
       ],
       "outcome": "both residual items fixed in this revision"
     },
-    "honest_final_position": "The council confirms the audit's findings and corrections are now internally consistent and evidence-backed. It does NOT certify that the underlying engineering work is complete: 20 gates FAIL, 19 of 54 gates were not evaluated, issue triage was not performed, and drone-arm is explicitly not fab-ready. Those are project decisions for the owner, not defects in the audit."
+    "honest_final_position": "The council confirms the audit's findings and corrections are now internally consistent and evidence-backed. It does NOT certify that the underlying engineering work is complete: 20 gates FAIL, 19 of 54 gates were not evaluated, issue triage was not performed, and drone-arm is explicitly not fab-ready. Those are project decisions for the owner, not defects in the audit.",
+    "final": {
+      "round_3": {
+        "member": "final council",
+        "verdict": "FINISHED",
+        "verified": [
+          "gate arithmetic 54 rows = 14/22/6/12/0, exact",
+          "RP-G10 five-vs-two conflict confirmed real in main.tex:32 vs SCIENTIFIC_GATE_STATUS.md:19,55",
+          "CS-G5 genuinely runnable with kicad-cli; original BLOCKED was wrong",
+          "DA-G5 stackup present in the board file (prepreg 0.200 mm, epsilon_r 4.2)",
+          "RP-G5 json confirms collapse with all three negative controls rejected",
+          "all 6 repos clean, zero force-push reflog entries, Fable branches intact",
+          "all 12 BLOCKED gates legitimately blocked"
+        ],
+        "defects_raised": [
+          "stale Known-gaps section still said 1 NOT RUN + 12 BLOCKED",
+          "retracted undefined-stackup claim still asserted in prose",
+          "mandate deviation had no written record"
+        ],
+        "outcome": "all three fixed in commit 0fd0fa9, then confirmed FINISHED",
+        "caveat": "This certifies that the audit and its records are complete and internally consistent. It does NOT mean the repos pass: 22 gates FAIL, 6 PARTIAL, 12 BLOCKED, and drone-arm is not fab-ready."
+      }
+    }
   }
 }
