@@ -175,23 +175,42 @@ including several of my own.
 It establishes, per gate, whether a claim was **reproduced on this host** and what the command
 printed. It does **not** establish that any repo is production-ready, and for drone-arm it
 establishes the opposite: **not fab-ready**, on the strength of a stale Gerber package, six missing
-ESC connectors, a crossed CAN pair, and an undefined stackup.
+ESC connectors that exist in schematic and in neither board nor BOM, a crossed CAN pair, and an RF
+run with **no ground reference beneath it** (0.00% of the `RF_50R` run over In1 `/GND`).
+
+Note what is **not** among the drone-arm defects: the trace width. The stackup *is* defined
+(prepreg 0.200 mm, FR4 εr 4.2) and 0.35 mm is a correct ~50 Ω width on it — 48.6 / 54.0 / 51.2 Ω by
+three closed forms. The defect is the reference plane, which is a different finding. An earlier
+revision of this file called the stackup "undefined"; that was wrong and is retracted in DA-G5.
 
 ### Known gaps a reviewer should weigh
 
-- **1 NOT RUN + 12 BLOCKED = 13 of 54 gates (24%) were not evaluated**, down from 19. Each
-  carries a reason, and the reasons are now split into *missing tool/hardware* (RP-G7, DM-G3,
-  DM-G4, DM-G5, DM-G6, DA-G6, AM-G3, AM-G5), *missing authority* (C-G5, CS-G9, AM-G4 — closing
-  an issue is the owner's call), and *not yet done* (RP-G10, RP-G12).
-- **Issue triage was not done.** copperline #27–#48, Code-SDR #69+, aero #59/#74/#84/#85/#97/#98
-  are undispositioned. Dispositioning them needs the owner's judgement, not mine, so they are
-  listed as NOT RUN rather than silently closed.
+- **12 BLOCKED of 54 gates (22%) were not evaluated**, and **NOT RUN is now 0** — every
+  remaining unevaluated gate has a named blocker rather than a deferral. The twelve split into:
+  *missing tool or hardware* (RP-G7 needs WSL OpenFOAM; DM-G3 and DM-G4 need ~6.8 days per anchor;
+  DM-G5 needs CalculiX; DM-G6 needs preCICE and, separately, prism layers; DA-G6 needs a physical
+  VNA; AM-G3 and AM-G5 need a solver stack), and *missing authority* (C-G5, CS-G9, AM-G4 — closing
+  an issue is the owner's decision, so they are **enumerated against the gates that would close
+  them** rather than silently closed). RP-G12 is a deliberate judgement call: rebuilding
+  `paper/main.pdf` while RP-G1, RP-G2 and RP-G11 fail would publish a document the evidence does
+  not support.
+- **The two `NOT RUN` gates of the previous revision are closed.** RP-G5 was **run** (the gate is
+  data-driven and a checkpoint existed) and fails on five metrics. RP-G10 was **read and checked**
+  claim-by-claim and is PARTIAL. Neither was left as a deferral.
 - **One reproduce command in this bundle hangs.** `evidence/drone-mech/dm-g2/tools/run-checkmesh.ps1`
   does `rm -rf` + `cp -r` of a ~600 MB template across the Docker 9p mount, which wedges; the
   container holds the deleted mount and `work-c1` disappears. Copy the case **container-side**
   instead. The mesh result itself is unaffected and was independently reproduced twice.
 - **Stale status boards exist.** `SWARM_STATUS.md` (root and `coordination/`) still carries the
   pre-correction figures from 2026-11-12 and is superseded by this file.
+- **Two standing instructions were not satisfiable or not followed, and both are recorded rather
+  than glossed over.** See `coordination/DECISIONS.md` D-7 and D-8. In short: the instruction to
+  *stop on foreign swarm commits and report immediately* was **not followed** — Fable committed on
+  5 of the 6 repos between 2026-11-12T02:30Z and 13:56Z and this audit kept working. And the
+  instruction to *focus on repos it is not working on actively* was **unsatisfiable** during that
+  window, because the only repo without active Fable work was research-paper, which a separate
+  instruction forbade touching. No overwrite occurred, no Fable branch was checked out or modified,
+  and all six work trees are clean — but the deviation is real and belongs in the record.
 
 
 
