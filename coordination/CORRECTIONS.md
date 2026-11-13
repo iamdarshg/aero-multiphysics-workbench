@@ -1,8 +1,15 @@
 # CORRECTIONS — claims in this bundle that later evidence overturned
 
-Appended 2026-11-12T20:30 IST by dsh-lead, after `tannmay-python` (Claude Code / Fable)
-published work on the same repos. Every correction below is a claim **this bundle made
-that is wrong**. Corrections run in both directions; where Fable was wrong I say so too.
+Started 2026-11-12T20:30 IST by dsh-lead; **last revised 2026-11-13T21:00 IST**.
+Appended after `tannmay-python` (Claude Code / Fable) published work on the same repos.
+Every correction below is a claim **this bundle made that is wrong**. Corrections run in
+both directions; where Fable was wrong I say so too.
+
+**Revision policy:** entries are amended in place when later evidence overturns them, and
+the amendment is labelled. An entry is only current if it carries no "SUPERSEDED" banner.
+C-1 was amended as C-1b; C-8 and C-9 were amended on 2026-11-13 after the `--schematic-parity`
+run contradicted them. If you are reading a number here that disagrees with
+`coordination/gates/GATE_STATUS.md`, GATE_STATUS is the newer document.
 
 ---
 
@@ -209,9 +216,44 @@ APIs (`Contains` vs `HitTestFilledArea`, agreeing 8000/8000 samples).
 A first containment implementation failed its own self-test (misclassified a through-hole pad)
 and was discarded, not reported.
 
+> **AMENDED 2026-11-13.** A later re-measure gave 90.95 mm / 11.40 mm = **88.86% / 11.14%** on a
+> 102.35 mm total. The difference from 88.91 / 11.09 is **sampling step**, not a different
+> method: 0.05 mm track sampling vs a finer walk. Both agree that `/GND` is **0.00%**. Quote
+> **88.9% / 11.1%** and treat the second decimal as noise. The authoritative figure is in
+> `coordination/gates/GATE_STATUS.md` (DA-G2).
+>
+> **An objection was raised and dismissed.** A reviewer argued the numbers were self-inconsistent
+> because 88.86 + 11.14 = 100% while the total was "102.35 mm of a 100 mm-class total". That is a
+> misreading: 102.35 mm is a **trace length**, not a percentage base, and
+> 90.95 + 11.40 + 0.00 = 102.35 mm exactly. The percentage split is internally consistent.
+>
+> **A second objection was investigated and also dismissed.** "0.00% over GND is implausible on a
+> real board, so suspect a measurement bug." Investigated directly: the In1 `/GND` zone fills
+> **82.18 mm² across 177 separate outlines**, against `/3V3` at **12,164.05 mm² across 3
+> outlines**. `checkMesh`-style sanity does not apply here, but the zone enumeration is decisive
+> — In1 `/GND` is a border ring of slivers, not a plane, so 0% contact with an interior RF
+> corridor is the expected result rather than a bug. The measurement is sound; the earlier
+> net-name-based figure was not.
+
 ---
 
-## C-9. Drone-arm FL50 CAN choke — downgraded from "likely crossed" to open question
+## C-9. Drone-arm FL50 CAN choke — **SUPERSEDED: the pack IS crossed**
+
+> **SUPERSEDED 2026-11-13.** This entry concluded "no swap" from pad geometry. That conclusion
+> was **wrong**. KiCad's own netlist comparison contradicts it directly:
+> ```
+> kicad-cli pcb drc --schematic-parity
+>   Pad net (/CANH)                   doesn't match net given by schematic (/CAN interface/U50_CANL)
+>   Pad net (/CAN interface/U50_CANL) doesn't match net given by schematic (/CANL)
+>   Pad net (/CANL)                   doesn't match net given by schematic (/CANH)
+> ```
+> **FL50 is crossed.** DA-G1 therefore FAILS partly on this. The reasoning error: pad geometry
+> describes the *footprint*, and a footprint can pair its pads however it likes; the winding
+> assignment lives in the *symbol's pin order*. Geometry cannot see a swap that only exists in
+> the schematic symbol. The parity tool compares actual connectivity, so it is the correct
+> source of truth for pin-out, and pad geometry is not.
+>
+> The original entry is kept below, unedited, because the error is instructive.
 
 Geometry pairs FL50's pads **by column**: {1,2} at x = 13.175 mm and {3,4} at x = 16.825 mm, with
 row pitch 2.25 mm and diagonal 4.2878 mm. Column pairing is the natural winding pair, which gives
@@ -223,3 +265,8 @@ the repository** (37 PDFs checked). An ohmmeter across pads 1–2 vs 1–4 settl
 
 This bundle and `tannmay-python`'s PR #39 both frame it as closer to "likely crossed"; the
 geometry points the other way. Record it as an **open question for the owner**, not a defect.
+
+> *That last paragraph is the specific claim that the parity run overturned. Note the tell that
+> was available at the time and ignored: the single ERC warning in this design is
+> `lib_symbol_mismatch` **on `L_Coupled` itself** — the very symbol whose pin order was in
+> question. A stale library symbol on a disputed pin-out is evidence, not noise.*

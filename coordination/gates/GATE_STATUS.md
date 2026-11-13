@@ -41,7 +41,7 @@ run; reason given. No gate is asserted from the handoff without a command.
 |---|---|---|
 | DM-G1 buildable geometry | **FAIL** | Native CAD interference: 4 pairs, 50,033.0 mm³ exact intersection each, 36 mm can overlap at 36 mm pitch, `status: FAIL`. The 42×72 mm motor envelope is an **unsourced CAD assumption** and must not be treated as a constraint until cited. |
 | DM-G2 mesh quality | **PASS** | Rebuilt mesh `7fadb8d7…`: `checkMesh -allTopology -allGeometry` → **`Mesh OK`**, 0 failed checks. 1,690,534 cells, determinant min **1.1716e-3**, interp weight min 0.1255, non-ortho max 69.30°, skewness 0.875. Progression 411 bad cells → 1 → 0. **Caveat: 100% tets, no prisms, y+ uncontrolled.** |
-| DM-G2b wall treatment | **PARTIAL** | y+ estimated 134 / 191 / 261 at 700 / 800 / 900 km/h from a measured median first-cell distance of 0.8415 mm. 0% in the y+ 5–30 buffer region, so wall functions are applicable at 700/800. **At 900 km/h, 21–24% of the wall exceeds y+ 300 (max ~495)** — a material limitation that must accompany any 900 km/h result. |
+| DM-G2b wall treatment | **FAIL** | y+ estimated 134 / 191 / 261 at 700 / 800 / 900 km/h from a measured median first-cell distance of 0.8415 mm. **That estimate is not sufficient to justify wall functions, and an engineering review overturned the "applicable at 700/800" conclusion.** A wall function requires the first cell to sit at the log-layer edge (y+ ≈ 30–200) *with a valid wall-normal coordinate obeying the log law*; a tetrahedron has no wall-normal direction, and a 0.8415 mm first cell on a 388 mm chord is ≈0.22% of chord — the thickness of the boundary layer itself, not a probe placed inside it. A cell that thick spans the sublayer and the log region, so the law of the wall overestimates shear. A **median** y+ also says nothing about a transonic wing where y+ varies steeply at the leading edge and at suction peaks, and the reported 0% in 5–30 together with 21–24% above 300 is itself evidence of a bimodal distribution rather than a controlled one. At 900 km/h, 21–24% of the wall exceeds y+ 300. **Verdict: this mesh is not valid for wall-function transonic RANS; it needs wall-resolved prisms (y+≈1, 15–30 layers, growth 1.15–1.2) or, at minimum, a full y+ histogram rather than a median.** |
 | DM-G3 transonic campaign | **BLOCKED** | Runs stably on the passing mesh (Uz residual 1.0 → 3.5e-4 holding, Courant 0.404, no NaN) but at **1.07 steps/min**, so `endTime 4.0e-3` needs ~10,368 steps ≈ **6.8 days per anchor**. Not closable on this host at the configured Courant/timestep. No force values are claimed. |
 | DM-G4 low-speed/control | **BLOCKED** | Same throughput wall as DM-G3; the same case machinery would take days per condition. Not attempted. |
 | DM-G5 structures/modal | **BLOCKED** | CalculiX is not installed on this host. The handoff's 10-mode figure on a synthetic sector with assumed E/ν/ρ is unverified and the material properties are assumptions, not supplier data. |
@@ -120,14 +120,43 @@ run; reason given. No gate is asserted from the handoff without a command.
 
 ## Bottom line
 
-Of the gates measured on this host:
+**54 gate rows, tallied programmatically from this file** (not hand-counted — an earlier
+hand-count in this very document said 7/14/4/10/6 and was wrong; a reviewer caught it):
 
-- **PASS (7):** RP-G0, DM-G2, C-G2, C-G3, C-G4, C-G6, CS-G2 (connectivity), G-B, G-C, G-D, G-E.
-- **FAIL (14):** RP-G1, RP-G2, RP-G3, RP-G4, RP-G8, RP-G11, DM-G1, DM-G7, DM-G8, DM-G9, DA-G1, DA-G4, C-G1, CS-G1, CS-G3, CS-G7, AM-G1, AM-G2, G-A.
-- **PARTIAL (4):** DM-G2b, DA-G2, DA-G3, RP-G6, RP-G9.
-- **BLOCKED (10):** RP-G7, RP-G12, DM-G3, DM-G4, DM-G5, DM-G6, DA-G5, DA-G6, CS-G5, CS-G6, AM-G3, AM-G5.
-- **NOT RUN (6):** RP-G5, RP-G10, C-G5, CS-G4, CS-G8, CS-G9, AM-G4.
+| verdict | count | gates |
+|---|---:|---|
+| **PASS** | **11** | RP-G0, DM-G2, C-G2, C-G3, C-G4, C-G6, CS-G2, G-B, G-C, G-D, G-E |
+| **FAIL** | **20** | RP-G1, RP-G2, RP-G3, RP-G4, RP-G8, RP-G11, DM-G1, DM-G2b, DM-G7, DM-G8, DM-G9, DA-G1, DA-G4, C-G1, CS-G1, CS-G3, CS-G7, AM-G1, AM-G2, G-A |
+| **PARTIAL** | **4** | RP-G6, RP-G9, DA-G2, DA-G3 |
+| **BLOCKED** | **12** | RP-G7, RP-G12, DM-G3, DM-G4, DM-G5, DM-G6, DA-G5, DA-G6, CS-G5, CS-G6, AM-G3, AM-G5 |
+| **NOT RUN** | **7** | RP-G5, RP-G10, C-G5, CS-G4, CS-G8, CS-G9, AM-G4 |
 
-Only **one engineering gate** moved from FAIL to PASS with a passing acceptance test
-on this host: **DM-G2** (`checkMesh` → `Mesh OK`). Every other change in this file is a
-**correction downward** — claims that were too generous, including several of my own.
+Only **one engineering gate** moved from FAIL to PASS with a passing acceptance test on this
+host: **DM-G2** (`checkMesh` → `Mesh OK`) — and even that carries a material caveat, because a
+100% tetrahedral mesh with no prism layers is not a valid transonic wall-function mesh regardless
+of what `checkMesh` says (see DM-G2b, and the engineering review that flagged it).
+
+Every other change in this file is a **correction downward** — claims that were too generous,
+including several of my own.
+
+### What this file does and does not establish
+
+It establishes, per gate, whether a claim was **reproduced on this host** and what the command
+printed. It does **not** establish that any repo is production-ready, and for drone-arm it
+establishes the opposite: **not fab-ready**, on the strength of a stale Gerber package, six missing
+ESC connectors, a crossed CAN pair, and an undefined stackup.
+
+### Known gaps a reviewer should weigh
+
+- **7 NOT RUN + 12 BLOCKED = 19 of 54 gates (35%) were not evaluated.** Each carries a reason,
+  but a reason is not a result. The handoff's total gate set is largely unexecuted.
+- **Issue triage was not done.** copperline #27–#48, Code-SDR #69+, aero #59/#74/#84/#85/#97/#98
+  are undispositioned. Dispositioning them needs the owner's judgement, not mine, so they are
+  listed as NOT RUN rather than silently closed.
+- **One reproduce command in this bundle hangs.** `evidence/drone-mech/dm-g2/tools/run-checkmesh.ps1`
+  does `rm -rf` + `cp -r` of a ~600 MB template across the Docker 9p mount, which wedges; the
+  container holds the deleted mount and `work-c1` disappears. Copy the case **container-side**
+  instead. The mesh result itself is unaffected and was independently reproduced twice.
+- **Stale status boards exist.** `SWARM_STATUS.md` (root and `coordination/`) still carries the
+  pre-correction figures from 2026-11-12 and is superseded by this file.
+
