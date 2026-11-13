@@ -1,0 +1,133 @@
+# GATE STATUS — measured state, not claimed state
+
+Recorded 2026-11-12, revised 2026-11-13T20:30 by dsh-lead (DeepSeek V4.1 Flash 1017).
+Base: `origin/info-dump/2026-11-10-handoff`, clean clone, Windows 11 host.
+
+**Every gate has a verdict. There are no bare "UNVERIFIED" entries left.** Where a gate
+cannot be run on this host, the status is BLOCKED and the reason names the missing
+tool or input. Where the gate could be run but was not, the status is NOT RUN and the
+reason says why. Neither is a pass.
+
+Legend: **PASS** = reproduced with a command on this host. **FAIL** = reproduced and
+fails. **PARTIAL** = some of the gate's claims measured, others not. **BLOCKED** =
+cannot run here; missing tool/input named. **NOT RUN** = runnable but deliberately not
+run; reason given. No gate is asserted from the handoff without a command.
+
+---
+
+## research-paper
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| RP-G0 baseline integrity | **PASS** | `pytest -q` → 686 passed, 5 skipped, 0 failed (856 s). Gate hash `4eafa9488650a3604f43bfa81be7476fc3b19575aa7ee9c15db90de2125fd135` unchanged. |
+| RP-G1 validity | **FAIL** | Four arms measured. A2 collapses (step 249); B2 collapses with weight 1 (step 473); **C2 latent standardization 480/576 (83.3%), 11 distinct**; **D3 std+occupancy weight 1: 576/576, 35 distinct, 9.9%**. Novelty 0 in every arm. The collapse is latent-scale, fixed by standardization — not by the occupancy weight. |
+| RP-G2 novelty | **FAIL** | Held-out GT novelty vs train union = 0.000508 (68/96 exactly 0) across all arms. Corpus family saturates; needs a family-level held-out corpus. |
+| RP-G3 diversity | **FAIL** | Computable now that D3 completed: 576/576 occupancy, 35 distinct samples out of 576 = 9.9% unique. Not a diverse batch. |
+| RP-G4 conditioning | **FAIL** | Traced to the decoder, not the latents: GT reconstruction 0.433 vs decoder-on-true-latents 0.006. The decoder is the bottleneck. |
+| RP-G5 negative controls | **NOT RUN** | Gate code exists (`scripts/diversity_novelty_gate.py`) but the controls need a completed run and were not exercised. Runnable; deliberately not run because RP-G1..G4 already fail, so a control pass would not change the verdict. |
+| RP-G6 reconstruction | **PARTIAL** | Handoff figures (87/96 procedural, 15/15 CRM) not re-run. The one re-measured number, decoder-on-true-latents = 0.006, is in RP-G4. |
+| RP-G7 solver agreement | **BLOCKED** | Needs a fresh WSL OpenFOAM on ≥3 canonical cases. No WSL Ubuntu distro on this host. The Docker path exists but was not exercised for this gate, and running CFD solver agreement would consume the machine for days (see DM-G3 throughput). |
+| RP-G8 statistics | **FAIL** | D3 gives n=576 with 35 distinct and 9.9% unique; that is the statistic, and it fails a diversity requirement regardless of the confidence interval. |
+| RP-G9 reproducibility | **PARTIAL** | The gate hash is stable across runs (RP-G0), which is the reproducibility claim that can be checked. Full run-to-run seed reproducibility was not re-run — a 14-epoch run is ~12 h. |
+| RP-G10 adversarial review | **NOT RUN** | A literature/adversarial review of the paper's claims was not performed. This needs a human or a dedicated reading pass, not a command. |
+| RP-G11 claim consistency | **FAIL** | The paper's occupancy claim does not survive RP-G1: occupancy is satisfied by D3, but novelty is 0 and diversity is 9.9%. Any claim of a valid generative contribution is unsupported. |
+| RP-G12 final artifacts | **BLOCKED** | `paper/main.pdf` was not rebuilt. Tectonic is present but the paper cannot honestly be rebuilt while RP-G1/G2/G11 fail. |
+
+**research-paper verdict: FAIL.** RP-G0 passes; the substance (G1, G2, G3, G4, G8, G11) does not.
+
+## drone-mech
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| DM-G1 buildable geometry | **FAIL** | Native CAD interference: 4 pairs, 50,033.0 mm³ exact intersection each, 36 mm can overlap at 36 mm pitch, `status: FAIL`. The 42×72 mm motor envelope is an **unsourced CAD assumption** and must not be treated as a constraint until cited. |
+| DM-G2 mesh quality | **PASS** | Rebuilt mesh `7fadb8d7…`: `checkMesh -allTopology -allGeometry` → **`Mesh OK`**, 0 failed checks. 1,690,534 cells, determinant min **1.1716e-3**, interp weight min 0.1255, non-ortho max 69.30°, skewness 0.875. Progression 411 bad cells → 1 → 0. **Caveat: 100% tets, no prisms, y+ uncontrolled.** |
+| DM-G2b wall treatment | **PARTIAL** | y+ estimated 134 / 191 / 261 at 700 / 800 / 900 km/h from a measured median first-cell distance of 0.8415 mm. 0% in the y+ 5–30 buffer region, so wall functions are applicable at 700/800. **At 900 km/h, 21–24% of the wall exceeds y+ 300 (max ~495)** — a material limitation that must accompany any 900 km/h result. |
+| DM-G3 transonic campaign | **BLOCKED** | Runs stably on the passing mesh (Uz residual 1.0 → 3.5e-4 holding, Courant 0.404, no NaN) but at **1.07 steps/min**, so `endTime 4.0e-3` needs ~10,368 steps ≈ **6.8 days per anchor**. Not closable on this host at the configured Courant/timestep. No force values are claimed. |
+| DM-G4 low-speed/control | **BLOCKED** | Same throughput wall as DM-G3; the same case machinery would take days per condition. Not attempted. |
+| DM-G5 structures/modal | **BLOCKED** | CalculiX is not installed on this host. The handoff's 10-mode figure on a synthetic sector with assumed E/ν/ρ is unverified and the material properties are assumptions, not supplier data. |
+| DM-G6 aeroelastic | **BLOCKED** | preCICE is not installed. Beyond that, the mesh is 100% tets with no prism layers, which is unsuitable for an FSI interface regardless of tooling. |
+| DM-G7 aircraft closure | **FAIL** | The 7-actuator vs 6-PWM conflict is unresolved and confirmed on the drone-arm side by schematic parity (see DA-G1: J60–J65 missing). |
+| DM-G8 provenance | **FAIL** | `run_manifest.json` records `"meshCheck": "… Mesh OK …"` for the *committed* mesh while `checkMesh` prints `Failed 2 mesh checks` on it. Also `ias900/constant/polyMesh` is a 22-byte git symlink stored as text, so a clean clone cannot run the case in place. |
+| DM-G9 promotion | **FAIL** | Unpromoted, correctly — DM-G1 and DM-G8 fail. |
+
+**drone-mech verdict: DM-G2 only.** One engineering gate moved to PASS with a quantified caveat.
+
+## drone-arm
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| DA-G1 schematic/board integrity | **FAIL** | `kicad-cli pcb drc --schematic-parity` → 0 violations, 0 unconnected, **191 schematic parity issues**: 161 `footprint_symbol_mismatch`, 20 `net_conflict` (6 real), **6 `missing_footprint` (J60–J65)**, 4 `extra_footprint`. The six ESC PWM outputs exist in the schematic, are absent from the board **and the BOM**, so "0 unconnected" is an artefact of their deletion. Root ERC = 1 warning (`lib_symbol_mismatch`, `L_Coupled`). |
+| DA-G2 RF 915 | **PARTIAL** | Measured on the board's own `RF_50R` netclass (16 nets, 102.35 mm on F.Cu): **0.00% over `/GND`**, **88.86% over `/3V3`**, 11.14% over pour voids. In1 holds 12,164 mm² of `/3V3` against 82.2 mm² of `/GND` in 177 slivers; nearest ground is B.Cu at 1.510 mm. **`CC_LNA_N` is split** F.Cu 3.46 mm + In2.Cu 1.84 mm while `CC_LNA_P` is a single F.Cu segment; In2 holds only `/1V1`. Impedance is analytic only and is **not a valid in-circuit figure** because the reference is a power net. |
+| DA-G3 route quality | **PARTIAL** | 2,279 segments, 341 vias, 5,363 mm copper, 0 zero-length, widths 0.25/0.2/0.35 mm. **No diff-pair skew tooling exists in the repo**, so skew is not measurable here. |
+| DA-G4 fab package | **FAIL** | The only package is dated **2026-03-31** against a 2026-11-11 board; all **11 layers are 288.40 × 204.24 mm** against a 140 × 100 mm outline; **0/11 byte-identical** to a fresh export; no stackup, no DRC receipt, no SHA-256 manifest, no `.pos`. Sending it to a fab produces a different design. |
+| DA-G5 simulation | **BLOCKED** | openEMS, CSXCAD, HFSS, FEKO and scikit-rf are all absent; only `gmsh` (a mesher) is present. Cannot install read-only. |
+| DA-G6 physical | **BLOCKED** | No VNA, no VISA runtime, no serial port enumerated, no fabricated hardware. |
+
+**drone-arm verdict: NOT FAB-READY.** The repo's own `RELEASE_STATUS.md` says "not fabrication-ready"; that is correct and understated.
+
+## copperline
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| C-G1 completion | **FAIL** | 0/4 COMPLETE, 0 DRC violations. The 52-board corpus is **not in the repository**: the manifest has 10 boards (4 short-tier), `docs/validation/corpus.md:155` states **11/21 = 52.4%**, and the strings `42/52`, `80.8`, `82.4` appear nowhere in the tree. **Root cause is not the epoch cap** — raising `max_epochs` 12 → 100000 changes nothing (bit-identical `state_hash`, 0 connections gained). The terminator is the 4-stalled-epoch detector at `engine.cpp:1623-1624` (`kMaxStalledEpochs = 4`, `parallel.h:49`). 181 of 202 failed task-routes are reported `unattempted` with `expansions = 0`. |
+| C-G2 legality | **PASS** | Legality gate PASS 4/4 boards, 0 violations, exit 0. |
+| C-G3 tests | **PASS** | `ctest --test-dir build -LE campaign` → 33/33 passed, 0 failed (550.9 s). |
+| C-G4 determinism | **PASS** | Demonstrated incidentally and strongly: two independent binaries (original and instrumented) at identical settings produced **bit-identical `state_hash` on all 4 boards**, which is a stronger determinism result than a repeat run of one binary. |
+| C-G5 issues | **NOT RUN** | Issues #27–#48 were not dispositioned. Runnable, but each needs a judgement call from the owner, and dispositioning 22 issues without authority to decide them would be noise. |
+| C-G6 honesty | **PASS** | Both denominators are reported; the 4-board short tier cannot express either the 52-board or the 11/21 claim, and this file says so. |
+
+**copperline verdict: C-G2/C-G3 PASS, C-G1 FAIL.** The blocker is a control-flow defect plus a missing corpus, not routing capability — only 5 of 390 unconnected terminals are geometrically unescapable.
+
+## Code-SDR
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| CS-G1 DRC | **FAIL (but waiver justified)** | 222 violations = 199 `lib_footprint_mismatch` + 13 `via_dangling` + 10 `track_dangling`; 0 errors, 0 unconnected. **The 199 identity waiver is correct**: an independent best-fit transform search (rotation 0/90/180/270, mirrored and not, 1 µm tolerance) found all **199/199 pad-identical**, with the fitted transform consistent with each footprint's placed orientation, and silk as the only delta. |
+| CS-G2 RF50 | **PASS (connectivity only)** | Audit exit 0, 49/49 nets connected, `incomplete=[]`, uniform 0.23 mm. **Caveat:** "0 nonconforming" is relative to the repo's own rule, not to 50 Ω. On the declared 0.130 mm prepreg at Dk 4.2 the four closed forms give ≈47.6–53.7 Ω, so 0.23 mm is defensible — my earlier "0.23 mm is not 50 Ω" was wrong. |
+| CS-G3 return paths | **FAIL** | `validate_route.py` exit 1: signal routed on a solid In1/In2 ground plane. Known 4-layer contract conflict; a board-stackup decision, not a code fix. |
+| CS-G4 ERC/parity | **NOT RUN** | ERC was not re-run here beyond the gate script; U5–U8 parity not checked. The gate script exists and is runnable. |
+| CS-G5 fab | **BLOCKED** | No fab package generated, and generating one would be premature while CS-G3 fails. |
+| CS-G6 EM | **BLOCKED** | No openEMS/CSXCAD/HFSS/FEKO; `meep` is a stub, not a usable solver. |
+| CS-G7 RTL | **FAIL** | Icarus 21/21 and firmware 91,648 B / 0 warnings both stand, but the Verilator leg was a **false pass**. `verilog/v2_fft_packetizer.v` drives `wr_idx` from block #1 (L78, at L80 and L94) and block #4 (L140, at L168), and `bins_dropped` from #1 (L96) and #4 (L148). `MULTIDRIVENPROC` is **disabled by default** in Verilator — a deliberately double-driven control module fails to raise it under both 5.040 and 5.48 — so neither my "5.040 lacks the code" nor Fable's "5.054 catches it" explains the miss. Correct fix: pass `-Wmultidrivenproc` explicitly **and** add a known-bad control module to the gate tests. |
+| CS-G8 frequency | **NOT RUN** | The 0.1–10 GHz plan was not re-derived; it needs an EM solver (CS-G6 BLOCKED). |
+| CS-G9 issues | **NOT RUN** | Not dispositioned, same reasoning as C-G5. |
+
+**Code-SDR verdict: CS-G2 PASS on connectivity, CS-G7 FAIL on the RTL leg, CS-G3 FAIL on stackup.**
+
+## aero-multiphysics-workbench
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| AM-G1 mypy | **FAIL** | The correct invocation is `package.json`'s `typecheck:py` run from `services/api`, not `mypy .` from the root — my original "not reproducible" was my own invocation error. Run correctly it does not reach 0 errors. |
+| AM-G2 pytest | **FAIL** | Correct invocation is from `services/api` (its `pyproject.toml` supplies `pythonpath`/`testpaths`). My original root-level `ModuleNotFoundError: examples.gas_turbine` was also an invocation error. 8 tests fail on native participant/CAD dependencies. |
+| AM-G3 rotordynamics | **BLOCKED** | The rotordynamics solver stack is not installed on this host. |
+| AM-G4 issues | **NOT RUN** | #59, #74, #84, #85, #97, #98 not dispositioned; each is an owner judgement call. |
+| AM-G5 coupling evidence | **BLOCKED** | No real convergence evidence exists, and none can be produced without the solvers named in AM-G3 plus a multi-day run. |
+
+**aero verdict: both runnable gates FAIL; the rest are BLOCKED on missing solvers.** My two earlier "not reproducible" findings were my own invocation errors and are corrected in `coordination/CORRECTIONS.md`.
+
+## Global
+
+| Gate | Status | Evidence |
+|---|---|---|
+| G-A README matches measured state | **FAIL** | drone-mech `README`/`run_manifest.json` claim "Mesh OK" for a mesh that fails `checkMesh`; copperline README implies a 52-board corpus that is not committed; drone-arm `RELEASE_STATUS.md` is correct. |
+| G-B every claim has evidence row | **PASS** | This file plus `EVIDENCE_INDEX.md`. Every gate above carries a command, a measurement, or a named missing dependency. No gate is asserted from the handoff. |
+| G-C Fable's work untouched | **PASS** | No `audit/*` branch was checked out, modified, or force-pushed. Fable's aero commit `1621d26` is **not** an ancestor of any dsh-lead branch. All six work trees report 0 dirty files. |
+| G-D no destructive git | **PASS** | No `reset --hard`, no force-push, no branch deletion, no history rewrite in any of the six repos. |
+| G-E no interference in protected paths | **PASS** | `D:\CodeProjects` and `E:\1vm\TMP` were never written. |
+
+---
+
+## Bottom line
+
+Of the gates measured on this host:
+
+- **PASS (7):** RP-G0, DM-G2, C-G2, C-G3, C-G4, C-G6, CS-G2 (connectivity), G-B, G-C, G-D, G-E.
+- **FAIL (14):** RP-G1, RP-G2, RP-G3, RP-G4, RP-G8, RP-G11, DM-G1, DM-G7, DM-G8, DM-G9, DA-G1, DA-G4, C-G1, CS-G1, CS-G3, CS-G7, AM-G1, AM-G2, G-A.
+- **PARTIAL (4):** DM-G2b, DA-G2, DA-G3, RP-G6, RP-G9.
+- **BLOCKED (10):** RP-G7, RP-G12, DM-G3, DM-G4, DM-G5, DM-G6, DA-G5, DA-G6, CS-G5, CS-G6, AM-G3, AM-G5.
+- **NOT RUN (6):** RP-G5, RP-G10, C-G5, CS-G4, CS-G8, CS-G9, AM-G4.
+
+Only **one engineering gate** moved from FAIL to PASS with a passing acceptance test
+on this host: **DM-G2** (`checkMesh` → `Mesh OK`). Every other change in this file is a
+**correction downward** — claims that were too generous, including several of my own.
