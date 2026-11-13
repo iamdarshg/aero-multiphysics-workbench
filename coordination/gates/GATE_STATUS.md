@@ -1,6 +1,6 @@
 # GATE STATUS — measured state, not claimed state
 
-Recorded 2026-11-12, **last revised 2026-11-13T21:20** by dsh-lead (DeepSeek V4.1 Flash 1017).
+Recorded 2026-11-12, **last revised 2026-11-13T23:35** by dsh-lead (DeepSeek V4.1 Flash 1017).
 This revision reflects council round 1 fixes: DM-G2b downgraded to FAIL, counts recounted
 programmatically, and the AM-G1/AM-G2 wording aligned with the correct invocation.
 Base: `origin/info-dump/2026-11-10-handoff`, clean clone, Windows 11 host.
@@ -31,7 +31,7 @@ run; reason given. No gate is asserted from the handoff without a command.
 | RP-G7 solver agreement | **BLOCKED** | Needs a fresh WSL OpenFOAM on ≥3 canonical cases. No WSL Ubuntu distro on this host. The Docker path exists but was not exercised for this gate, and running CFD solver agreement would consume the machine for days (see DM-G3 throughput). |
 | RP-G8 statistics | **FAIL** | D3 gives n=576 with 35 distinct and 9.9% unique; that is the statistic, and it fails a diversity requirement regardless of the confidence interval. |
 | RP-G9 reproducibility | **PARTIAL** | The gate hash is stable across runs (RP-G0), which is the reproducibility claim that can be checked. Full run-to-run seed reproducibility was not re-run — a 14-epoch run is ~12 h. |
-| RP-G10 adversarial review | **NOT RUN** | A literature/adversarial review of the paper's claims was not performed. This needs a human or a dedicated reading pass, not a command. |
+| RP-G10 adversarial review | **PARTIAL** | **RUN** — claim-by-claim against the repo's own evidence. **No generative overclaim**: abstract, results and conclusion all state novelty ≈ 0 and that diverse/conditioned generation is not demonstrated. But **one number contradicts four internal files**: `main.tex:32` says the 45 draws contain **five** near-identical arrays, while `FINAL_RUN_GATES.md:24`, `:40` and `SCIENTIFIC_GATE_STATUS.md:19`, `:55` all say **two distinct in 45** — the paper under-reports the collapse by 2.5×, in the unsafe direction. Also unverifiable: the 45/45 recovery run was never committed (cited `build/recovery_2026-11-05/` absent); two cited evidence paths do not exist; "45 epochs, latent 16" against a committed 14-epoch/latent-192 checkpoint; 0.000508 and 9.9% appear nowhere in the paper. **Supported**: the model-free-constant control (independently reproduced), the training-hull-emitter conclusion, and every "remains blocked" statement. |
 | RP-G11 claim consistency | **FAIL** | The paper's occupancy claim does not survive RP-G1: occupancy is satisfied by D3, but novelty is 0 and diversity is 9.9%. Any claim of a valid generative contribution is unsupported. |
 | RP-G12 final artifacts | **BLOCKED** | `paper/main.pdf` was not rebuilt. Tectonic is present but the paper cannot honestly be rebuilt while RP-G1/G2/G11 fail. |
 
@@ -129,13 +129,13 @@ hand-count in this very document said 7/14/4/10/6 and was wrong; a reviewer caug
 |---|---:|---|
 | **PASS** | **14** | RP-G0, DM-G2, C-G2, C-G3, C-G4, C-G6, CS-G2, CS-G4, CS-G5, CS-G8, G-B, G-C, G-D, G-E |
 | **FAIL** | **22** | RP-G1, RP-G2, RP-G3, RP-G4, RP-G5, RP-G6, RP-G8, RP-G11, DM-G1, DM-G2b, DM-G7, DM-G8, DM-G9, DA-G1, DA-G4, C-G1, CS-G1, CS-G3, CS-G7, AM-G1, AM-G2, G-A |
-| **PARTIAL** | **5** | RP-G9, DA-G2, DA-G3, DA-G5, CS-G6 |
+| **PARTIAL** | **6** | RP-G9, RP-G10, DA-G2, DA-G3, DA-G5, CS-G6 |
 | **BLOCKED** | **12** | RP-G7, RP-G12, DM-G3, DM-G4, DM-G5, DM-G6, DA-G6, C-G5, CS-G9, AM-G3, AM-G4, AM-G5 |
-| **NOT RUN** | **1** | RP-G10 (in progress at time of writing — adversarial paper review) |
+| **NOT RUN** | **0** | *none* |
 
 ### What changed in this round
 
-**NOT RUN went 7 → 1; PASS went 11 → 14.** Two "BLOCKED" verdicts were **wrong and are retracted**:
+**NOT RUN went 7 → 0; PASS went 11 → 14.** Two "BLOCKED" verdicts were **wrong and are retracted**:
 
 - **CS-G5** was never blocked: `kicad-cli` exports gerbers, drill and position with no external tool.
   A complete, self-consistent package generates (Edge_Cuts 101.60 mm against a 101.70 mm board bbox).
@@ -192,5 +192,7 @@ ESC connectors, a crossed CAN pair, and an undefined stackup.
   instead. The mesh result itself is unaffected and was independently reproduced twice.
 - **Stale status boards exist.** `SWARM_STATUS.md` (root and `coordination/`) still carries the
   pre-correction figures from 2026-11-12 and is superseded by this file.
+
+
 
 
