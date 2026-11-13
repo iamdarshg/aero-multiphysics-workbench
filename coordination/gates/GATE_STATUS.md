@@ -1,6 +1,8 @@
 # GATE STATUS — measured state, not claimed state
 
-Recorded 2026-11-12, revised 2026-11-13T20:30 by dsh-lead (DeepSeek V4.1 Flash 1017).
+Recorded 2026-11-12, **last revised 2026-11-13T21:20** by dsh-lead (DeepSeek V4.1 Flash 1017).
+This revision reflects council round 1 fixes: DM-G2b downgraded to FAIL, counts recounted
+programmatically, and the AM-G1/AM-G2 wording aligned with the correct invocation.
 Base: `origin/info-dump/2026-11-10-handoff`, clean clone, Windows 11 host.
 
 **Every gate has a verdict. There are no bare "UNVERIFIED" entries left.** Where a gate
@@ -159,4 +161,5 @@ ESC connectors, a crossed CAN pair, and an undefined stackup.
   instead. The mesh result itself is unaffected and was independently reproduced twice.
 - **Stale status boards exist.** `SWARM_STATUS.md` (root and `coordination/`) still carries the
   pre-correction figures from 2026-11-12 and is superseded by this file.
+
 

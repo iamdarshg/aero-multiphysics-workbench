@@ -1,6 +1,6 @@
 {
   "program": "engineering-v2",
-  "updated": "2026-11-13T20:30:00+05:30",
+  "updated": "2026-11-13T21:20:00+05:30",
   "swarm_member": "dsh-lead",
   "model": "surplus/deepseek-v4.1-flash-1017",
   "workspace": "E:\\engineering-portfolio-audit",
@@ -213,11 +213,14 @@
     },
     "aero-multiphysics-workbench": {
       "AM-G1": {
-        "result": "NOT REPRODUCIBLE as written; after adding 3 __init__.py: mypy . = 318 errors/67 files, mypy packages = 43 errors/16 files"
+        "result": "FAIL, correctly invoked",
+        "correct_invocation": "package.json's typecheck:py run from services/api. NOT `mypy .` from the repo root -- running it from the root aborts with 'Source file found twice under different module names', which was dsh-lead's own invocation error and is corrected in CORRECTIONS C-2.",
+        "prior_wrong_wording": "An earlier revision of this file said 'NOT REPRODUCIBLE as written; with 3 markers added: 318 errors in 67 files'. That wording is superseded."
       },
       "AM-G2": {
-        "result": "NOT REPRODUCIBLE as written; with 39 PYTHONPATH entries: 8 failed, 1775 passed, 15 skipped",
-        "failures": "native participant/CAD dependencies"
+        "result": "FAIL, correctly invoked",
+        "correct_invocation": "run from services/api, whose pyproject.toml supplies pythonpath/testpaths. The earlier root-level 'ModuleNotFoundError: examples.gas_turbine' was dsh-lead's invocation error.",
+        "remaining": "8 tests fail on native participant/CAD dependencies that are not installed."
       }
     }
   },
@@ -280,5 +283,42 @@
   "mandate_deviation_reported": {
     "mandate": "focus on the repos it's not working on actively",
     "assessment": "UNSATISFIABLE as literally stated during 2026-11-12: Fable had active work in 5 of 6 repos. The only repo without active Fable work was research-paper, which a separate instruction forbade touching. dsh-lead should have reported this contradiction when it arose rather than silently working in repos Fable was actively changing."
+  },
+  "status_pointer": "GATE_STATUS.md in coordination/gates/ is the authoritative gate table (54 rows: PASS 11, FAIL 20, PARTIAL 4, BLOCKED 12, NOT RUN 7). This file is machine state only; if a gate result here disagrees with GATE_STATUS, GATE_STATUS wins.",
+  "council": {
+    "round_1": {
+      "members": [
+        "adversarial fact-check",
+        "mandate completeness",
+        "engineering judgment"
+      ],
+      "verdicts": [
+        "NOT FINISHED",
+        "NOT FINISHED",
+        "NOT FINISHED"
+      ],
+      "defects_raised": [
+        "CORRECTIONS.md header date did not match cited results",
+        "C-9 FL50 'no swap' contradicted by the parity tool",
+        "C-8 numbers unreconciled between two documents",
+        "GATE_STATUS counts hand-tallied and wrong (said 7/14/4/10/6, actually 11/19/5/12/7)",
+        "DM-G2b wall-treatment conclusion overstated (tet mesh cannot use wall functions)",
+        "SWARM_STATUS stale and not marked superseded",
+        "mandate deviation: did not stop on Fable's commits, did not report it at the time",
+        "issue triage not done; 19 of 54 gates not evaluated"
+      ],
+      "outcome": "all 6 document defects fixed in commit 2da59c6"
+    },
+    "round_2": {
+      "member": "re-reviewer",
+      "verdict": "FINISHED",
+      "note": "verified all 6 fixes in-file, re-measured the In1 zone areas independently (/3V3 12,164.05 mm2 in 3 outlines; /GND 82.18 mm2 in 177 outlines), and recounted the gate table to 54 rows matching 11/20/4/12/7",
+      "residual_items_raised": [
+        "ORCHESTRATOR_STATE.json carried a stale AM-G1 entry - fixed in this revision",
+        "GATE_STATUS.md self-stamp lagged its own rewrite - fixed"
+      ],
+      "outcome": "both residual items fixed in this revision"
+    },
+    "honest_final_position": "The council confirms the audit's findings and corrections are now internally consistent and evidence-backed. It does NOT certify that the underlying engineering work is complete: 20 gates FAIL, 19 of 54 gates were not evaluated, issue triage was not performed, and drone-arm is explicitly not fab-ready. Those are project decisions for the owner, not defects in the audit."
   }
 }
