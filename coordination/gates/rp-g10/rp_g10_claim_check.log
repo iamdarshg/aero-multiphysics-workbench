@@ -1,0 +1,58 @@
+=== CLAIM-BY-CLAIM
+
+[Generative contribution (validity)]
+  quote: generates 45/45 samples that pass every aircraft-specific check
+  cite : paper/main.tex:32
+  verdict: SUPPORTED (literal form) - FINAL_RUN_GATES.md:40, SCIENTIFIC_GATE_STATUS.md:52.
+
+[Not novel / not diverse]
+  quote: the 45 draws contain five near-identical voxel arrays
+  cite : paper/main.tex:32
+  verdict: SUPPORTED - paper states it; SCIENTIFIC_GATE_STATUS.md:55 says 2 distinct arrays in 45.
+
+[Held-out novelty ~0 (task cites 0.000508)]
+  quote: every emitted voxel is present in the training corpus
+  cite : paper/main.tex:32
+  verdict: PARTIALLY SUPPORTED - paper asserts zero novel voxels, but NO committed generator artifact contains the number; 0.000508 is NOT reproducible in-repo.
+
+[Best arm 9.9% unique]
+  quote: PATTERN NOT FOUND
+  cite : paper/main.tex:<not found>
+  verdict: UNSUPPORTED IN-REPO - no committed file contains 9.9% or 0.099; the repo's own number is 2-5 distinct arrays in 45 draws (4.4-11.1%), which brackets 9.9% only approximately.
+
+[Model-free constant passes the screen]
+  quote: a model-free constant array passes the same screen
+  cite : paper/main.tex:32
+  verdict: INDEPENDENTLY REPRODUCED - rp_g5_negative_controls.log: constant_union old_gate_pass=True, unique=0.000000.
+
+[Gate satisfiable by a training-hull emitter]
+  quote: training-hull-like
+  cite : paper/sections/results-and-discussion.tex:279
+  verdict: SUPPORTED - matches the frozen gate code (novelty_min_fraction 0.01) and the measured run.
+
+[Condition-response non-significant]
+  quote: condition-response study is non-significant
+  cite : paper/main.tex:32
+  verdict: SUPPORTED (self-reported); no committed numeric report.
+
+[Aerodynamics / structure / manufacturing blocked]
+  quote: remain blocked
+  cite : paper/main.tex:32
+  verdict: SUPPORTED - stated in the abstract itself and FINAL_RUN_GATES.md claim table.
+
+=== SUMMARY: supported=6  partial/unsupported-in-repo=1  contradicted=1
+
+=== OVERCLAIM SCAN (sentences containing novel/diverse/unique in the paper body)
+  sections/introduction.tex:15: It then reports the reduced final-protocol evidence, records the validation requirements that still block stronger claims, and closes by summarizing the present scope and the minimum future work neede
+  sections/results-and-discussion.tex:82: png} \caption{Generated Airshow-checkpoint voxel geometries and orthographic occupancy projections for the three conditioned smoke cases.
+  sections/results-and-discussion.tex:108: The \(96^3\) follow-up replaced the dense decoder with a coordinate decoder that evaluates sampled \((z,y,x)\) coordinates conditioned on the latent vector.
+  sections/results-and-discussion.tex:231: \ decoder capacity only), and generation (sampling from noise conditioned on the record's condition vector, nine records $\times$ five seeds).
+  sections/results-and-discussion.tex:262: The recovery is not conditioned or diverse generation, and the paper does not report it as such.
+  sections/results-and-discussion.tex:275: 000$ against the training union), so there are zero novel voxels.
+  sections/results-and-discussion.tex:313: That evidence is intentionally weak: it shows that the condition path is wired and that the procedural prior is not condition-invariant, but it does not validate mission-conditioned or manufacturing-c
+  sections/results-and-discussion.tex:463: py} return \texttt{pass} with matching run/checkpoint/manifest/protocol hashes? \end{enumerate} The literal validity-screen gate is passed on the declared CRM held-out split at \(32^3\); the unresolve
+  sections/results-and-discussion.tex:466: The \(128^3\) run tests that broader claim at higher resolution but does not replace the need for larger, diverse training data.
+  sections/conclusion.tex:3: The paper therefore demonstrates that the current heuristic gate is satisfiable by a training-hull emitter; it does not demonstrate novel, conditioned, or diverse generation.
+  sections/conclusion.tex:5: Most importantly, the repository should not yet be described as a fully AI-driven airplane generator conditioned on flight profile, manufacturing method, or structural requirements.
+  sections/related-work.tex:18: The repository should not yet be read as demonstrating superior exploration of an engineering design space, validated surrogate replacement, conditioned aircraft generation, or manufacturing-condition
+  sections/related-work.tex:45: \\ \hline Generative diversity & Parametric primitive library and conditioned batches & Shape similarity; latent coverage; part-volume variance & Grounded aircraft-like corpus, declared condition sche

@@ -1,0 +1,9 @@
+verilator: C:\msys64\mingw64\bin\verilator_bin.exe
+
+v2_top           PASS  (benign: BLKSEQ, PINCONNECTEMPTY, PROCASSINIT, UNUSEDSIGNAL, WIDTHEXPAND, WIDTHTRUNC)
+v2_top_fft       PASS  (benign: BLKSEQ, PINCONNECTEMPTY, PROCASSINIT, SIDEEFFECT, UNUSEDSIGNAL, WIDTHEXPAND, WIDTHTRUNC)
+v2_fft_pipe      PASS  (benign: UNUSEDSIGNAL, WIDTHEXPAND, WIDTHTRUNC)
+app_stream_cdc   PASS  (benign: UNUSEDSIGNAL)
+async_fifo       PASS  (benign: UNUSEDSIGNAL)
+
+--- 5/5 tops clean ---

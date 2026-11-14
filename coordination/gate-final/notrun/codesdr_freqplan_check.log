@@ -1,0 +1,38 @@
+freq plan rows: 7
+
+path                   RF band MHz  LO1 MHz   f_if1 calc     err      f_if2 calc in BAW  
+LOW                      100-2500    2526-4926   2526.25      0.0000   26.2500    True
+LOW_HF_OPTION             10-2500    2436-4926   2436.25      0.0000   26.2500    True
+HIGH_A                  2300-4200    4726-6626   4726.25      0.0000   26.2500    True
+HIGH_B                  4200-6800    6626-9226   6626.25      0.0000   26.2500    True
+HIGH_C_HIGH_SIDE        6800-7350    9226-9776   9226.25      0.0000   26.2500    True
+HIGH_C_LOW_SIDE         7150-9200    4724-6774   4723.75      0.0000   26.2500    True
+HIGH_D                  8000-10000   5574-7574   5573.75      0.0000   26.2500    True
+
+image band at IF1 = 2*2400-(IF1+/-20) = 2353.75-2393.75 MHz
+ADC fs=100 MSPS -> Nyquist 50.0 MHz; IF2 26.25 MHz below Nyquist
+
+coverage union: ['10-10000']
+gaps between rows: []
+headline band in schematic title: 10 MHz-10 GHz (with HF population option)
+stated band in gate spec: 0.1-10 GHz
+
+HIGH_C row split: 6800-7350 high-side, 7150-9200 low-side (overlap 7150-7350 MHz)
+
+=== CONSISTENT CHECKS (14)
+  OK   LOW: LO1 = RF+2426.25 MHz consistent (err 0)
+  OK   LOW: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   LOW_HF_OPTION: LO1 = RF+2426.25 MHz consistent (err 0)
+  OK   LOW_HF_OPTION: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   HIGH_A: LO1 = RF+2426.25 MHz consistent (err 0)
+  OK   HIGH_A: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   HIGH_B: LO1 = RF+2426.25 MHz consistent (err 0)
+  OK   HIGH_B: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   HIGH_C_HIGH_SIDE: LO1 = RF+2426.25 MHz consistent (err 0)
+  OK   HIGH_C_HIGH_SIDE: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   HIGH_C_LOW_SIDE: LO1 = RF-2426.25 MHz consistent (err 0)
+  OK   HIGH_C_LOW_SIDE: IF2 = |IF1-LO2| = 26.25 MHz consistent
+  OK   HIGH_D: LO1 = RF-2426.25 MHz consistent (err 0)
+  OK   HIGH_D: IF2 = |IF1-LO2| = 26.25 MHz consistent
+
+=== INCONSISTENCIES (0)

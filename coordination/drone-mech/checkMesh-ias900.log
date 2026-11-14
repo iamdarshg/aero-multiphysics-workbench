@@ -1,0 +1,75 @@
+
+Overall number of cells of each type:
+    hexahedra:     0
+    prisms:        0
+    wedges:        0
+    pyramids:      0
+    tet wedges:    0
+    tetrahedra:    49208
+    polyhedra:     0
+
+Checking topology...
+    Boundary definition OK.
+    Cell to face addressing OK.
+    Point usage OK.
+    Upper triangular ordering OK.
+    Face vertices OK.
+    Topological cell zip-up check OK.
+    Face-face connectivity OK.
+  <<Writing 144 cells with two non-boundary faces to set twoInternalFacesCells
+    Number of regions: 1 (OK).
+
+Checking patch topology for multiply connected surfaces...
+    Patch               Faces    Points     Surface topology  Bounding box
+    fsi                 4938     2522     ok (non-closed singly connected)   (0 -0.01523451251 -0.27) (0.26 0.01489108218 0.1562399911)
+    rootWall            298      202      ok (non-closed singly connected)   (0 -0.01523451251 -0.27) (0 0.01487610517 0.155)
+    farfield            1512     792      ok (non-closed singly connected)   (-0.53125 -0.35 -0.695) (0.79125 0.35 1.431239991)
+    outlet              184      111      ok (non-closed singly connected)   (-0.53125 -0.35 1.431239991) (0.79125 0.35 1.431239991)
+    inlet               184      111      ok (non-closed singly connected)   (-0.53125 -0.35 -0.695) (0.79125 0.35 -0.695)
+    ".*"                7116     3562     ok (closed singly connected)       (-0.53125 -0.35 -0.695) (0.79125 0.35 1.431239991)
+
+
+Checking faceZone topology for multiply connected surfaces...
+    No faceZones found.
+
+Checking basic cellZone addressing...
+    CellZone            Cells        Points       Volume       BoundingBox
+    fluid               49208        9724         1.966419432  (-0.53125 -0.35 -0.695) (0.79125 0.35 1.431239991)
+
+Checking basic pointZone addressing...
+    No pointZones found.
+
+Checking geometry...
+    Overall domain bounding box (-0.53125 -0.35 -0.695) (0.79125 0.35 1.431239991)
+    Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
+    Mesh has 3 solution (non-empty) directions (1 1 1)
+    Boundary openness (-6.916604446e-18 -1.301949072e-18 -2.546937872e-17) OK.
+    Max cell openness = 4.027830669e-16 OK.
+    Max aspect ratio = 20.15686664 OK.
+    Minimum face area = 2.932383389e-07. Maximum face area = 0.0179166135.  Face area magnitudes OK.
+    Min volume = 1.306225684e-09. Max volume = 0.000772538278.  Total volume = 1.966419432.  Cell volumes OK.
+    Mesh non-orthogonality Max: 83.4644433 average: 22.36403934
+   *Number of severely non-orthogonal (> 70 degrees) faces: 83.
+    Non-orthogonality check OK.
+  <<Writing 83 non-orthogonal faces to set nonOrthoFaces
+    Face pyramids OK.
+    Max skewness = 2.77434426 OK.
+    Coupled point location match (average 0) OK.
+    Face tets OK.
+    Min/max edge length = 0.0007399138455 0.2351707073 OK.
+    All angles in faces OK.
+    All face flatness OK.
+    Cell determinant (wellposedness) : minimum: 0 average: 0.1471084293
+ ***Cells with small determinant (< 0.001) found, number of cells: 411
+  <<Writing 411 under-determined cells to set underdeterminedCells
+    Concave cell check OK.
+    Face interpolation weight : minimum: 0.0393741463 average: 0.423340147
+ ***Faces with small interpolation weight (< 0.05) found, number of faces: 14
+  <<Writing 14 faces with low interpolation weights to set lowWeightFaces
+    Face volume ratio : minimum: 0.04098801438 average: 0.7538498617
+    Face volume ratio check OK.
+
+Failed 2 mesh checks.
+
+End
+
