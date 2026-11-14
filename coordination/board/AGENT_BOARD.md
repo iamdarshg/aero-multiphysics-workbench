@@ -27,11 +27,42 @@ limit is the false economy.
 ---
 
 
+### Board roster and copper weight — owner, 2026-11-15 (measured against the files)
+
+**Every board is 4-layer. No board may use HDI. Standard plated through vias only.**
+
+| board | file | layers | copper | owner rule |
+|---|---|---|---|---|
+| **ESC rev_b** | `drone-arm/hardware/esc/rev_b/esc_rev_b.kicad_pcb` | 4 | **0.14 mm outer = 4 oz**, 0.0525 mm inner | **4 oz required** — already declared |
+| drone-arm main rev_b | `drone-arm/hardware/main/rev_b/main_rev_b.kicad_pcb` | 4 | 0.035 mm = 1 oz | 1 oz |
+| Code-SDR V2 | `Code-SDR/hardware/v2/Code-SDR-V2.kicad_pcb` | 4 | 0.035 mm = 1 oz | 1 oz |
+
+Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
+0.035 = 1 oz, 0.0525 ≈ 1.5 oz, 0.07 = 2 oz, 0.14 = 4 oz.
+
+**Consequences that are now hard requirements:**
+
+1. **A 0.1 mm drill is not fabricable on a 4-layer non-HDI board.** Any via below the fab's
+   mechanical minimum (typically 0.2 mm, sometimes 0.15 mm) must be converted to a standard through
+   via. This is why the "36 × 0.1 mm HDI vias on drone-arm rev_b" is a genuine blocker and not a
+   labelling issue — on a 4-layer standard board those vias cannot exist.
+2. **4 oz copper on the ESC forces larger minimum trace width and spacing.** Typical 4 oz design
+   rules are **0.20–0.25 mm minimum trace and space** versus 0.10–0.15 mm at 1 oz, plus a larger
+   minimum via annular ring. Any ESC routing drawn to 1 oz rules must be checked against 4 oz rules,
+   and likely will not pass.
+3. **4 oz changes the achievable impedance.** The ESC is a power board so this matters mainly for
+   creepage and current, not for RF — but if any controlled-impedance net runs on the ESC it must be
+   recomputed at 0.14 mm copper.
+4. **Only the ESC gets 4 oz.** Main rev_b and Code-SDR V2 stay at 1 oz. An ESC-only weight change
+   does not touch the other two boards.
+
+---
+
 ## HARD CONSTRAINTS — owner, 2026-11-15 (these override the "fab burden is free" steer)
 
-1. **NO HDI. No 0.1 mm microvias, no laser-drilled vias, no blind/buried via process.** Every via
-   must be a **standard through-hole via** in the normal mechanical drill range (0.2–0.3 mm typical,
-   plated). This overrides any earlier note that HDI burden was acceptable.
+1. **NO HDI ON ANY BOARD. No 0.1 mm microvias, no laser-drilled vias, no blind or buried via
+   process.** Every board is 4-layer, so every via must be a **standard plated through via** in the
+   normal mechanical drill range (0.2–0.3 mm typical). This overrides any earlier note that HDI burden was acceptable.
 
    **Corrected attribution (2026-11-15):** Code-SDR V2 has **ZERO** microvias — all 1085 of its vias
    are standard plated-through at 0.200 / 0.250 / 0.400 mm, so Constraint 1 is already satisfied
