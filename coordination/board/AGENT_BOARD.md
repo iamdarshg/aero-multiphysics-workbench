@@ -1,6 +1,52 @@
 # AGENT BOARD — engineering-portfolio-audit
 
 **This is the pinned board.** Every agent reads this first and writes its status line back here.
+
+### Governing principle — owner, 2026-11-15
+
+**More spend now means less effort in the long run. Always keep that in mind.**
+
+This refines the "least effort" steer: the objective is least **total lifetime** effort, not least
+immediate effort. A cheap choice that forces rework, a second spin, or a recurring manual step is
+the expensive choice. Spend is acceptable when it removes future effort.
+
+How to apply it:
+
+| situation | pick |
+|---|---|
+| a $60 coupon that may settle Z0 vs a $300 set that definitely settles it | take the set that actually settles it, if it prevents a respin — state the case, do not silently refuse |
+| a routing move that dodges today's voids, vs reassigning In1 to a solid ground plane | the structural fix if the board is going to be revised anyway |
+| a part swap that fits the current footprint at the edge of its rating, vs a package change that has margin | the one with margin, because an under-rated part becomes a warranty problem |
+| fab cost to hold a tighter tolerance vs a design that needs the tighter tolerance | pay for the tolerance; a design change costs more |
+| deleting nets to make a measurement look clean, vs routing them properly | route them |
+
+The $60 cap on coupons and the no-HDI rule stand. This principle does not override an explicit
+limit; it tells you how to spend *within* one and how to argue for more when the evidence says the
+limit is the false economy.
+
+---
+
+
+## HARD CONSTRAINTS — owner, 2026-11-15 (these override the "fab burden is free" steer)
+
+1. **NO HDI. No 0.1 mm microvias, no laser-drilled vias, no blind/buried via process.** Every via
+   must be a **standard through-hole via** in the normal mechanical drill range (0.2–0.3 mm typical,
+   plated). This overrides any earlier note that HDI burden was acceptable.
+
+   **Corrected attribution (2026-11-15):** Code-SDR V2 has **ZERO** microvias — all 1085 of its vias
+   are standard plated-through at 0.200 / 0.250 / 0.400 mm, so Constraint 1 is already satisfied
+   there and no work is needed. The **36 × 0.1 mm HDI vias are on drone-arm rev_b**, not Code-SDR.
+   My earlier board note said Code-SDR and was wrong.
+2. **Coupon / prototype spend cap: $60 total.** Not $283, not $310. Any test-coupon, panel or
+   prototype order must come in **at or under $60**, including launches and shipping. If a coupon
+   set cannot be built for $60, redesign it smaller rather than asking for more money.
+
+Everything else from the earlier steer still stands: prefer part swaps and constraint edits over
+copper changes, prefer copper moves over stackup changes, and do not avoid awkward panelisation or
+tight tolerances to spare the fab house.
+
+---
+
 One board, one truth. If your work is not on this board, it does not exist.
 
 Pattern source: **@azizbuildss, "WIN HACKATHONS ON EASY MODE"** (Instagram `DfOLEP6v3AR`,
@@ -158,15 +204,31 @@ warm-cache only and is withdrawn) · aero **1.73×**, mesh sha-identical.
 5. **No impedance sign-off on either board.** Two 2D FD solves exist; a measurement does not.
    The TDR coupon design is not yet buildable (panel 140x200 vs 205, W1 110x8, $283 vs $310).
 
-### Decisions only the owner can make
+### Decisions — resolved
 
-1. Fill the voids (routing move, keeps the board) or re-spin In1 to ground (stackup change).
-2. Is **D9** clock-capable on the LIF-MD6000, and is the 6-GPIO remap to 0,1,2,3,18,29 acceptable.
-3. Servo rail: 0.75 A PTC cannot carry 3–9 A. Respecify, or split the rail.
-4. Accept 36 HDI 0.1 mm vias, or re-route to standard vias.
-5. Authorise the $283 coupon spend.
-6. research-paper: the paper says two distinct arrays, its own overview says five. That one is
-   still unresolved and is the last open contradiction in the set.
+| # | decision | resolution |
+|---|---|---|
+| 1 | void fill vs In1 re-spin | **void fill**, but see the buildability report: the 1.307 % result came from a copy with 13 nets deleted. Minimum move set is being measured. |
+| 2 | is D9 clock-capable | **YES, confirmed.** D9 = `PB16A` = **`PCLKT2_0`**, a dedicated primary-clock pad in bank 2 (Lattice CrossLink datasheet FPGA-DS-02007-2.2, p.51, which the repo itself cites). Not merely clock-capable — a dedicated clock pad. **No copper change, no respin.** |
+| 3 | servo rail PTC | **Re-pointed and it is a COPPER fix.** The 0.75 A PTC is **F701 on the ESC rev_b board** (`REV_B_BOM.csv:57`), not the flight-control board. No PTC at 3–9 A exists in that footprint, so it is not a BOM swap. The fix is deleting **six pad-to-net connections**, not rebuilding the board. |
+| 4 | 36 HDI vias | **Not on Code-SDR at all** — that board has zero microvias. The 36 are on **drone-arm rev_b**. Conversion plan required there. |
+| 5 | coupon spend | **$54.24, inside the $60 cap** with $5.76 headroom. 2 coupons on one 100×100 mm panel, **2 SMA launches total**, 5 boards ordered (6 coupons each: 3 × CA + 3 × CB). |
+| 6 | research-paper 2-vs-5 arrays | pending the rp-stl hotfix |
+
+### The coupon that was designed — and why it is worth the money
+
+The single uncertainty worth paying to measure: **Z0 of the as-built cross-section where In1 is
+absent, with the 0.25 mm-gap stitched F.Cu coplanar pour either present (74.5 Ω) or inert (118.1 Ω).**
+Those two models are **43.6 Ω apart**, and which is true decides whether the coplanar pour is
+carrying the reference or doing nothing.
+
+| coupon | predicted | purpose |
+|---|---|---|
+| CA | **74.53 Ω** (pour present) vs **118.12 Ω** (pour inert) | the measurement that resolves it |
+| CB | **50.19 Ω** | control — same line with In1 solid |
+
+That is a properly designed experiment: one coupon for the unknown, one control, and a refutation
+criterion. It fits the budget because it drops from 35 SMA launches to 2.
 
 ---
 

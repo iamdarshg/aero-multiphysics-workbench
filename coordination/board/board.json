@@ -216,6 +216,20 @@
       "detail": "DA-CONNECTORS placement blocked: 0 free lanes at pads 43-49; J60-J66 1x03 proposed at y=79.50",
       "iso": "2026-11-14T20:27:17",
       "ts": 1794668237.7114496
+    },
+    {
+      "action": "constraint",
+      "agent": "owner",
+      "detail": "HARD: no HDI microvias; fan out the 36 x 0.1 mm vias to standard through-vias",
+      "iso": "2026-11-15T00:09:05",
+      "ts": 1794681545.2464187
+    },
+    {
+      "action": "constraint",
+      "agent": "owner",
+      "detail": "HARD: coupon/prototype spend at or under $60 total; redesign smaller if needed",
+      "iso": "2026-11-15T00:09:05",
+      "ts": 1794681545.2464187
     }
   ],
   "messages": [
@@ -225,6 +239,13 @@
       "iso": "20:26:34",
       "text": "wave 2 verified MOSTLY_SOUND: 6 items rejected. 3D speedup is 4.24x (drone-mech) and 2.49x/3.77x (aero), superseding the 1.35x cold figure.",
       "ts": 1794668194.40095
+    },
+    {
+      "agent": "owner",
+      "id": 2,
+      "iso": "00:09:05",
+      "text": "NO HDI (standard vias only) and $60 coupon cap. These override the fab-burden steer.",
+      "ts": 1794681545.2464187
     }
   ],
   "tasks": {
@@ -243,6 +264,32 @@
       "status": "done",
       "target": null,
       "title": "aero: extend speedup to turbo/airframe paths"
+    },
+    "CONSTRAINT-BUDGET": {
+      "created": 1794681545.2464187,
+      "escalation": null,
+      "id": "CONSTRAINT-BUDGET",
+      "lease": null,
+      "notes": [],
+      "scopes": [
+        "evidence/hf2-da-tdr"
+      ],
+      "status": "ready",
+      "target": "lead",
+      "title": "HARD: coupon/prototype spend at or under $60 total; redesign smaller if needed"
+    },
+    "CONSTRAINT-NO-HDI": {
+      "created": 1794681545.2464187,
+      "escalation": null,
+      "id": "CONSTRAINT-NO-HDI",
+      "lease": null,
+      "notes": [],
+      "scopes": [
+        "evidence/dec-hdi-conversion"
+      ],
+      "status": "ready",
+      "target": "lead",
+      "title": "HARD: no HDI microvias; fan out the 36 x 0.1 mm vias to standard through-vias"
     },
     "CS-CLOCK": {
       "completed": 1794665733.781264,
