@@ -42,9 +42,41 @@ method on top of the board, not as a description of the reel.
 | EXECUTE wave 1 (11 units, PCB EM/impedance/fab) | **DONE** — committed `ef9688a` |
 | VALIDATE wave 1 | **DONE** — verifier: `MOSTLY_SOUND`, 8 of 11 units rejected |
 | HOTFIX wave 1 (6 units) | **DONE** — 6/6 repaired, committed `835e63a` |
-| EXECUTE wave 2 (11 units, rectification + 3D) | **running** — 6 of 10 reporting |
-| VALIDATE wave 2 | pending |
-| HOTFIX wave 2 | pending |
+| EXECUTE wave 2 (10 units, rectification + 3D) | **DONE** — 10/10 |
+| VALIDATE wave 2 | **DONE** — `MOSTLY_SOUND`, 6 items rejected |
+| HOTFIX wave 2 | **needed** — see the reject table below |
+
+### Wave 2 — verified results
+
+| item | result | ready to apply |
+|---|---|---|
+| da-voidfill | 20 voids, 4.1701 mm², 9.834 % reduced to **1.307 %** by moving 13 In1 segments | **no** — B.Cu reroute UNVERIFIED; the 1.307 % refill is a copy with 13 nets deleted, not a fabbable board |
+| da-connectors | J60–J66 1x03 at y=79.50, x=80.00 to 95.24, pitch 2.54; 6 missing_footprint becomes 0 | **no** — 0 free lanes at pads 43–49 |
+| da-can | 6 tokens `interfaces.kicad_sch:1286-1329`; net_conflict 20 to **17**, parity 191 to **188**, ERC 1 to **0** | **yes** |
+| da-gerbers | 11 Gerbers + 5 blind/buried drills + 161-row `.pos`; Edge_Cuts **140.000 x 100.000 mm** | **yes** (rev still reads rev-question-mark) |
+| cs-clock | `v2_top.lpf:16` D7 to D9 plus `build_diamond.tcl:99`; 55 items, 42.371 mm, 0 unconnected | **yes** — but NOT firmware-only |
+| cs-varcap-real | 4 x **SMV1236-079LF**, k **1.293:1** against 1.169 needed; corner 44.63–51.05 MHz | model-only, no VNA |
+| dm-step | **923.371 s to 218.003 s = 4.24x**, 205/205 records, digest `99301ffc3fd3…` identical | **yes** |
+| aero-turbo | turbo 70.751 to **28.439 s (2.49x)**; batch 232.678 to **61.727 s (3.77x)** | **yes** |
+| da-tdr | 20 coupons, 35 SMA launches | **no** — panel 140x200 vs 205; W1 110x8 |
+| rp-stl | 51 files, 535,362,331 B, 47 hashes, 4 duplicate pairs | audit only |
+
+**The 3D speedup is real and larger than first reported: drone-mech 4.24x (repeat 4.17x) with an
+identical canonical digest over 205 paths, and aero 2.49x on the turbo path / 3.77x on the batch
+path with sha-equal meshes.** The earlier 1.35x figure was cold end-to-end on a contended host and
+is superseded.
+
+### Wave-2 verification rejects (hotfix needed)
+
+| unit | defect |
+|---|---|
+| da-tdr | 35 launches sum to **$283**, not $310; a 95 mm strip for 10 coupons at 10 mm pitch needs at least 98; W1 has no 100 mm slot; two-way resolution is 3.37 mm, not 2.9 |
+| da-can | "191 = 161+20" is wrong, it is **161+20+6+4**; the 181 and 178 sums are also wrong |
+| da-voidfill | cites `12_measure.json` which **does not exist**; the "measured" 1.307 % is a deleted-net refill, not a fabbable board; B.Cu is claimed to have room but is 12,728.8 of 14,036 mm2 already filled |
+| da-connectors | the placement needs a lane that does not exist at pads 43 to 49 |
+| cs-varcap-real | "it is the design" is validated only against the repo's own LC CSV — a model, not a measurement |
+| rp-stl | 510.56 **MiB** = 535.36 MB, not MB |
+| da-gerbers | report says er **4.5**; board lines `:58/:69/:80` say **4.2** — the report is wrong, the board line above stands |
 
 ### Hotfix wave 1 — outcome
 
@@ -112,11 +144,29 @@ Speed achieved so far: drone-mech **1.35× cold / ~30× warm** (the 45.3× first
 warm-cache only and is withdrawn) · aero **1.73×**, mesh sha-identical.
 
 ### Top 5 blocking fab
-1. drone-arm ships only **rev_a gerbers** — sheet frame in all 11 layers. **RE-SPIN.**
-2. drone-arm In1 is 3V3 and Z0 is unresolved (51.2 / 52.6 / 65–118 Ω). No TDR coupon. **RIP-UP** unless voids filled.
-3. drone-arm **J60–J65 + six PWM nets unconnected**; 7 actuators vs 6 channels; CAN H/L swapped. **RIP-UP.**
-4. Code-SDR **clock on dead copper (D7)**; 0/6 RP2040 pins; 84 nets on a solid In1 plane.
-5. **No impedance sign-off on either board** — drone-arm 14 FAIL / 8 MISSING, Code-SDR 8 FAIL / 15 MISSING.
+
+1. **drone-arm ships only rev_a gerbers.** A valid rev_b package now regenerates (Edge_Cuts
+   140.000 x 100.000 mm) but the rev field still reads unresolved. Category: **RE-SPIN.**
+2. **drone-arm In1 is 3V3 and the void fill is not yet fabbable.** The fix is moving 13 In1
+   segments, not a zone tweak (zone parameters alone only reach 8.97 % void). The 1.307 % result
+   comes from a copy with 13 nets deleted, and the B.Cu reroute is unverified. Category: **RIP-UP.**
+3. **drone-arm J60–J66 has no lane at pads 43–49** and the servo rail protection is undersized —
+   a 0.75 A PTC against a 3–9 A requirement. That is a safety item, not a nicety.
+4. **Code-SDR clock is a two-line fix, not firmware-only**: `v2_top.lpf:16` D7 to D9 plus
+   `build_diamond.tcl:99`. Open question: is D9 clock-capable on this part. Also 36 HDI 0.1 mm vias
+   and 84 nets routed on a solid In1 plane.
+5. **No impedance sign-off on either board.** Two 2D FD solves exist; a measurement does not.
+   The TDR coupon design is not yet buildable (panel 140x200 vs 205, W1 110x8, $283 vs $310).
+
+### Decisions only the owner can make
+
+1. Fill the voids (routing move, keeps the board) or re-spin In1 to ground (stackup change).
+2. Is **D9** clock-capable on the LIF-MD6000, and is the 6-GPIO remap to 0,1,2,3,18,29 acceptable.
+3. Servo rail: 0.75 A PTC cannot carry 3–9 A. Respecify, or split the rail.
+4. Accept 36 HDI 0.1 mm vias, or re-route to standard vias.
+5. Authorise the $283 coupon spend.
+6. research-paper: the paper says two distinct arrays, its own overview says five. That one is
+   still unresolved and is the last open contradiction in the set.
 
 ---
 

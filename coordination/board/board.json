@@ -1,0 +1,392 @@
+{
+  "audit": [
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DA-VOIDFILL",
+      "iso": "2026-11-14T19:45:26",
+      "ts": 1794665726.948284
+    },
+    {
+      "action": "claim",
+      "agent": "w2-da-voidfill",
+      "detail": "DA-VOIDFILL ttl=7200",
+      "iso": "2026-11-14T19:45:27",
+      "ts": 1794665727.5000243
+    },
+    {
+      "action": "complete",
+      "agent": "w2-da-voidfill",
+      "detail": "DA-VOIDFILL REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:28",
+      "ts": 1794665728.0099251
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DA-CONNECTORS",
+      "iso": "2026-11-14T19:45:28",
+      "ts": 1794665728.63851
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DA-CAN",
+      "iso": "2026-11-14T19:45:29",
+      "ts": 1794665729.0613806
+    },
+    {
+      "action": "claim",
+      "agent": "w2-da-can",
+      "detail": "DA-CAN ttl=7200",
+      "iso": "2026-11-14T19:45:29",
+      "ts": 1794665729.4769967
+    },
+    {
+      "action": "complete",
+      "agent": "w2-da-can",
+      "detail": "DA-CAN REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:29",
+      "ts": 1794665729.914847
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DA-GERBERS",
+      "iso": "2026-11-14T19:45:30",
+      "ts": 1794665730.363186
+    },
+    {
+      "action": "claim",
+      "agent": "w2-da-gerbers",
+      "detail": "DA-GERBERS ttl=7200",
+      "iso": "2026-11-14T19:45:30",
+      "ts": 1794665730.7849133
+    },
+    {
+      "action": "complete",
+      "agent": "w2-da-gerbers",
+      "detail": "DA-GERBERS REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:31",
+      "ts": 1794665731.2386158
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DA-TDR",
+      "iso": "2026-11-14T19:45:31",
+      "ts": 1794665731.6525595
+    },
+    {
+      "action": "claim",
+      "agent": "w2-da-tdr",
+      "detail": "DA-TDR ttl=7200",
+      "iso": "2026-11-14T19:45:32",
+      "ts": 1794665732.061509
+    },
+    {
+      "action": "complete",
+      "agent": "w2-da-tdr",
+      "detail": "DA-TDR REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:32",
+      "ts": 1794665732.4891138
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "CS-CLOCK",
+      "iso": "2026-11-14T19:45:32",
+      "ts": 1794665732.9027338
+    },
+    {
+      "action": "claim",
+      "agent": "w2-cs-clock",
+      "detail": "CS-CLOCK ttl=7200",
+      "iso": "2026-11-14T19:45:33",
+      "ts": 1794665733.3378248
+    },
+    {
+      "action": "complete",
+      "agent": "w2-cs-clock",
+      "detail": "CS-CLOCK REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:33",
+      "ts": 1794665733.781264
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "CS-VARCAP",
+      "iso": "2026-11-14T19:45:34",
+      "ts": 1794665734.253492
+    },
+    {
+      "action": "claim",
+      "agent": "w2-cs-varcap-real",
+      "detail": "CS-VARCAP ttl=7200",
+      "iso": "2026-11-14T19:45:34",
+      "ts": 1794665734.6667824
+    },
+    {
+      "action": "complete",
+      "agent": "w2-cs-varcap-real",
+      "detail": "CS-VARCAP REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:35",
+      "ts": 1794665735.0859194
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "DM-STEP",
+      "iso": "2026-11-14T19:45:35",
+      "ts": 1794665735.4905741
+    },
+    {
+      "action": "claim",
+      "agent": "w2-dm-step",
+      "detail": "DM-STEP ttl=7200",
+      "iso": "2026-11-14T19:45:35",
+      "ts": 1794665735.972599
+    },
+    {
+      "action": "complete",
+      "agent": "w2-dm-step",
+      "detail": "DM-STEP REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:36",
+      "ts": 1794665736.447266
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "RP-STL",
+      "iso": "2026-11-14T19:45:36",
+      "ts": 1794665736.9592795
+    },
+    {
+      "action": "claim",
+      "agent": "w2-rp-stl",
+      "detail": "RP-STL ttl=7200",
+      "iso": "2026-11-14T19:45:37",
+      "ts": 1794665737.4333472
+    },
+    {
+      "action": "complete",
+      "agent": "w2-rp-stl",
+      "detail": "RP-STL REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:37",
+      "ts": 1794665737.850319
+    },
+    {
+      "action": "add",
+      "agent": "lead",
+      "detail": "AERO-TURBO",
+      "iso": "2026-11-14T19:45:38",
+      "ts": 1794665738.326944
+    },
+    {
+      "action": "claim",
+      "agent": "w2-aero-turbo",
+      "detail": "AERO-TURBO ttl=7200",
+      "iso": "2026-11-14T19:45:38",
+      "ts": 1794665738.7389574
+    },
+    {
+      "action": "complete",
+      "agent": "w2-aero-turbo",
+      "detail": "AERO-TURBO REPORT.md on disk, pending wave-2 verify",
+      "iso": "2026-11-14T19:45:39",
+      "ts": 1794665739.1328702
+    },
+    {
+      "action": "post",
+      "agent": "wave2-verifier",
+      "detail": "wave 2 verified MOSTLY_SOUND: 6 items rejected. 3D speedup is 4.24x (drone-mech)",
+      "iso": "2026-11-14T20:26:34",
+      "ts": 1794668194.40095
+    },
+    {
+      "action": "claim",
+      "agent": "w2-da-connectors",
+      "detail": "DA-CONNECTORS ttl=7200",
+      "iso": "2026-11-14T20:27:17",
+      "ts": 1794668237.1085966
+    },
+    {
+      "action": "complete",
+      "agent": "w2-da-connectors",
+      "detail": "DA-CONNECTORS placement blocked: 0 free lanes at pads 43-49; J60-J66 1x03 proposed at y=79.50",
+      "iso": "2026-11-14T20:27:17",
+      "ts": 1794668237.7114496
+    }
+  ],
+  "messages": [
+    {
+      "agent": "wave2-verifier",
+      "id": 1,
+      "iso": "20:26:34",
+      "text": "wave 2 verified MOSTLY_SOUND: 6 items rejected. 3D speedup is 4.24x (drone-mech) and 2.49x/3.77x (aero), superseding the 1.35x cold figure.",
+      "ts": 1794668194.40095
+    }
+  ],
+  "tasks": {
+    "AERO-TURBO": {
+      "completed": 1794665739.1328702,
+      "created": 1794665738.326944,
+      "escalation": null,
+      "id": "AERO-TURBO",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-aero-turbo"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "aero: extend speedup to turbo/airframe paths"
+    },
+    "CS-CLOCK": {
+      "completed": 1794665733.781264,
+      "created": 1794665732.9027338,
+      "escalation": null,
+      "id": "CS-CLOCK",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-cs-clock"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "Code-SDR: D7 vs D9 dead-copper clock"
+    },
+    "CS-VARCAP": {
+      "completed": 1794665735.0859194,
+      "created": 1794665734.253492,
+      "escalation": null,
+      "id": "CS-VARCAP",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-cs-varcap-real"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "Code-SDR: the one viable varactor + bias"
+    },
+    "DA-CAN": {
+      "completed": 1794665729.914847,
+      "created": 1794665729.0613806,
+      "escalation": null,
+      "id": "DA-CAN",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-da-can"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-arm: CAN H/L swap resolution"
+    },
+    "DA-CONNECTORS": {
+      "completed": 1794668237.7114496,
+      "created": 1794665728.63851,
+      "escalation": null,
+      "id": "DA-CONNECTORS",
+      "lease": null,
+      "notes": [
+        "placement blocked: 0 free lanes at pads 43-49; J60-J66 1x03 proposed at y=79.50"
+      ],
+      "scopes": [
+        "evidence/w2-da-connectors"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-arm: J60-J65 ESC connector fix"
+    },
+    "DA-GERBERS": {
+      "completed": 1794665731.2386158,
+      "created": 1794665730.363186,
+      "escalation": null,
+      "id": "DA-GERBERS",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-da-gerbers"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-arm: regenerate valid rev_b fab package"
+    },
+    "DA-TDR": {
+      "completed": 1794665732.4891138,
+      "created": 1794665731.6525595,
+      "escalation": null,
+      "id": "DA-TDR",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-da-tdr"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-arm: TDR coupon to settle Z0"
+    },
+    "DA-VOIDFILL": {
+      "completed": 1794665728.0099251,
+      "created": 1794665726.948284,
+      "escalation": null,
+      "id": "DA-VOIDFILL",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-da-voidfill"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-arm: fill the 11.14% void under RF corridor"
+    },
+    "DM-STEP": {
+      "completed": 1794665736.447266,
+      "created": 1794665735.4905741,
+      "escalation": null,
+      "id": "DM-STEP",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-dm-step"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "drone-mech: accelerate the 191-file STEP corpus"
+    },
+    "RP-STL": {
+      "completed": 1794665737.850319,
+      "created": 1794665736.9592795,
+      "escalation": null,
+      "id": "RP-STL",
+      "lease": null,
+      "notes": [
+        "REPORT.md on disk, pending wave-2 verify"
+      ],
+      "scopes": [
+        "evidence/w2-rp-stl"
+      ],
+      "status": "done",
+      "target": null,
+      "title": "research-paper: audit the 510 MB STL/STP"
+    }
+  }
+}
