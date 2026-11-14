@@ -3,10 +3,34 @@
 **This is the pinned board.** Every agent reads this first and writes its status line back here.
 One board, one truth. If your work is not on this board, it does not exist.
 
-Pattern: **split the folders · pin one board · tag the teammate.**
-Reconstructed from @azizbuildss "WIN HACKATHONS ON EASY MODE" (steps 1–3 on screen; the creator's
-own board script is comment-gated, so this is the pattern implemented from the visible steps, not a
-copy of their script).
+Pattern source: **@azizbuildss, "WIN HACKATHONS ON EASY MODE"** (Instagram `DfOLEP6v3AR`,
+1 Nov 2026, 61 s). On-screen overlays: *split the folders · pin one board · tag the teammate*.
+
+**Correction to an earlier reading of mine.** I first inferred the mechanism from those three
+overlay words alone and wrote it up as a plan/execute/validate/hotfix pipeline. That was wrong.
+The caption is comment-bait — *"comment HACK and i'll send you the agent board script"* — and
+describes no workflow at all. The real method is legible only in the **screen recordings**:
+
+- `tools/board` with `post / read / unread / wait` — a board CLI agents poll
+- `AGENTS.md` wiring Claude Code hooks into that board
+- an `orchestrator/src/store.ts` `StateStore` exporting **`claimTask` · `renewLease` ·
+  `completeTask` · `setAgentTarget` · `createEscalation` · `appendAudit`** plus
+  **`heartbeat` / `reapExpired`**
+- a four-column **ownership table**: stream · owner · path scope
+- handoffs tagged `[Aziz's Firstmate worker]`, `[Diego's Claude Code]`, `[Aziz's Codex]`
+- PRs marked **"Ready PR only, no merge."** and a re-review answered *"5 min later"*
+
+So the mechanism is **task-claiming with leases, heartbeats and escalation** — work distribution
+plus liveness. That is not the same thing as plan/validate/hotfix stages, and my earlier write-up
+conflated them.
+
+Implemented here as `tools/board.py` (claim · renew · heartbeat · complete · escalate · target ·
+reap · post/read · audit), with lease expiry so a crashed worker cannot block a task and scope
+collision so two workers cannot duplicate one. Smoke-tested: double-claim refused, scope collision
+refused, expired lease reaped and re-claimable, audit trail written.
+
+The pipeline discipline (plan → execute → validate → hotfix) is still used, but as **our** working
+method on top of the board, not as a description of the reel.
 
 ---
 
