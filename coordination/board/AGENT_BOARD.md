@@ -17,10 +17,25 @@ copy of their script).
 | PLAN | done — 2 waves decomposed, 22 units |
 | EXECUTE wave 1 (11 units, PCB EM/impedance/fab) | **DONE** — committed `ef9688a` |
 | VALIDATE wave 1 | **DONE** — verifier: `MOSTLY_SOUND`, 8 of 11 units rejected |
-| HOTFIX wave 1 (6 units) | **running** |
-| EXECUTE wave 2 (11 units, rectification + 3D) | **running** |
+| HOTFIX wave 1 (6 units) | **DONE** — 6/6 repaired, committed `835e63a` |
+| EXECUTE wave 2 (11 units, rectification + 3D) | **running** — 6 of 10 reporting |
 | VALIDATE wave 2 | pending |
 | HOTFIX wave 2 | pending |
+
+### Hotfix wave 1 — outcome
+
+All six rejections repaired, each keeping the original visible and striking the superseded
+numbers rather than restating them.
+
+| unit | was | corrected |
+|---|---|---|
+| cs-em-field | "47–50 Ω" band | **WITHDRAWN**; band **48.56–49.92 Ω** at er 3.0–4.5, numerical 49.28–49.54, central 49.43 unchanged |
+| da-match-design | "−15.7 dB over 0.10–0.58 mm", "−24.5 dB all voids" | 0.100 mm row now computed (−19.60 dB @ 32.7 Ω); cascaded **−25.1 dB** with real fills; **−11.5 … −32.3 dB** if the 11.14 % is forced onto that path |
+| da-match-design | "entire plausible void range" | **scope wrong** — the void is on CC_PA / CC_LNA_N / CC_LNA_P / GNSS_RF_IN, **not** on the matching path |
+| dm-3d-speed | ±117.5 mm³, 45.3× | 117.5 is **2σ** (σ 58.75); 45.3× withdrawn, **1.35× cold** |
+| da-stackup | 51.2 Ω, 0.365 mm, "independent" | **51.3 Ω**, **0.366 mm**, word *independent* dropped — it was one model twice |
+| cs-varcap | SMV1231-1245 on a 2.426 GHz trim | relabelled **BRIEF-SUPPLIED**; item now states P3 **exceeds** the part ceiling by 1.223× |
+| fab-readiness | "sums to 1.60"; "impedance never solved" | mask layers excluded from body thickness, both boards re-evaluated alike; impedance **was** solved, what is missing is a **measurement** |
 
 ---
 
