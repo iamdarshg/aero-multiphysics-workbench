@@ -60,8 +60,9 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ### drone-mech body — FINAL state (rev5)
 
-**Deliverable:** `evidence/pdf-rev5/drone_mech_body_evidence_rev5.pdf` — **18 pages**, 101,890 chars,
-**0 formatting escapes**, `assert_clean` G1–G6 pass, 300-row provenance table.
+**Deliverable:** `evidence/pdf-rev5/drone_mech_body_evidence_rev5.pdf` — **19 pages**, 372,411 bytes,
+sha256 `EBD80EA4F3D3D45B24BFF5FC…`, `assert_clean` G1–G6 pass, 300-row provenance table.
+rev6 (`evidence/pdf-rev6/`) is in progress to correct the recost inputs below.
 
 | quantity | value | tier |
 |---|---|---|
@@ -71,14 +72,29 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 | fill | 624,770.5 mm³ at effective 353.3 kg/m³ = 220.755 g | ANALYTICAL |
 | empty-interior floor | 372.31 g | ANALYTICAL |
 | ceiling | 1,088.1 g | ANALYTICAL |
-| **optimisation package** | **−95.9 g (−17.44%)**, band −125.1…−66.7 g | ANALYTICAL |
+| **optimisation package** | **−86.9 g** verified; document published −87.8 g; rev6 corrects it | ANALYTICAL |
 | drag total | 87.96 cm² (body 67.04, nose row 30.03) | ANALYTICAL on MEASURED areas |
 | facts graded | 87 MEASURED · 112 ANALYTICAL · 41 ASSUMED · **0 SOLVER** | — |
 
 The optimisation withdrawal is **RESOLVED**: rev4 withdrew −47.4 g as unquotable until re-costed on
-the reconciled wall and fill; rev5 publishes **−95.9 g** on the corrected basis. It is larger than the
-withdrawn figure because the wall is now priced as PLA core plus wrap rather than as a single
-laminate, and the fill carries its real 28.04 % deposition factor.
+the reconciled wall and fill; rev5 publishes a re-costed package. It is larger than the withdrawn
+figure because the wall is now priced as PLA core plus wrap rather than as a single laminate, and
+the fill carries its real 28.04 % deposition factor.
+
+**But the component rows carry two wrong inputs, found after publication.**
+
+| row | published | verified | what went wrong |
+|---|---|---|---|
+| C1 cones | −61.0 g | **−64.2 g** | material cut face at z=−298.8 is **11,627.3 mm²** (+545.4 annulus), not the printed 6,359.0, so S_outer is 25,540–26,085 not 31,353.2 |
+| C2 hatch | −27.50 g | **−27.50 g** ✓ | correct, and the sign flipped from the earlier +41.7 g cost because the block is printed PLA |
+| C3 thinning | −12.81 g | **−9.35 g** | the 26.37 % used is the **whole-body** triangle share (0.26357 of 285,177 mm²); the wall-only share is **19.25 %** (33,692 of 175,033 mm²). A body-wide numerator was applied to the wall's 97,943 mm² |
+| C4 | −9.35 g | **−8.71 g** | same population mismatch |
+| **package** | −87.8 g | **−86.9 g** | the two errors nearly cancel, so the total survived but the rows did not |
+
+The row bands were **tighter than their own uncertainty** (−13.0…−12.8 for C3 excludes the measured
+−9.35), which is worse than having no band. And the basis fraction was never stated in the document,
+which is why nobody caught it across two revisions. rev6 fixes the inputs, states the basis
+explicitly, and widens the rows.
 
 **The verifier over-fired on this document twice, and both times the text was right.**
 
