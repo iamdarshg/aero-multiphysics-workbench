@@ -445,6 +445,76 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+## FAB READINESS — where the three boards actually stand
+
+**Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
+today, from artefacts that exist today, would produce the board the design describes, with nothing
+to fix afterwards.** A board that etches but cannot function is **not** orderable, because the rework
+is the thing this programme exists to avoid.
+
+| board | PASS | FAIL | WAIVED | **ORDERABLE** |
+|---|---|---|---|---|
+| **Code-SDR V2** | 12 | 0 | 1 | **YES** |
+| drone-arm main rev_b | 7 | 6 | 0 | **NO** |
+| ESC rev_b | 6 | 7 | 0 | **NO** |
+
+### The six true blockers, by cost-to-fix-after-fab
+
+| # | board | blocker | fix class | measured size |
+|---|---|---|---|---|
+| 1 | DA | **36 non-through vias, 33 at 0.100 mm** — no non-HDI 4-layer house can drill or plate them | **MOVE** | 12 fixed already. **24 remain in 20 groups, and 13 of those have the via centre inside another net's copper (dist ≤ 0)** — no via of any size fits. Needs a fan-out re-escape. |
+| 2 | DA | **no ESC command path in copper** — J60–J65 absent, U10 pads 43–48 unconnected | **MOVE** | **0 of 7 candidate pads has a legal escape**: U10 is 0.4 mm pitch with 0.200 mm pad gaps and a 0.20 mm track needs 0.45 mm. Six connectors, six nets, one fan-out. |
+| 3 | DA | **only the rev_a package exists**, title block has no revision | **PARAM — READY** | Install the verified rev_b package (21 files, 369 holes, 140.000 × 100.000, no frame) + `git apply title_block_rev_B.patch`. No design work. |
+| 4 | ESC | **499 unconnected items; 540 of 556 nets carry no copper** | **MOVE** | 154 segments totalling 628.27 mm; 16 nets routed = **2.88 %**; 1,978 of 1,990 vias sit on nets with no track. Finish the route. |
+| 5 | ESC | **523 violations at 4 oz, 371 of them 0.200 mm pad gaps inside 9 footprints** | **OWNER DECISION** | Not routable away: U201 QFN-80 P0.4, 6 × LQFP-48 P0.5, J202/J203 USB-C. At 140 µm the pattern floor is 0.25 mm; **these pads cannot be made compliant by any edit.** |
+| 6 | ESC | **no package and no revision marking at all** | **PARAM** | One export once #4 exists; add a title-block revision first. |
+
+### The one decision that is genuinely yours
+
+Blocker 5 has no engineering answer. Three options:
+
+1. **The fab accepts 0.200 mm at 4 oz in writing.** This is fab burden, which the owner principle
+   says is the acceptable kind of spend. Cheapest if a house will sign it.
+2. **Drop the ESC to 2 oz.** The geometry is *already* 2 oz-compliant, so this is the zero-work
+   option — but it contradicts "ESC is the only 4 oz board", and 4 oz was chosen for current
+   capacity on a 60 A-per-phase ESC.
+3. **Change 3 packages.** The honest engineering fix, and the most work.
+
+**The 4 oz rules must be adopted BEFORE the route is finished.** 97.1 % of it does not exist yet, so
+it is free now and a 540-net rip-up later.
+
+### What is deliberately NOT a blocker
+
+Every DRC warning on Code-SDR (222, **all severity warning, zero errors** — fab houses do not read
+them), the 84-net signal pilot on In1/In2 (an SI debt, not a process limit), and the clock constraint
+fix (a 2-hunk LPF patch, no copper).
+
+### Code-SDR's real remaining gaps are assembly-side
+
+0 fiducials, 0 test points, no BOM, no assembly drawing, no IPC-D-356, and a job file marked
+`ImpedanceControlled: true` with **no impedance target stated**. Those stop an **assembly PO**, not
+the etch order — which is why the board still reads ORDERABLE for bare fabrication.
+
+### drone-mech interference — resolved, and my diagnosis was wrong
+
+The 22 pairs / **331,033.5633 mm³** reproduces **to the last digit**. Breakdown:
+
+| | |
+|---|---|
+| duplicated placement | **0 pairs** — my "two parts at the same angular position" hypothesis was **wrong** |
+| press-fit wrongly counted | **0 pairs** |
+| genuine design clash | **20 pairs / 330,719.4040 mm³** |
+| modelling artefact (pilot stub) | **2 pairs / 314.1593 mm³** |
+| envelope as built | Ø42.000 × 72.000 + Ø5 × 8 stub = **99,908.93 mm³** |
+| envelope it should be | **Ø36.000 × 70.000 + Ø5 × 17 shaft = 71,251.29 mm³** |
+| **minimum fix** | **delete 4 of the 6 envelopes, keep one per duct → 0 pairs / 0.0000 mm³** |
+| does the 42_6 Boolean repair change the count | **NO** — measured |
+
+So the airframe has **six motor envelopes where two are needed**, and the envelope is **40.2 % too
+large in volume** for the 110 mm duct module that has to hold it. Deleting four clears it entirely.
+
+---
+
 ## HARD CONSTRAINTS — owner, 2026-11-15 (these override the "fab burden is free" steer)
 
 1. **NO HDI ON ANY BOARD. No 0.1 mm microvias, no laser-drilled vias, no blind or buried via
