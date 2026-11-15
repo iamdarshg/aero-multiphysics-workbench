@@ -445,6 +445,85 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### 4 oz at 0.200 mm — SETTLED: not available anywhere (8 fabs surveyed)
+
+The wave-1 claim rested on **Eurocircuits' 3 oz row**. It has now been asked properly, against
+published vendor capability tables only, with quotes stored verbatim.
+
+| fabricator | 4 oz stated? | min trace @ 4 oz | min space @ 4 oz | min ring |
+|---|---|---|---|---|
+| PCBWay | **explicit** | 0.330 | 0.330 | 0.150 (generic) |
+| Multi-CB (DE) | **explicit 140 µm** | 0.300 std / **0.250 special** | 0.300 / 0.250 | 0.300 / 0.200 |
+| Bay Area Circuits | **explicit** | 0.305 std / 0.279 adv | 0.305 / 0.305 | 0.127 (generic) |
+| LeitOn (DE) | **explicit 140 µm** | 0.300 | **0.400** | 0.250 |
+| Advanced Circuits | no — stops at 3 oz | 3 oz: 0.229 | — | — |
+| JLCPCB | no — heavy weights are **2-layer only** | 4-layer max 2 oz | — | — |
+| Eurocircuits | no — ends at **3 oz** | 3 oz: 0.250 | 0.250 | 0.125 |
+| OSH Park | no — heaviest service is 2 oz | — | — | — |
+
+**Answer: no. Categorically, from all eight, in every service tier.** The strongest form of the
+evidence is not a missing row but rows that exist and stop above it: PCBWay publishes **13 mil**
+at 4 oz; Multi-CB's 0.200 number belongs to the **105 µm (3 oz)** row; LeitOn needs **twice** the
+ESC's space.
+
+**Mechanism:** published 4 oz space / 140 µm copper = **1.8× (Multi-CB) to 2.9× (LeitOn)**. Etch
+undercut scales with copper thickness, so the pattern floor tracks it almost linearly. The ESC wants
+**0.200/140 µm = 1.43×** — below every published 4 oz figure, and below Eurocircuits' 1 oz absolute
+of 0.125 mm.
+
+### The ESC is now a clean binary, and both branches are costed
+
+With the rules built both ways and DRC run on each:
+
+| rule set | violations | what it means |
+|---|---|---|
+| 4 oz @ **0.250 mm** | **523** | **265 of 2,777 unrouted pads sit in pad rows where a 0.250 mm track physically cannot be connected at 0.250 mm clearance** → not a routing job |
+| 4 oz @ **0.200 mm** | **102** (−421) | escapes fit with **0.05 mm to spare**; but this pattern class **no surveyed fab will make** |
+| 4 oz @ 0.200 mm + 0.150 mm ring | **16**, all dangling vias | the entire remaining delta *is* the route |
+
+Footprint-bound vs routing-fixable at the 0.250 set: **383 footprint-bound · 35 routing-fixable ·
+105 parameter/dangling.** The earlier "43 copper gaps = routing" split was **wrong**.
+
+So:
+
+- **Option A — drop the ESC to 2 oz.** The geometry is *already* 2 oz-compliant (0.200 at 70 µm =
+  2.9×, matching published 2 oz figures). **Zero work.** Cost: loses the current capacity 4 oz was
+  chosen for.
+- **Option B — keep 4 oz and change 3 packages**: U201 (QFN-80 P0.4), 6 × LQFP-48 P0.5, J202/J203
+  (USB-C). Real work, keeps the capacity.
+
+There is no third door. Both rule files exist in `evidence/fab-esc-rules-first/`, so whichever is
+chosen drops in without rework.
+
+### drone-arm: ONE board now carries both fixes
+
+`evidence/fab-da-consolidate/da_main_rev_b_composed.kicad_pcb`, sha256 `5DBAE238…6F73B6`.
+
+| | |
+|---|---|
+| DRC, board's own rules | **0 violations, 0 unconnected** |
+| DRC, no-HDI gate | **23 violations**, all `microvia_drill_out_of_range`, **0 unconnected** |
+| minimum drill | **0.100 mm — still HDI.** 23 microvias + 1 blind remain |
+| via census | 338 vias: 0.100×23, 0.300×34, 0.350×281; non-through 24 |
+| **void under the RF corridor** | **1.2959 %** (was **9.834 %**) — a **7.6× reduction** |
+| remains | **24 non-through vias in 20 groups, 13 nets — all 20 need a fan-out re-escape**; 9 of the 20 (not 13) have the via centre inside another net's copper |
+| new conflict | none. RF void fraction is **bit-identical** to the void-fixed board, so composition costs nothing on the metric it exists for |
+
+### Code-SDR: orderable, and now assemblable-ready
+
+| gap | before | after |
+|---|---|---|
+| fiducials | **0** | **3 global + 6 local**, DRC **222 → 222** (unchanged) |
+| test points | **0**, all 1,085 vias mask-tented | **18 probe sites** with coordinates |
+| BOM | none existed | **373 rows, 129 lines, 0 missing values, 373 missing MPN** |
+| impedance | `true` with no target | **targets stated; one of three was false, so the claim was revised** |
+| IPC-D-356 | none | **1,289 pin + 1,213 via records** |
+
+**MPNs are the remaining assembly gap** — 373 of 373 rows lack a manufacturer part number, which
+is a sourcing task, not an engineering one.
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
