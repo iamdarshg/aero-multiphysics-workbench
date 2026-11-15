@@ -58,6 +58,59 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
+### drone-mech body — corrected mass (supersedes every earlier figure)
+
+Three mass models have been tried. All were wrong. The fourth is the one with a real input basis.
+
+| model | figure | why it was wrong |
+|---|---|---|
+| wave 1, ρ=1550 on all | 1,150.6 g | assumed the whole 742,305.5 mm³ was carbon laminate |
+| wave 1, ρ=150 on all | 111.3 g | assumed the whole thing was light fill |
+| wave 2, split | 275.9 g | right structure, wrong both inputs — 34.9 % below the empty-interior floor |
+| **wave 3, reconciled** | **472.27 g** | band **431.94–521.64 g** |
+
+**Why it went up, not down.** Two inputs were wrong and both under-counted:
+
+1. **The fill is not 150 kg/m³.** The repo's own saved OrcaSlicer profile sets **15 % sparse infill**
+   (`effective-process.json:109`) with **1.26 g/cm³** PLA (`effective-filament.json:72-74`). But the
+   slicer also prints a **0.87 mm solid perimeter skin** on every boundary, so a real 15 % slice
+   deposits **~27 %** of the solid model's volume — verified against the repo's **two real slices**
+   at 27.10 % and 23.20 % against a model of 26.80 % and 23.58 % (**±1.63 %**). Effective fill
+   density is **353.3 kg/m³**. Fill weighs **220.76 g, not 93.72 g**.
+2. **The wall is not carbon laminate.** The CAD wall is **printed PLA**; the repo books a PLA-core
+   mass *and* a separate laminate mass over the same mid-surface
+   (`phase12_fixed_powertrain_design.json:197, :203-210`). Charged correctly the wall is
+   **251.52 g, not 182.17 g**, and the missing wrap is **105.78 g** that neither previous model
+   counted.
+
+**The 275.89 g figure is not merely low, it is physically unreachable.** Even a body with a
+completely **empty interior** — printed skins only — weighs **372.31 g**. The previous figure sat
+**96.42 g (34.9 %) below that floor.**
+
+**Genuine upper bound: 1,088.09 g** — solid material at the slicer's own density plus the repo's
+maximum layup. The withdrawn 1,150.57 g exceeded it by 5.7 %, so it is refuted on a second,
+independent basis.
+
+**Mass is a function of infill, not a band:**
+
+| infill | 0 % | 5 % | 10 % | 15 % | 25 % | 40 % | 100 % |
+|---|---|---|---|---|---|---|---|
+| mass | 372.3 g | 405.6 g | 439.0 g | **472.3 g** | 538.9 g | 638.9 g | 1,038.7 g |
+
+All 52 citations machine-checked (52/52) before any number is believed.
+
+### Deliverable
+
+`evidence/pdf-rev3/drone_mech_body_evidence_rev3.pdf` — **14 pages**, sha256
+`21C0FC22E2B57ED65ECC1E09C46E03B9CBA0B5A1BF577DF94B1FB5C467CBB70C`, **208 graded facts:
+81 MEASURED · 86 ANALYTICAL · 41 ASSUMED · 0 SOLVER**. Supersedes rev1 (8 pp) and rev2 (11 pp).
+
+Three revisions because the first two were wrong, and each wrong version was caught by an adversarial
+verifier rather than by the author. The withdrawals table is cumulative — nothing withdrawn has been
+quietly dropped.
+
+---
+
 ## HARD CONSTRAINTS — owner, 2026-11-15 (these override the "fab burden is free" steer)
 
 1. **NO HDI ON ANY BOARD. No 0.1 mm microvias, no laser-drilled vias, no blind or buried via
