@@ -509,6 +509,73 @@ placement is redone.
 
 ---
 
+### Span labelling corrected, and a tooling trap that fakes a pass
+
+**The four In1→In2 vias are BURIED, not blind.** A microvia is a *drill class*, not a span class —
+lumping it with "blind" conflated two different things. The true span census of the best drone-arm
+artefact is:
+
+| reading | through | blind | buried | total non-through |
+|---|---|---|---|---|
+| **by span** | 321 | **11** | **4** | **15** |
+| by declared type | — | 1 | — | 14 micro + 1 blind |
+| by depth | — | 12 | 3 | 15 |
+
+All three readings agree the answer is **15**, and the **diameter gate sees only 14** because it
+cannot see the 0.300 mm In2→B via at all. **Buried is worse than blind for fabrication** — sequential
+lamination plus an internal-only connection — so the label matters.
+
+`evidence/fab-da-fanout7/` **does not exist**; the three named directories (`fanout3/work`,
+`fanout2/fanout7`) are **byte-identical** to sha **`372C1D52…FA9077`**. That hash is the citation.
+
+### A validator that quietly passes on nothing
+
+**A `.kicad_dru` file without `(version 1)` is silently ignored by KiCad.** The verifier's first no-HDI
+gate "passed" at baseline because the rule file was never loaded — a clean result produced by a rule
+set that did not exist. Any custom-rule measurement in this programme must assert that the rule file
+was actually read before trusting its output.
+
+### ESC unconnected is worse after compaction, and was under-reported
+
+`kicad-cli` returns **exactly 499 on both** ESC boards — that is its structural cap, so the number is
+identical on two different boards and means nothing on either. `pcbnew` gives:
+
+| board | unconnected |
+|---|---|
+| original | **1,542** |
+| **compacted** | **1,620** (+78, never reported) |
+
+So compaction made connectivity **worse by 78 connections**, and `esc-placement` did not report it.
+drone-arm's **0** and Code-SDR's **112** both sit below the cap and are sound.
+
+### The power-path clearance was computed on a false premise
+
+`esc-placement` cleared the power path using **four-layer-parallel** copper at 3.3–5.1 mm. **The inner
+layers are 1.5 oz, not 4 oz** — 37.28 mm each would be required. The real requirement reproduces
+exactly: **13.981 mm total, 6.991 mm per outer face**, against **1.50–3.50 mm measured.** So the
+clearance claim was invalid, not merely optimistic.
+
+### drone-mech: ZERO GENUINE INTERFERENCE ACHIEVED
+
+After the executed station change: **2 pairs / 4.010114 mm³, of which 0 are genuine.**
+
+The verifier reproduced everything to **1e-9**, including the artefact: a **Ø2 × 38 mm rod**, **6.000 mm
+from its own servo**, **0.000000 mm³ of actual contact**, **0.831215 mm³** of horn clip. So the
+residual is a **representative-geometry artefact**, not a physical clash.
+
+| | pairs | volume |
+|---|---|---|
+| before any fix | 34 | 334,227.9062 mm³ |
+| after motor + cove | 8 | 1,255.303466 mm³ (6 genuine + 2 artefact) |
+| **after station change** | **2** | **4.010114 mm³ — 0 genuine** |
+
+### A counting slip in the package report
+
+`fab-da-package7/REPORT.md:166` lists `0.300 × 33` and sums to **359**, not 360 — **the omitted hole
+is the blind one.** The census total 360 drills + 4 G85 slots = 364 hits is otherwise sound.
+
+---
+
 ### The span census, done properly — and a better artefact exists
 
 The verifier built its own classifier (`GetViaType` + top/bottom layer; drill never used to classify)
@@ -519,7 +586,7 @@ and ran it on every artefact:
 | repo original | **36** | 26 micro + 10 blind | 33 |
 | composed | **24** | 18 micro + 6 blind | 23 |
 | fanout5 | **18** | 13 micro + 5 blind | 17 |
-| **fanout7 — the best** | **15** | **11 micro + 4 blind** | 14 |
+| **the best (hash `372C1D52…FA9077`)** | **15** | **11 BLIND + 4 BURIED** ← BOARD CORRECTION | 14 |
 
 **The old diameter gate under-reported by 3, 1, 1 and 1 respectively.** It cannot see a blind via of
 legal diameter, which is the whole reason the classification had to move to span.
