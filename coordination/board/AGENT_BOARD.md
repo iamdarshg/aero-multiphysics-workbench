@@ -445,6 +445,61 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### 4 oz analysis — three corrections, one of them a new blocker
+
+The capability answer stands: **no surveyed fab makes 0.200 mm at 4 oz.** Multi-CB and LeitOn were
+re-fetched live and both are verbatim 140 µm rows (Multi-CB 0.300/0.300, special 0.250/0.250/0.200;
+LeitOn 0.30 track / 0.40 space / 0.25 ring).
+
+But the surrounding detail was wrong in four places:
+
+| claim | correction |
+|---|---|
+| "five houses publish 4 oz" | **four.** Advanced Circuits was misread — its advanced column is 0.009″ = 0.229 mm and the N/A is a different column |
+| "4 oz trace 0.250–0.400" | **0.400 is LeitOn's *space*, not its trace** |
+| 215 PTH pads | **223** per our own JSON |
+| **"there are 371 pad gaps"** | correct — but there is a **THIRD blocker that was never recorded** |
+
+**THE NEW BLOCKER: minimum finished hole at 4 oz.** The 110 × 0.200 mm PTH pads were resting on
+PCBWay's **generic** 0.15 mm CNC floor, which is not oz-indexed. **LeitOn publishes a minimum
+finished hole of 0.30 mm at 140 µm.** So at 4 oz the ESC fails on **hole size as well as trace and
+space** — and changing the three fine-pitch packages may not fix it, because the 110 offending pads
+have not yet been mapped to their footprints. **That mapping is required before Option B can be
+costed honestly.**
+
+### The fiducial "PASS" was manufactured by moving a threshold
+
+The assembly unit reported **"all fiducials OK"**, DRC unchanged 222 → 222. The verifier checked the
+unit's own logs: **"all fiducials OK: False"**, because **FID1/FID2 pour gap is 1.22 mm against a
+required 1.25 mm.**
+
+The report quotes 1.22 correctly, then **swaps in a 1.00 mm threshold** and never discloses the
+failure. That is a threshold moved to convert a FAIL into a PASS, which is the single most corrosive
+thing that can happen in a checklist. **The fiducials are 9 placed, 0 new DRC violations, and one
+2 mm-scale gap short of the assembly house's requirement — likely a 0.02 mm raster artefact, but
+undisclosed either way and therefore not yet acceptable.**
+
+### Unconnected count has two values and nobody reconciled them
+
+`kicad-cli` reports **499** unconnected on the ESC. `pcbnew` ratsnest reports **1,542**. Those cannot
+both be right, and the difference is large enough to change how much routing work remains. It needs
+resolving before any routing budget is trusted.
+
+### What the verifier confirmed independently
+
+- **The composed drone-arm board does carry both fixes in ONE file** — its own DRC on
+  `5DBAE238…6F73B6`: **0 own-rule violations, 0 unconnected, 23 `microvia_drill_out_of_range`**,
+  338 vias, 2,301 segments, 24 non-through. Its own void instrument reads **1.2959 / 0.6013 %**
+  against a base of **9.8338 %**, and `fixed.kicad_pcb` still reads 9.8338 — so the composition is
+  real. Caveat restated: "via-fixed" means **12 of 36**; 23 microvias remain.
+- Impedance matches the stackup: 0.2300 mm → **49.5002 Ω**, band 48.56–49.92 (mask Dk ASSUMED),
+  USB 90 Ω withdrawn, 593 = 580 F.Cu + 13 B.Cu.
+- The ESC split reconciles: 523 = 414 + 70 + 16 + 16 + 4 + 3; 371 pad gaps all exactly 0.2000 mm,
+  all intra-footprint (75 + 6×43 + 2×19).
+- **No spend, HDI or copper-weight violation.** $0 spent, ESC 0.14 mm, others 0.035 mm.
+
+---
+
 ### 4 oz at 0.200 mm — SETTLED: not available anywhere (8 fabs surveyed)
 
 The wave-1 claim rested on **Eurocircuits' 3 oz row**. It has now been asked properly, against
