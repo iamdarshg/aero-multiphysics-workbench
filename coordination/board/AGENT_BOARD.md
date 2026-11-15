@@ -58,6 +58,45 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
+### drone-mech body — FINAL state (rev5)
+
+**Deliverable:** `evidence/pdf-rev5/drone_mech_body_evidence_rev5.pdf` — **18 pages**, 101,890 chars,
+**0 formatting escapes**, `assert_clean` G1–G6 pass, 300-row provenance table.
+
+| quantity | value | tier |
+|---|---|---|
+| body of record | 42_6 shell, 4 solids, 742,306.360 mm³ | MEASURED |
+| **mass** | **472.273 g**, band 431.943–521.637 g | ANALYTICAL on MEASURED volume |
+| wall | 145.739 g printed PLA core + 105.779 g CF/glass wrap = 251.518 g | ANALYTICAL |
+| fill | 624,770.5 mm³ at effective 353.3 kg/m³ = 220.755 g | ANALYTICAL |
+| empty-interior floor | 372.31 g | ANALYTICAL |
+| ceiling | 1,088.1 g | ANALYTICAL |
+| **optimisation package** | **−95.9 g (−17.44%)**, band −125.1…−66.7 g | ANALYTICAL |
+| drag total | 87.96 cm² (body 67.04, nose row 30.03) | ANALYTICAL on MEASURED areas |
+| facts graded | 87 MEASURED · 112 ANALYTICAL · 41 ASSUMED · **0 SOLVER** | — |
+
+The optimisation withdrawal is **RESOLVED**: rev4 withdrew −47.4 g as unquotable until re-costed on
+the reconciled wall and fill; rev5 publishes **−95.9 g** on the corrected basis. It is larger than the
+withdrawn figure because the wall is now priced as PLA core plus wrap rather than as a single
+laminate, and the fill carries its real 28.04 % deposition factor.
+
+**The verifier over-fired on this document twice, and both times the text was right.**
+
+| flagged as false | reality |
+|---|---|
+| "material section ≈ 5 cm² at z=−300, 21× low" | **correct.** 473.529 mm perimeter × 1.2 mm = **5.68 cm²**, the *material band of the shell*. The verifier compared it to **120.13 cm²**, the *closed envelope* section — a different quantity. The document already says "this is stated so nobody fixes it later", which is exactly what the review tried to do. |
+| "2 loops > 1.2 mm is false, 0.87 < 1.2" | **correct.** 0.42 + 0.45 = 0.87 mm **per face**, **1.74 mm across both faces**, and 1.74 > 1.2 is why the wall region prints solid. The verifier compared the per-face figure to the total. |
+
+I applied **one clarity edit, not a correction**: the cell now reads "0.87 mm per face, 1.74 mm across
+both faces > 1.2 mm" so the ambiguity that produced two wrong reviews cannot recur. **Blindly
+applying both requested "fixes" would have corrupted a correct document.**
+
+Lesson recorded: a verifier verdict is evidence, not authority. When a review says a published number
+is wrong, verify the quantity before editing — two agents refused to make these edits, and they were
+right to.
+
+---
+
 ### drone-mech body — corrected mass (supersedes every earlier figure)
 
 Three mass models have been tried. All were wrong. The fourth is the one with a real input basis.
