@@ -445,6 +445,65 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### OUR OWN GATE WAS WRONG — HDI must be counted by SPAN, not diameter
+
+A verifier parsed the drill package itself and found the no-HDI gate has been under-reporting since
+it was written.
+
+**The gate flags a via when its drill is below 0.2 mm.** That cannot see a **blind or buried via of
+legal diameter** — and a 0.300 mm blind via still needs **sequential lamination**, which is HDI
+process regardless of how big the hole is.
+
+| quantity | gate said | **true** |
+|---|---|---|
+| non-through holes in the drone-arm drill package | 23 | **24** (23 × 0.100 **+ 1 × 0.300**) |
+| non-through vias in `fanout5` | 17 | **18** (17 microvia **+ 1 blind**) |
+
+**Correct classification is by SPAN** — through / blind / buried / micro — not by drill size. Every
+HDI count in this programme before this correction is therefore a floor, not a measurement. The
+wave-4 unit ships a reusable span-based classifier so it cannot regress.
+
+### drone-mech is worse than the previous line said
+
+The baseline arithmetic is exact and verified to 1e-6 by six independent booleans
+(200,132.018404 + 124,344.412738 + 6,242.972920 + 314.159266 = 331,033.5633). But the sequence does
+not end at zero:
+
+| step | pairs | volume |
+|---|---|---|
+| baseline | 22 | 331,033.5633 mm³ |
+| delete 4, keep R3 | 2 | 1,248.5946 mm³ |
+| + resize envelope to Ø36 × 70 | 0 motor pairs | — |
+| **+ 2 ELEVON pairs that survive** | **2** | **593.069028 mm³** |
+| **final airframe total** | **26** | **332,674.0818 mm³** |
+
+So resizing clears the motor envelope but **two elevon pairs remain**, and the airframe total is
+**26 pairs / 332,674.0818 mm³**. My earlier "delete 4 → 0" was wrong twice over: the station choice
+matters, and the elevons were never in that count.
+
+A residual **628.32 mm³** of the same pilot-stub artefact was also found sitting inside the set that
+had been classified as *genuine* clash.
+
+### Envelope sourcing, stated at the right tier
+
+Ø36 × 70 is **SOURCED AT LISTING/SPEC TIER ONLY** (`spec:302`). The repo records **no motor
+dimension** at all. It is not drawing-tier and is not claimed as such. The board's **71,251.29 mm³**
+is **can only**; with the shaft it is **71,585.116 mm³**.
+
+### drone-arm has no ESC command path, and it is not just six nets
+
+No J60–J66, and **U10 pads 43–48 sit on auto-generated nets — there are 64 such auto nets on the
+board.** So the "six missing PWM nets" description understates it: the pads are not merely
+disconnected, they are attached to nets that KiCad generated rather than nets the design defined.
+
+### A board line was violated by the wave it describes
+
+The fan-out executed **5 via-only moves** against a board line that says the remaining groups are
+"not a via edit". That is a real objection and it is recorded rather than smoothed: those 5 *were*
+via-only, which is precisely why 15 groups remain — they are the ones that are not.
+
+---
+
 ### Wave 3 results — real progress, and two of my own claims qualified
 
 #### drone-arm fan-out: 5 of 20 groups executed, 17 HDI violations remain (was 23)
@@ -663,7 +722,7 @@ is the thing this programme exists to avoid.
 
 | # | board | blocker | fix class | measured size |
 |---|---|---|---|---|
-| 1 | DA | **36 non-through vias, 33 at 0.100 mm** — no non-HDI 4-layer house can drill or plate them | **MOVE** | 12 fixed already. **24 remain in 20 groups, and 13 of those have the via centre inside another net's copper (dist ≤ 0)** — no via of any size fits. Needs a fan-out re-escape. |
+| 1 | DA | **36 non-through vias, 33 at 0.100 mm** — no non-HDI 4-layer house can drill or plate them | **MOVE** | 12 fixed already. **24 remain in 20 groups, and 9 of those have the via centre inside another net's copper (dist ≤ 0)**  ← BOARD CORRECTION: an earlier version of this line said 13; the measured figure is **9**, — no via of any size fits. Needs a fan-out re-escape. |
 | 2 | DA | **no ESC command path in copper** — J60–J65 absent, U10 pads 43–48 unconnected | **MOVE** | **0 of 7 candidate pads has a legal escape**: U10 is 0.4 mm pitch with 0.200 mm pad gaps and a 0.20 mm track needs 0.45 mm. Six connectors, six nets, one fan-out. |
 | 3 | DA | **only the rev_a package exists**, title block has no revision | **PARAM — READY** | Install the verified rev_b package (21 files, 369 holes, 140.000 × 100.000, no frame) + `git apply title_block_rev_B.patch`. No design work. |
 | 4 | ESC | **499 unconnected items; 540 of 556 nets carry no copper** | **MOVE** | 154 segments totalling 628.27 mm; 16 nets routed = **2.88 %**; 1,978 of 1,990 vias sit on nets with no track. Finish the route. |
