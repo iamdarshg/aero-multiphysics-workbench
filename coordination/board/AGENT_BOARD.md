@@ -445,6 +445,70 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### ESC compaction — VERDICT: UNSAFE. The area came off the power path.
+
+The compaction achieved **−121.61 cm² (−24.73 %)** and kept **0 of 687 components on the back**. It
+also **broke the board's ability to carry its own current.** This is the failure mode that was flagged
+before the work started, and it happened.
+
+**Power path, measured with the same maximin method that reproduced the original's numbers:**
+
+| net | original | compacted | required at 60 A on two faces | verdict |
+|---|---|---|---|---|
+| `/M1_PHASE_A` | 7.51 mm | **1.50 mm** | **6.991 mm** | **4.7× short** |
+| BATP | 1.763 mm | **0.70 mm** | — | short |
+| battery feed | 17.14 mm | 40.85 mm | — | 0.54 → **1.29 W/channel** |
+
+**Via ampacity was never counted by anyone:** at ~3.0 A per barrel, a phase transition needs **21 vias
+per transition**. That alone may make the compaction unrecoverable at this current.
+
+**Routability is worse, not better.** At 0.250 mm rules: **934 violations against 523** — **2.38× per
+cm²**, including **51 shorts**. The 371 pad-to-pad gaps are invariant (they are footprint-bound), and
+unconnected sits at 499/1620 depending on tool. So the compaction made a board that was already hard
+to route harder.
+
+### The area floor was 370, not 316
+
+The 316 cm² figure reproduced arithmetically but rested on **two assumptions**:
+
+1. It put **all three 60 A phases on ONE 0.14 mm face.** Two faces give 6.991 mm each — 22.173 mm
+   across — and the floor becomes **254.91 cm²**, not 316.
+2. Its terminal area of 400 mm² was **ASSUMED**; the board's own lugs are **1267 mm² per cell**. Put
+   the real lugs back and the floor is **370.38 cm²**.
+
+The delivered compaction measured **370.12 cm²** — **0.07 % apart by two independent methods.** So:
+
+| figure | what it is |
+|---|---|
+| **370 cm²** | the honest floor for **today's BOM** |
+| **316 cm²** | needs the **lug change** |
+| **255 cm²** | the true ceiling, if current is carried on two faces |
+
+So the area target was right and the *placement* was wrong. There is room at 370 cm²; there is no
+room with a 1.50 mm phase trace.
+
+### Two arithmetic slips, and a rule under the standard
+
+- The published height formula with an "18.0" control strip yields **243.28**, but the board uses
+  **16.47**.
+- `05_floor.log` §6 closes at **412.96** against a board of 492.42 — the two halves do not reconcile.
+- **The creepage rule of 0.5 mm is below IPC-2221B B2's 0.60 mm.** The layout achieves exactly
+  **0.5999 mm**, which passes the standard by 0.0001 mm while the stated rule would have permitted a
+  fail. Right answer, wrong rule.
+
+### What this means for the compaction request
+
+**Compact is achievable at 370 cm². The specific placement delivered is not viable.** It needs
+re-doing with the phase copper widths as a hard constraint rather than a derived output — that is,
+place the power path first and fit the small parts around it, instead of placing parts and hoping the
+copper fits.
+
+60 A is **ASSUMED** in both the placement and routability units. If the real per-phase current is
+lower, the constraint loosens proportionally; that number should be confirmed from the FETs before the
+placement is redone.
+
+---
+
 ### The span census, done properly — and a better artefact exists
 
 The verifier built its own classifier (`GetViaType` + top/bottom layer; drill never used to classify)
@@ -1085,3 +1149,35 @@ This program has overturned four of its own claims. They stay visible:
 ---
 
 *Maintained by dsh-lead. Last updated when the hotfix and wave-2 runs report.*
+
+---
+
+### esc-routability — is the compacted placement routable at 4 oz?
+
+**`evidence/esc-routability/REPORT.md`.** Input `evidence/esc-placement/` **did not exist**, so every
+"compacted vs original" delta is unmeasurable: the same file sits on both sides. Measured the CURRENT
+placement and shipped the instruments to score the compacted one.
+
+| question | answer |
+|---|---|
+| DRC 4 oz / 0.250 (9 rules) | **523** (414 clearance, 70 annular, 16 via_dia, 16 dangling, 4 track, 3 neck), 499 unconnected — reproduces |
+| DRC 4 oz / 0.200 | **102** — reproduces |
+| **normalised metric for a compacted placement** | **1.0621 vio/cm2 · 0.8407 clearance/cm2 · 18.83 per 100 unrouted pads** |
+| pads with no legal 0.25 escape | **432 of 2,777** (15.6 %) at a 1.0 mm breakout, 389 at 0.6 mm |
+| of those, irreducible (pad pitch) | **202** — U201 30, 6 x LQFP 27 each, J202 5, J203 5. **Invariant under placement.** |
+| the other 230 | blocked by **movable copper**: 204 by six `M*_DRV_SCL` tracks sitting 0.337 mm off the WQFN pad rows |
+| the board's "265" | **wrong as both methods.** Arithmetic across all footprints = 330; exact geometry = 432. 265 over-counts the fine-pitch cores (202) and under-counts the total. |
+| power path required (60 A, one 0.14 mm layer) | 13.981 mm @ dT20 (1.957 mm2), 10.931 @ dT30, 8.018 @ dT50 |
+| power path available | phase **7.50–7.51 mm**, BATP **1.763 mm**, BATN **0.394 mm** |
+| one phase block | tile **88.367 x 82.130 = 72.576 cm2**; **40 of 81 nets routable** at 0.25/0.25, 41 not (all at <= 0.4 mm gaps) |
+| 6 blocks = | **435.46 cm2** vs the board's 492.418 -> **56.96 cm2 (11.6 %) is inter-channel dead space** |
+
+**Verdict: NOT routable to completion at 4 oz, and compaction is not the cause.** 383 of the 523
+violations and all 202 irreducible pads are footprint-bound — no placement touches them. The power
+shortfall is in the package (MOSFET pad copper 1.792 mm2 against 1.957 mm2 needed at dT20), not in the
+corridors. Compaction must preserve **>= 7.5 mm** phase and **>= 1.76 mm** battery-tap corridors.
+
+**No drawn route was delivered** — freerouting 2.5.0 crashes in `BoardSnapshotManager.getHash` after
+self-reporting 346 violations on the 331 fixed vias. The per-net certificate replaces it.
+Two method traps recorded: `GetBoundingBox()` includes text (**141 cm2** on this board), and a +-2 mm
+maximin search window fabricates a 0.0 mm corridor where +-6 mm measures 7.51 mm.
