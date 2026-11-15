@@ -58,6 +58,63 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
+### CFD force extraction — the real defect is an OPEN-SURFACE pressure bias
+
+The mesh settles the question completely. **There are only five patches:**
+
+| patch | faces | type |
+|---|---|---|
+| `fsi` | **21,680** | wall — the wetted wing skin |
+| `rootWall` | 1,582 | symmetryPlane — **this is the root cut plane** |
+| `farfield` | 42,490 | patch |
+| `inlet` / `outlet` | 4,760 each | patch |
+
+Inside `fsi`: upper 10,077 · lower 10,091 · tip cap 1,312 · TE 200.
+
+`fsi` is **not** a plane: planarity measure **0.060** (`rootWall` = 1.000, x = 0.0803 constant),
+extent **0.180 × 0.030 × 0.389 m**, carries `no-slip` plus `nutk`/`kqR`/`omega` wall functions, and
+`Aref`/`lRef` (0.062249 / 0.34646) reproduce its planform to 0.3 %. **The root cut plane is
+`rootWall`, and it was already excluded.** So the instruction to "re-target the force integration onto
+the wetted walls" was **impossible — there is no other wetted patch to target.**
+
+**The actual defect, which is larger and more interesting: absolute pressure is integrated over an
+OPEN surface.** `fsi`'s only hole is the root cut, so the unresolved reference pressure does not
+cancel. The bias is analytic and exact:
+
+```
+bias = p_ref · Σ(Sf) / (q · Aref) = +0.399659     in Cs
+measured force shift 557.990 N  vs  557.982 N ANALYTICAL   (residual 0.009 N)
+```
+
+**Bit-identical restart comparison (75 matched rows, t/c 0.258–0.490, max relative difference
+0.000e+00):**
+
+| | `fsi` only | `fsi` + closed with `rootWall` |
+|---|---|---|
+| Cd | 1.846835e-2 | 1.846835e-2 |
+| Cl | −1.325913e-2 | −1.325913e-2 |
+| **Cs** | **−0.393046** | **+0.006613** |
+
+`Cd` and `Cl` are **bit-identical** between the two configurations because the plane's Σa_y and Σa_z
+are 1e-16 — machine zero. **Only the spanwise component carries the bias.** Closing the surface gives
+**Cs = −0.00185**, which is the physically expected near-zero for a zero-sideslip sector.
+
+**Direction convention, ruled out by algebraic reproduction:** drag **+z** (`U_inf = (0,0,222.1322)`),
+lift **+y**, span **+x**, pitch **+x**. `F_z/(qA) = Cd` reproduces to 10 digits, and a quarter-chord
+`CofR` shifts `CmPitch` by −1.16668e-3 against an analytical moment arm of −1.1667e-3. **No axis
+swap.**
+
+### What is quotable
+
+| quantity | status |
+|---|---|
+| any coefficient | **NO.** Cl drifts −12 % per window at 3.8 % scatter; Cd −4.6 % at t/c = 0.49 |
+| the **bias** dCs = **0.399659** | **YES** — geometric, exact, reproducible |
+
+Compute: t/c = 1 needs ~1.7 h; **t/c = 5 needs ~15 h**; a 4 h cap reaches only t/c ≈ 1.7.
+
+---
+
 ### CFD force extraction — CORRECTION: the `fsi` patch is 93.9 % wing, not a cut plane
 
 **I asserted that `Cd` and `Cl` from the drone-mech CFD run were "not aerodynamic coefficients at
