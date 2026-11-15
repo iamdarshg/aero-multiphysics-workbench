@@ -155,58 +155,61 @@ the measured 93.9 / 6.1 split, so this cannot be re-derived wrongly.
 
 ---
 
-### drone-mech body — FINAL state (rev5)
+### drone-mech body — FINAL state (rev6)
 
-**Deliverable:** `evidence/pdf-rev5/drone_mech_body_evidence_rev5.pdf` — **19 pages**, 372,411 bytes,
-sha256 `EBD80EA4F3D3D45B24BFF5FC…`, `assert_clean` G1–G6 pass, 300-row provenance table.
-rev6 (`evidence/pdf-rev6/`) is in progress to correct the recost inputs below.
+**Deliverable:** `evidence/pdf-rev6/drone_mech_body_evidence_rev6.pdf` — **20 pages**, 379,657 bytes,
+sha256 `9E6AF0A736D0DABACB76EC61EB5ED967EBA9C2ECFBDC919343174CCFD9D369C7`.
+Gates **G1–G10 pass**; unit audit 607 args / 500 words / **0 mismatches**; declaration audit **0 gaps**.
+Supersedes rev1 (8 pp) → rev2 (11) → rev3 (14) → rev4 (16) → rev5 (19).
 
 | quantity | value | tier |
 |---|---|---|
 | body of record | 42_6 shell, 4 solids, 742,306.360 mm³ | MEASURED |
 | **mass** | **472.273 g**, band 431.943–521.637 g | ANALYTICAL on MEASURED volume |
-| wall | 145.739 g printed PLA core + 105.779 g CF/glass wrap = 251.518 g | ANALYTICAL |
+| wall | 145.739 g PLA core + 105.779 g CF/glass wrap = 251.518 g | ANALYTICAL |
 | fill | 624,770.5 mm³ at effective 353.3 kg/m³ = 220.755 g | ANALYTICAL |
 | empty-interior floor | 372.31 g | ANALYTICAL |
 | ceiling | 1,088.1 g | ANALYTICAL |
-| **optimisation package** | **−86.9 g** verified; document published −87.8 g; rev6 corrects it | ANALYTICAL |
-| drag total | 87.96 cm² (body 67.04, nose row 30.03) | ANALYTICAL on MEASURED areas |
+| **optimisation package** | **−86.981 g**, band **−112.02 … −60.33 g** | ANALYTICAL |
+| drag total | 87.96 cm² (body 67.04, nose 30.03) | ANALYTICAL on MEASURED areas |
 | facts graded | 87 MEASURED · 112 ANALYTICAL · 41 ASSUMED · **0 SOLVER** | — |
 
-The optimisation withdrawal is **RESOLVED**: rev4 withdrew −47.4 g as unquotable until re-costed on
-the reconciled wall and fill; rev5 publishes a re-costed package. It is larger than the withdrawn
-figure because the wall is now priced as PLA core plus wrap rather than as a single laminate, and
-the fill carries its real 28.04 % deposition factor.
+#### The optimisation rows, finally correct
 
-**But the component rows carry two wrong inputs, found after publication.**
-
-| row | published | verified | what went wrong |
+| row | published | corrected | what was wrong |
 |---|---|---|---|
-| C1 cones | −61.0 g | **−64.2 g** | material cut face at z=−298.8 is **11,627.3 mm²** (+545.4 annulus), not the printed 6,359.0, so S_outer is 25,540–26,085 not 31,353.2 |
-| C2 hatch | −27.50 g | **−27.50 g** ✓ | correct, and the sign flipped from the earlier +41.7 g cost because the block is printed PLA |
-| C3 thinning | −12.81 g | **−9.35 g** | the 26.37 % used is the **whole-body** triangle share (0.26357 of 285,177 mm²); the wall-only share is **19.25 %** (33,692 of 175,033 mm²). A body-wide numerator was applied to the wall's 97,943 mm² |
-| C4 | −9.35 g | **−8.71 g** | same population mismatch |
-| **package** | −87.8 g | **−86.9 g** | the two errors nearly cancel, so the total survived but the rows did not |
+| C1 cones | −61.0 g | **−69.121 g** (nose −64.236, tail −4.885) | cut face at z=−298.8 is **11,627.3335 mm²** + 545.3851 annulus = 12,172.7186, not 6,359.0 — that figure is the **bay's enclosed section**, and the same file reports it as the cap of *both* the nose and the bay fill. S_outer = 25,539.500 mm². |
+| C2 hatch | −27.50 g | **−27.496 g** ✓ | correct, and its sign flipped from the earlier **+41.7 g cost** because the removed block is printed PLA |
+| C3 thinning | −12.81 g | **−9.291 g** | the 26.37 % used is the **whole-body** triangle share (0.26357 of 285,216 mm²); **wall-only is 19.13 %** (33,473.7 of 175,023.6 mm²). A body-wide numerator was applied to the wall's 97,943 mm². |
+| C4 | −9.35 g | **−8.569 g** | same population mismatch |
+| **package** | −87.8 g | **−86.981 g** | rows were wrong; the total was nearly right by cancellation |
 
-The row bands were **tighter than their own uncertainty** (−13.0…−12.8 for C3 excludes the measured
-−9.35), which is worse than having no band. And the basis fraction was never stated in the document,
-which is why nobody caught it across two revisions. rev6 fixes the inputs, states the basis
-explicitly, and widens the rows.
+**An independent arithmetic refutation of the old C1 input:** 415,035.7 mm³ over 61.2 mm averages
+**6,781.6 mm²** — larger than any 6,359 maximum. The wrong number could have been caught with a
+division, before any geometry was read.
 
-**The verifier over-fired on this document twice, and both times the text was right.**
+**Band widths restored.** The *package* band (−99.0…−58.5) always contained the truth, so it survived.
+The **row** bands did not: C3's 0.2 g band excluded −9.29 by 3.5 g. C3 is now −9.44…−8.30 and C4 is
+−8.71…−7.66, widened across density × band measure × mid-surface basis. A band narrower than its own
+doubt is worse than no band.
 
-| flagged as false | reality |
-|---|---|
-| "material section ≈ 5 cm² at z=−300, 21× low" | **correct.** 473.529 mm perimeter × 1.2 mm = **5.68 cm²**, the *material band of the shell*. The verifier compared it to **120.13 cm²**, the *closed envelope* section — a different quantity. The document already says "this is stated so nobody fixes it later", which is exactly what the review tried to do. |
-| "2 loops > 1.2 mm is false, 0.87 < 1.2" | **correct.** 0.42 + 0.45 = 0.87 mm **per face**, **1.74 mm across both faces**, and 1.74 > 1.2 is why the wall region prints solid. The verifier compared the per-face figure to the total. |
+**The 0.09 g disagreement with the verifier is located and printed.** They got −86.9, the rebuild gets
+−87.0. Cause: they left C1's **tail** half on the enclosed-section cap (337.7 mm² where the material
+face is 536.4 mm²), worth 0.30 g, offset by +0.06/+0.14 g from tessellated band fractions. Correcting
+one plane and not the other would put a single row on two rules, so **both planes were fixed and the
+0.09 g is stated in the document.**
 
-I applied **one clarity edit, not a correction**: the cell now reads "0.87 mm per face, 1.74 mm across
-both faces > 1.2 mm" so the ambiguity that produced two wrong reviews cannot recur. **Blindly
-applying both requested "fixes" would have corrupted a correct document.**
+#### Two process facts this document now states
 
-Lesson recorded: a verifier verdict is evidence, not authority. When a review says a published number
-is wrong, verify the quantity before editing — two agents refused to make these edits, and they were
-right to.
+1. **sha256 is NOT reproducible across rebuilds.** rev5's report claimed it was; it is not. reportlab
+   stamps a creation date and a document ID, so page *text* is stable while file *bytes* are not.
+   rev6's report states this accurately rather than repeating the claim.
+2. **The defect class no gate could see**, now named in the correction history: *a correct measurement
+   of the wrong population.* Three instances — the 150/1550 density pairing, the 26.37 % body-wide
+   fraction applied to the wall, and the 6,359.0 bay section used as a nose cap. Arithmetic checks
+   pass in all three, because the arithmetic is fine; the input is from the wrong population.
+
+The withdrawals table and correction history are **cumulative** — five waves listed, nothing removed.
 
 ---
 
