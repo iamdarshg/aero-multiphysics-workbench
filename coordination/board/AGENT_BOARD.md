@@ -445,6 +445,73 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### Wave 3 results — real progress, and two of my own claims qualified
+
+#### drone-arm fan-out: 5 of 20 groups executed, 17 HDI violations remain (was 23)
+
+Artefact `evidence/fab-da-fanout/da_main_rev_b_fanout5.kicad_pcb`, sha `E65F0B2E…A5843A`.
+
+| question | answer |
+|---|---|
+| groups / vias / nets | **20 / 24 / 13**, and the "9 of 20 with the via centre inside another net's copper" reproduces **exactly** |
+| can a 0.6/0.3 through via stand at the microvia's own XY? | **At 0 of 20.** Placing one there produces **188 DRC errors** (113 clearance, 52 shorting, 17 hole, 6 mask) |
+| what was EXECUTED | **5 of 20 groups** — F19 0.028 mm, F18 0.100, F07 0.072, F03 0.263, F20 0.260. A **via nudge, not a re-route**: 6 microvias became 5 standard through vias plus 2 escape segments |
+| DRC, own rules | 0 → **5**, all `via_diameter` (0.4 mm pad against the project's 0.6 mm floor). With that single rule relaxed to 0.40: **0** |
+| DRC, no-HDI gate | **23 → 17** — all `microvia_drill_out_of_range` |
+| unconnected | **0 → 0** |
+
+So the last blocker on drone-arm is **17 HDI vias**, down from 23. The remaining 15 groups each need
+copper moved before any via fits, because the microvia centre is inside foreign copper.
+
+#### drone-mech: my "delete 4 → 0 pairs" was incomplete
+
+Artefact work in `evidence/fab-dm-envelopes/`. The baseline reproduces **22 pairs / 331,033.5633 mm³**
+to the last digit.
+
+**The station choice is measured, not arbitrary.** Keeping one envelope per duct, the residue is:
+
+| keep | pairs left |
+|---|---|
+| R1 | **8** |
+| R2 | **6** |
+| **R3** | **2** |
+
+So: **delete R1 and R2, keep R3 on each duct.** But **deletion alone with the as-built Ø42 envelope
+does not reach zero — it reaches 2 pairs / 1,248.5946 mm³.** The fix needs **both** steps:
+**delete R1 and R2, and resize the kept envelope to Ø36 × 70 + Ø5 × 17 shaft.**
+
+The earlier board line said deletion alone gives 0.0000 mm³. That was measured against a different
+keep-set; with the measured best set it is **2 pairs / 1.25 cm³**, which is a 265× reduction but not
+zero. Corrected here.
+
+#### drone-arm FINAL package: built, 48/48 assertions, and honestly NOT sendable
+
+`evidence/fab-da-package-final/` — 28 files, zip sha `9857E06B…5C81`, 383,887 bytes.
+
+| | |
+|---|---|
+| assertions | **48 / 48 PASS**, on two independent from-scratch runs |
+| Edge_Cuts | **140.000 × 100.000 mm** (140.150 with stroke = pcbnew bbox) |
+| holes | **366** |
+| `.pos` | **161 rows / 165 footprints** |
+| gbrjob | **140.15 × 100.15 · 1.6 mm · ENIG · Rev B** |
+| **sendable** | **NO — the drill set is HDI.** 7 Excellon files, of which 5 are blind/buried carrying **24 non-through holes, 23 at 0.100 mm** |
+
+The package is correct, complete and revision-stamped. The board inside it is not yet
+manufacturable. **A fab reading those drill files would refuse or mis-build the board**, which is
+exactly why the sendability check exists separately from the assertion count.
+
+### Orderable state, unchanged and honestly
+
+| board | orderable | what blocks it |
+|---|---|---|
+| **Code-SDR V2** | **YES** (bare board) | MPNs for assembly; the fiducial gap disclosure |
+| drone-arm main rev_b | **NO** | **17 HDI vias** (down from 23); package built but drill set is HDI |
+| ESC rev_b | **NO** | A/B decision not answered; 2.88 % routed; 499-vs-1,542 unconnected unreconciled; 4 oz needs 0.200 mm holes at 0.30 mm minimum |
+| drone-mech | **not yet** | interference 2 pairs / 1,248.5946 mm³ after the measured best deletion; needs the envelope resize too |
+
+---
+
 ### 4 oz analysis — three corrections, one of them a new blocker
 
 The capability answer stands: **no surveyed fab makes 0.200 mm at 4 oz.** Multi-CB and LeitOn were
