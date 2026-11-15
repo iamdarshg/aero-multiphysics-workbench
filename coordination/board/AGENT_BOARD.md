@@ -155,6 +155,59 @@ the measured 93.9 / 6.1 split, so this cannot be re-derived wrongly.
 
 ---
 
+### Body structure — first SOLVER-tier result on the fuselage (rev7 pending)
+
+Prior structural work covered only the wing sector. This is the **first solver analysis of the
+fuselage body**, and it moves structure from ANALYTICAL to **SOLVER**.
+
+**Load case, and the two it beat.** Battery inertia: 2 × 0.28 kg at a 6 g limit × SF 2.0 =
+**12 g ultimate**, giving **65.9 N** into the 2 × 4 mm rail land at the open-aperture bay.
+
+| rejected case | why it lost |
+|---|---|
+| wing-join bending | 29.67 N·m yields only **2.53 MPa** on the bore-limited Zx 11,737 section — it tests duct layout, not wall thickness |
+| duct thrust | **no citable thrust exists** (the CFD forces sit on the `fsi` cut plane); duct is bonded over 4 × 110 mm giving 0.60 MPa |
+
+**Model:** CalculiX 2.21, S4 shell idealisation of the design intent, **5,786 elements / 5,953
+nodes / 35,718 dof, 8.9 s**, niced beside the live CFD run. Refined to 11,047 nodes in 17.4 s.
+
+| quantity | value |
+|---|---|
+| peak deflection | **0.139 mm** at E = 10 GPa; **band 0.069–0.277 mm** over 20/10/5 GPa |
+| sag at pack station | 0.027 mm |
+| peak stress | **2.85 MPa** (3.23 MPa at 1.43× refinement), at the clamped ring |
+| bay field stress | **1.78 MPa** at the rail land; 95th percentile 1.47 MPa |
+| scaling check | u·E = 1.38541 **identical at all three E** — exact 1/E; stress E-invariant to 6 digits |
+| independent check | thin-wall Zx 5,146 mm³ → 1.81 MPa vs solver 1.78 MPa (**1.7 %**) |
+
+**Verdict: the 1.2 mm wall is ADEQUATE, not marginal.** FoS **5.4** at the worst point, **9.7** on the
+field, against a PLA allowable of 17.3 MPa (wrap 250 MPa). At 0.8 mm: 5.15 / 3.25 MPa, FoS 3.4 / 5.3.
+
+**Design guidance:** local peaks (rail land, aperture corner) scale **1.81× for 0.67× thickness**, so
+thin the sides and thicken the aperture corner and rail pad. A 1.2 mm lid bought **−31 % deflection
+but only −4 % stress** — that is stiffness, not strength, and it is not worth the mass.
+
+**The gating caveat, which belongs beside the results and not in a footnote:** the 42_6 export is
+**4 disjoint solids over 77.165 mm**, so every stress number describes the **repaired design intent**.
+A **+97 g Boolean repair is a prerequisite** before any of it is true of a manufacturable part.
+`BRepCheck_Analyzer` confirms 42_6 itself is valid (4/4 solids, 0 free edges), and that exactly three
+of the six shells are invalid — and they are the three 4-solid repairs.
+
+**C1 WAS CONSERVATIVE, so the saving was understated.** The 42.7 g replacement cone wall runs at
+**0.44 MPa** (2.5 % of allowable) at 1.2 mm, 0.75 MPa at 0.8 mm, and 2.28 MPa even if the 1 kg payload
+rides in the hollowed nose. So **C1 is −69.1 to −83 g**, not −69.121 g — the 1.2→0.8 mm licence is
+worth up to ~14 g, and the remaining 42.7 g is surface that must exist. rev7 publishes the range.
+
+**A correction to earlier work, in the safe direction:** `body-mass-opt` used an open-top
+Zx of **2,134 mm³**, which is **2.4× below** the 5,146 mm³ the same section yields here (areas agree to
+1.2 %, closed rings to 3.5 %). So that report's stress conclusions were **conservative, not
+optimistic** — it erred safely, which is worth recording rather than quietly fixing.
+
+**What this analysis does NOT cover:** buckling, frequency, fatigue, bond, fastener and printed
+anisotropy are outside the model. The √E cross-check was unavailable because no modal step was run.
+
+---
+
 ### drone-mech body — FINAL state (rev6)
 
 **Deliverable:** `evidence/pdf-rev6/drone_mech_body_evidence_rev6.pdf` — **20 pages**, 379,657 bytes,
