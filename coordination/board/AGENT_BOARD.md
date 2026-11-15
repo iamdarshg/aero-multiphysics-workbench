@@ -445,6 +445,71 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### ESC: 60 A is the documented design current — and it needs a heat spreader
+
+**60 A per phase is not an assumption. It is written down:** `REV_B_ARCHITECTURE.md:18` — *"60 A
+continuous design current per motor channel"*, `:19` 360 A total. The IPTC014N10NM5 datasheet was
+verified verbatim: **1.4 mΩ at 10 V, Tj 175 °C, RthJA 40 / 62 °C/W.**
+
+**But the board alone cannot carry it.** The thermal solve gives:
+
+| RthJA | current at TA 45 °C |
+|---|---|
+| 22.4 °C/W | **52.0 A** |
+| 40 °C/W | 35.9 A |
+| 62 °C/W | 26.8 A |
+
+So **60 A is 1.67× the board-only junction limit.** A **heat spreader is mandatory** — that is a
+design requirement, not a defect, and it means the ESC's packaging answer must include the spreader.
+
+The other bounds are comfortable: the shunts dissipate **1.8 W of 10 W**, and the sense chain has
+headroom to **145 A** saturation. So the binding limit is thermal, not sensing.
+
+### Three areas are in circulation and none is yet demonstrable
+
+| area | status |
+|---|---|
+| **491.73 cm²** | original — routable, certainly oversized |
+| **382.71 cm²** | power-first: phases PASS at 7.400 / 7.674 mm against 6.991 — but **the battery rail is unproven** |
+| **370.12 cm²** | compacted: **UNSAFE**, power path 2.0–4.7× short |
+
+**382.71 cm² is the smallest area with the 18 phases proven.** It is not quotable as the answer,
+because the battery rail has never been honestly measured — see below.
+
+### The corridor instrument printed a PASS over its own −80 % FAIL
+
+Three defects in the one tool every battery-rail conclusion rested on:
+
+1. **Its own output returns `BATP 1.400 mm` (−80 %) and `BATN "no path"`** — while the summary table
+   calls **7.400 mm the "narrowest"** and marks the rail **PASS**. A PASS printed over its own FAIL.
+2. **It adds "B.Cu 9.5 mm" to BATP's cross-section for a net with ZERO copper on B.Cu.** Measured:
+   F.Cu 869.17 mm², In1 5,039.01 mm². The real deficit is **1.761 mm², not 0.431**, and the In1 neck is
+   **33.55 mm, not 8.21**. **The instrument fabricated copper.**
+3. **It counts only foreign PADS** (`08_corridor_bottleneck.py:25-33`), so "corridor" is not the
+   "foreign copper" that its own §10 claims to measure.
+
+So the battery rail is **unproven, not passing**. A replacement instrument is being built that
+measures all copper — tracks, vias, pads and **filled zone polygons** — per layer, with a sanity check
+against a known-good measurement before any of its output is trusted.
+
+### What was confirmed clean
+
+- **HDI counts reproduce exactly** by span: drone-arm **15** (11 blind + 4 buried), repo 36, **ESC 0 of
+  1,990**, **Code-SDR 0 of 1,085.** Package: 5 blind/buried files, 15 holes, 360 drills + 4 G85 slots
+  = 364 hits.
+- **ESC unconnected 1,542** (pcbnew, uncapped); the `kicad-cli` 499 is a cap and appears in all three
+  rule runs, which is exactly how a cap should look.
+- **drone-arm and Code-SDR are 0 unconnected** on both tools.
+- **The respin free-rider claim is justified**: 4 riders shown, 3 non-riders explicitly refused, and
+  the converted board came out **byte-identical** (kept 0 of 10 attempts).
+- **Checklist v1: 52/52 cells, no blank and no TBD**, checker exits 0. **One cell is wrong:** the
+  drone-mech "surface finish" cell is answered with a **mass**, and should be WAIVED — so it is 1/3/9,
+  not 2/3/8.
+- **No constraint violation** on HDI, 4 oz, spend ($0) or single-sidedness (**0 footprints on B.Cu**;
+  43 THT pads legitimately span both layers).
+
+---
+
 ### ESC compaction — VERDICT: UNSAFE. The area came off the power path.
 
 The compaction achieved **−121.61 cm² (−24.73 %)** and kept **0 of 687 components on the back**. It
