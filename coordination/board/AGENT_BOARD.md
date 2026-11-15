@@ -445,6 +445,70 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### The battery rail FAILS, and the real binding constraint is the footprint rule
+
+**Six independent rails, not one bus.** The netlist confirms **6 × BATP and 6 × BATN with no shared
+trunk** (`REV_B_ARCHITECTURE.md:35-36`), so each rail carries **59.05 A** — not 360 A divided by
+something. That changes the deficit by a factor of six and it was never noticed until the rail was
+measured per-net.
+
+**Measured at 59.05 A, ΔT 20 K, 4 oz = 0.14 mm outer / 1.5 oz = 0.0525 mm inner:**
+
+| rail | copper it actually offers | capacity as built | **deficit** |
+|---|---|---|---|
+| **BATP** | F.Cu **0 mm in series**; In1 16.00 mm at 0.0525 mm | 0.5242 mm² = 3.74 mm of 4 oz | **−1.3904 mm² = −9.93 mm (27 % of requirement)** |
+| **BATN** | B.Cu 38.00 mm at 0.14 mm | 1.4139 mm² = 10.10 mm | **−0.5007 mm² = −3.58 mm (74 %)** |
+
+Required: **13.68 mm of 4 oz (1.9146 mm²)**, or **94.87 mm of 1.5 oz inner.**
+
+**After an executed fix** (`esc_rev_b_railfix2.kicad_pcb`) it improves to BATP **1.5082 mm² (79 %)** and
+BATN **1.7595 mm² (92 %)** — **still short 2.90 mm and 1.11 mm.** **RAIL PASSES: NO.**
+
+### The honest area does not exist yet
+
+Three areas are verified by two independent methods agreeing to **0.0000**: **491.732 / 370.119 /
+382.709 cm².** But the **demonstrable** area — six phases proven, rail passing, 0 on B.Cu, DRC at the
+correct rules — **DOES NOT EXIST. Two of those four conditions fail: the battery rail, and DRC.**
+
+The range, with the binding constraint named:
+
+| option | area | reduction vs 491.732 |
+|---|---|---|
+| X | −104.31 cm² | −21.2 % |
+| Y | −105.98 cm² | −21.6 % |
+| Z | −101.25 cm² | −20.6 % |
+| back-layer arm | −109.02 cm² | −22.2 % |
+
+**What to build: 382.71 cm², with BATP on the bare B.Cu plane**, after the 4 oz footprint decision.
+
+### The binding constraint is NOT area — it is the 4 oz footprint rule
+
+**413 DRC items on every candidate, and 100 % of them are footprint-bound.** No amount of placement
+or routing clears them, because they live inside pad geometry. So the ESC's remaining problem is not
+"make it smaller" — it is **the A/B decision**, and it always was.
+
+### The heat spreader is outside the board and nearly doubles it
+
+**MANDATORY** (60 A is 1.67× the board-only junction limit). Top-side over the TOLT tops, **outside
+the board outline**, and **352–528 cm² at 250 W/m²K — that is 0.92× to 1.38× the board's own area.**
+So the ESC's true packaging footprint is **roughly 735–911 cm²**, not 382.71. That is the number an
+airframe bay has to accommodate, and it has never been stated before.
+
+### Instrument discipline, finally working
+
+The rebuilt corridor instrument carries **19 validation controls, all PASS** (`railmc.py`,
+`06_validate.json`), and it measures foreign **copper** — tracks, vias, pads and **filled zone
+polygons** — not foreign pads. It also refuses to sum a layer a net does not occupy, which is what
+produced the fabricated B.Cu figure.
+
+Area was measured by **two independent methods** (`GetBoardPolygonOutlines().Area()` and a shoelace
+walk of Edge.Cuts loops) which agree to 0.0000 on all three boards.
+
+One more fact worth carrying: **the power-first placement has 0 tracks, 0 vias, 0 zones.** It is
+placement only. Any claim about its routability was necessarily about a board with no copper on it.
+
+---
+
 ### ESC: 60 A is the documented design current — and it needs a heat spreader
 
 **60 A per phase is not an assumption. It is written down:** `REV_B_ARCHITECTURE.md:18` — *"60 A
