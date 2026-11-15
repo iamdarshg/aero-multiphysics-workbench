@@ -1,0 +1,20 @@
+Board: 173.950 x 283.080 mm = 492.4 cm2
+Footprints: 687
+  on F.Cu (top):    687
+  on B.Cu (bottom): 0   <-- must move to top
+  other layer:      0
+Sum of footprint bbox areas: 262.2 cm2  (board 492.4 cm2)
+  => fill ratio 53.2%
+Largest 12 components (cm2, ref, value, side):
+     7.76  J1602  MOTOR_PHASES                 F
+     7.76  J1502  MOTOR_PHASES                 F
+     7.76  J1402  MOTOR_PHASES                 F
+     7.76  J1302  MOTOR_PHASES                 F
+     7.76  J1202  MOTOR_PHASES                 F
+     7.76  J1102  MOTOR_PHASES                 F
+     4.90  J1601  FUSED_BATTERY_TAP            F
+     4.90  J1501  FUSED_BATTERY_TAP            F
+     4.90  J1401  FUSED_BATTERY_TAP            F
+     4.90  J1301  FUSED_BATTERY_TAP            F
+     4.90  J1201  FUSED_BATTERY_TAP            F
+     4.90  J1101  FUSED_BATTERY_TAP            F

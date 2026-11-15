@@ -445,6 +445,70 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### The span census, done properly — and a better artefact exists
+
+The verifier built its own classifier (`GetViaType` + top/bottom layer; drill never used to classify)
+and ran it on every artefact:
+
+| artefact | **non-through (by type)** | split | diameter-gate said |
+|---|---|---|---|
+| repo original | **36** | 26 micro + 10 blind | 33 |
+| composed | **24** | 18 micro + 6 blind | 23 |
+| fanout5 | **18** | 13 micro + 5 blind | 17 |
+| **fanout7 — the best** | **15** | **11 micro + 4 blind** | 14 |
+
+**The old diameter gate under-reported by 3, 1, 1 and 1 respectively.** It cannot see a blind via of
+legal diameter, which is the whole reason the classification had to move to span.
+
+**A `fanout7` artefact exists with 15 non-through vias** — better than the `fanout5` I reported. Three
+of its vias are declared MICROVIA but span two dielectrics; by type that is 14 micro + 1 blind, by span
+11 + 4. **Either reading is HDI.** Its 0.300 mm blind is In2→B — that still needs sequential
+lamination.
+
+### The drill package is STALE and nobody re-exported it
+
+The packaged drill set carries **24 holes in 5 of 7 files** (23×0.100 + 1×0.300). That matches the
+**composed** board, not `fanout7`. So the package is **9 holes worse than the best board** and no
+re-export exists. It must be rebuilt from `fanout7` before it means anything.
+
+Also: **4 of the 336 PTH hits are G85 slots, not drills** — a package validator that counts holes
+without distinguishing slots is over-counting.
+
+### ESC unconnected is 1,542, and that is now reconciled
+
+**`kicad-cli` reports 499 because it has a hard cap; `pcbnew` ratsnest gives 1,542 and that is the
+real figure.** drone-arm, by contrast, is genuinely **0** — both tools agree there, below the cap,
+so the zero is trustworthy. A zero below a tool's cap is evidence; a 499 exactly at a cap is a
+truncation artefact. That distinction should have been caught the first time I quoted 499.
+
+### Interference is down to 8 pairs / 1,255.3034 mm³
+
+After the motor-envelope fix plus an executed cove adjustment: **8 pairs / 1,255.3034 mm³**.
+
+| view | pairs | volume |
+|---|---|---|
+| as-built | 34 | 334,227.9062 mm³ (942.478 of stub artefact inside) |
+| after motor fix | 26 | 332,674.0818 mm³ |
+| **after motor fix + cove** | **8** | **1,255.3034 mm³** |
+
+The 26-pair figure the board carried is **exact arithmetic but a subset** of the real pair set. Every
+pair/volume sum reproduces to 1e-7.
+
+### The 110 pads are mapped, and they are not all in three packages
+
+Pad numbers are recorded and the mapping is **sound: 41 / 9 / 11**. That means the 110 fall into
+three groups at those sizes — so **replacing the three fine-pitch packages does not automatically
+clear all 110**, which is exactly the question Option B was waiting on. The 371 pad gaps also
+reproduce (75 + 6×43 + 2×19) at pad-pair granularity, though one extra 0.2000 mm gap is not pad-to-pad.
+
+### Something a previous unit got wrong about the tooling
+
+`fanout2` claimed **"KiCad cannot express span"** and reported zero. That is false — `A.Via_Type`
+works, and its zero was a microvia **type relabel**, not a capability limit. Any count derived from
+that claim is void.
+
+---
+
 ### OUR OWN GATE WAS WRONG — HDI must be counted by SPAN, not diameter
 
 A verifier parsed the drill package itself and found the no-HDI gate has been under-reporting since
