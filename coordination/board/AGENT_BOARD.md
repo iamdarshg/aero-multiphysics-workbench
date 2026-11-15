@@ -58,6 +58,47 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
+### CFD — Cl IS CONVERGED; Cd is not. Trace analysed to t/c = 1.239
+
+322 rows, t/c **0.255 → 1.239**. This is three times further than the earlier 0.49 window, and it
+changes what is quotable.
+
+**Final 20 % window (64 rows, t/c 1.04–1.24):**
+
+| | mean | scatter | change over window |
+|---|---|---|---|
+| **Cl** | **−1.4976e-2** | **0.6 %** | −1.8 % |
+| Cd | 1.1750e-2 | 2.2 % | **+7.4 %** (still falling) |
+| Cs | −3.9059e-1 | **0.0 %** | 0.0 % |
+
+**Cl is converged and quotable: −0.0149 ± 0.6 %.** From t/c ≈ 0.52 onward it reads
+−0.0151, −0.0151, −0.0153, −0.0152, −0.0151, −0.0150, −0.0149 — stable to three decimals across
+seven samples spanning more than half a chord. Its small magnitude is **physically right**: the case
+is near zero incidence, so a near-zero lift coefficient is the correct answer, not a solver failure.
+
+**Cd is not converged but is decaying cleanly.** The ten-percent samples are
+0.0291 → 0.0244 → 0.0200 → 0.0179 → 0.0162 → 0.0147 → 0.0137 → 0.0129 → 0.0122 → 0.0117 → 0.0114,
+with decrements −0.0046, −0.0044, −0.0021, −0.0017, −0.0015, −0.0010, −0.0009, −0.0006, −0.0005,
+−0.0004. That is a **decaying geometric series**, not noise and not a stalled solve — it is
+approaching an asymptote. Extrapolating the series puts the limit near **0.010–0.011**, but that is an
+**extrapolation and must be labelled as one**. Do not publish it as a result.
+
+**Cs is constant at −3.9059e-1** because it is the open-surface pressure bias, and it matches the
+analytic `+0.399659` to 2.3 %: −0.3906 + 0.3997 = **+0.0091**, against the closed-surface
+`+0.0066`. Consistent, and it confirms the bias explanation independently of the earlier restart test.
+
+### What this upgrades
+
+`Cl` moves from "no quotable coefficient" to **MEASURED-CONVERGED at −0.0149 ± 0.6 %**. `Cd` remains
+unconverged at 0.0114 with a stated decay rate and a labelled extrapolation. So the document can now
+carry **one genuine SOLVER coefficient** instead of none — and it should carry it with the zero-lift
+explanation, because −0.015 looks like a broken number to anyone who does not know the incidence is
+near zero.
+
+The run continues toward its 4 h wall cap. A further poll will capture the final trace.
+
+---
+
 ### CFD force extraction — the real defect is an OPEN-SURFACE pressure bias
 
 The mesh settles the question completely. **There are only five patches:**
