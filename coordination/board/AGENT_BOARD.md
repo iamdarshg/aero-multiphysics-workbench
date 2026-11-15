@@ -58,6 +58,46 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
+### CFD force extraction — CORRECTION: the `fsi` patch is 93.9 % wing, not a cut plane
+
+**I asserted that `Cd` and `Cl` from the drone-mech CFD run were "not aerodynamic coefficients at
+all" because the force integration used `patches (fsi)`, which I described as a root cut plane. That
+was wrong.** A subagent measured the patch geometry from the decomposed mesh instead of inferring it
+from the name:
+
+| measurement | value | what it means |
+|---|---|---|
+| `fsi` total area | **0.1324 m²** ≈ 2 × `Aref` (0.1245 m²) | **both wetted sides of the wing** |
+| face-centre bbox | x 0.1791 m, y 0.0301 m, z 0.3877 m | = span, = max thickness, = chord + curvature |
+| \|Σ area-vector\| / area | **0.060** | an almost closed surface — **a plane would be 1.000** |
+| faces with \|n_x\| > 0.9998 | **6.1 %** of faces | the embedded root plane |
+| their summed area vector | (−7.96e-3, 0, 0) m² | equals `rootWall` symmetryPlane area 7.959923e-3 **to all digits** |
+| plane's Σa_y, Σa_z | 1.4e-19, −5.1e-19 m² | **machine zero** — contributes to x only |
+
+So **`fsi` = 93.9 % wetted wing surface + 6.1 % root plane.** The plane sees wing-root pressure
+≈70 kPa × 7.96e-3 m² ≈ **557 N**, which matches `force.dat` total_x = **−561 N**. That is the entire
+spurious spanwise force.
+
+**Consequences:**
+
+1. **`Cs` (≈ −0.40) is polluted and must not be quoted.** It is the root plane's pressure load,
+   expressed as a coefficient.
+2. **`Cl` and `Cd` ARE genuine wetted-surface integrals.** They can be quoted **once the trace
+   converges** — which it has not, since Cl carries 25.8 % scatter and −85.9 % drift over its final
+   window.
+3. **Keeping `patches (fsi)` was the correct choice.** Splitting the plane out would have required a
+   restart for no gain, because the pollution is confined to the one component nobody needs.
+
+**The lesson, which is the same one as the 5 cm² and the 26.37 % errors:** the symptom (`Cs` is 38×
+`Cl`) was real, but the *cause* I attached to it was inferred from a patch **name** rather than
+measured from the patch **geometry**. A name is a comment; the mesh is the evidence. Three times now
+the fix has been "measure the population, do not reason about its label".
+
+The `auditing-numeric-deliverables` skill has been corrected to carry the mesh-measurement recipe and
+the measured 93.9 / 6.1 split, so this cannot be re-derived wrongly.
+
+---
+
 ### drone-mech body — FINAL state (rev5)
 
 **Deliverable:** `evidence/pdf-rev5/drone_mech_body_evidence_rev5.pdf` — **19 pages**, 372,411 bytes,
