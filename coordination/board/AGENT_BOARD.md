@@ -445,6 +445,67 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### The rail, settled properly — and my own report did the PASS-over-FAIL thing
+
+**BATP fails by 2.6×. BATN fails on its barrels. And the 2 oz option makes both worse.**
+
+Verified independently (the verifier's own census reproduces the instrument's areas to the digit):
+
+| net | layer | copper | topology | capacity |
+|---|---|---|---|---|
+| **BATP** | F.Cu | 1,217.29 mm² | **14 components, terminals NOT joined → 0 mm in series** | contributes nothing |
+| **BATP** | In1 | 5,044.71 mm² | 1 component, min-cut **12.5–17.7 mm** | **23.1 A / 11.5 A → fails 59.05 A by 2.6×** |
+| **BATN** | B.Cu | 5,231.22 mm² | 1 component, **14.1–20.0 mm** | plane **passes (101–143 %)** |
+| **BATN** | — | — | **45 via barrels = 1.414 mm²** | **47.4 A** — the barrels are the limit, not the plane |
+
+So **BATN's plane is adequate and its vias are not**, surviving only on an unmeasured one-third per-leg
+sharing assumption. **BATP is simply short.**
+
+**Why this reframes the whole A/B decision:**
+
+| option | footprint DRC | power path |
+|---|---|---|
+| **A — 2 oz** | 413 items **disappear** (geometry already 2 oz-compliant) | **worse.** 2 oz is 0.07 mm, half of 4 oz — the rail that already fails at 23.1 A gets thinner |
+| **B — 4 oz + 3 packages** | 413 items **fixed by package work** | **unchanged, still 23.1 A** |
+
+**Neither option fixes the rail.** A removes the footprint blocker and doubles the copper problem; B
+keeps the copper and costs three package changes. **The rail needs redesign under either**, so the A/B
+question is about *footprint geometry and copper weight*, not about whether the ESC can carry 60 A —
+it cannot, as drawn, either way.
+
+### My own report committed the PASS-over-FAIL
+
+`esc-area-honest` §0 states **"defensible 382.71 cm²"** while its own §3 says the demonstrable area
+**"DOES NOT EXIST."** That is the same defect I have been flagging in other units for four waves, and
+one of my agents did it.
+
+Its **43.30 A** figure is also wrong: it adds a **pads-only gap** to a **series** element. BATP's real
+capacity is **13.6–35.0 A** depending on the cut assumed.
+
+Corrected statement: **382.71 cm² is the smallest placement with the 18 phases proven. It is not
+demonstrable at 60 A, because no placement is.**
+
+### Other corrections
+
+- The corridor instrument's **min-cut returned flow 0 on both rails** (reversed sink edges) and was
+  excluded from its own verdict — so **4.225 mm is a corridor width, not a cross-section.** Its
+  `REPORT.md:245` saying "cross-section ≤ 4.225" is **inverted**: min-cut ≥ widest-path, confirmed by
+  control K1 giving 8.100 against 5.100.
+- `esc-battery-rail:328` calls the corridor directory **"absent"** — it is not. And its F.Cu
+  **922.51 mm²** does not reconcile: its own parts sum to **1,262.24 mm²**.
+- Phase widths differ between units: **7.600 / 3.700** in one report against **7.400 / 7.674** on the
+  board. **Zero BOARD CORRECTION lines** were filed for any of these contradictions.
+- The back-layer arm puts BATP on B.Cu **where BATN's plane already sits** — unchecked, so it is not
+  yet a viable option.
+
+### Clean, and worth stating
+
+The rebuilt instrument **is verified correct in method** — `corridor_lib.py:102-138` reads pads,
+tracks, vias and **zone fill** (`GetFilledPolysList`), with **0 unfilled zones across 4 boards.** No
+constraint violations: **HDI 0 of 1,990 by span, single-sided 687/687, $0 spent, inners 0.0525 mm.**
+
+---
+
 ### The battery rail FAILS, and the real binding constraint is the footprint rule
 
 **Six independent rails, not one bus.** The netlist confirms **6 × BATP and 6 × BATN with no shared
