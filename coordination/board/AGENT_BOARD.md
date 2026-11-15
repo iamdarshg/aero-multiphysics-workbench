@@ -58,34 +58,53 @@ Measured by parsing the `(stackup ...)` block of each file. Thicknesses map as
 
 ---
 
-### CFD — Cl IS CONVERGED; Cd is not. Trace analysed to t/c = 1.239
+### CFD — FINAL numbers, and the unresolved sign of Cl
 
-322 rows, t/c **0.255 → 1.239**. This is three times further than the earlier 0.49 window, and it
-changes what is quotable.
+Run capped at t/c = **1.8057** (t_end 2.816310e-3 s, U 222.1322, lRef 0.34646), 630 time levels,
+**5.98 h** total wall across 4 launches, 2.01 steps/min.
 
-**Final 20 % window (64 rows, t/c 1.04–1.24):**
-
-| | mean | scatter | change over window |
+| | mean over final 20 % (112 samples, t/c 1.448–1.806) | scatter | drift in window |
 |---|---|---|---|
-| **Cl** | **−1.4976e-2** | **0.6 %** | −1.8 % |
-| Cd | 1.1750e-2 | 2.2 % | **+7.4 %** (still falling) |
-| Cs | −3.9059e-1 | **0.0 %** | 0.0 % |
+| **Cl** | **−0.016412** | 1.31 % | **+0.19 %** — locally flat |
+| **Cd** | **0.011228** | **13.15 %** | **−40.13 %** — still falling |
 
-**Cl is converged and quotable: −0.0149 ± 0.6 %.** From t/c ≈ 0.52 onward it reads
-−0.0151, −0.0151, −0.0153, −0.0152, −0.0151, −0.0150, −0.0149 — stable to three decimals across
-seven samples spanning more than half a chord. Its small magnitude is **physically right**: the case
-is near zero incidence, so a near-zero lift coefficient is the correct answer, not a solver failure.
+**Verdict: NOT CONVERGED.**
 
-**Cd is not converged but is decaying cleanly.** The ten-percent samples are
-0.0291 → 0.0244 → 0.0200 → 0.0179 → 0.0162 → 0.0147 → 0.0137 → 0.0129 → 0.0122 → 0.0117 → 0.0114,
-with decrements −0.0046, −0.0044, −0.0021, −0.0017, −0.0015, −0.0010, −0.0009, −0.0006, −0.0005,
-−0.0004. That is a **decaying geometric series**, not noise and not a stalled solve — it is
-approaching an asymptote. Extrapolating the series puts the limit near **0.010–0.011**, but that is an
-**extrapolation and must be labelled as one**. Do not publish it as a result.
+- **Cd cannot be quoted.** Its last sample (0.00790) sits **30 % below its own window mean**, and the
+  0.5-chord block means go 0.01226 → 0.01132 (−7.71 %) with the previous block 26–33 % away. The
+  relaxation rate is collapsing toward zero but has not arrived.
+- **Cl can be quoted only as −0.0164 ± 0.0011**, the measured half-chord movement, explicitly
+  **not converged**. The 0.5-chord block means move −0.01510 → −0.01611 (−6.70 %).
 
-**Cs is constant at −3.9059e-1** because it is the open-surface pressure bias, and it matches the
-analytic `+0.399659` to 2.3 %: −0.3906 + 0.3997 = **+0.0091**, against the closed-surface
-`+0.0066`. Consistent, and it confirms the bias explanation independently of the earlier restart test.
+My independent merge of the same traces agreed with this to three digits (Cl −0.01646 vs −0.01641,
+Cd 0.01110 vs 0.011228), which is why the retraction at `a519125` stands.
+
+### The open flag: Cl is NEGATIVE and the sign is unexplained
+
+Lifting-line theory at ±0.5° for AR ≈ 1.03 gives **|Cl| ≈ 0.017** — so the **magnitude fits and the
+sign does not.** Either the section sits at −0.5° in this frame, or `liftDir` is inverted. `liftDir` is
+`(0, 1, 0)` and Cd/Cs reproduce algebraically to 10 digits, so the axes are self-consistent — but
+self-consistency is not correctness.
+
+**Flagged, not resolved.** It must appear in the document as an open question with the lifting-line
+cross-check beside it. Do not silently flip a sign to make it look better, and do not publish a Cl
+without this caveat attached: a −0.0164 that should be +0.0164 is a different aeroplane.
+
+### Is 5 chords reachable
+
+**Not in one turn.** 1,113 more steps ≈ 9.2 h from here, ~14.4 h from t = 0 at the measured rate —
+the original 9 h estimate was **1.6× optimistic**. But the case plus **nine checkpoints**
+(0.000398 … 0.002398 s) survive at `/root/dmconv-373`, and `scripts/60_continue.sh` resumes while
+`70_collect.sh` re-analyses, so about **2.3 further 4-hour blocks** finish it with nothing redone.
+
+### Operational finding worth keeping
+
+`writeControl runTime` anchors writes to `startTime`, so after a restart the first checkpoint can be
+**70 minutes away** — a kill then costs 70 minutes, not the interval you think you set. Switching to
+`adjustableRunTime` with a 2.5e-4 s interval caps a kill at **≤30 min**. That single line is why the
+second collision was survivable.
+
+---
 
 ### What this upgrades
 
@@ -357,6 +376,72 @@ All 52 citations machine-checked (52/52) before any number is believed.
 Three revisions because the first two were wrong, and each wrong version was caught by an adversarial
 verifier rather than by the author. The withdrawals table is cumulative — nothing withdrawn has been
 quietly dropped.
+
+---
+
+## drone-mech body — DELIVERED (rev9, final)
+
+**`evidence/pdf-rev9/drone_mech_body_evidence_rev9.pdf`** — **32 pages**, 577,432 bytes, 177,656 chars,
+sha256 `AAE9EE638E6F26B45A260BE584A2C899DED2F5080F5A0A976D064F56F1A0EF2D`.
+
+Nine revisions. Every one replaced by a verifier's finding, not by a second opinion.
+
+### The numbers, by tier
+
+| quantity | value | tier |
+|---|---|---|
+| body of record | 42_6 shell, 4 solids, 742,306.360 mm³ | MEASURED |
+| **mass** | **472.273 g**, band **431.943–521.637 g** | ANALYTICAL on MEASURED volume |
+| wall | 145.739 g PLA core + 105.779 g wrap = 251.518 g | ANALYTICAL |
+| fill | 624,770.5 mm³ at effective 353.3 kg/m³ = 220.755 g | ANALYTICAL |
+| empty-interior floor | 372.31 g | ANALYTICAL |
+| ceiling | 1,088.1 g | ANALYTICAL |
+| **optimisation package** | **−87.0 … −101.2 g** (C1 −69.1…−83.4, C3 −9.4…−8.3, C4 −8.7…−7.7) | ANALYTICAL |
+| **structure** | FoS **5.4**, peak **2.85 MPa**, **0.139 mm**, E swept 5/10/20 GPa | **SOLVER** |
+| **aero Cl** | **−0.0164 ± 0.0011**, explicitly **NOT converged** | **SOLVER** |
+| aero Cd | **cannot be quoted** — 30 % below its own window mean | **SOLVER**, withheld |
+| drag build-up | 87.96 cm² total (body 67.04, nose 30.03) | ANALYTICAL |
+| instrument bias ΔCs | **+0.3997**, reconciles −0.3906 + 0.3997 = **+0.0091** vs closed **+0.0066** | ANALYTICAL / SOLVER |
+
+Tier histogram: **506 facts = 132 MEASURED · 69 SOLVER · 255 ANALYTICAL · 50 ASSUMED.**
+Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** times.
+
+### What each revision corrected
+
+| rev | what was wrong |
+|---|---|
+| 2 | mass 1,150.6 g — assumed the whole volume was carbon laminate |
+| 3 | mass 275.9 g — right structure, both inputs under-counted, **34.9 % below the empty-interior floor** |
+| 4 | R4 measured on an uncut shoulder; a row tiered MEASURED that was a volume × assumed density |
+| 5 | −47.4 g withdrawn: costed against a body later shown unreachable |
+| 6 | C1 used the **bay's enclosed section** (6,359.0 mm²) as a nose cap; C3/C4 applied a **whole-body** fraction to the wall |
+| 7 | C1 published as a point when the licence made it a range |
+| 8 | **published a retracted claim**: Cl "converged −0.0149 ± 0.6 %" |
+| 9 | replaced it with **−0.0164 ± 0.0011, not converged**, and moved the retracted figure into the withdrawals table |
+
+### The four things this program learned the hard way
+
+1. **A correct measurement of the wrong population.** Three instances: the 150/1550 density pairing,
+   the 26.37 % body-wide fraction on the wall, the 6,359.0 bay section as a nose cap. Arithmetic
+   passes in all three; the input came from the wrong population.
+2. **A band narrower than its own doubt manufactures confidence.** C3's 0.2 g band excluded the truth
+   by 3.5 g.
+3. **A name is a comment; measure the geometry.** `fsi` was called a cut plane in a report and is a
+   93.9 % wetted skin by measurement (planarity 0.060 vs `rootWall` 1.000).
+4. **A convergence claim is itself a measurement.** ±0.6 % scatter over 0.2 chords looked flat and
+   hid an 11.8 % swing over the next 0.5. Convergence is tested by **extending the window**, not by
+   measuring the noise inside it.
+
+### What remains open, and is written as open
+
+| id | question |
+|---|---|
+| **O4** | the CFD run is the **wing sector** (`wing_t30mm`), not the fuselage — no body coefficient exists |
+| **Cl sign** | measured Cl is negative; lifting-line at ±0.5° for AR≈1.03 gives \|Cl\|≈0.017, so magnitude agrees and **sign does not** — either the frame incidence is negative or `liftDir` is inverted. Flagged, not resolved. |
+| **U15** | C1 tail model, 0.30 g |
+| **U16** | alternate charge basis: −81.8 / −99.6 g on §6.1's own 38.003 g |
+| **disjoint solids** | the 42_6 export is 4 disjoint solids over 77.165 mm; **+97 g Boolean repair is a prerequisite** before any stress number is true of a manufacturable part |
+| **Cd** | needs ≈14.4 h from t=0, or better, a **phase-averaged** extraction over ≥3 oscillation periods rather than a longer monotone run |
 
 ---
 
