@@ -1,0 +1,19 @@
+==============================================================================
+fab-checklist-final :: check_fab.py
+==============================================================================
+PASS  1  coverage and vocabulary: 52 cells, 4 x 13, no blank, no TBD
+PASS  2  orderable == (0 FAIL cells), and blocking is non-zero iff a FAIL exists
+PASS  3  every NO row's blocking number occurs verbatim in a FAIL cell
+PASS  4  the three REPORT blocks are byte-identical to the generator's output
+PASS  5  the tally rows reproduce from rows.json (52 cells, 2 YES)
+PASS  6  drone-arm identities: 337=318+19, 19=15+4, 0.60+2x0.125=0.85, 4/22 DRC, 0 unconnected
+PASS  7  ESC identities: 229=102+127, 102=70+16+16, 200=102+98, 89=75+14, 34.5=23x1.50, IPC 36.58 A
+PASS  8  Code-SDR identities: 1213+2=1215, 22=12+4+3+3, 373+4=377, 101.6+0.100=101.70, 222=199+13+10
+PASS  9  drone-mech identities: 320.0042 g closes, 10=2+2+2+2+2, sets sum to 3,305.834869, 2x1,048.409726, 63.4 %
+PASS 10  corrections: 35 rows, 18 live / 17 superseded, no stale token survives, every successor is live
+PASS 11  every WAIVED cell is either n/a (no such parameter) or a priced quote line
+PASS 12  conditions block reproduces from the cells and NOT KNOWN carries 27 owned items
+PASS 13  every cited evidence path under 10 distinct evidence dirs exists on disk
+------------------------------------------------------------------------------
+13 checks, 0 failures
+EXIT 0 -- every summary re-derives from its rows

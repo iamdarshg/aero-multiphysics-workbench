@@ -1,0 +1,28 @@
+baseline check_fab.py exit = 0
+------------------------------------------------------------------------------
+CAUGHT   c1 orderable flipped to YES on a row with FAIL cells           exit 1
+        FAIL  2  orderable == (0 FAIL cells), and blocking is non-zero iff a FAIL exists
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+CAUGHT   c2 one cell of the generated matrix hand-edited                exit 1
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+CAUGHT   c3 the grand-total row changed by one                          exit 1
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+        FAIL  5  the tally rows reproduce from rows.json (52 cells, 2 YES)
+CAUGHT   c4 non-through count changed to 36 against its own totals      exit 1
+        FAIL  6  drone-arm identities: 337=318+19, 19=15+4, 0.60+2x0.125=0.85, 4/22 DRC, 0 unconnected
+CAUGHT   c5 ESC fab-real set equal to the reported count                exit 1
+        FAIL  7  ESC identities: 229=102+127, 102=70+16+16, 200=102+98, 89=75+14, 34.5=23x1.50, IPC 36.58 A
+CAUGHT   c6 drone-mech mass cell edited by 0.0008 g                     exit 1
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+        FAIL  9  drone-mech identities: 320.0042 g closes, 10=2+2+2+2+2, sets sum to 3,305.834869, 2x1,048.409726, 63.4 %
+CAUGHT   c7 a superseded row points at a successor that does not exist  exit 1
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+        FAIL 10  corrections: 35 rows, 17 live / 18 superseded, no stale token survives, every successor is live
+CAUGHT   c8 a WAIVED reason with no n/a and no price                    exit 1
+        FAIL  4  the three REPORT blocks are byte-identical to the generator's output
+        FAIL 11  every WAIVED cell is either n/a (no such parameter) or a priced quote line
+CAUGHT   c9 NOT KNOWN count off by one against the sheet                exit 1
+        FAIL 12  conditions block reproduces from the cells and NOT KNOWN carries 26 owned items
+------------------------------------------------------------------------------
+9 of 9 mutations caught
+EXIT 0 -- every mutation forced a non-zero exit

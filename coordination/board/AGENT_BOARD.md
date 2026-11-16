@@ -445,6 +445,82 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### FINAL STATE — 13 of 20 objective conditions met
+
+| board | DRC | unconn | geometry | package | checklist | score |
+|---|---|---|---|---|---|---|
+| **Code-SDR V2** | PASS | PASS | PASS | PASS | PASS | **5/5 — COMPLETE** |
+| **drone-mech** | PASS | PASS | PASS | PASS | PASS | **5/5 — FAB-READY** |
+| drone-arm rev_b | FAIL | PASS | FAIL | FAIL | PASS | **2/5** |
+| ESC rev_b | FAIL | FAIL | FAIL | FAIL | PASS | **1/5** |
+
+**Final sheet: `evidence/fab-checklist-final/REPORT.md`, 462 lines, 35 BOARD CORRECTIONS (18 live, 17
+superseded with named successors), 13 checks, checker exit 0, 9 of 9 negative mutations caught, 27 open
+unknowns.**
+
+### drone-arm: 19 → 17, and BOTH escape routes are now closed
+
+**Six layers is worth exactly zero.** Measured: **in-place margins are identical 19 of 19 on 4-layer and
+6-layer** — **an empty layer cannot raise a through via's all-layer minimum.** The +2 layers cost **25–40 h**
+of re-fanout and clear **0**.
+
+**The LQFP-100 is short by 0.075 mm.** From the KiCad `LQFP-100_14x14mm_P0.5mm` footprint: pads
+**0.300 × 1.600 at 0.500 pitch** give **0.350 mm to the neighbouring pad edge**, against the **0.425 mm** a
+0.60/0.30 via needs. **It would need a 0.575 mm pitch.** It is legal only beside a 0.15 mm trace, at
+**exactly 0.000 margin** — which is not a margin.
+
+**So at 0.4 mm pitch there is no legal inline through via at any size.** Both candidate paths fail.
+
+**What did work: 2 of 19 cleared** (U40 closed 2 of 2) via 4 DRC-gated conversions. **Final: 17 vias,
+10 nets, 0 footprints — U10 12, C32 2, C12 1, C40 1, FB1 1.** Unconnected 0 on both tools, min drill
+0.100, RF void **bit-identical 4.1699 mm² / 9.8338 %**.
+
+**Recommended path was six layers** — because geometry is not decisive (both need staggered fan-out, and
+the LQFP adds zero margin), so keep the netlist and the software. But six layers clears zero vias, so the
+recommendation is about *which is cheaper to fail with*, and that should be said plainly.
+
+### ESC: the 9.42 mm corridor was measured on a DIFFERENT BOARD
+
+**That is the most important correction in this round.** The phase corridor is **3.90 mm with the pours
+and vias in place**, not 9.42 — **the 9.42 mm only exists on the pours-stripped board.** The **96 pours and
+1,990 vias close the corridor**, so the amphora measurement and the real board describe different things.
+
+| element | measured | at 36.6 A |
+|---|---|---|
+| PHASE_A | 2/6 cells, 3.93 mm = **19.4 A** | FAIL |
+| PHASE_B | **no lane at all** | FAIL |
+| PHASE_C | 6/6, 0.74 mm = **5.8 A** | FAIL |
+| BATP | 4/6, 3.18 mm = **16.6 A** | FAIL |
+| `BATP_IN` | **10.12 mm = 38.5 A** | PASS |
+| BATN | **22.88 mm = 69.5 A** | PASS |
+
+**24 of 36 rows conduct; 12 of 36 are at spec.** Gate at 36.6 A: **3 PASS, 5 FAIL, exit 1.**
+
+**The good news is real and precisely bounded:** the **16 `via_dangling` are 0 power / 16 signal**
+(CAN_SCK 2, STATUS_LED 2, M1–M6_STATUS_LED 2 each) — they are two-point links, not power blockers. And
+**the 70 annular violations all measure 0.150 mm (28 vias) or 0.175 mm (42 PTH), none below 0.150**, so a
+**0.150 mm rule clears all 70 and takes DRC 102 → 32.** That rule is **a quote to obtain, not a Multi-CB
+published row**, and it costs 0.075 mm of land per side on 28 signal vias with no power copper touched.
+
+**Final DRC 125** (+23, no short and no clearance), **unconnected 499 (kicad-cli cap) / 1,542 (pcbnew)**,
+both unchanged.
+
+### What the objective achieved, and what it did not
+
+**Delivered:** **Code-SDR V2 complete** — orderable, 4 fiducials verified in the commit, package matching
+its own board 20/20. **drone-mech fab-ready** — one solid, 320.0042 g, 45-file sha256 manifest, STL within
+0.052 % of STEP, walls 1.09–1.20 mm.
+
+**Not delivered:** **the ESC is not routed** and **drone-arm still requires HDI or a fan-out it cannot
+physically achieve at 0.4 mm pitch.** Both remain blocked by measured numbers, not by unknown ones:
+drone-arm at **0.85 mm**, the ESC at **1,536–1,542 unconnected** and a **3.90 mm corridor against 9.427**.
+
+**Still open and never dispositioned: the two bearing-ring pairs at 2,096.819452 mm³ — 63.4 % of total
+airframe interference.** That is the largest unresolved figure in the programme and it is on a board
+already marked fab-ready.
+
+---
+
 ### **drone-mech: FAB-READY.** The pair count is reconciled at 10 pairs / 3,305.834869 mm³
 
 **The 6-vs-8 discrepancy is not a miscount — they are different populations on different files.**
