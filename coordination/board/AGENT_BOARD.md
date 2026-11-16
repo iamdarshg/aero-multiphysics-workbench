@@ -445,6 +445,90 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### drone-arm: growth is DEAD on every edge — and it was never an edge problem
+
+**The "grow the board" recommendation is refuted.** Edge distances from U10's pad copper:
+
+| direction | distance |
+|---|---|
+| **north** | **44.65 mm** (pad-row centre line 45.05; northmost blocked via 44.10) |
+| south | 44.65 mm |
+| west | 53.65 mm |
+| east | 75.65 mm |
+
+**Growth moves an edge outward, so the clearance grows by exactly G** — 44.65 → **46.65 / 48.65 / 52.65 mm**.
+And **it gains nothing:**
+
+| growth | kept / attempted |
+|---|---|
+| base | **0 / 17** |
+| +2 mm | **0 / 17** |
+| +4 mm | **0 / 17** |
+| +8 mm | **0 / 17** |
+| +44.65 mm control (+44.65 % area) | **still 0 kept** |
+
+Five vias do have a legal through position within ±2.5 mm, **but every escape stub is illegal** (best slack
+**−0.1606 mm** against the **+0.225 mm** needed). Twelve have no legal position at all.
+
+**The classification settles it: 14 track-bound, 2 pad-bound, 1 via-bound — ZERO EDGE-BOUND.** Minimum edge
+clearance is **+43.10 mm** against a worst copper shortfall of **0.650 mm**. **The obstruction is 43 mm
+inside the board; no outline change can ever reach it.**
+
+So the earlier "grow 0.73–2.76 mm for $0" recommendation was measuring the wrong thing — it described a
+**copper-free ring around U10**, not a board outline change. Growth of the outline is dead on all four
+edges and should not be revisited.
+
+**What still works:** clearing copper inside a disk gets non-through to **0** (radical rip-up, best at
+10 mm) at the cost of **81 unconnected**. So the fix is **clear the ring, then re-route the 48 nets that
+were cut** — real layout work, no shortcuts.
+
+### drone-mech: rings REDESIGNED, interference 4,631.82 → **1,556.23 mm³**
+
+**The literal that caused it:** `phase15_generate_geometry.py:980` —
+`ring = annulus(48.0, 41.0, 250.0, 4.0, xcentre)`. **The ro/ri are bare literals and are INDEPENDENT of
+`VANE_RING_RADIUS = 44.0`** (defined at :88, used only for the pivot at :435–436 and export at :807).
+**So the fix is at :980, not the pivot radius.**
+
+**Three options evaluated, and only one works:**
+
+| option | result |
+|---|---|
+| (a) shrink ro ≤ 44 mm | ring↔ring clears, but **fuselage still 312.042804 mm³** — the burial is **ro − r_bore = 5.5 mm and is spacing-independent**, so clearing it needs **ro ≤ 42.6**, which puts the r=44 pivot **outside the part** |
+| (b) move centres ≥ 97 mm | **at 100 mm still 13.670233 mm³**, and it re-lofts the whole body |
+| **(c) PARTIAL ARC** | **0.000000 on both — supported and EXECUTED** |
+
+**The seat, designed properly.** **The fuselage cannot seat it** — half-height ≈ **26 mm** against a
+**41 mm** bore radius, leaving only the **2.8 mm web**. So the ring moves onto the **lip at z 239.80–243.80**,
+with a **bore Ø82.070 = H7/f7 bonded clearance (0.036–0.091 mm)** — **not H7/p6**, because a press fit
+gives **525 MPa hoop stress in the 2 mm CFRP wall.** Plus a **4.00 mm land** and a new **Ø84.0 × 1.20 mm
+moulded bead** as an axial stop. **Seat overlap 0.000000; shoulder 251.732 mm²; bond 1,030.442 mm².**
+
+**Executed:** **notch ±47°**, **two 2.4 mm blade slots**, and the bead. **3 solids, 5,624.2454 mm³ /
+15.1855 g.**
+
+**And a THIRD clash surfaced that no census had:** **the 30 × 40 mm vane plate crosses the entire wall —
+56.004744 mm³ × 4 = 224.019 mm³**, which needed the blade slots.
+
+**Result:**
+
+| | before | **after** |
+|---|---|---|
+| pairs | **13** | **6** |
+| volume | **4,631.820365 mm³** | **1,556.232076 mm³** |
+| ring ↔ ring | 754.749861 mm³ clash | **0.000000 — designed clearance** |
+| ring ↔ fuselage | 2,096.819452 mm³ clash | **0.000000 — designed clearance** |
+| rows removed / added | — | **7 removed, 0 added** |
+
+**Fuselage re-verified: 1 solid, 206,454.319709 mm³, 320.0042 g — CONFIRMED, not corrected**, so the
+fab-ready geometry survives the redesign untouched.
+
+**Knife edge, quantified:** the bore **breaks out 1.806 mm** (hull minimum radius **40.7627 mm**), and the
+rim dihedral starts at 0° giving **3.49 µm at 50 µm out.** Fix is **≥ 1.2 mm of land, i.e. a Ø87.6 per-duct
+fairing**, which would need **BODY_HEIGHT 94.97 mm.** **It does not interact with the ring fix, and it must
+not touch the Ø82 bore.**
+
+---
+
 ### drone-mech bearing rings: **GENUINE CLASH — a design defect, not a fit**
 
 **The disposition is done, and it is the bad answer.**
