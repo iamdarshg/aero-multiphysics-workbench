@@ -445,6 +445,100 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **drone-mech: 931.860 g → 320.004 g. One solid, uniform shell. Manufacturable.**
+
+**The fore bulk fill is gone. 611.856 g of the 620.386 g surplus recovered — 98.6 %.**
+
+| | before | **after** |
+|---|---|---|
+| mass | 931.860 g | **320.004 g** |
+| volume | 601,199.886 mm³ | **206,454.3208 mm³** |
+| solids | 1 | **1** |
+| shells | 1 closed | **1 closed** |
+| free / non-manifold edges | 0 / 0 of 1,397 | **0 / 0 of 1,561** |
+| wall — pinch | 1.199 mm | **1.1990 mm** (bit-identical) |
+| wall — aft | 1.180 mm | **1.1801 mm** (bit-identical) |
+| wall — fore | **8.982 mm** | **1.0921 mm** |
+| STEP round-trip | yes | **yes** |
+
+Only **18.74 mm³ (0.029 g)** is genuinely unrecoverable — a solid tip forward of z −359. There is **no
+duct allowance** in the model. Optional tip thickening would cost **+48.86 g**.
+
+**The cause was a literal.** The cavity is a **7-station loft whose first row is hard-coded `−298.8`** —
+that is the outer z −300 station **plus BODY_SHELL 1.2** — so the loft simply **ends in a flat 13,408 mm²
+72-gon cap**, leaving **415,036 mm³** solid forward of it. Not a closed nose, not a truncation: **a table
+that stops.**
+
+**What worked and what didn't:** a single 117-station loft **fails** — it **re-parametrises the BSpline and
+escapes aft by 3,079.94 mm³, giving 2 solids.** The fix that worked: **keep the v4 cavity bit-identical
+and fuse a SECOND skin-resampled nose loft** (−359 … −298.8, 2 mm stations, −2.4 mm/axis). Escape
+**0.000**, full six-cut chain stays one solid.
+
+The fore 2V/A fell **8.9820 → 1.0921** — that is **cos α on the cone, not a thin wall**, so the number
+looks smaller than the shell thickness and is correct.
+
+**Verdict: manufacturable single-wall shell — YES on geometry**, with one caveat: the **unsupported nose
+tip** forward of z −359.
+
+**Interference discrepancy to resolve:** this run reports **6 pairs / 2,241.139674 mm³** "both bodies",
+where the earlier work recorded **8 pairs / 1,255.303466 mm³**. Ring volumes agree (**1,048.409726 each,
+Δ0**). Two different pair counts for the same part need reconciling before either is quoted.
+
+### drone-arm: 36 → 19 non-through. 17 cleared by real layout work.
+
+**Span census, derived from layer pairs (10 of 36 declared types contradict their pair):** F→In1 **14**,
+In1→In2 **10**, F→In2 **3**, In2→B **5**, In1→B **4** — **29 micro + 7 blind by pair**, against **33
+micro + 3 blind declared.** 29 stacks, min drill 0.100.
+
+**Executed: 29 stacks through isolated KiCad DRC → 13 kept, 17 vias cleared** (9 stacks at 0.600/0.300,
+4 at 0.400/0.200). Batch B (slide along own copper) **0 of 5**, batch C (slide + drag ends) **0 of 16**.
+
+**Final: 337 vias, 19 non-through**, DRC set diff **`{via_diameter +4}`**, **unconnected 0 on both tools**,
+min drill 0.100, RF void **bit-identical at 4.1699 mm² = 9.8338 %** (the composed board's 1.2959 % is a
+different density basis).
+
+**U10 is congestion, not assignment — for all 15.** Only **12 of 90 pins reach a legal 0.6/0.3 site**, all
+on the north row, and **all 12 already carry nets.** The 9 spare pads are the **sealed centre thermal
+grid**, so swapping pads only moves the sealed pocket.
+
+**Moving passives clears zero.** 18 of 36 are free-standing (>0.8 mm from any same-net pad); only R10,
+R32 and U21's six are genuinely theirs, and those cleared **without** moving anything. Deleting FB1
+outright still leaves **−0.400 mm**; C12 leaves **−0.130 mm**.
+
+**What blocks the remaining 19:** no in-place through via (**max legal radius +0.182 mm**), nearest legal
+site **1.04–1.53 mm away through an illegal corridor**, and **2–4 foreign nets per candidate site**. That
+is a **U10 fan-out rip-up or HDI** — nothing smaller.
+
+### ESC: NOT ROUTABLE, and area buys nothing
+
+**The router proved it rather than argued it.** One pass, 55-min cap extended to 90, **stopped at
+88 min 28 s** (7,267 CPU-s, 1,055 MB) — and **no `.ses` came out, because freerouting writes only at the
+end.** So a time-sliced stop yields no copper at all.
+
+**Fanout did finish: 2,149 of 2,759 SMD pins escaped (77.9 %), 610 blocked.**
+
+**The real answer comes from an honest control** — same router, same 0.200/0.200 rules, **one cell**
+(95 footprints, 497 pads, 70.71 cm², 5 min 8 s): **114 of 313 routed = 36.42 %**, 199 left, DRC
+**5 → 324** (+319: annular 110, via_diameter 96, track_width 53, connection_width 27, edge 21, dangling
+12 — **218 of those are the DSN's 0.6/0.3 via giving a 0.15 mm ring**, a setup artefact, not a design
+fault).
+
+**Diagnosis — it is not area and not fine pitch:**
+- **area:** 56.5 % of F.Cu and 67.3 % of In2 free after dilation
+- **fine pitch:** the 0.5 mm gate and 0.25 mm shunt route at **3.4× and 27.6× margin**
+- **escape:** **77.6 % at 70.71 cm² versus 77.9 % at 491.73 cm² — the same 22 % blocked**, so board size
+  changes nothing
+- **width:** `HIGH_CURRENT` asks **6.000 mm in a 4.400 mm channel**
+
+**Manual one-phase route: DRC-clean, ADDED 0** — but the corridor came out **4.400 → 3.600 mm = 18.2 A**
+against the **9.427 mm / 36.6 A** the gate requires, **161.4 mm²** of copper, **69.04 cm²** tile,
+4 ratsnest joins (0.26 % of board).
+
+**ROUTABLE: NO.** The only routes out are **six layers with 4 oz inner planes (23.34 mm)**, **a lower
+current (~18–22 A per phase)**, or **six layers plus the shunt-land fix.** **Area buys nothing.**
+
+---
+
 ### **drone-mech: ONE SOLID ACHIEVED.** The cause was the cavity loft, and the fix is resampling
 
 **The fix: resample the cavity from the MEASURED SKIN** — 56 stations, offset −2.4 mm per axis from the
