@@ -445,6 +445,97 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **drone-mech: FAB-READY.** The pair count is reconciled at 10 pairs / 3,305.834869 mm³
+
+**The 6-vs-8 discrepancy is not a miscount — they are different populations on different files.**
+**6 / 2,241.139674 mm³** is body × 6 neighbours on the **single-solid** file, and only **4 of its 6 rows
+are non-zero** (both duct tubes read 0.000000). **8 / 1,255.303466 mm³** is **4 movers × 33 neighbours
+on the as-called 4-solid file** — and **a static ring pair cannot appear in a mover sweep**, which is why
+the two sets can look inconsistent without contradicting.
+
+Only one pair is shared, elevon↔body: **95.304133 mm³** on the 4-solid file (that file's detached
+20,808.2965 mm³ side-wall sliver, inner face |x| 90.5865) against **72.160111 mm³** on the single solid
+(91.4681) — **Δ 23.144022 per side.** The set diff closes exactly:
+**+2,096.819452 rings − 819.666046 motors − 240.495128 nozzles − 4.534020 pushrods − 46.288044 =
+985.836208.** The cavity fix moves nothing: pre-fix and final agree on all 14 rows.
+
+**Authoritative figure: 10 pairs / 3,305.834869 mm³.**
+
+**The package exists** (`evidence/dm-final-package/out/`, **45 files** with a sha256 manifest):
+
+| artefact | sha256 |
+|---|---|
+| STEP | `d9ba7aeb…9cadf` |
+| BREP | `c1f30e77…1f9c` |
+| STL | `e18a03ea…073d` |
+| drawing PDF | `4947ce26…5955` |
+
+**Validated:** 1 solid, 1 shell, closed, valid, **0 / 0 non-manifold of 1,561 edges**; **206,454.3197 mm³**;
+**320.0042 g**; walls **1.0921 / 1.1990 / 1.1800 mm**; nose sections **1.1982–1.2068 mm**; **STL 59,964
+triangles, watertight, Euler −2, volume 206,347.1658 = −0.052 % of the STEP** (inside ±0.1 %).
+
+**FAB-READY: YES.** The **nose tip is a design note and does not block manufacture.**
+
+**Two items left open, both stated rather than buried:**
+1. **Two unclassified bearing-ring pairs — 2,096.819452 mm³, which is 63 % of the total airframe
+   interference and has never been dispositioned.** It is the largest single interference figure in the
+   model and nobody has decided whether it is contact, clearance, or artefact.
+2. A **knife edge at the wing-slot rim** (which explains a previously unexplained 0.5145 reading).
+
+### ESC: the aircraft does **497 km/h**, and the honest ESC is **36.6 A / a 35 A-class board**
+
+Three numbers that must agree, and never did:
+
+| | value | source |
+|---|---|---|
+| **A — drag at 720 km/h** | **87.7 / 111.1 / 154.5 A** | CdA 0.003354 / 0.004162 / 0.005594 |
+| **B — power system supplies** | **43.48 A** | 240 A pack ÷ 6 ÷ 0.92 — **ASSUMED 150C label, unmeasured** |
+| **C — PCB can route** | **18.21 A** (3.600 mm) / **36.58 A** (9.42 mm) | measured corridor + IPC-2221 |
+
+**Speed at CdA 0.004162 m²:** **18.2 A → 394 km/h · 34.5 A → 488 km/h · 43.5 A → 527 km/h.** Band
+**353–616 km/h**, with **−3.46 % per +10 % CdA.**
+
+**Design point: 36.6 A per phase / 33.7 A bus — a 35 A-class ESC.** The corridor binds it, and the shunt
+pad sits at **97.5 %** of its capability.
+
+**43.5 A was never achievable, and now the reasons are exact:** it needs **11.963 mm at 3 oz against the
+9.42 offered**, **40.02 A bus against 34.50**, and **1,777 W per motor against 1,600 W** — and it would buy
+only **527 km/h**. It was a target derived from a number the airframe cannot use.
+
+**FETs at 36.6 A: 3.33 W per device, Tj 119.6 °C** at Rth 22.4 with the spreader — **68 % of 175 °C,
+comfortable** (legally up to 39 °C/W). At 43.5 A it is **142.6 °C**, legal only to 29.8 °C/W — marginal.
+
+**Recommendation: 36.6 A per phase, 4-layer 3 oz, 497 km/h, $450–870 per 5 pcs.** Skip the
+**$1,300–1,900** six-layer stack — it still fails the shunt pad. **720 km/h needs 111 A and 27.2 kW: that is
+a different aircraft, not a different board.**
+
+### drone-arm: 19 vias cannot clear — the blocker is exactly 0.85 mm
+
+**19 confirmed by span** (15 micro + 4 blind by pair, 5 declared/pair conflicts): **U10 12, U40 2, C32 2,
+C12 1, C40 1, FB1 1.** The earlier "U40 4" was wrong — wave 16 had already cleared half of them.
+
+**Every structural option was tried and every one failed:**
+
+| attempt | attempted | kept | why |
+|---|---|---|---|
+| **(a) south/west re-escape** | 11 | **0** | legal ground exists (1,225 cells in ±8 mm, 71 S/W) but **only 2 of 9 nets reach a site from their own pad**; attempts shorted 2–6 nets and crossed 1–4 tracks |
+| **(b) net → pin** | 1 | **0** | **8 of 9 via nets are single-pin**, so no legal move exists; only `/3V3` (11 pins) is a lever and its microvia is load-bearing — deleting it orphans pad 29 |
+| **(c) rotate U10** | — | **0** | pad-set deviation **0.000000 mm** at 90/180/270° — it is **exactly a net permutation**, i.e. (b) again |
+| **(d) move parts** | — | **0** | removing the decoupling ring's pads **doubles** reachable pads (7 → 14) yet leaves the same two nets. **And there is no SPI flash at all** — U10's QSPI pins are unconnected |
+
+**Executed: 17 candidates, 13 DRC-gated, 0 kept.** Final: **337 vias, 19 non-through**, DRC set diff
+**`{}`** (own rules 4, gate 22), **unconnected 0 on both tools**, min drill 0.100, RF void **4.1699 mm² =
+9.8338 %**.
+
+**The blocker is 0.85 mm.** A 0.60/0.30 through via needs **0.85 mm clear on all four layers**; U10
+(RP2354B, QFN-80, 0.4 mm pitch) offers **0.4 mm lanes.** Three ways forward:
+1. **keep HDI** — violates the owner's constraint
+2. **6 layers + an 80-pin re-fanout**
+3. **a 0.5 mm LQFP-100: STM32H723VGT6** — a real part with a datasheet, and the smallest change that
+   makes the fan-out physically possible
+
+---
+
 ### **drone-mech: 931.860 g → 320.004 g. One solid, uniform shell. Manufacturable.**
 
 **The fore bulk fill is gone. 611.856 g of the 620.386 g surplus recovered — 98.6 %.**

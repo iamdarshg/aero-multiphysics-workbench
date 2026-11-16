@@ -1,0 +1,1058 @@
+{
+  "provenance": {
+    "python": "C:\\Program Files\\Python312\\python.exe",
+    "cadquery": "2.7.0",
+    "volume": "BRepGProp.VolumeProperties_s eps 1e-12, abs",
+    "bodies": {
+      "delivered": "E:\\engineering-portfolio-audit\\repos\\drone-mech\\highspeed_edf\\deliverables\\phase15_geometry\\step\\fuselage_battery_bay_shell_endpoint_relief_42_6.step",
+      "prefix_v4": "E:\\engineering-portfolio-audit\\evidence\\dm-fore-fill\\out\\part_v4_full_r42.step",
+      "final": "E:\\engineering-portfolio-audit\\evidence\\dm-fore-fill\\out\\part_nose_v2.step"
+    }
+  },
+  "bodies": {
+    "delivered": {
+      "solids": 4,
+      "volume_sum_mm3": 742306.3595,
+      "per_solid": [
+        624770.5298,
+        20808.2965,
+        75919.2366,
+        20808.2965
+      ],
+      "per_solid_bbox": [
+        {
+          "x": [
+            -105.8918,
+            105.8918
+          ],
+          "y": [
+            -48.4587,
+            41.7705
+          ],
+          "z": [
+            -360.0,
+            -189.0984
+          ]
+        },
+        {
+          "x": [
+            56.2808,
+            95.282
+          ],
+          "y": [
+            -40.7914,
+            40.7914
+          ],
+          "z": [
+            -107.4729,
+            195.6651
+          ]
+        },
+        {
+          "x": [
+            -48.1787,
+            48.1787
+          ],
+          "y": [
+            -45.4136,
+            45.4136
+          ],
+          "z": [
+            -111.933,
+            280.0
+          ]
+        },
+        {
+          "x": [
+            -95.282,
+            -56.2808
+          ],
+          "y": [
+            -40.7914,
+            40.7914
+          ],
+          "z": [
+            -107.4729,
+            195.6651
+          ]
+        }
+      ]
+    },
+    "prefix_v4": {
+      "solids": 1,
+      "volume_sum_mm3": 601199.8849,
+      "per_solid": [
+        601199.8849
+      ],
+      "per_solid_bbox": [
+        {
+          "x": [
+            -105.8918,
+            105.8918
+          ],
+          "y": [
+            -48.4587,
+            45.4136
+          ],
+          "z": [
+            -360.0,
+            280.0
+          ]
+        }
+      ]
+    },
+    "final": {
+      "solids": 1,
+      "volume_sum_mm3": 206454.3197,
+      "per_solid": [
+        206454.3197
+      ],
+      "per_solid_bbox": [
+        {
+          "x": [
+            -105.8918,
+            105.8918
+          ],
+          "y": [
+            -48.4587,
+            45.4136
+          ],
+          "z": [
+            -360.0,
+            280.0
+          ]
+        }
+      ]
+    }
+  },
+  "step_a_six": {
+    "delivered": {
+      "pairs": 4,
+      "total_mm3": 2287.427718,
+      "rows": [
+        {
+          "part": "duct_A_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 2,
+              "volume_mm3": 1048.409726064
+            }
+          ],
+          "bbox": {
+            "x": [
+              -10.9093,
+              2.7798
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 0.7
+        },
+        {
+          "part": "duct_B_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 2,
+              "volume_mm3": 1048.40972595
+            }
+          ],
+          "bbox": {
+            "x": [
+              -2.7798,
+              10.9093
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 0.6
+        },
+        {
+          "part": "elevon_left_40x150",
+          "volume_mm3": 95.304133,
+          "per_solid": [
+            {
+              "solid": 3,
+              "volume_mm3": 95.304133199
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -90.5865
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          },
+          "seconds": 3.1
+        },
+        {
+          "part": "elevon_right_40x150",
+          "volume_mm3": 95.304133,
+          "per_solid": [
+            {
+              "solid": 1,
+              "volume_mm3": 95.304133201
+            }
+          ],
+          "bbox": {
+            "x": [
+              90.5865,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          },
+          "seconds": 2.9
+        },
+        {
+          "part": "duct_A_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 1.4
+        },
+        {
+          "part": "duct_B_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 1.4
+        }
+      ]
+    },
+    "prefix_v4": {
+      "pairs": 4,
+      "total_mm3": 2241.139674,
+      "rows": [
+        {
+          "part": "duct_A_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 1048.409726064
+            }
+          ],
+          "bbox": {
+            "x": [
+              -10.9093,
+              2.7798
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 2.2
+        },
+        {
+          "part": "duct_B_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 1048.40972595
+            }
+          ],
+          "bbox": {
+            "x": [
+              -2.7798,
+              10.9093
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 2.1
+        },
+        {
+          "part": "elevon_left_40x150",
+          "volume_mm3": 72.160111,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.16011103
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -91.4681
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          },
+          "seconds": 3.7
+        },
+        {
+          "part": "elevon_right_40x150",
+          "volume_mm3": 72.160111,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111039
+            }
+          ],
+          "bbox": {
+            "x": [
+              91.4681,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          },
+          "seconds": 3.7
+        },
+        {
+          "part": "duct_A_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 3.2
+        },
+        {
+          "part": "duct_B_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 3.5
+        }
+      ]
+    },
+    "final": {
+      "pairs": 4,
+      "total_mm3": 2241.139674,
+      "rows": [
+        {
+          "part": "duct_A_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 1048.409726064
+            }
+          ],
+          "bbox": {
+            "x": [
+              -10.9093,
+              2.7798
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 2.7
+        },
+        {
+          "part": "duct_B_vector_vane_bearing_ring",
+          "volume_mm3": 1048.409726,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 1048.40972595
+            }
+          ],
+          "bbox": {
+            "x": [
+              -2.7798,
+              10.9093
+            ],
+            "y": [
+              -26.9605,
+              26.9605
+            ],
+            "z": [
+              250.0,
+              254.0
+            ]
+          },
+          "seconds": 2.7
+        },
+        {
+          "part": "elevon_left_40x150",
+          "volume_mm3": 72.160111,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.16011103
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -91.4681
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          },
+          "seconds": 4.2
+        },
+        {
+          "part": "elevon_right_40x150",
+          "volume_mm3": 72.160111,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111039
+            }
+          ],
+          "bbox": {
+            "x": [
+              91.4681,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          },
+          "seconds": 3.8
+        },
+        {
+          "part": "duct_A_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 3.3
+        },
+        {
+          "part": "duct_B_82OD_78ID_L110",
+          "volume_mm3": 0.0,
+          "per_solid": [],
+          "bbox": null,
+          "seconds": 3.2
+        }
+      ]
+    }
+  },
+  "step_b_sweep": {
+    "delivered": {
+      "pairs": 8,
+      "total_mm3": 1255.303461661,
+      "rows": [
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_left",
+          "right": "duct_A_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              -85.0,
+              -82.978
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_left",
+          "right": "elevon_pushrod_left",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              -126.0,
+              -124.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_left",
+          "right": "fuselage_42_6[delivered]",
+          "volume_mm3": 95.304133195,
+          "per_solid": [
+            {
+              "solid": 3,
+              "volume_mm3": 95.304133195
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -90.5865
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_left",
+          "right": "motor_A_R3",
+          "volume_mm3": 409.833023133,
+          "bbox": {
+            "x": [
+              -62.0,
+              -55.25
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_right",
+          "right": "duct_B_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              82.978,
+              85.0
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_right",
+          "right": "elevon_pushrod_right",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              124.0,
+              126.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_right",
+          "right": "fuselage_42_6[delivered]",
+          "volume_mm3": 95.304133199,
+          "per_solid": [
+            {
+              "solid": 1,
+              "volume_mm3": 95.304133199
+            }
+          ],
+          "bbox": {
+            "x": [
+              90.5865,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_right",
+          "right": "motor_B_R3",
+          "volume_mm3": 409.833023096,
+          "bbox": {
+            "x": [
+              55.25,
+              62.0
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        }
+      ]
+    },
+    "prefix_v4": {
+      "pairs": 8,
+      "total_mm3": 1209.015417338,
+      "rows": [
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_left",
+          "right": "duct_A_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              -85.0,
+              -82.978
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_left",
+          "right": "elevon_pushrod_left",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              -126.0,
+              -124.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_left",
+          "right": "fuselage_42_6[prefix_v4]",
+          "volume_mm3": 72.160111033,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111033
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -91.4681
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_left",
+          "right": "motor_A_R3",
+          "volume_mm3": 409.833023133,
+          "bbox": {
+            "x": [
+              -62.0,
+              -55.25
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_right",
+          "right": "duct_B_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              82.978,
+              85.0
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_right",
+          "right": "elevon_pushrod_right",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              124.0,
+              126.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_right",
+          "right": "fuselage_42_6[prefix_v4]",
+          "volume_mm3": 72.160111038,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111038
+            }
+          ],
+          "bbox": {
+            "x": [
+              91.4681,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_right",
+          "right": "motor_B_R3",
+          "volume_mm3": 409.833023096,
+          "bbox": {
+            "x": [
+              55.25,
+              62.0
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        }
+      ]
+    },
+    "final": {
+      "pairs": 8,
+      "total_mm3": 1209.015417338,
+      "rows": [
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_left",
+          "right": "duct_A_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              -85.0,
+              -82.978
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_left",
+          "right": "elevon_pushrod_left",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              -126.0,
+              -124.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_left",
+          "right": "fuselage_42_6[final]",
+          "volume_mm3": 72.160111033,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111033
+            }
+          ],
+          "bbox": {
+            "x": [
+              -93.2353,
+              -91.4681
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_left",
+          "right": "motor_A_R3",
+          "volume_mm3": 409.833023133,
+          "bbox": {
+            "x": [
+              -62.0,
+              -55.25
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_part",
+          "left": "elevon_right",
+          "right": "duct_B_separate_nozzle_and_exit_lip",
+          "volume_mm3": 120.247564436,
+          "bbox": {
+            "x": [
+              82.978,
+              85.0
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.3958,
+              155.4054
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_mover",
+          "left": "elevon_right",
+          "right": "elevon_pushrod_right",
+          "volume_mm3": 2.267010083,
+          "bbox": {
+            "x": [
+              124.0,
+              126.0
+            ],
+            "y": [
+              -2.0,
+              0.5908
+            ],
+            "z": [
+              115.5918,
+              117.0
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_body",
+          "left": "elevon_right",
+          "right": "fuselage_42_6[final]",
+          "volume_mm3": 72.160111038,
+          "per_solid": [
+            {
+              "solid": 0,
+              "volume_mm3": 72.160111038
+            }
+          ],
+          "bbox": {
+            "x": [
+              91.4681,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.4371,
+              155.442
+            ]
+          }
+        },
+        {
+          "kind": "mover_vs_envelope",
+          "left": "elevon_right",
+          "right": "motor_B_R3",
+          "volume_mm3": 409.833023096,
+          "bbox": {
+            "x": [
+              55.25,
+              62.0
+            ],
+            "y": [
+              -1.5,
+              1.5
+            ],
+            "z": [
+              115.2635,
+              155.2957
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "wing_copies": {
+    "left": {
+      "signed_as_imported": -1353582.303186,
+      "volume_after_repair_mm3": 1353582.3032,
+      "reversed": true
+    },
+    "right": {
+      "signed_as_imported": 1353582.303186,
+      "volume_after_repair_mm3": 1353582.3032,
+      "reversed": false
+    }
+  },
+  "sweep_rows_that_differ": [
+    {
+      "pair": [
+        "elevon_left",
+        "fuselage_42_6"
+      ],
+      "delivered": 95.304133195,
+      "prefix_v4": 72.160111033,
+      "final": 72.160111033
+    },
+    {
+      "pair": [
+        "elevon_right",
+        "fuselage_42_6"
+      ],
+      "delivered": 95.304133199,
+      "prefix_v4": 72.160111038,
+      "final": 72.160111038
+    }
+  ]
+}

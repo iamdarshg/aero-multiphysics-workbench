@@ -1,0 +1,234 @@
+{
+  "delivered_solids": 4,
+  "delivered_per_solid_volume": [
+    624770.5298,
+    20808.2965,
+    75919.2366,
+    20808.2965
+  ],
+  "delivered_sum": 742306.3594,
+  "solid_pair_overlap": [
+    {
+      "i": 0,
+      "j": 1,
+      "volume_mm3": 0.0,
+      "bbox": null
+    },
+    {
+      "i": 0,
+      "j": 2,
+      "volume_mm3": 0.0,
+      "bbox": null
+    },
+    {
+      "i": 0,
+      "j": 3,
+      "volume_mm3": 0.0,
+      "bbox": null
+    },
+    {
+      "i": 1,
+      "j": 2,
+      "volume_mm3": 0.0,
+      "bbox": null
+    },
+    {
+      "i": 1,
+      "j": 3,
+      "volume_mm3": 0.0,
+      "bbox": null
+    },
+    {
+      "i": 2,
+      "j": 3,
+      "volume_mm3": 0.0,
+      "bbox": null
+    }
+  ],
+  "pairwise_overlap_total": 0.0,
+  "delivered_union_volume": 742306.3595,
+  "delivered_union_solids": 4,
+  "union_seconds": 84.4,
+  "prefix_volume": 601199.8849,
+  "final_volume": 206454.3197,
+  "elevon_rows": [
+    {
+      "elevon": "elevon_left_40x150.step",
+      "per_solid": [
+        {
+          "solid": 0,
+          "volume_mm3": 0.0,
+          "bbox": null
+        },
+        {
+          "solid": 1,
+          "volume_mm3": 0.0,
+          "bbox": null
+        },
+        {
+          "solid": 2,
+          "volume_mm3": 0.0,
+          "bbox": null
+        },
+        {
+          "solid": 3,
+          "volume_mm3": 95.304133,
+          "bbox": {
+            "x": [
+              -93.2353,
+              -90.5865
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          }
+        }
+      ],
+      "vs_union": {
+        "volume_mm3": 95.304133,
+        "bbox": {
+          "x": [
+            -93.2353,
+            -90.5865
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.438,
+            155.442
+          ]
+        }
+      },
+      "vs_prefix": {
+        "volume_mm3": 72.160111,
+        "bbox": {
+          "x": [
+            -93.2353,
+            -91.4681
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.4371,
+            155.442
+          ]
+        }
+      },
+      "vs_final": {
+        "volume_mm3": 72.160111,
+        "bbox": {
+          "x": [
+            -93.2353,
+            -91.4681
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.4371,
+            155.442
+          ]
+        }
+      }
+    },
+    {
+      "elevon": "elevon_right_40x150.step",
+      "per_solid": [
+        {
+          "solid": 0,
+          "volume_mm3": 0.0,
+          "bbox": null
+        },
+        {
+          "solid": 1,
+          "volume_mm3": 95.304133,
+          "bbox": {
+            "x": [
+              90.5865,
+              93.2353
+            ],
+            "y": [
+              -0.9002,
+              1.3085
+            ],
+            "z": [
+              115.438,
+              155.442
+            ]
+          }
+        },
+        {
+          "solid": 2,
+          "volume_mm3": 0.0,
+          "bbox": null
+        },
+        {
+          "solid": 3,
+          "volume_mm3": 0.0,
+          "bbox": null
+        }
+      ],
+      "vs_union": {
+        "volume_mm3": 95.304133,
+        "bbox": {
+          "x": [
+            90.5865,
+            93.2353
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.438,
+            155.442
+          ]
+        }
+      },
+      "vs_prefix": {
+        "volume_mm3": 72.160111,
+        "bbox": {
+          "x": [
+            91.4681,
+            93.2353
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.4371,
+            155.442
+          ]
+        }
+      },
+      "vs_final": {
+        "volume_mm3": 72.160111,
+        "bbox": {
+          "x": [
+            91.4681,
+            93.2353
+          ],
+          "y": [
+            -0.9002,
+            1.3085
+          ],
+          "z": [
+            115.4371,
+            155.442
+          ]
+        }
+      }
+    }
+  ]
+}

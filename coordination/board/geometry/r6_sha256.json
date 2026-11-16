@@ -1,0 +1,71 @@
+{
+  "source": {
+    "part_nose_v2.step": "d9ba7aeb7716cdd1ba4f289d284944e34e0ebab20202d39335bd9b58ecb9cadf",
+    "part_nose_v2.brep": "c1f30e77130797fef01bb9ce831aab7d0d1a6b20b8575309374591f40b9e1f9c"
+  },
+  "copies": {
+    "drone-mech_fuselage_rev1.step": "d9ba7aeb7716cdd1ba4f289d284944e34e0ebab20202d39335bd9b58ecb9cadf",
+    "drone-mech_fuselage_rev1.brep": "c1f30e77130797fef01bb9ce831aab7d0d1a6b20b8575309374591f40b9e1f9c"
+  },
+  "identical": {
+    "part_nose_v2.step": true,
+    "part_nose_v2.brep": true
+  },
+  "files": [
+    {
+      "file": "drone-mech_fuselage_rev1.brep",
+      "bytes": 4712827,
+      "sha256": "c1f30e77130797fef01bb9ce831aab7d0d1a6b20b8575309374591f40b9e1f9c"
+    },
+    {
+      "file": "drone-mech_fuselage_rev1.step",
+      "bytes": 9801595,
+      "sha256": "d9ba7aeb7716cdd1ba4f289d284944e34e0ebab20202d39335bd9b58ecb9cadf"
+    },
+    {
+      "file": "drone-mech_fuselage_rev1.stl",
+      "bytes": 2998284,
+      "sha256": "e18a03ea03749d6f266500bd451105fd51c1b0a14a32654ea4ba809019b9073d"
+    },
+    {
+      "file": "drone-mech_fuselage_rev1_drawing.pdf",
+      "bytes": 599720,
+      "sha256": "4947ce2687f6723614170f31a321c16451635b81d31fa5375a5ba725b5c85955"
+    },
+    {
+      "file": "r1b_doubles.json",
+      "bytes": 4400,
+      "sha256": "a85cde143c2c3b94b79e669a7287cc1878d53c7447fa20594db8a30bcc372194"
+    },
+    {
+      "file": "r1c_pairs.json",
+      "bytes": 23611,
+      "sha256": "bfde1b03a99ee93549f7147e6f0bb4598e0ff6d162321aafd2c57fca6fab111f"
+    },
+    {
+      "file": "r2_mesh.json",
+      "bytes": 3916,
+      "sha256": "7739e74dff92b7a7c5370f876359df3a8d4783f057ffdf71e35a2c9a4be56559"
+    },
+    {
+      "file": "r5_validate.json",
+      "bytes": 9831,
+      "sha256": "b34cea5683f6e806c45d75ed4aab055a2884b3f38c366f2eaddf54ec8f9a2107"
+    },
+    {
+      "file": "r5b_wall.json",
+      "bytes": 11702,
+      "sha256": "908b104047630440260d11b01c1af9bc18ba0f02274d9fa7f1d2f6d60cfdb34f"
+    },
+    {
+      "file": "r5d_edge.json",
+      "bytes": 60704,
+      "sha256": "caeb235151996db264a565d8ae7f565989e3c7337c310a0577c3141a2ebc08db"
+    },
+    {
+      "file": "r6_sha256.json",
+      "bytes": 2337,
+      "sha256": "dac9c915342a4ed54df8275dd8b0b687d62a19b12ab203427cdbcb44c2b91e59"
+    }
+  ]
+}

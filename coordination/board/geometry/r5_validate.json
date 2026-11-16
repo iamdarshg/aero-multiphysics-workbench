@@ -1,0 +1,493 @@
+{
+  "step_file": "E:\\engineering-portfolio-audit\\evidence\\dm-fore-fill\\out\\part_nose_v2.step",
+  "brep_file": "E:\\engineering-portfolio-audit\\evidence\\dm-fore-fill\\out\\part_nose_v2.brep",
+  "density_kg_m3": 1550.0,
+  "topology": {
+    "solids": 1,
+    "shells": 1,
+    "faces": 540,
+    "edges": 3122,
+    "vertices": 6244,
+    "closed": [
+      true
+    ],
+    "valid": true,
+    "health": [
+      {
+        "edges": 1561,
+        "free": 0,
+        "nonManifold": 0
+      }
+    ]
+  },
+  "measure": {
+    "volume_mm3": 206454.3197,
+    "area_mm2": 359294.2393,
+    "2V/A_mm": 1.1492,
+    "mass_g": 320.0042,
+    "bbox": {
+      "x": [
+        -105.8918,
+        105.8918
+      ],
+      "y": [
+        -48.4587,
+        45.4136
+      ],
+      "z": [
+        -360.0,
+        280.0
+      ],
+      "dx": 211.7837,
+      "dy": 93.8724,
+      "dz": 640.0,
+      "instrument": "BRepBndLib.AddOptimal"
+    },
+    "volume_shape_volume_mm3": 206420.2211
+  },
+  "bands": [
+    {
+      "vol": 67254.335,
+      "area": 123727.862,
+      "artificialFaces": 4,
+      "artificialArea": 557.8046,
+      "A_eff": 123170.0573,
+      "name": "fore",
+      "2V/A_eff": 1.0921
+    },
+    {
+      "vol": 26262.2633,
+      "area": 44531.8957,
+      "artificialFaces": 10,
+      "artificialArea": 724.3239,
+      "A_eff": 43807.5718,
+      "name": "pinch",
+      "2V/A_eff": 1.199
+    },
+    {
+      "vol": 112937.7213,
+      "area": 192208.8161,
+      "artificialFaces": 8,
+      "artificialArea": 792.4263,
+      "A_eff": 191416.3898,
+      "name": "aft",
+      "2V/A_eff": 1.18
+    }
+  ],
+  "wall_rays": {
+    "rows": [
+      {
+        "z": -340.0,
+        "az": 45.0,
+        "crossings": 2,
+        "r_in": 33.2513,
+        "r_out": 34.6981,
+        "wall": 1.4469
+      },
+      {
+        "z": -340.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 25.3226,
+        "r_out": 26.5226,
+        "wall": 1.2
+      },
+      {
+        "z": -340.0,
+        "az": 135.0,
+        "crossings": 2,
+        "r_in": 33.2513,
+        "r_out": 34.6981,
+        "wall": 1.4469
+      },
+      {
+        "z": -340.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 25.3226,
+        "r_out": 26.5226,
+        "wall": 1.2
+      },
+      {
+        "z": -320.0,
+        "az": 45.0,
+        "crossings": 2,
+        "r_in": 48.8088,
+        "r_out": 50.2938,
+        "wall": 1.4851
+      },
+      {
+        "z": -320.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 36.544,
+        "r_out": 37.744,
+        "wall": 1.2
+      },
+      {
+        "z": -320.0,
+        "az": 135.0,
+        "crossings": 2,
+        "r_in": 48.8088,
+        "r_out": 50.2938,
+        "wall": 1.4851
+      },
+      {
+        "z": -320.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 36.544,
+        "r_out": 37.744,
+        "wall": 1.2
+      },
+      {
+        "z": -280.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -280.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -280.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -280.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 46.1025,
+        "r_out": 47.3025,
+        "wall": 1.2
+      },
+      {
+        "z": -240.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -240.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -240.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -240.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 46.7308,
+        "r_out": 47.9308,
+        "wall": 1.2
+      },
+      {
+        "z": -180.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -180.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -180.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -180.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 40.6247,
+        "r_out": 41.8247,
+        "wall": 1.2
+      },
+      {
+        "z": -160.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -160.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -160.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -160.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 39.2557,
+        "r_out": 40.4557,
+        "wall": 1.2
+      },
+      {
+        "z": -140.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -140.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -140.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -140.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 39.2639,
+        "r_out": 40.4639,
+        "wall": 1.2
+      },
+      {
+        "z": -120.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -120.0,
+        "az": 90.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -120.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": -120.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 40.7257,
+        "r_out": 41.9258,
+        "wall": 1.2
+      },
+      {
+        "z": -80.0,
+        "az": 45.0,
+        "crossings": 2,
+        "r_in": 60.2118,
+        "r_out": 60.7264,
+        "wall": 0.5145
+      },
+      {
+        "z": -80.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 43.9692,
+        "r_out": 45.1692,
+        "wall": 1.2
+      },
+      {
+        "z": -80.0,
+        "az": 135.0,
+        "crossings": 2,
+        "r_in": 60.2118,
+        "r_out": 60.7264,
+        "wall": 0.5145
+      },
+      {
+        "z": -80.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 43.9692,
+        "r_out": 45.1692,
+        "wall": 1.2
+      },
+      {
+        "z": 0.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 0.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 42.8,
+        "r_out": 44.0,
+        "wall": 1.2
+      },
+      {
+        "z": 0.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 0.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 42.8,
+        "r_out": 44.0,
+        "wall": 1.2
+      },
+      {
+        "z": 60.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 60.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 42.1498,
+        "r_out": 43.3498,
+        "wall": 1.2
+      },
+      {
+        "z": 60.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 60.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 42.1498,
+        "r_out": 43.3498,
+        "wall": 1.2
+      },
+      {
+        "z": 120.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 120.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 42.8,
+        "r_out": 44.0,
+        "wall": 1.2
+      },
+      {
+        "z": 120.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 120.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 42.8,
+        "r_out": 44.0,
+        "wall": 1.2
+      },
+      {
+        "z": 180.0,
+        "az": 45.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 180.0,
+        "az": 90.0,
+        "crossings": 4,
+        "r_in": 41.0118,
+        "r_out": 42.2117,
+        "wall": 1.2
+      },
+      {
+        "z": 180.0,
+        "az": 135.0,
+        "crossings": 0,
+        "wall": null
+      },
+      {
+        "z": 180.0,
+        "az": 270.0,
+        "crossings": 4,
+        "r_in": 41.0118,
+        "r_out": 42.2117,
+        "wall": 1.2
+      }
+    ],
+    "n": 26,
+    "min": 0.5145,
+    "max": 1.4851,
+    "median": 1.2,
+    "below1p2": 2
+  },
+  "wall_sections": {
+    "error": "r5b_wall.json missing"
+  },
+  "brep": {
+    "volume_mm3": 206454.3208,
+    "solids": 1,
+    "shells": 1,
+    "valid": true,
+    "bbox": {
+      "x": [
+        -105.8918,
+        105.8918
+      ],
+      "y": [
+        -48.4587,
+        45.4136
+      ],
+      "z": [
+        -360.0,
+        280.0
+      ],
+      "dx": 211.7837,
+      "dy": 93.8724,
+      "dz": 640.0,
+      "instrument": "BRepBndLib.AddOptimal"
+    },
+    "step_minus_brep_mm3": -0.001091,
+    "rel": 5.3e-09
+  },
+  "mesh_vs_step": {
+    "stl": "E:\\engineering-portfolio-audit\\evidence\\dm-final-package\\out\\drone-mech_fuselage_rev1.stl",
+    "triangles": 59964,
+    "linear_deflection_mm": 0.002,
+    "linear_deflection_rel": 9.687e-09,
+    "stl_volume_mm3": 206347.1658,
+    "step_minus_stl_mm3": 107.1539,
+    "rel_error": -0.0005190199,
+    "watertight": true,
+    "euler": -2,
+    "tolerance_stated_mm3": 412.90863941803565,
+    "tolerance_stated_rel": 0.002,
+    "pass": true
+  }
+}
