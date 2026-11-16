@@ -445,6 +445,54 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### Corrections: the fab-real DRC count is 621/631, and the rail margin is coefficient-dependent
+
+**1. The DRC number a fab would actually see is 621 (631 all-track), not 523.** The 523 is what KiCad
+**reports**; there is a **98-item population it cannot report at all** — sub-0.200 mm pad rings. The
+verifier's independent split:
+
+| class | count |
+|---|---|
+| **footprint-bound at 4 oz / 0.25 mm** | **413** (371 pad↔pad at 0.200 + 42 PTH rings) |
+| **copper-bound** | **110** (43 clearance: 24 T↔T, 19 pad↔T; 28 via ring; 16 via diameter; 16 dangling; 4 width; 3 neck) |
+| **pad rings KiCad cannot report** | **98** (140 total sub-0.200 rings, of which 42 are already counted above) |
+| **reported total** | **523** (533 with `--all-track-errors`) |
+| **fab-real total** | **621** (631 with `--all-track-errors`) |
+
+Also confirmed from the verifier's own controls: at the board's **own rules the count is 16** — that is
+the number most ESC reports were really describing. At **4 oz / 0.20 mm it is 102**. The clearance
+report caps at **499** (proven with 550 and 1,000 pad pairs).
+
+**2. The rail passes only on one IPC coefficient.** Reproduced independently: BATP 0.5242 → **23.09 A**,
+BATN 1.4139 → **47.40 A**, re-poured 1.5082 → **49.67 A** (48 barrels), 1.9166 → **59.09 A**,
+`BATP_IN` 1.428 → **47.74 A**, corridor 47.12 A.
+
+**43.5 A is met at the stated 20 K basis with k = 0.048. At k = 0.024 the same copper gives 24.8 A.**
+So the rail's adequacy is **coefficient-dependent**, and it should be stated with the constant, not as a
+bare pass. Four further qualifications:
+- **the re-pour exists only in evidence — the repo board is still at 23.1 A**
+- it covers **cell 1 only**, not the other five rails
+- the **corridor figure is inherited**, not re-measured
+- at k = 0.024 the rail **fails** at 24.8 A against 43.5 A
+
+**3. drone-arm's repo board has 36 non-through vias, not 15.** The verifier measured the board of record
+directly: **341 vias, 36 non-through (33 microvia + 3 blind/buried), min drill 0.100 mm.** The **15 is the
+`fanout3` work artefact**, not the repo file. Every reference to "15 vias" in this board should be read
+as "15 on the best work artefact, **36 on the repo board of record**."
+
+The conclusion does not change — both numbers are HDI, and both are unfixable by local edit — but the
+repo board is **worse than the number that has been quoted**, and that has to be said plainly.
+
+**4. Nothing regressed.** Verifier-confirmed on the ESC: 371 gaps, 140 rings, 687/687 on F.Cu, **0
+non-through vias**, unconnected **1,542 → 1,536**. drone-arm work board byte-identical. Code-SDR
+untouched.
+
+**5. Protocol breach, mine:** two wave-10 reports correct this board without a BOARD CORRECTION line.
+That is the same discipline I have demanded of every unit, and I should have applied it to the board
+first. Corrected here.
+
+---
+
 ### ESC rail re-pour: EXECUTED, and 43.5 A is met
 
 | element | before | after | verdict |
