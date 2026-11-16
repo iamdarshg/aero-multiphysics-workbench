@@ -445,6 +445,98 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### drone-arm: 17 → 1. And a correction to the "no free site exists" claim
+
+**The obstruction is a crowd, not an object.** At its own site each of the 17 vias faces **3–24 infringing
+objects, median 13**, and **15 of 17 include an immovable pad.** Binding items: **14 track-bound** with
+shortfalls **0.119–0.650 mm** (`/LNA_EN` −0.550, `/XIN` −0.500, `/SENS_SCLK` −0.512, `/ICM_nCS` −0.514,
+`/SENS_MOSI` −0.450, `/1V1` −0.450, `/USB_DM_MCU` −0.326, `/RF_nCS` −0.150), **2 pad-bound**
+(C12.2 `/GND` −0.282, **FB1.2 `/3V3_ADC` −0.650**), **1 via-bound** (`/RF_GPIO0`, 350 µm, −0.119).
+
+**A true zero-deletion conversion is impossible — searched, not assumed:** over **504 candidates per via**
+(21 radii × 24 directions + chord jog + A* corridor), **0 of 17 convert**, with a best miss of **0.031 mm**
+against the **0.450 mm** lane a 0.20 mm track needs. So a per-via clearing is required.
+
+**Batches, and the sweep is what worked:**
+
+| clearing radius | kept / 17 | non-through left | unconnected |
+|---|---|---|---|
+| **R = 0.70 mm** | **15 / 17** | **2** | **30** |
+| R = 1.30 mm | 16 / 17 | **1** | 36 |
+| R = 1.60 mm | 16 / 17 | 1 | — |
+
+**Final at R = 1.30: ONE non-through** (`In2→B`), DRC set diff **`+clearance 1, +track_dangling 51,
++via_dangling 3, −via_diameter 1`**, **unconnected 36 on both tools**, RF void **bit-identical
+4.1699 mm² / 9.8338 %**, pads sha identical. Re-routing restored **242 verbatim + 18 detoured + 10 vias**;
+**123 remain unresolved.** freerouting was attempted at `-mt 5` and **wrote no `.ses` in 20 minutes** — no
+result was taken from it.
+
+**`/RF_GPIO0` at (57.400, 56.100) is the last one, and it is convertible on its own** — a legal site sits
+**0.177 mm** away — **but the other 16 vias' corridors block it.** It also carries the single clearance
+error and the 0.100 mm drill.
+
+**So 0/0 is not reachable by this route, but the state improved from 10/17 with 81 unconnected to
+15/17 with 30.** That is real progress and still not a pass.
+
+### ESC split: assembles — as a board respin, at 151.77 × 122.55 × 55.80 mm
+
+**The three-column header does not fit where two did.** Real footprint: **3 × `TSW-120-15-G-D` +
+3 × `SSW-120-01-G-D` = 18.27 × 51.81 mm = 946.6 mm²** (a triple-row part traps its middle row on a 2-layer
+escape, so three 2-column parts are correct). On the current 138.35 mm board the free margin is **7.85 mm**,
+so forcing it on **overlaps the sink by 11.92 mm (617.6 mm²)** and drills **Q3CL and Q6CL.**
+
+**All four conventional fixes fail, with numbers:**
+
+| option | why it fails |
+|---|---|
+| (a) shrink/move sink | sink is only **0.72 mm** from the last FET body; shrinking **13.42 mm uncovers 4 FETs → 521 °C** |
+| (b) route around | largest free rectangle is **162 mm²** against **315.5 mm²** needed — **0 of 3 sites** |
+| (c) notch the sink | uncovers Q3CL/Q6CL → **521 °C** |
+| (d) columns along the long edge | **10.6 mm** of depth exists against **19.77 mm** needed |
+
+**Chosen: (b′) the columns stay at the sink's end and the board grows 13.42 mm in x** — **zero thermal
+cost, nothing moved**, plus the busbar lands trimmed to **x 130.50** (the old site drilled the BATN land).
+**120 pins verified: 1.50 mm to the sink, 1.50 mm to edge, 0 violations.**
+
+**Tj stays 123.2 °C and the Sil-Pad is still the limiter (45.6 K of 78.2 K). Height 55.80 mm.
+Envelope 151.77 × 122.55 × 55.80 mm. ASSEMBLES: YES — but only as a board respin,** not on 138.35 mm —
+and the two-column stack did not either.
+
+### drone-mech: the knife edge is a **2.83° rim**, not a 0° sliver — and the fix costs 157.55 g
+
+**A correction to the previous diagnosis:** the minimum convex material angle on the Ø85.2 bore rim is
+**2.8334°** at (±56.959, ±40.581, −70.98), across **268 rim edges** (116 samples under 10°). Width at
+50 µm is **2.47 µm**. **The "0°" was wrong** — zero is the analytic tangency at **r 40.7627**, which lies
+**inside the bore and carries no material.** Breakout depth is **3.1315 mm** worst (the shipped loft dips to
+39.4685), **not 1.806 mm.**
+
+**Three of four options were refuted by measurement:** (b) BODY_HEIGHT 94.97 → **2 solids**,
+**403.7881 g (+26.2 %)** and the land only covers z −70…+120. (a) boss → introduces a tangent junction and a
+floating sleeve. (d) accepted → rejected, because **no process lays a 2.47 µm feather** and **381.6 cm² of
+flank is simply missing.**
+
+**(c) chosen and executed** — `rev2_fairing.step`, a per-duct smooth-max fairing on the section wire,
+**F = 44.60 (achieved Ø89.2)**, gate z −112…130, 11-station loft kept:
+
+| | result |
+|---|---|
+| solid count | **1 solid, 564 faces, valid, 0 free / 0 non-manifold** |
+| volume | **308,099.0371 mm³** |
+| mass | **477.5535 g — +157.5493 g** |
+| walls | **1.0804 / 1.5060 / 1.5766 mm** |
+| interference | **9,125.712739 vs stock 9,134.218881 — 0 rows added, 0 removed, 4 changed (all down)** |
+| Ø82 seat | **untouched** — ring STEPs **byte-identical**, bore r 41.035 = **Ø82.070**, 4.00 mm land, ring↔duct **0.000000**, ring↔fuselage **0** |
+
+**Knife edges are NOT fully gone:** the band rim is eliminated (lands **1.91 / 1.91 / 1.33 mm**), but a
+**residual 5.1162° at z +172** remains — closing it needs re-stationing (**measured: 3 solids**) or a tail
+fairing that would sit inside the ring seat.
+
+**Interference basis needs reconciling:** this unit reports **9,125.712739 mm³** where the ring fix reported
+**1,556.232076 mm³ / 6 pairs**. Those are different files or different p-air populations, and one of them is
+not the airframe total.
+
+---
+
 ### drone-arm: growth is DEAD on every edge — and it was never an edge problem
 
 **The "grow the board" recommendation is refuted.** Edge distances from U10's pad copper:
