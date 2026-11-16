@@ -533,6 +533,89 @@ quote.
 
 ---
 
+### ESC split: **IT ASSEMBLES.** And the machined heatsink fits the cap after all
+
+**Sink goes UNDER the power board — forced, not chosen.** The TOLT's cooling pad **is the package top
+face**, so the sink must be on the FET solder side, and the owner wants the control board on top. The
+alternative needed a **31.15 mm post** (a TSW-15 tips at 15.75, only the unlisted `-26` reaches) **plus a
+100 °C control board.** So: sink below, control board on standard headers above.
+
+**Height budget: 34.00 mm below the FET contact face + 21.80 mm above = 55.80 mm total enclosure.**
+
+**All three geometry defects are fixed:**
+
+| defect | fix |
+|---|---|
+| **(a)** header 15.4 mm too short | gap is now **10.0 mm**; **Samtec `TSW-120-15-G-D`** (post 13.21, OAL 18.54, $5.69) + **`SSW-120-01-G-D`** ($6.84); tip at z 19.95, **0.8 mm inside the socket** |
+| **(b)** header overlapped the sink by 2.7 mm | header stays at **x 131.5–136.6, y 20.0–70.8** (40 pins); sink **125 × 74 at x 5.5–130.5, y 7.0–81.0** → **1.0 mm clear, and opposite faces anyway.** Deleted **J1–J6 (144 pads, zero nets)** that sat in the sink; added clamp holes at (47.5,14), (90.5,14), (47.5,74), (90.5,74) |
+| **(c)** six cans pierced the gap | cans moved **y 116.5 → 112.5** (bodies 103.5–121.5); they hang **below the board, 22.5 mm outboard of the sink, crossing nothing** |
+
+**9 board edits. Assembles: YES.**
+
+**THE MACHINED HEATSINK MEETS THE $78/part BUDGET — the cap holds.**
+
+| machining approach | 5 pcs | 50 pcs |
+|---|---|---|
+| **extrusion + machined face** | **$44.5** | **$33.7** |
+| **machined base + bonded fins** | **$54.0** | **$43.2** |
+| waterjet + braze | $64 | $53 |
+| skived | $80.5 | $69.7 |
+| full billet | $92 | $81.2 |
+
+**The first two meet $78 at 5 pcs**, so a genuinely custom machined part is affordable — the cap was never
+broken by "machined", it was broken by "full billet". At $44.5 the two-board total stays near **$473–544**,
+comfortably inside the 1.5× cap.
+
+**Thermals: Tj at 80 A = 123.2 °C**, and it is **pad-limited — 45.6 K of that is the Sil-Pad.** So the
+interface material, not the sink, is the next lever if more margin is wanted.
+
+### ESC pin split: 7 MCUs collapse to ONE, and the sense decision is clean
+
+**The split the owner asked for, finally done:**
+
+| board | contents |
+|---|---|
+| **CONTROL** | MCU (**7 → 1**: the six `STM32G431` merge into a single `RP2354B`), BEC, CAN-FD, USB, watchdog, SWD, crystals, and the **whole measurement system — 31 analogue channels into 3 × 16-bit simultaneous ADCs**, plus calibration |
+| **POWER** | 36 FETs, 24 shunts, 6 `DRV8353` gate stages, **19 front-end amplifiers (≤ 3 mm from their shunts)**, bus capacitance, power connector |
+| **DELETED entirely by the shared bus** | **6 `ISO6731` + 6 `RFM-0505S` + 6 `TPS70933` + 6 local SWD blocks** |
+
+**The literal split cuts 207 nets; the six-MCU merge brings it to 77 signals.** So the shared bus does not
+just save copper — **it deletes 24 isolated-supply and isolator blocks**, which is most of what made the
+original board 382 cm².
+
+**PWM across the header is harmless — proven:** driver stays on the power board, **0 nH added**. In 3× mode
+that is **21 lines (7 channels × 3)**, not 36. Per line **8.29 nH** adjacent return (17.5 far) → **8.55 mV of
+3.3 V**, **0.18 ns skew = 0.18 % of the 200 ns propagation delay**, and **dI/dt 4,981× lower than a gate
+edge.** No termination needed for signal integrity; **22 Ω for crosstalk**; and the **1 nF at each ADC input
+is mandatory** (41 mV → 0.165 mV).
+
+**The current-sense decision is unambiguous:** contact resistance was never the risk
+(**20 mΩ/pin × 40 µA = 1.6 µV = 0.003 % FS**). The **header multiplies mutual coupling 12.2×**, so:
+
+| option | error |
+|---|---|
+| **amplifier stays on POWER, output crosses** | **0.215 mV = 0.020 % FS** |
+| Kelvin pair crosses | **73.9 mV = 136 % FS** |
+
+So the amplifiers stay with their shunts and only the analogue output crosses — as the last wave
+recommended, now with the numbers behind it.
+
+**Header: 3 × 2×20 = 120 positions** (77 signal + 43 ground; H1 25/15, H2 31/9, H3 21/19). **Worst pin
+120.2 mA (`BAT_P`) = 4.0 % of the 3 A rating** — nothing exceeds 3 A, so a 2.54 mm header is genuinely
+adequate.
+
+**CONTROL BOARD: 63.0 cm² (105 × 60 mm), 2-layer, single-sided, HDI-free.** Tiny.
+
+**Corrected total area: power 188.7–250 cm² + control 63.0 cm² = 251.7–313 cm² against 382.71 cm² — an
+18 % to 34 % reduction, not the 35–50 % the power board alone suggested.** Still smaller, and the BOM is
+simpler, but the honest pair-level number is 18–34 %.
+
+**One residual:** with three header columns the sink overlap is worse than before — the report flags it as
+unchanged-to-worse at the vertical plane, so the **x/y clearance needs one more pass** before this is
+signed off.
+
+---
+
 ### ESC split: economics PASS, area PASS — **but the stack does not assemble**
 
 **1. COST — PASS, comfortably.** Verified against live quotes, not estimates:
