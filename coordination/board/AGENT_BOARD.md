@@ -445,6 +445,96 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **drone-mech: ONE SOLID ACHIEVED.** The cause was the cavity loft, and the fix is resampling
+
+**The fix: resample the cavity from the MEASURED SKIN** — 56 stations, offset −2.4 mm per axis from the
+actual skin, rather than from its own station table.
+
+| fix attempted | cavity volume escaping the skin | solids after cavity cut |
+|---|---|---|
+| baseline (delivered) | **114,150.549 mm³** in 3 lumps, z −196.2 … +89.6 | **2** |
+| (a) cavity `ruled=True` | 119,041.105 mm³ | 2 — **worse than baseline** |
+| (b) cavity resampled from its own station table | 119,040.984 mm³ | 2 — **identical, which proves the station table is not the missing information** |
+| **(b′) cavity resampled from the measured skin, 56 stations, −2.4 mm/axis** | **0.000 mm³** | **1** |
+| (c) shipped cavity clipped to a 3.0 mm inset limit | 0.000 mm³ | 1 — but **+227,754 mm³ (+353 g)** |
+| (alt) outer loft `ruled` as well | 0.000 mm³ | 1 — but the service slot **severs 2 × 20,910.39 mm³** |
+
+**Full six-cut part (b′): ONE SOLID, 601,199.886 mm³, 931.860 g, one closed shell, 0 free and 0
+non-manifold edges of 1,397, `BRepCheck` valid, STEP round-trips.**
+
+**The bore is a non-issue once the cavity is right: one solid at ALL 15 radii from 30 to 60 mm.** The
+delivered 42.6 mm stays. So last round's bore sweep really was tuning a symptom.
+
+**An attribution correction worth keeping:** the **211 mm and 166 mm excursions are the OUTER loft's**,
+not the cavity's — 211.2177 at z −250 and 165.9622 at z −160 against its own 186 mm station. **The
+cavity's own excursion is ≤1.77 mm.** And **218 of 637 ray stations carry less than the design 2.4 mm
+wall** (z −199 … +119), which is why resampling from the *measured* skin works when resampling from a
+table does not.
+
+**Walls after the fix: pinch 1.199 mm, aft 1.180 mm, fore 8.982 mm.** The fore region is **7.49× the
+1.2 mm shell** and is **unchanged in kind** — it is caused by the **cavity's z −298.8 start**, not by the
+loft. **The remaining blocker is the fore bulk fill: 400,277 mm³ / 620 g of surplus material.**
+
+**Interference: rings 1,048.409726 mm³ each, bit-identical to the delivered part.** The +50.171 mm³ pairs
+seen at r=42.4375 are **bore-driven only** (50.170790 measured identically on both bodies), so **they are
+not incurred** by this fix. Elevons −23.144 mm³ each.
+
+### ESC: the bigger board is WORSE, and no board size fixes it
+
+**The 491.73 cm² board at 3 oz does not reach 11.963 mm — it reaches less than the compacted one.**
+
+| phase (requirement 11.963 mm) | available | ratio | short by |
+|---|---|---|---|
+| A | **8.300 mm** | 0.69× | **3.663 mm** |
+| B | **5.420 mm** | 0.45× | 6.543 mm |
+| C | **5.420 mm** | 0.45× | 6.543 mm |
+
+**+28 % area bought −11.9 % corridor width** (9.420 → 8.300). The longer, more obstructed corridors of a
+bigger board *lose* width rather than gaining it.
+
+**So no board size works.** The premise's own scaling model would have demanded **708.7 cm² (+44 %)**;
+the measurement says the direction is wrong.
+
+3 oz DRC on that board: **523 → 102, GONE 421, ADDED 0**, all **371** pad↔pad rows clear, actual gaps
+median and max **0.200 mm with none below.** The rule file is proven loaded: **102 → 611 at clearance
+1.000**, and the no-`.dru` arm reads **126**.
+
+**Gate: EXIT 1.** G1 **−104.2 %**, G2 FAIL, G3 PASS, G4 PASS, G5 FAIL (no spreader drawn), G6 FAIL
+(**0 of 27**), G7 PASS (101.4 °C), G8 FAIL (67.6 %). **The 4 oz arm also exits 1.**
+
+### The ESC's real, affordable number: 34.5 A bus / 36.6 A phase
+
+**Six layers resolves only half the problem.** Proposed stack **3/4/1/1/4/3 oz (105/140/35/35/140/105 µm),
+1.60 mm**: L1 fine-pitch and phase fanout, L2 phase planes, L3 GND, L4 signal, L5 BATP/BATN, L6 terminals.
+
+**Outer layers cannot be 4 oz** — the QFN-80 and USB-C lands are SMD and no fab publishes a 4 oz pattern
+below 0.229 mm. So the outer stays 3 oz and the 89 gaps stay cleared. Six layers then buys inner plane
+area:
+
+| element | capacity at 6 layers | margin |
+|---|---|---|
+| phase on L2 (4 oz, 28 mm assumed) | **49.6 A** | 1.14× |
+| `BATP_IN` | 44.4 A | 1.11× |
+| BATP | 52.9 A | 1.32× |
+| BATN | 63.5 A | 1.59× |
+| **40 A bus shunt pad** | **34.5 A** | **0.86× — and it is LAYER-COUNT-INVARIANT** |
+
+**The shunt land still holds 23 barrels where 27 are needed, and no layer count adds pad area. So six
+layers alone still fails G6.**
+
+**Prices, quoted 5 pcs at 382.71 cm² (2026-11-16):** 4-layer 1 oz **$296–433**; 6-layer 1 oz
+**$626–720**. 3/4 oz is quote-only (PCBWay, 5–10 build days), estimated **4L 3 oz $450–870** and the
+proposed **6L $1,300–1,900**. Multi-CB: 4L **€59**, 6L **€98** at 80 × 100 mm and 1 oz.
+
+**So the affordable build is 4-layer 3 oz at 34.5 A bus / 36.6 A phase, until the shunt land can hold 27
+barrels. Six layers plus that land fix is the only path to 43.5 A — six layers alone costs ~2× and still
+fails.**
+
+**Six layers is not HDI, so it does not breach the no-HDI rule — but it breaks the owner's stated
+4-layer board, and that is their approval to give.**
+
+---
+
 ### **THE ESC HAS A CONTRADICTION: 4 oz fails DRC, 3 oz fails ampacity. Neither works.**
 
 Both halves were measured on real boards.
