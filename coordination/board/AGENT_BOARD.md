@@ -445,6 +445,94 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### drone-mech bearing rings: **GENUINE CLASH — a design defect, not a fit**
+
+**The disposition is done, and it is the bad answer.**
+
+| | |
+|---|---|
+| what they are | **thrust-vector vane carrier**: `annulus(ro 48, ri 41, z 250, len 4)`, 6061-T6, **21.14 g**, at the nozzle exit plane, its Ø82 bore on the duct OD |
+| overlap vs fuselage | **1,048.409726 mm³ each = 2,096.819452 mm³, delta 0.000000** (reproduced) |
+| **classification** | **(b) GENUINE CLASH, both** |
+| bearing spec | **ASSUMED.** The corpus's only bearing numbers (623ZZ / 624ZZ, `PHASE15_CONTROL_SURFACES.md:392`) belong to the **hinge test jig**, not this ring. **This ring has no note, no fit, no fastener and no seat anywhere.** |
+
+**Why it is a clash and not a fit — three independent proofs:**
+
+1. **The "fit" reading is refuted by 28×.** The 10.8 mm diametral interference implies **7,751 MPa = 28.1 ×
+   σy (276)**. A legitimate H7/p6 press is **0.002–0.059 mm**. So it cannot be intentional contact.
+2. **The two rings interpenetrate each other by 754.749861 mm³** — **an eleventh pair that neither census
+   contains.** `VANE_RING_RADIUS = 44` is **exactly half the 88 mm spacing**, so **any full annulus is
+   forced into its twin.** That is a geometric impossibility, not a tolerance problem.
+3. The fuselage overlap is a **75.5° inboard arc, fully buried to the ring's own OD (5.4 mm radial)**,
+   tapering to zero on the centreline — **two solids crossing**, not a seat.
+
+**Corrected total: 4,060.584730 mm³ / 11 pairs, of which the rings are 70.2 %.**
+
+**So the verdict splits: FAB-READY survives for the FUSELAGE, not for the package.** The rings must be
+**withdrawn** and the total amended. Marking the whole model fab-ready while a component 28× past yield is
+modelled as seated would have been the single worst thing on the board.
+
+**And the knife edge is a real manufacturing problem:** radius **0.000**, included angle **≤ 4°**,
+**3.5 µm wide at 50 µm out** — it is the **Ø85 bore breaking out of the 44 mm superellipse hull.**
+
+### drone-arm: board growth gained ZERO, and the rip-up reached zero vias at a price
+
+**Growth was tested on the SOUTH edge. U10's blocked pad row is on the NORTH.** The new area does admit
+legal vias — **54 / 162 / 378 of 81 / 189 / 405 sampled points, min margin +0.200 mm**, for **+280 / +560 /
++1,120 mm² (+2 / +4 / +8 %)** with **DRC set diff `{}` and unconnected 0** — but it gains **0 of 17**,
+because growing the south edge moves the outline **away** from the blocked row (45.05 → 47.05 / 49.05 /
+53.05 mm). **This does not refute the MCU unit's "grow 0.73–2.76 mm" recommendation — it tested the wrong
+edge.** Growth northward is untested.
+
+**The radical rip-up does clear every non-through via:**
+
+| radius | kept / attempted | cost |
+|---|---|---|
+| 6 mm | 9 / 17 | 42–49 nets cut, unconnected 0 → 59, 34–45 dangling |
+| **10 mm — best** | **10 / 17** | unconnected **81** |
+| 15 mm | 7 / 17 | unconnected 86 |
+
+**Final at 10 mm: 283 vias, NON-THROUGH 0, min drill 0.200 mm, RF void bit-identical 4.1699 mm² / 9.8338 %
+(0 of 70 `RF_50R` tracks ever entered a disk).** But **10 converted, 7 DELETED, and 81 unconnected** — so it
+is **not acceptable as delivered.** It is, however, a proof that **non-through 0 is reachable**, with
+**48 nets and 53 dangling ends left to re-route.**
+
+Also worth recording: a legal 0.60/0.30 site exists within **2.5 mm for 17 of 17** vias once the disk is
+cleared (versus **0 of 19** in place), and the binding obstruction at each original site is a **pad in 17 of
+17** — the obstruction is pads, not tracks.
+
+### ESC: the pour-clearing hypothesis was RIGHT, and the corridors confirm it
+
+**First, an instrument correction:** the 96 pours are **66 F.Cu / 6 B.Cu (BATN) / 6 In1 (BATP) /
+18 In2 (PHASE)**. The previous wave read F.Cu + B.Cu only, so its "phases = 0 A" was an **artefact**.
+**In2 carries 12.4–13.5 mm bands = 13.5 / 14.4 / 13.8 A at the internal k of 0.024.**
+
+**Clearing the pours locally opens the corridors, and two of them land exactly on the pour-free control —
+which proves the pours were the only closer:**
+
+| corridor | before | **after clearing** | pour-free control |
+|---|---|---|---|
+| **PHASE_A** | 4.40 mm (3.90 passable) | **8.80 (8.30)** | **8.80** ← matches |
+| **PHASE_B** | **0.00 (−0.50) — no lane** | **5.60 (5.10)** | **5.60** ← matches, **it has a lane now** |
+| PHASE_C | 1.20 (0.70) | 1.80 (1.30) | 5.80 — still short |
+| **BATP** | 3.96 (3.46) | **6.20 (5.70)** | **6.20** ← matches |
+| `BATP_IN` | **13.40** | 13.40 | 6.20 — already fine |
+| BATN | 13.56 | 13.95 | — |
+
+**But routing them all exposes the next constraint:** the corridors were each measured **alone**, so they
+were all routed **on the same layer** — and **BATP's 5.14 mm track collapses PHASE_A's lane to −0.10 mm.**
+Result: **power routed 30 of 36 rows**, DRC **333 with 18 shorts**, unconnected **1,542 → 1,638 (clearing) →
+1,612 (after signals)**. Gate **4 PASS / 4 FAIL, exit 1. Power path complete: NO.**
+
+**So the ESC's real constraint is now layer allocation, not copper width.** Each corridor is wide enough;
+they cannot all share one face. That is precisely what the **two-board split's shared power bus** is meant
+to solve, which makes the split the right architecture for a reason nobody had articulated.
+
+Also confirmed again: **kicad-cli's 499 is a list cap on all four boards**, and `pcbnew` is the number to
+quote.
+
+---
+
 ### ESC split: economics PASS, area PASS — **but the stack does not assemble**
 
 **1. COST — PASS, comfortably.** Verified against live quotes, not estimates:
