@@ -1,0 +1,19 @@
+PASS  1 coverage/vocabulary (52 cells, no blank, no TBD)
+PASS  2 orderable == (0 FAIL cells)
+PASS  3 blocking number occurs verbatim in a FAIL cell
+PASS  4 REPORT table/ledger/tally == generated
+PASS  4 REPORT five conditions == generated
+PASS  4 REPORT correction table == generated
+PASS  5 tally rows reproduce from rows.json
+PASS  6 drone-arm identities vs measure_da_repo.json
+PASS  7 ESC identities vs measure_esc.json + esc-drc-resolve
+PASS  8 Code-SDR identities
+PASS  9 drone-mech identities
+PASS  10 DRC cells reproduce from drc/*.json
+PASS  11a no OLD value survives in the rows
+PASS  11b every NEW value is used outside the correction table
+PASS  11c corrections table parses and holds 17 rows
+PASS  12 every WAIVED on a YES row is priced as a quote line
+
+checks 16, failures 0
+EXIT 0 -- every summary is derivable from the rows

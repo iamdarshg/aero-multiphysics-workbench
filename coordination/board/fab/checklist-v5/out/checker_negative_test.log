@@ -1,0 +1,28 @@
+negative test: the checker must exit 1 on every one of these
+
+1 row value 36->15                 exit=1  expected='6 drone-arm identities'  CAUGHT
+    FAIL  3 blocking number occurs verbatim in a FAIL cell  <- drone-arm main rev_b blocking '36 non-through vias' not in a FAIL cell
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15935 chars vs generated 15935
+    FAIL  6 drone-arm identities vs measure_da_repo.json  <- DA non-through in cell == file
+    FAIL  11a no OLD value survives in the rows  <- BC6 old '15 non-through vias' still in rows
+
+2 orderable NO->YES                exit=1  expected='2 orderable'  CAUGHT
+    FAIL  2 orderable == (0 FAIL cells)  <- ESC rev_b orderable=YES but 8 FAIL cells -> NO
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15935 chars vs generated 15937
+
+3 old figure reintroduced          exit=1  expected='11a no OLD value'  CAUGHT
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15935 chars vs generated 15968
+    FAIL  11a no OLD value survives in the rows  <- BC7 old '1.22 mm' still in rows
+
+4 report cell edited               exit=1  expected='4 REPORT'  CAUGHT
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15927 chars vs generated 15935
+
+5 blocking not in a FAIL cell      exit=1  expected='3 blocking'  CAUGHT
+    FAIL  3 blocking number occurs verbatim in a FAIL cell  <- drone-arm main rev_b blocking '0 errors' not in a FAIL cell
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15935 chars vs generated 15913
+    FAIL  4 REPORT five conditions == generated  <- block differs: report 1468 chars vs generated 1435
+
+6 NEW value only in section 2      exit=1  expected='11b every NEW value'  CAUGHT
+    FAIL  4 REPORT table/ledger/tally == generated  <- block differs: report 15937 chars vs generated 15935
+
+negative test: 6/6 caught, exit 0

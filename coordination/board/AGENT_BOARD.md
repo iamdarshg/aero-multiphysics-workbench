@@ -445,6 +445,74 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### Objective assessment, per board
+
+| board | DRC-clean | 0 unconnected | 0 geometry defect | validated package | no open cell | verdict |
+|---|---|---|---|---|---|---|
+| **Code-SDR V2** | **PASS** | **PASS** | **PASS** | **PASS** | **PASS** | **COMPLETE** |
+| drone-arm rev_b | FAIL | PASS | FAIL | FAIL | PASS | blocked: **36 non-through vias** |
+| ESC rev_b | FAIL | FAIL | FAIL | FAIL | PASS | blocked: **1,536–1,542 unconnected** |
+| drone-mech | FAIL | PASS | FAIL | FAIL | PASS | blocked: **4 disjoint solids** |
+
+**Tally: 25 PASS / 16 FAIL / 11 WAIVED of 52 cells. Checker exit 0, 6 of 6 mutations caught.**
+
+### Code-SDR is complete
+
+All five conditions pass. **4 fiducials on the committed board (HEAD `fbf2eca`), 377 footprints,
+minimum gap 1.5005 mm = +0.2505 mm margin** — not the 0.0005 mm I flagged, because the fiducials were
+placed at a proper clearance rather than barely clearing. Package manifest 20/20, `.pos` 377, BOM 373.
+Two independent controls confirm the zero is real: "own rules 0 vs span-gate 36" varies one variable,
+and **316 pads renumbered still gives 222/0**, so Code-SDR's zero is not an artefact of a clean rule
+set. **Orderable: YES, 0 errors.** Assembly blocked only on 373 missing MPNs — sourcing.
+
+### ESC: the LQFP pad shrink clears 69.5 % of the footprint blockers
+
+The three footprint types, measured:
+
+| type | part | footprints | pads | gaps | pad width needed | verdict |
+|---|---|---|---|---|---|---|
+| QFN-80 P0.4 | **U201 RP2354B** | 1 | 90 | 75 | 0.150 | **NOT a candidate** — 0.150 < the 0.200 mm terminal and below the 0.250 pattern floor |
+| LQFP-48 P0.5 | **6 × STM32G431CBT6** | 6 | 288 | 258 | 0.250 | **candidate** — 0.250 > the 0.220 mm lead |
+| USB-C 16P | **GCT USB4105** | 2 | 44 | 38 | 0.250/0.400/0.550 | **NOT a candidate** — 0.250 < the 0.300 mm contact |
+
+**Executed: 288 LQFP pads shrunk 0.300 → 0.250 mm, length unchanged.**
+
+**DRC at 4 oz / 0.25 mm: 523 → 253. GONE 270, ADDED 0.** That is 258 pad↔pad gaps at 0.200 mm plus 12
+pad↔track at 0.225 mm, all LQFP. **258 of 371 cleared (69.5 %)** with **zero new violations.**
+
+**113 remain and cannot be shrunk away** — QFN 75 and USB-C 38 — because their parts' land patterns do
+not permit a narrower pad. Those need either a part change or an explicit fab rule exception. That is a
+much smaller and more tractable problem than 413.
+
+### drone-arm: the free-rider set is ZERO
+
+I expected the owed respin to absorb some of the 36 vias. It absorbs **none**:
+
+- **Zero vias sit on any 7th-channel net.** U10 pads 43–48 exist as **single-pad auto-nets carrying 0
+  vias**, and `/ESC_PWM7` and friends **do not exist** in this variant.
+- **None on `/CAN_5V`** — 2 pads, **0 vias**, and this variant has **no J60–J66 at all**.
+
+So all 36 are **real layout work on preserved signals**. Distribution: **U10 15** (41.7 % — /LSM_INT1×2,
+/RF_MOSI×2, /RF_MISO×2, /PA_EN×2, /3V3, /GNSS_RX, /HGM, /RF_GPIO0, /RF_GPIO2, /RF_RESET_N, /SENS_SCLK) ·
+**U40 4** · C12, C32, C40, R10, R32, U21 **2 each** · C13, C38, C52, FB1, R22 **1 each**. **21 of 36 lie
+within U10's bounding box +2 mm.**
+
+Also found: **10 of the 36 have a declared type that disagrees with their actual layer pair** — 7
+"microvia" span In1→B or F→In2, and 3 "blind" span only In2→B. By layer pair it is **29 adjacent / 7
+spanning three layers.** So the declared types on this board are unreliable and span must be derived from
+the layer pair, not read from the via type.
+
+### drone-mech: interference is zero but the model is FOUR DISJOINT SOLIDS
+
+The checklist's blocking number for drone-mech is not interference — it is **4 disjoint solids**. The
+body is modelled as four separate solids (of 742,306.360 mm³, with 84.2 % bulk fill). **A single
+manufactured part cannot be four disconnected bodies.** Interference being zero does not make it
+printable or machinable.
+
+So drone-mech has two separate defects: interference (solved, 0 genuine) and **topology (unresolved)**.
+
+---
+
 ### Corrections: the fab-real DRC count is 621/631, and the rail margin is coefficient-dependent
 
 **1. The DRC number a fab would actually see is 621 (631 all-track), not 523.** The 523 is what KiCad

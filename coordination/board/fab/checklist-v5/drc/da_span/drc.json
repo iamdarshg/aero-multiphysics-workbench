@@ -1,0 +1,551 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-16T09:04:44+0530",
+    "kicad_version": "9.0.7",
+    "schematic_parity": [],
+    "source": "da_repo.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/3V3] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 58.4,
+                        "y": 55.55
+                    },
+                    "uuid": "7c4d6cb4-85c3-4df4-87ee-8649cfbb64c3"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/915 MHz RF/VDD_CC112] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 95.15,
+                        "y": 64.2
+                    },
+                    "uuid": "3ff8d137-df3c-45d6-8f0c-1c046e5a7aef"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/GNSS_RX] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 126.95,
+                        "y": 13.1
+                    },
+                    "uuid": "50760f1e-f7c4-4405-b704-ede2511d8406"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/GNSS_RX] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 53.9,
+                        "y": 50.6
+                    },
+                    "uuid": "597769cd-9ce7-4221-a04b-cc2548fedb40"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/GNSS_RX] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 52.9,
+                        "y": 53.2
+                    },
+                    "uuid": "0431aafc-ee80-40d8-b087-cdd01f693f80"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/GNSS_RX] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 126.95,
+                        "y": 13.1
+                    },
+                    "uuid": "7a319703-41d4-46ff-90ea-9440dcea8f5d"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/HGM] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 57.6,
+                        "y": 55.15
+                    },
+                    "uuid": "b495aa68-faf0-4c31-8962-716ab880482a"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 58.1,
+                        "y": 83.9
+                    },
+                    "uuid": "4b7db9bf-6e9a-40a4-8fe4-e39d3012bfa7"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 54.4,
+                        "y": 47.4
+                    },
+                    "uuid": "cd83251f-2b1f-4ef7-b6a6-822d6a99154d"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 51.5,
+                        "y": 49.0
+                    },
+                    "uuid": "2f782e14-44db-475f-ac72-b122a12e992e"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 54.4,
+                        "y": 47.4
+                    },
+                    "uuid": "303ec518-f85a-4b8d-9b22-b913688e78ea"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 58.1,
+                        "y": 83.9
+                    },
+                    "uuid": "8d1c7d52-95f9-4c70-8aa3-8d32f0cfce13"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/LSM_INT1] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 50.6,
+                        "y": 56.6
+                    },
+                    "uuid": "eafad8c8-f624-4435-a1da-e0be7ea708e4"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/PA_EN] on F.Cu - In2.Cu",
+                    "pos": {
+                        "x": 57.6,
+                        "y": 52.2
+                    },
+                    "uuid": "fb17bca0-baf9-4fe7-afc3-fc9360375278"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.3000 mm)",
+            "items": [
+                {
+                    "description": "Blind/Buried Via [/PA_EN] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 58.0,
+                        "y": 51.9
+                    },
+                    "uuid": "fd2d783f-cd39-49a6-acbb-6cff5ddcdfea"
+                }
+            ],
+            "severity": "error",
+            "type": "drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_GPIO0] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 56.5,
+                        "y": 55.2
+                    },
+                    "uuid": "1806a9aa-391f-4f94-bab0-225d1c6ddf6e"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_GPIO0] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 57.4,
+                        "y": 56.1
+                    },
+                    "uuid": "cbda1977-9a48-4f9f-a981-f0d9e4710954"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_GPIO2] on F.Cu - In2.Cu",
+                    "pos": {
+                        "x": 55.6,
+                        "y": 55.2
+                    },
+                    "uuid": "a57f6b85-bfd7-467b-87a6-863a6d198575"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_GPIO2] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 91.5625,
+                        "y": 60.75
+                    },
+                    "uuid": "e5661bf9-e91b-4ba0-8b7e-9933f57f86e7"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.3000 mm)",
+            "items": [
+                {
+                    "description": "Blind/Buried Via [/RF_GPIO2] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 58.0,
+                        "y": 58.1
+                    },
+                    "uuid": "b51a1a18-c18f-48ec-bf2a-eca8d3acac02"
+                }
+            ],
+            "severity": "error",
+            "type": "drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MISO] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 53.9,
+                        "y": 53.0
+                    },
+                    "uuid": "ed720a99-111d-43d0-a89e-41c6440e653a"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MISO] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 53.9,
+                        "y": 53.0
+                    },
+                    "uuid": "2a961929-1180-4bc5-ac27-3a73288936e0"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.3000 mm)",
+            "items": [
+                {
+                    "description": "Blind/Buried Via [/RF_MISO] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 60.2
+                    },
+                    "uuid": "0a4548b9-8a81-4bcf-b892-122f57b1624b"
+                }
+            ],
+            "severity": "error",
+            "type": "drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MOSI] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 91.5625,
+                        "y": 62.25
+                    },
+                    "uuid": "c1786c14-fff4-46f2-9257-47b09487bd8e"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MOSI] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 55.5,
+                        "y": 52.6
+                    },
+                    "uuid": "dc8ccbdf-8397-4277-ad1d-2b278d6e544d"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MOSI] on In1.Cu - B.Cu",
+                    "pos": {
+                        "x": 55.5,
+                        "y": 52.6
+                    },
+                    "uuid": "4e154ffd-dd0e-4124-ba61-35c880b8a40c"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_MOSI] on In1.Cu - B.Cu",
+                    "pos": {
+                        "x": 90.6,
+                        "y": 58.0
+                    },
+                    "uuid": "5c6a0674-9e19-4953-a885-f65a5439d960"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_RESET_N] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 53.8,
+                        "y": 54.0
+                    },
+                    "uuid": "36a095b3-a87b-4eb0-8114-6f6ad683e887"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_RESET_N] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 53.95,
+                        "y": 86.4
+                    },
+                    "uuid": "ceaa6700-f41f-4367-a43e-c65fd3634ec6"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RF_SCLK] on F.Cu - In2.Cu",
+                    "pos": {
+                        "x": 52.95,
+                        "y": 52.2
+                    },
+                    "uuid": "5851949f-49a0-4bb6-a274-b81f56405ecb"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RP2354B MCU/USB_DP_MCU] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 60.8,
+                        "y": 44.1
+                    },
+                    "uuid": "8744cab2-2a0d-410c-a269-c266e27dbf47"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RP2354B MCU/USB_DP_MCU] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 56.53,
+                        "y": 37.1
+                    },
+                    "uuid": "cd18adea-0ab3-4249-9ab6-9b2a34770568"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RP2354B MCU/USB_DP_MCU] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 56.53,
+                        "y": 37.1
+                    },
+                    "uuid": "679cb3ee-7ac7-4f44-a298-079d8b8a2580"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/RP2354B MCU/USB_DP_MCU] on In1.Cu - In2.Cu",
+                    "pos": {
+                        "x": 60.8,
+                        "y": 44.1
+                    },
+                    "uuid": "74fb7d73-3bbf-41df-aec0-49bae47fffea"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/SENS_SCLK] on In1.Cu - B.Cu",
+                    "pos": {
+                        "x": 54.8,
+                        "y": 77.5
+                    },
+                    "uuid": "a1b887c7-7ba6-494c-9491-47572a0d8e8b"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        },
+        {
+            "description": "Micro via hole size out of range (board setup constraints min hole 0.5000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Micro Via [/SENS_SCLK] on In1.Cu - B.Cu",
+                    "pos": {
+                        "x": 55.5854,
+                        "y": 53.4525
+                    },
+                    "uuid": "c7f4ad6b-aa44-4cb1-8e1b-6bfe0d3678e7"
+                }
+            ],
+            "severity": "error",
+            "type": "microvia_drill_out_of_range"
+        }
+    ]
+}

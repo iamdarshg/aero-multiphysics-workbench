@@ -1,0 +1,260 @@
+{
+ "note": "17 BOARD CORRECTION rows. 'absent_in_rows' tokens must appear NOWHERE in rows.json (the old figure is gone as a live claim); 'present' tokens must appear in REPORT.md OUTSIDE the section-2 table (so the new figure is used, not only tabulated).",
+ "rows": [
+  {
+   "id": "BC1",
+   "board": "ESC",
+   "wrong": "the ESC was designed to 60 A per phase",
+   "old": "60 A per phase",
+   "new": "43.5 A phase / 40 A bus",
+   "source": "verify-w9-adv/REPORT.md:63 (43.5 = 240 A pack / 6 channels / 0.92); esc-flip-current, esc-rail-repour",
+   "absent_in_rows": [
+    "60 A per phase"
+   ],
+   "present": [
+    "43.5 A",
+    "40 A bus"
+   ]
+  },
+  {
+   "id": "BC2",
+   "board": "ESC / airframe",
+   "wrong": "two whole-aircraft CdA values were used that are below the friction floor, so they are not physical",
+   "old": "CdA 0.000693 and 0.0015 m2",
+   "new": "CdA 0.0034-0.0056 m2, best 0.0042 (friction floor 0.002710)",
+   "source": "esc-cda-bound/REPORT.md:320-336; verify-w9-adv/REPORT.md:12 (floor 0.002710)",
+   "absent_in_rows": [
+    "0.000693",
+    "0.0015"
+   ],
+   "present": [
+    "0.0034",
+    "0.0056",
+    "0.0042",
+    "0.002710"
+   ]
+  },
+  {
+   "id": "BC3",
+   "board": "airframe / ESC",
+   "wrong": "the 720 km/h design point is not reachable with this power system",
+   "old": "720 km/h",
+   "new": "~545-570 km/h on this power system",
+   "source": "verify-w9-adv/REPORT.md:77-78; esc-cda-bound/REPORT.md:371",
+   "absent_in_rows": [
+    "720 km/h"
+   ],
+   "present": [
+    "545",
+    "570"
+   ]
+  },
+  {
+   "id": "BC4",
+   "board": "ESC",
+   "wrong": "523 was quoted as the DRC total; it omits 98 pad rings KiCad cannot report",
+   "old": "523 reported as the total",
+   "new": "621 FAB-REAL = 523 + 98 invisible pad rings; 413 footprint-bound (371 pad-pad at 0.200 + 42 PTH rings), 110 copper-bound, effective footprint-bound 511",
+   "source": "esc-drc-resolve/REPORT.md:26,336-346,372",
+   "absent_in_rows": [
+    "523 total"
+   ],
+   "present": [
+    "621",
+    "413",
+    "110",
+    "511"
+   ]
+  },
+  {
+   "id": "BC5",
+   "board": "ESC",
+   "wrong": "499 was quoted as the unconnected count; it is kicad-cli's cap",
+   "old": "499 unconnected",
+   "new": "1,536-1,542 unconnected (pcbnew, uncapped)",
+   "source": "fab-checklist-v4/out/esc_cap_test.json; esc-rail-repour/REPORT.md:42 (1,542 -> 1,536)",
+   "absent_in_rows": [
+    "499 unconnected"
+   ],
+   "present": [
+    "1,536",
+    "1,542"
+   ]
+  },
+  {
+   "id": "BC6",
+   "board": "drone-arm",
+   "wrong": "15 non-through vias was a fan-out work-board artefact, not the repo board",
+   "old": "15 non-through vias",
+   "new": "36 non-through on the repo board (33 microvia + 3 blind/buried; 26 blind + 10 buried by span, of 341 vias)",
+   "source": "fab-checklist-v4/out/measure_da_repo.json vias_by_span; verify-wave10-adv/final_answer.txt",
+   "absent_in_rows": [
+    "15 non-through vias"
+   ],
+   "present": [
+    "36 non-through",
+    "341"
+   ]
+  },
+  {
+   "id": "BC7",
+   "board": "Code-SDR",
+   "wrong": "the fiducial was charged as a 1.22 mm FAIL on a board that had no fiducials at all",
+   "old": "1.22 FAIL",
+   "new": "4 fiducials on the committed board (HEAD fbf2eca), min gap 1.5005 mm = +0.2505",
+   "source": "fab-cs-fid-real/REPORT.md:14,132-141,237-249; git show HEAD:hardware/v2/Code-SDR-V2.kicad_pcb",
+   "absent_in_rows": [
+    "1.22 mm"
+   ],
+   "present": [
+    "FIDL_U63_U64",
+    "1.5005"
+   ]
+  },
+  {
+   "id": "BC8",
+   "board": "ESC",
+   "wrong": "the 4 oz vendor survey over-counted houses",
+   "old": "five different houses",
+   "new": "four houses carry an explicit 4 oz row",
+   "source": "v2v-fab-verify/REPORT.md",
+   "absent_in_rows": [
+    "five different houses"
+   ],
+   "present": [
+    "four houses"
+   ]
+  },
+  {
+   "id": "BC9",
+   "board": "ESC",
+   "wrong": "the published area floor was 316 cm2",
+   "old": "316 cm2 floor",
+   "new": "370 cm2 for today's BOM (316 needs the M5 lugs replaced)",
+   "source": "esc-compaction-verify/REPORT.md",
+   "absent_in_rows": [
+    "316 cm2"
+   ],
+   "present": [
+    "370"
+   ]
+  },
+  {
+   "id": "BC10",
+   "board": "drone-mech",
+   "wrong": "26 interference pairs was arithmetic over a subset of the pair set, not a verdict",
+   "old": "26 pairs",
+   "new": "0 genuine pairs (2 residual pairs = 4.010114 mm3, 100 % artefact)",
+   "source": "fab-dm-final/REPORT.md state_changed",
+   "absent_in_rows": [
+    "26 pairs"
+   ],
+   "present": [
+    "0 genuine",
+    "4.010114"
+   ]
+  },
+  {
+   "id": "BC11",
+   "board": "drone-mech",
+   "wrong": "'delete 4 of 6 envelopes reaches zero' is short by one step",
+   "old": "delete 4 of 6 envelopes reaches zero",
+   "new": "delete 4 + resize",
+   "source": "fab-dm-envelopes/REPORT.md",
+   "absent_in_rows": [
+    "delete 4 of 6 envelopes"
+   ],
+   "present": [
+    "resize"
+   ]
+  },
+  {
+   "id": "BC12",
+   "board": "drone-arm",
+   "wrong": "the In1->In2 vias were labelled blind; by span they are buried (a drill class is not a span class)",
+   "old": "the four In1->In2 vias are blind",
+   "new": "In1.Cu-In2.Cu vias are BURIED (repo board: 10 of them); classify by layer pair",
+   "source": "fab-checklist-v4/out/measure_da_repo.json via_table",
+   "absent_in_rows": [
+    "vias are blind"
+   ],
+   "present": [
+    "buried"
+   ]
+  },
+  {
+   "id": "BC13",
+   "board": "ESC",
+   "wrong": "'rail PASS' was a single number; it holds only at one barrel-plating convention",
+   "old": "rail PASS",
+   "new": "PASS at k=0.048 only (47.1 A = 1.08x of 43.5 A); 24.83 A and FAIL (0.57x) at k=0.024",
+   "source": "esc-rail-repour/REPORT.md:45,283-285; esc-flip-current/REPORT.md:303",
+   "absent_in_rows": [
+    "rail PASS"
+   ],
+   "present": [
+    "k=0.048",
+    "k=0.024",
+    "24.8",
+    "47.1"
+   ]
+  },
+  {
+   "id": "BC14",
+   "board": "Code-SDR",
+   "wrong": "the Edge_Cuts stroke was stated as 0.15 mm; 101.6 + 0.15 = 101.75, which is not the measured 101.70",
+   "old": "0.15 mm stroke",
+   "new": "0.100 mm stroke (101.6 + 0.100 = 101.70)",
+   "source": "board file: 4 Edge.Cuts shapes at (stroke (width 0.1)); v5/D1 arithmetic",
+   "absent_in_rows": [
+    "101.75"
+   ],
+   "present": [
+    "101.70",
+    "0.100 mm stroke"
+   ]
+  },
+  {
+   "id": "BC15",
+   "board": "Code-SDR",
+   "wrong": "the fab commit was counted as 16 files",
+   "old": "16 files committed",
+   "new": "22 files committed by 1a20bd6",
+   "source": "git show --name-status 1a20bd6",
+   "absent_in_rows": [
+    "16 files"
+   ],
+   "present": [
+    "22 files"
+   ]
+  },
+  {
+   "id": "BC16",
+   "board": "ESC",
+   "wrong": "'3 packages' understates the 4 oz work",
+   "old": "3 packages",
+   "new": "one impossible part (U201) + 23 footprint edits",
+   "source": "esc-branch-4oz/REPORT.md",
+   "absent_in_rows": [
+    "3 packages"
+   ],
+   "present": [
+    "23 footprint edits"
+   ]
+  },
+  {
+   "id": "BC17",
+   "board": "ESC",
+   "wrong": "the ESC outline was quoted stroke-inclusive",
+   "old": "173.950 x 283.080",
+   "new": "173.800 x 282.930 (Edge.Cuts centreline)",
+   "source": "fab-checklist-v4/out/measure_esc.json edge_cuts_extent_mm",
+   "absent_in_rows": [
+    "173.950"
+   ],
+   "present": [
+    "173.800"
+   ]
+  }
+ ]
+}

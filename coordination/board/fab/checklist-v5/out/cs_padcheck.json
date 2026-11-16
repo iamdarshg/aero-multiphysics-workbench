@@ -1,0 +1,34 @@
+{
+ "board": "cs (v4 copy = commit 1a20bd6, pre-fiducial)",
+ "footprints": 373,
+ "fiducial_footprints": 0,
+ "pth_pads": 128,
+ "footprints_with_duplicate_pad_numbers": 64,
+ "pads_with_duplicate_numbers": 316,
+ "pth_ring_hist": {
+  "-0.0500": 2,
+  "0.1500": 82,
+  "0.1550": 2,
+  "0.1750": 10,
+  "0.2550": 10,
+  "0.3000": 2,
+  "0.3170": 12,
+  "0.3875": 4,
+  "0.5200": 1,
+  "0.5300": 1,
+  "0.6500": 2
+ },
+ "pth_rings_below_0.125": 2,
+ "pth_rings_below_0.200": 96,
+ "below_0.125_list": [
+  [
+   "J10.6",
+   -0.05
+  ],
+  [
+   "J10.6",
+   -0.05
+  ]
+ ],
+ "verdict": "annular blind spot NON-EMPTY -> DRC under-counts rings"
+}

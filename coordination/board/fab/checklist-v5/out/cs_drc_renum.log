@@ -1,0 +1,14 @@
+{
+ "footprints_with_duplicate_pad_numbers": 64,
+ "pads_renumbered": 316,
+ "rc": 0,
+ "total": 222,
+ "errors": 0,
+ "warnings": 222,
+ "unconnected_items": 0,
+ "by_type": {
+  "lib_footprint_mismatch": 199,
+  "track_dangling": 10,
+  "via_dangling": 13
+ }
+}

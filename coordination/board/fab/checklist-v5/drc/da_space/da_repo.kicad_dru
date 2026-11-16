@@ -1,0 +1,6 @@
+(version 1)
+
+(rule "PROBE min space, floor raised to 0.30 mm"
+	(constraint clearance (min 0.30mm))
+)
+
