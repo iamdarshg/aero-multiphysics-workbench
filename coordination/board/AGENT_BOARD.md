@@ -445,6 +445,81 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### ESC verdict: neither branch reaches 60 A, and 4 oz is the cheaper one
+
+**BOARD CORRECTION** — this replaces the earlier framing that A/B was a simple choice about footprint
+geometry. Both branches were priced as full redesigns. Neither reaches the design current.
+
+| | **2 oz** | **4 oz + packages** |
+|---|---|---|
+| footprint work | avoids only **U201** | **600 pads across 21 footprints** edited, **netlist invariant** |
+| DRC at its own rules | 0 — but at **exactly the 0.200 mm fab floor, 0.0000 margin** | **413 → 87 measured** |
+| area | **415.8 cm²** (larger, needs +3.35 mm pitch) | 382.71 cm² |
+| routing | **full re-route**, **+3,528 vias** | existing route largely survives |
+| rail | **loses 19 %** off the only rail fix — **49.7 → 40.2 A** | keeps it |
+| **max current per phase** | **22.9 A of 60** | still short of 60 |
+| verdict | **NO** | **NO** |
+
+**So the answer to "A or B" is: 4 oz.** It is cheaper by every measure that matters — netlist
+invariant, no re-route, keeps the rail fix at 49.7 A instead of losing 19 % of it, and 413 → 87 DRC
+measured rather than 0-at-zero-margin. **2 oz avoids exactly one part (U201) and costs a full re-route
+plus 3,528 unclassified vias.**
+
+**But the bigger finding is that 60 A per phase is not achievable in this board either way.** 2 oz
+tops out at **22.9 A**. So the ESC's premise needs revisiting before any more layout work: either the
+real per-phase demand is lower than 60 A, or this form factor needs a different topology — more
+parallel FETs, a heavier stackup, or more layers.
+
+### Three false greens caught, and one is mine twice over
+
+1. **The fiducial was actually FIXED and reported as failing.** `fab-cs-close` measured FID1/FID2 pour
+   gap at **1.2505 mm** — passing 1.25 — while `fab-checklist-v3:486` still charged Code-SDR
+   *"1.22 vs 1.25 FAIL"*. Same wave, opposite verdicts, unreconciled. So the 1.22 figure is stale and
+   the checklist is wrong.
+2. **A board that does not exist was reported.** `esc-branch-2oz:277` lists a 382.709 cm² rail-fixed
+   board at 1,530 unconnected. No such artefact exists: the power-first placement has **0 tracks,
+   0 vias, 0 zones**, and `railfix2` sits on a different board record.
+3. **A DRC improvement omitted 98 pad rings.** `esc-branch-4oz:283`'s **"413 → 87"** leaves out the
+   98 pad rings that KiCad's annular check skips. The real figures: checklist **523 → 629**, with
+   **140 below 0.200 mm**, and DRC reporting **42**.
+
+### Threshold notes
+
+- No threshold was moved *upward* — the good news. But **2 oz's "0 DRC" passes at exactly 0.200 mm
+  with 0.0000 margin**, which is a pass that carries no safety at all.
+- `2oz:231` claims a fallback to project rules yields "110 drill". **False** — its own rules give **16**;
+  the 110 is KiCad's 0.30 mm default appearing because that copy has **no `.kicad_pro`**.
+- The probe reading 1.00 mm → **499** is hitting the **unconnected cap**, so "+483" is not a quantity.
+
+### Capacity arithmetic that does reproduce
+
+C1–C4 reproduce in `02_widths.log`: **0.4542 mm² → 20.8 A**, **1.4401 mm² → 48.0 A**. But 4 oz's
+**8.56 mm** appears in no script or JSON, and `21_fcu_batp.json` measures **full_width 63.55 mm** where
+the prose uses **67.5** — so the deficit is **114 mm², not 60**.
+
+### The package recommendation is not sourced
+
+4 oz recommends an **unnamed LQFP-100** — the datasheet fetch failed — and its "no equivalent" claim is
+family-level only. The measuring unit says **one impossible part plus 23 footprint edits**, while
+`2oz:332` and the checklist `:389` still say **"3 packages."** Those two statements cannot both stand.
+
+### Code-SDR: bare-board yes, assembly no
+
+- **Etch: orderable.** 222 warnings, 0 new, 0 gone — and **247 without the `.dru`**, which proves the
+  rule file is being loaded.
+- **Assembly: blocked.** **373 of 373 BOM rows have no MPN.**
+- **The orderable package copy `8EC5741A` ≠ the repo board `309414D2`**, and **the repo holds zero
+  packages.** So the package exists in evidence, not in the repo — the last mile is still open.
+- `FIDL_U20_A` clears its requirement by only **0.014 mm**.
+
+### Checklist: best-instrumented artefact in the programme
+
+**52/52 cells, no blank, no TBD, checker exit 0, negative-tested 3 of 3.** Two weak cells: the
+drone-mech column asking *outline + area* is answered with **solids**, and the ESC entry still carries
+the placeholder token "1,542 unconnected".
+
+---
+
 ### The rail, settled properly — and my own report did the PASS-over-FAIL thing
 
 **BATP fails by 2.6×. BATN fails on its barrels. And the 2 oz option makes both worse.**
