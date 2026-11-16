@@ -445,6 +445,80 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **THE ESC ANSWER IS 3 oz, NOT 2 OR 4 — and the 113 gaps cannot be cleared at 4 oz at all**
+
+Both remaining gap families were checked against their own datasheets and **neither has a part-change
+route**:
+
+| family | gaps | evidence | verdict |
+|---|---|---|---|
+| **QFN-80 P0.4**, U201 | **75** | RP2350 datasheet Table 1 p.13, §14.3, Figs 147/149: the RP2354 family exists **only in QFN-60 (7×7) and QFN-80 (10×10), and both are e = 0.400 BSC** with b = 0.150/0.200/0.250 | at 0.4 pitch a 0.250 gap needs **0.150 pads = b min, below the 4 oz floor.** **No part change exists**, so no netlist change either |
+| **USB-C 16P**, J202/J203 | **38** | GCT USB4105 drawing p.1: recommended land is **4 × 0.60 + 8 × 0.30 at 0.50 contact pitch — identical to the board** | the 14 rows at 0.5 pitch are **geometrically maxed**; **no coarser USB-C receptacle exists** |
+
+**"Documented waiver" is also dead** — the 8-fab survey found **nothing published below 0.229 mm at 4 oz**,
+so there is no fabricator to grant one.
+
+**Executed anyway: 16 power pads 0.600 → 0.500 mm (same part, same nets) → DRC 253 → 229, GONE 24,
+ADDED 0.** 89 remain (75 QFN + 14 USB-C). **That derate is −0.05 mm per side inside the contact — the same
+criterion that disqualified the QFN at 0.150 — so it is recorded as measured, not endorsed.**
+
+**THE ACTUAL ANSWER: 3 oz (105 µm, Multi-CB special) at 0.200/0.200 clears ALL 113 gaps with zero layout
+change.** And it is consistent with the capability survey that started this: **Multi-CB's 0.200 mm figure
+was always the 105 µm (3 oz) row** — we spent many waves treating that as a barrier when it was the door.
+
+### But 3 oz makes the rail worse, so both fixes are needed
+
+| copper weight | DRC gaps | rail copper |
+|---|---|---|
+| 4 oz (140 µm) | **113 cannot clear** | best available, and still fails |
+| **3 oz (105 µm)** | **0 — all clear** | **25 % less cross-section** |
+| 2 oz (70 µm) | clears | worse still |
+
+**And the rail's failure is a BARREL problem, not a thickness problem** — the shunt pads hold **17–18
+barrels where 27 are required.** Copper weight does not create pad area.
+
+**So the ESC's configuration is: 3 oz + a barrel fix (second shunt per rail, or a busbar).** Neither
+alone is sufficient, and neither is a routing change.
+
+### drone-mech: the four solids are DELIBERATE, and the fix is identified
+
+**The repo's own receipt settles the cause.** `solidCount` goes **1 → 4 exactly at the duct-bore cut
+stage**, and the receipt states the bore radius was enlarged *"to preserve four disconnected shell
+solids."* **The 42.4 mm variant gives two.** So the split was **tuned for, not accidental.**
+
+Ruled out by measurement: not cavities (**no nesting, every CoM outside every other body, overlap
+0.000 mm³**), not duplicates, not a printable split (**no mating faces**). The four shells are held apart
+by **8.259 mm and 77.165 mm of air**.
+
+**A sequential fuse was executed to prove it: 4 → 2 → 3 → 4 components, volume identical at every step.
+Union is the identity operator here.** The result is watertight and `BRepCheck` valid **and round-trips
+to 4 solids** — it passes every check *including the one it was supposed to fix.*
+
+| | value |
+|---|---|
+| solids | **4, one shell each, 0 inner shells, all closed, 0 free / 0 non-manifold edges of 3,014** |
+| volumes | 624,770.5299 + 75,915.2316 + 20,808.2965 + 20,808.2964 = **742,305.5264 mm³** (repo 742,306.360 to 0.83 mm³) |
+
+**The mass basis was wrong too:** the **392.152 g** row belongs to the **other** file
+(`fuselage_battery_bay_shell.step`, 2 solids, 253,001.328 mm³), which is **2.934× smaller.** And the
+"84.2 % bulk fill" is **solid 0 at 2V/A = 11.34 mm against 1.23–1.42 mm** everywhere else — a separate
+thickness defect, not a fill fraction.
+
+Also caught: `BRepBndLib.Add` returns **wildly wrong bounding boxes on this STEP** because **0 faces carry
+triangulation** — `AddOptimal` must be used. A silent trap for anyone measuring this file.
+
+### Checklist v6: 26 BOARD CORRECTIONS, and the pad-ring census was re-run rather than carried
+
+**ESC: 253 reported / 351 fab-real** (from 523/621 as drawn). Footprint-bound **413 → 155 = 113 pad gaps
++ 42 rings.** The **98 was not carried forward** — the pad-ring census was re-run on the shrunken board
+and found **140 PTH pads under 0.200 mm, unchanged**, because the 288 shrunken pads are **SMD and outside
+the hole census.** Had the census scored them, 351 would read **639.** That is the discipline working.
+
+**Conditions: Code-SDR 5/5 · drone-arm 2/5 · drone-mech 2/5 · ESC 1/5.** Checker exit 0, **17 checks,
+0 failures, 8 of 8 negative mutations caught. NOT-KNOWN: 18.**
+
+---
+
 ### **THE AMPACITY BASIS WAS WRONG. SAFE_TO_ROUTE: NO. And the fix is hardware, not routing.**
 
 **Confirmed from a citable source** (AdvancedPCB IPC-2221 calculator, nine hand controls ≤1.2 % residual):
