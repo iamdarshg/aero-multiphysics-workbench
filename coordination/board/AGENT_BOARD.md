@@ -445,6 +445,96 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### drone-arm: **NON-THROUGH = 0.** The HDI requirement is met.
+
+**328 vias, ALL through, min drill 0.200 mm.** The 0.100 mm drill is gone.
+
+**The last via took a finding, not a jog.** `/RF_GPIO0`'s blocker was **not a corridor — it was a via**:
+**9 of the 14 rows were this programme's OWN earlier `/HGM` conversion** — a 0.600 through via at
+(57.575, 55.650) sitting on **all six layers** (short 0.3850), plus its two 0.20 mm corridor legs (0.1777)
+and its hole (0.1600). **That `/HGM` via has no legal site within 1.60 mm** (best −0.0327, blocked by pad
+U10.28), so **no jog could have opened the site.** The other 5 rows were original `/RF_MISO` In2 staircase
+segments.
+
+**Executed: 7 attempts, 1 kept.** Removed the now-dead 0.100 microvia (its fanouts had been erased by the
+R = 1.30 batch), added a **0.600/0.300 through at (59.750, 58.450)** — **3.323 mm away, margin +0.0064** —
+with two chord jogs (`STATUS_LED` on B.Cu 0.450, `/RF_MISO` on In2 0.150) plus an In2 fanout (+0.0194).
+A 0.50/0.30 at 1.393 mm was **rejected** because it added a `via_diameter`.
+
+**Result: non-through `{}`, DRC 58 with set diff `+{}` / `−{clearance 1, track_dangling 1}`, min drill
+0.200, RF void bit-identical 4.1699 mm² / 9.8338 %.**
+
+**What remains is routing only: 35 unconnected** (35 on both tools). The tradeoff is recorded rather than
+hidden: **R = 0.70 + fix gives 1 non-through / 29 unconnected; R = 1.30 + fix gives 0 / 35.** Zero HDI was
+chosen over 6 fewer unconnected.
+
+**So drone-arm is no longer an HDI problem and no longer an MCU problem.** It is a routing problem with a
+35-connection backlog.
+
+### drone-mech: interference reconciled — **28 pairs / 12,978.785305 mm³**
+
+**Both figures were measured correctly, for different populations, with a shared instrument fault.**
+
+| figure | file | population | algebra |
+|---|---|---|---|
+| **1,556.232076 / 6 pairs** | shipped rev1 STEP (`d9ba7aeb…`, 206,454.319709 mm³) | **elevons are the only movers** (34 rows, 12 bbox-hit, 6 non-zero) — **the body is never a mover, so fuselage↔wing cannot appear** | one compound × compound `Common` |
+| **9,134.218881 / 9,125.712739** | `work/obj/fuselage_stock.step` (rebuild, `6f1cc225…`) | **fuselage × 21 neighbours + elevon × {nozzles, motor R3}** | cadquery `Shape.intersect` |
+
+**A fresh independent sweep — all 496 pairs of 32 as-built groups, solid-by-solid `Common`, fuzzy proven
+flat from 1e-6 to 1e-3, `BRepGProp` at 1e-12 — gives the authoritative total:**
+
+| population | pairs | volume mm³ |
+|---|---|---|
+| elevon root | 10 | 3,264.547867 |
+| pushrod (artefact) | 2 | 4.929154 |
+| **body ↔ wing** | 2 | **7,563.265475** |
+| static joints | 14 | 2,146.042809 |
+| **ring v2** | **0** | **0** ← CLEAN |
+| **TOTAL** | **28** | **12,978.785305** |
+
+**The arithmetic closes exactly:** `9,134.218881 = 1,556.232076 + 7,563.265475 (wing rows) + 14.721330
+(motor-row instrument)`, residual **0.000000**; and `9,125.712739` is short by **8.506142** from four
+faired rows. **So 1,556.232076 and 9,125.712739 are SUBSETS, not totals.**
+
+**The redesigned rings are CLEAN — 0 pairs, 0 mm³.** The redesign worked.
+
+**Deliverable is the UNFAIRED rev1**, because it is packaged, drawn and hashed, while the fairing still
+carries a **5.1162° worst edge, 0.1875 mm of land, +157.5 g and no drawing.** Fuselage is **stable at
+206,454.319709 mm³ / 320.0042 g across four byte-identical copies.**
+
+### ESC split: both boards exist. **250.19 cm², −34.62 %.** And one real defect
+
+| board | outline | stackup | footprints / pads |
+|---|---|---|---|
+| **power** | **151.77 × 122.55 mm** | **4-layer 3 / 1.5 / 1.5 / 3 oz**, 1.60 mm | **173 / 1,581** |
+| **control** | **107.00 × 60.00 mm** | **2-layer 1 oz** | **148 / 768** |
+
+The control board came out **107 mm wide, not 105** — **the header bank spans to 150.27 mm and forces it**,
+costing **+1.2 cm²**. Areas: **185.99 + 64.20 = 250.19 cm² against 382.71 = −34.62 %.** **The 18–34 %
+claim holds at its top end; the earlier −39 % does not.**
+
+**Placed:** 36 FETs, **18 leg + 2 shared-bus shunts** (the shared bus **merges six cell feeds into the bus
+pair, so 24 → 20**), 6 `DRV8353` QFN-48, 19 front-end amps, **3 × 2×20 headers with all 120 pins netted
+from the pinmap.**
+
+**Gate loop: 89.6 mm mean, 54.6 best, 158.6 worst — a finding, not a choice.** **No legal 8.25 mm site
+exists in the FET field** (free gaps are 1.10–1.20 mm, and the two 7.80 mm corridors are occupied by J1–J6).
+
+**DRC:** power **528** against a **499** source baseline, control **37.** Set diff: **clearance +0**, silk
++29, unconnected +41 (DGND/AGND header returns). **Power = 499 copper (all inherited) / 29 footprint /
+0 parameter. Control = 14 copper (all inside library land patterns) / 23 footprint / 0 parameter.**
+Unconnected 187 and 41, both under the 499 cap.
+
+**THE DEFECT: the socket only mates when flipped to B.Cu.** **60 odd pins coincide, but 60 even pins mirror
+5.08 mm** — so the header **cannot seat with both boards single-sided.** That is a direct conflict with the
+owner's constraint and it needs a pinout or part change.
+
+**Also noted:** the sink rectangle is clear of new parts, **but 120 pre-existing PTH tails sit inside it.**
+
+**State: placed, DRC'd, UNROUTED.** Routing, zones, the thermal plane and a netlist pass all remain.
+
+---
+
 ### drone-arm: 17 → 1. And a correction to the "no free site exists" claim
 
 **The obstruction is a crowd, not an object.** At its own site each of the 17 vias faces **3–24 infringing
