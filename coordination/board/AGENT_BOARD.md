@@ -445,6 +445,74 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **THE AMPACITY BASIS WAS WRONG. SAFE_TO_ROUTE: NO. And the fix is hardware, not routing.**
+
+**Confirmed from a citable source** (AdvancedPCB IPC-2221 calculator, nine hand controls ≤1.2 % residual):
+
+| layer class | k | basis |
+|---|---|---|
+| **external — F.Cu, B.Cu** | **0.048** | curve fit to IPC-2221, external |
+| **internal — In1, In2** | **0.024** | curve fit to IPC-2221, internal |
+
+with `A = (I / (k · ΔT^0.44))^(1/0.725)`, b = 0.44, c = 0.725.
+
+**And a finding nobody had made: a via barrel has NO IPC-2221 formula.** Buried copper therefore takes
+the **internal** constant, so a 0.4 mm barrel through 25 µm carries **1.50 A, not 3.00 A.** Every barrel
+count in this programme was computed at double the real ampacity — **the 492-barrel field should be
+936.**
+
+### The rail FAILS on the corrected basis
+
+| element | barrels | capacity at k=0.024 | vs 43.5 A |
+|---|---|---|---|
+| **BATP** | 48 | **24.83 A** | **0.62× — FAIL** |
+| **BATN** | 61 | **29.55 A** | **0.74× — FAIL** |
+| `BATP_IN` | — | **47.74 A** | **PASS** |
+
+`BATP_IN` genuinely passes because its cut is **100 % F.Cu** (F = 1.428, In1 = 0.0). So my suspicion that
+"47.7 A is really 24.8 A" was **wrong** — that element is all outer copper. The failure is in the
+**barrels**, not the pour.
+
+### The placement gate exits 1
+
+| gate | condition | result |
+|---|---|---|
+| G1 | phase corridor | PASS, 9.42 vs 8.972 (**+5 %**, vector 9.458, but 3.50 seed-pinned) |
+| G2 | corridor ≥ 12.52 | PASS |
+| G3 | 20.77 | PASS |
+| G4 | no B.Cu parts | PASS |
+| G5 | spreader footprint | **PASS BY DECLARATION** — 181.2 vs 181.2, a **text token checked against its own formula**; 314 cm² at 4.36 W/device |
+| **G6** | **barrel count** | **FAIL — 14 barrels where 27 are needed; 9 where 17 are needed; and 24 of 48 sites were never measured** (`key is None: continue`) |
+| G7 | FET junction | PASS, 101.4 °C |
+| G8 | 19.8 % (a budget, not packing) | PASS |
+
+**Exit 0 only at k = 0.048. At k = 0.024 it exits 1.**
+
+So the earlier "exit 0" was **riding the constant that had been withdrawn 20 minutes earlier.** That is
+the sixth time in this programme a green result came from a superseded input.
+
+### The conclusion, and it is a design one
+
+**Copper — not area — is the binding constraint, and the barrel count is limited by the shunt pads.**
+
+**The shunt pads physically hold 17–18 barrels where 27 are required.** No amount of placement or
+routing creates barrel sites that the footprint does not have. So the ESC needs one of:
+
+1. **a part change** to a shunt with more pad area,
+2. **a second shunt in parallel** per rail,
+3. **a busbar** carrying the current past the shunt transition.
+
+**This means the ESC cannot be made buildable by layout work at all.** The board needs a component-level
+change before routing is meaningful — which is precisely why the owner's instruction to be careful with
+placement first was right: routing would have burned weeks against a constraint no trace can satisfy.
+
+### Also stale, caught by the verifier
+
+- the gate's DRC figures were **413 pre-shrink**, not the current **253 / 113**.
+- one wrong-k figure: `BATP_IN` 23.87 A (internal k applied to external copper).
+
+---
+
 ### Objective assessment, per board
 
 | board | DRC-clean | 0 unconnected | 0 geometry defect | validated package | no open cell | verdict |
