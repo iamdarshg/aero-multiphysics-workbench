@@ -508,6 +508,61 @@ on CRLF checkouts** — 46 of 49 entries verify, 3 stale text files.
 
 ---
 
+### drone-arm MCU: **do not swap.** Board growth costs $0 and the swap saves $0.
+
+**U10's real requirement, taken from the netlist rather than assumed:**
+
+| | |
+|---|---|
+| part | **RP2354B QFN-80, 0.4 mm pitch, 10.70 mm land span** |
+| GPIO in use | **40 of 48** (8 spare) |
+| nets | **53** — 3 × SPI (sensor / RF / **CAN via MCP2518FD — there is no native CAN**), I²C baro, UART GNSS, USB FS, SWD, 6 × ESC PWM, 7 interrupts. **ADC and QSPI are unused.** |
+| selection spec | **≥ 41 GPIO, 3 × SPI** |
+
+**The lane arithmetic, done for every candidate — 0.60/0.30 needs 0.425 mm:**
+
+| option | package | pitch | lane | verdict |
+|---|---|---|---|---|
+| **STM32H723VGT6** | LQFP-100 | 0.50 mm | **0.350 mm** | **FAIL by 0.075 mm** |
+| **STM32H743VIT6** | LQFP-100 | 0.50 mm | **0.350 mm** | **FAIL by 0.075 mm** — same land pattern |
+| **AT90USB1287** | TQFP-64 | **0.80 mm** | **0.525 mm** | **PASS by 0.100 mm** — but **30–40× slower**, 1 SPI + MSPI |
+| 0.8 mm BGA | BGA | — | 0.366 mm diagonal | FAIL by 0.059, no packaging escape |
+
+**No 0.5 mm LQFP clears a 0.60/0.30 through via.** Both STM32 options fail by **exactly the same
+0.075 mm**, because they share a land pattern. The only pitch-legal part is an **AT90USB1287 at 0.8 mm —
+30–40× slower**, which would defeat the point of the board.
+
+**So the swap costs and saves:**
+
+| | |
+|---|---|
+| nets remapped | **53** |
+| pads | 81 → 100 (or 64) |
+| land span | **+6.25 mm** |
+| footprints that must move | **20** |
+| schematic | **must change** |
+| **firmware** | **must change — and none exists.** meson names **27 C + 1 asm + 13 include dirs**; the audit records **36 sources absent.** Cost: **unknown, human-scoped.** Not invented here. |
+| **fab saving** | **$0.** Spin is $116 PCBWay / $4.94 JLCPCB board charge **either branch.** |
+
+**Board growth, by contrast:**
+
+U10 sits **50 mm from any edge.** The ring needs **0.73–2.76 mm** of copper-free lane
+(**7.8–29.5 mm² per side, 0.06–0.21 % of 14,000 mm²**) — and it is **$0 at PCBWay, because 140 × 100 mm
+already prices as 150 × 100.** The airframe envelope is **NOT RECORDED** in the repo, so whether the grown
+board fits is an open question a human must answer.
+
+**Recommendation, and it is not close: grow the ring 0.7–2.8 mm and keep the RP2354B.** The swap saves
+**$0** in fab money, no 0.5 mm LQFP passes the lane test, and the one part that does pass is **30–40×
+slower with no firmware to port.** A growth that costs nothing and keeps the software is the answer.
+
+**Nominal-fee upgrades, ranked — what to buy while a respin is happening anyway:**
+1. **7th actuator channel — $0.** **Pad 49 is spare.**
+2. **Native FDCAN — free with any swap** (currently CAN needs an external MCP2518FD).
+3. Compute — the fee *is* the firmware rewrite.
+4. Thermal — free, and **not worth a spin.**
+
+---
+
 ### FINAL STATE — 13 of 20 objective conditions met
 
 | board | DRC | unconn | geometry | package | checklist | score |
