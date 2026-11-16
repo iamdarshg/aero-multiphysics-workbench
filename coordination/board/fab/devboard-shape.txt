@@ -1,0 +1,6 @@
+dev-real-production board
+  outline: 105.050 x 105.050 mm = 110.4 cm2
+  copper layers: 4
+  footprints: 320   (on B.Cu: 18)
+  vias: 1941   min drill: 0.100 mm
+  track segments: 9310

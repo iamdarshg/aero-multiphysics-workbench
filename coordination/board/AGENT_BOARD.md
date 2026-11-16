@@ -445,6 +445,69 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### SEVENTH BOARD DISCOVERED: `dev-board` — never assessed until now, and it is HDI
+
+**It lives at `C:\Users\Darsh Gupta\engineering-portfolio-audit\repos\dev-board`, NOT on E:.** Every
+prior wave only ever looked in `E:\engineering-portfolio-audit\repos`, which holds six repos. **dev-board
+is the seventh** and has never had a fab-readiness pass.
+
+| | |
+|---|---|
+| remote | `https://github.com/iamdarshg/dev-board.git` |
+| branch | **`info-dump/2026-11-10-handoff`** — an info-dump branch, not a work branch like the other six |
+| HEAD | `71e11f2 info-dump: temporary working-tree snapshot 2026-11-10`, tree clean |
+| content | **IWRL6432 + CC1352 + AD9609 + RP2350 + MM8108 + ICM-42670 + ENS161** — a radar/radio board |
+| board files | 4: `dev_board`, `dev-real`, `dev-real-production`, `dev-real-production-fab/dev-real-production` |
+
+**Measured on `dev-real-production.kicad_pcb`:**
+
+| | |
+|---|---|
+| outline | **105.050 × 105.050 mm = 110.4 cm²** |
+| copper layers | **4** |
+| footprints | **320, of which 18 are on B.Cu** (so it is NOT single-sided — that constraint was ESC-only) |
+| vias | **1,941 with min drill 0.100 mm** |
+| track segments | 9,310 |
+
+**So dev-board is HDI, exactly like drone-arm was.** Min drill **0.100 mm**, and its release carries
+**three blind/buried lamination pairs** (`dev-real-front-in1.drl`, `dev-real-front-in2.drl`,
+`dev-real-in1-in2.drl`). It also **uses RP2350** — the same MCU family as drone-arm's U10.
+
+**It is much further along than drone-arm was:** a real release exists at `release/final/` with gerbers for
+both variants, BOM, positions, a schematic PDF, **ERC**, DRC reports, SHA256SUMS and RELEASE_NOTES. So this
+board has plausibly already been fabbed — it is not a paper design.
+
+**But its recorded state is not clean:**
+
+| check | value |
+|---|---|
+| DRC (report dated 2026-08-24) | **176 violations** |
+| footprint errors | **0** |
+| unconnected pads | **0** |
+| drill audit | a `length-audit.txt` exists alongside the drills |
+
+The 176 are dominated by `track_dangling` and `via_dangling` marked **"Local override; warning"** — so they
+are warnings by deliberate override, not errors. That is the same *pattern* as Code-SDR's 222 warnings, but
+**it has not been verified by us and must not be assumed equivalent.**
+
+**Known defect from the EM validation carried in Code-SDR's own docs (EM-7, rated Low):** dev-board's
+`RELEASE_NOTES.md` **SHA-256 manifest is stale** (no matching blob) and the **BOM CSVs are not reproducible
+on CRLF checkouts** — 46 of 49 entries verify, 3 stale text files.
+
+### What dev-board needs before it could be called buildable
+
+1. **A no-HDI verdict.** 1,941 vias at 0.100 mm plus three blind/buried pairs is HDI process, and it
+   violates the owner's standing no-HDI rule exactly as drone-arm does. Whether that is acceptable for
+   *this* board is an owner decision — it may already be fabbed and out of scope for respin.
+2. **The 176 DRC items classified** the same way Code-SDR's 222 were: by severity, with a set diff, and
+   with proof the rule file loaded.
+3. **The 18 B.Cu footprints** confirmed as deliberate double-sided assembly (it is not ESC-constrained).
+4. **The stale manifest and CRLF-sensitive BOMs** fixed, so the release package is reproducible.
+
+**None of these have been done.** dev-board should be treated as **UNASSESSED**, not as passing.
+
+---
+
 ### FINAL STATE — 13 of 20 objective conditions met
 
 | board | DRC | unconn | geometry | package | checklist | score |
