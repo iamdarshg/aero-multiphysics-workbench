@@ -445,6 +445,97 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **THE 60 A WAS WRONG BY 3.6×.** Real per-phase current is 16.8 A RMS.
+
+**BOARD CORRECTION — this supersedes every ESC decision made on a 60 A basis.** The 60 A figure was
+never a phase current. **44.4 V × 60 A = 2.664 kW**, which is a *system* power figure for a **4-motor,
+8 kg** aircraft, later relabelled as per-phase current. The board has **6** motors.
+
+**Derived from drag, independently re-derived by the verifier:**
+
+```
+T  = ½ · 0.909 · 200² · 0.000693 = 12.60 N per motor
+     × 6 motors = 75.6 N   against an 8 kg airframe weighing 78.5 N   ← consistent
+P_d = 2,580.6 W
+÷ 0.72 (prop)        = 3,584.0 W
+÷ (0.90 · 0.97)      = 4,105.6 W   (motor · ESC)
+÷ 44.4 V             = 92.5 A bus
+÷ 6 motors           = 15.4 A per motor
+÷ 0.92               = 16.8 A RMS per phase
+```
+
+Cited: `PHASE15_DESIGN_SPEC.md:244, :301, :337, :358`; `phase15_robu_final_config.py:114`;
+`REV_B_ARCHITECTURE.md:18`; `FA4119_PROPULSION_DECISION.md:40-54`.
+
+**Range: 14.7–22.2 A** (FOM 0.62–0.82 with a reconciled meanline), rising to **37.2 A** at the spec's own
+CdA of 0.0015. **Binding assumption: CdA 0.000693 m², ASSUMED** — and it is the spec's own *"UNRESOLVED
+#1 gate."*
+
+**There is no motor map and no motor current rating anywhere in the repo** — `PHASE15_DESIGN_SPEC.md:305`
+explicitly refuses to supply one. So this chain starts from **drag**, not from a motor datasheet. That
+is a legitimate derivation, but it means the whole ESC sizing rests on a CdA that the design itself
+flags as unresolved.
+
+### What this does to every ESC conclusion
+
+| prior conclusion | at 60 A | **at 16.8 A RMS (range 14.7–22.2)** |
+|---|---|---|
+| BATP In1 capacity 23.1 A | fails 2.6× | **passes at design point**, marginal at 22.2 A |
+| BATN barrels 47.4 A | fails | **passes comfortably** |
+| 2 oz max 22.9 A | fails | **passes at design point** |
+| 4 oz max 48.0 A | fails | **passes with margin** |
+| rail redesign needed | yes | **no — the rail is adequate** |
+| 4 oz mandatory | yes | **no — 2 oz becomes viable, and 2 oz removes 413 footprint DRC items** |
+
+So: **the ESC is not a 60 A board. It is a ~17 A board with a 37 A worst case.** The A/B question
+changes again — and this time in favour of **2 oz**, because 2 oz clears the 413 footprint-bound DRC
+items *and* its 22.9 A ampacity covers the design point with margin.
+
+**Do not act on this until the CdA uncertainty is bounded** — 37.2 A at the spec's own CdA sits between
+the two branches' capability (22.9 / 48.0 A). The answer genuinely depends on which CdA is right.
+
+### The rate to use, going forward
+
+**43.5 A per phase, not 60 A.** One unit's "hard ceiling" of **40.0 A** is a **bus** current printed in
+a **per-phase** table; its phase equivalent is **43.5 A**. Every row that compared 22.9 A or 48.0 A of
+phase ampacity against a 40 A bus overstated its margin — **4 oz's "1.20×" is really 1.10×.** The
+verdicts survive; the multipliers do not.
+
+### Code-SDR: the shipped board has NO FIDUCIALS AT ALL
+
+The package shipped correctly — **22 files, all added, 0 modified, 0 deleted**, HEAD `1a20bd6` equals
+the remote, tree clean, board still `309414D2`. An independent re-export reproduces **F_Cu, In1.Cu and
+Edge_Cuts byte-identically**, with drills **1,213 + 2 G85 = 1,215** = 1,085 vias + 128 PTH + 2 NPTH,
+4 layers, 373 footprints, **rev 2.1**.
+
+**But the fiducial work never reached the repo board.** Measured: the repo board contains **0 `FID`
+strings, 0 fiducial properties, 373 footprints.** The 1.2505 mm gap belongs to the **`fid9` copy** in
+evidence. So:
+
+- the old **"1.22 FAIL"** does not apply — that board is gone
+- the new **"1.2505 PASS"** does not apply either — it is a copy, not the shipped board
+- **the board being shipped has no fiducials, so it cannot be assembled**
+
+This is the ship-blocking defect, and it is worse than either earlier verdict because both described
+boards that are not the one going to fab.
+
+### Checklist v4: 56/56 machine-derived, and one false claim inside it
+
+56/56 cells machine-derived, **checker exit 0**. Two defects: §3.3's *"on the repo board the requirement
+is met by +0.0005 mm"* is **false** for the reason above, and it carries **no BOARD CORRECTION line**
+while contradicting `fab-cs-ship` §4 and this board. Also **Code-SDR col 12 states a 0.15 mm stroke**
+where the measured value is **0.100** (101.6 + 0.15 = 101.75 ≠ 101.70), and its file count says **16**
+where the commit added **22**.
+
+### Confirmed clean
+
+**ESC 1,990 of 1,990 vias through** (0 HDI). **drone-arm 336 vias = 321 through + 11 blind + 4 buried**
+by span. **Code-SDR 0 non-through of 1,085.** ESC unconnected independently re-run: **1,542** via
+`pcbnew`, not the 499 cap. Slots kept separate throughout: **CS 1,213 + 2**, **DA 360 + 4**. No
+constraint violation on HDI, copper weight or spend.
+
+---
+
 ### ESC verdict: neither branch reaches 60 A, and 4 oz is the cheaper one
 
 **BOARD CORRECTION** — this replaces the earlier framing that A/B was a simple choice about footprint
