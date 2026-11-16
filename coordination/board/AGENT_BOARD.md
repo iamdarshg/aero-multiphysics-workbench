@@ -445,6 +445,88 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **THE AIRCRAFT DOES ~550 km/h, NOT 720.** And both CdA values were impossible.
+
+**BOARD CORRECTION — supersedes the 60 A error AND the 16.8 A correction.** Both candidate CdA values
+are **below the friction floor** and therefore cannot describe any real aircraft.
+
+The verifier re-measured all **19 STEPs** with an independent OCP summation:
+
+| quantity | value |
+|---|---|
+| wetted area S_wet | **0.7768 m²** (the unit's own 0.7789; agree per-part to the digit) |
+| form factor, body | 1.525 |
+| form factor, wing at x/c 0.30 | 1.341 |
+| **independent buildup** | **0.004158** (the unit: 0.00416) |
+| **friction floor** Cf·S_wet with zero form, interference or wave drag | **0.002710** |
+
+**So CdA = 0.000693 is 3.9× below the friction floor and CdA = 0.0015 is 1.8× below it. Neither is a
+possible aircraft.** The floor is the absolute minimum: skin friction alone, with every other drag
+source set to zero. Both quoted values are *less than that.*
+
+**Defensible CdA: 0.0034–0.0056 m², best 0.0042.**
+
+### What that does to the current, and to the aircraft
+
+| CdA | per-phase current | status |
+|---|---|---|
+| 0.000693 | 16.8 A | **impossible** — below friction floor |
+| 0.0015 | 37.2 A | **impossible** — below friction floor |
+| **0.0042 (best)** | **111 A rms** | the real drag-derived demand |
+| range 0.0034–0.0056 | **88–154 A rms** | the defensible band |
+
+**The aircraft supplies 43.5 A per phase.** So there is a **2.0–3.5× shortfall between what the
+airframe's drag demands and what the power system delivers.** That is not an ESC problem and no PCB
+change fixes it.
+
+**The honest conclusion: at 43.5 A per phase the aircraft reaches roughly 545–570 km/h, not 720 km/h.**
+720 km/h is unachievable with this power system, this propeller and this airframe. Every design figure
+quoted at 720 km/h inherits that.
+
+### The ESC decision, now settled
+
+**Build 4 oz with the BATP/BATN re-pour.** As drawn, neither weight passes: **20.8 A (2 oz) and
+23.1 A (4 oz) against a 40 A bus rail.** With the rail re-poured: **32.2 A (2 oz) against 47.1 A
+(4 oz)**, i.e. **0.74× versus 1.08× of the 43.5 A requirement.**
+
+**4 oz passes with 8 % margin. 2 oz does not pass at all.** So the answer to A/B is **4 oz plus the
+rail fix** — and the earlier "2 oz is cheaper" conclusion was built on an impossible CdA and is
+withdrawn.
+
+The flip current **32.18 A** is arithmetically exact (22.89 A from 2 oz F.Cu + 9.29 A from 1.5 oz In2,
+IPC-2221). But the "CdA under 0.00086 flips it to 2 oz" escape **cannot exist** — that CdA is **3.1×
+below the friction floor.** So there is no branch in which 2 oz is correct for this airframe.
+
+### Code-SDR: FIDUCIALS ARE NOW ON THE COMMITTED BOARD
+
+**Verified from `git show HEAD:`, not from a copy:**
+
+| check | result |
+|---|---|
+| footprints | **377** (373 + 4 fiducials) |
+| `Fiducial:Fiducial_1mm_Mask2mm` | **4** |
+| `FID` strings | **4** |
+| clearance properties | **4** at `(clearance 1.5)` |
+| references | **FID1, FID2, FID3, FIDL_U63_U64** at the claimed coordinates |
+
+**DRC set diff: 0 added / 0 gone.** 222 → 222, **0 unconnected**, histogram identical — measured by the
+verifier on both commits, not taken from the report.
+
+**Package matches board: YES.** Manifest **20/20** against committed blobs, **`.pos` 377 rows**,
+**BOM 373 rows**.
+
+So **Code-SDR V2 is now genuinely orderable as a bare board**: 0 DRC errors, 0 unconnected, 0 non-through
+of 1,085 vias, 4 fiducials with a real clearance, and a package that provably matches its board.
+**Assembly remains blocked on 373 missing MPNs** — a sourcing task.
+
+### One inconsistency left standing
+
+**The ESC has no DRC set diff anywhere, and its two totals disagree — 413 against 523, a gap of 110.**
+Both cannot describe the same board at the same rules. That needs resolving before the ESC's DRC count
+is quotable.
+
+---
+
 ### **THE 60 A WAS WRONG BY 3.6×.** Real per-phase current is 16.8 A RMS.
 
 **BOARD CORRECTION — this supersedes every ESC decision made on a 60 A basis.** The 60 A figure was
