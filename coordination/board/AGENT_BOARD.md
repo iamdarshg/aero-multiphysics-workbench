@@ -445,6 +445,102 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **THE ESC HAS A CONTRADICTION: 4 oz fails DRC, 3 oz fails ampacity. Neither works.**
+
+Both halves were measured on real boards.
+
+**At 3 oz the DRC clears completely:**
+
+`229 → 102`, row-level set diff **GONE 127 / ADDED 0 / unchanged 102.** **All 89 pad↔pad gaps clear**
+(75 QFN-80 U201 + 14 USB-C), **0 remain.** What is left is **70 annular + 16 via_diameter +
+16 via_dangling** — none of them pitch problems.
+
+Control confirms the trap still exists: **with no `.dru` the board reads 16** — the false green.
+
+**But 3 oz cannot carry the current:**
+
+| element | capacity | vs requirement | verdict |
+|---|---|---|---|
+| **phase F.Cu** | **36.58 A** | 0.84× of 43.5 | **FAIL** |
+| `BATP_IN` | **39.55 A** | 0.99× | **FAIL** |
+| BATP | 52.88 A | 1.22× | PASS |
+| BATN | 63.47 A | 1.46× | PASS |
+| **bus-pad barrels** | **34.5 A** | 0.86× | **FAIL** |
+| leg/drain | 25.5 A | — | PASS |
+
+**The binding number: at 43.5 A and 105 µm the phase corridor needs 11.963 mm of F.Cu. The placement
+has 9.420 mm.** At 4 oz the same corridor needs only 6.991 mm and has 7.400–9.420 mm — which is why 4 oz
+passed ampacity and 3 oz does not.
+
+**So the trade is exact and unavoidable:**
+
+| copper | fine-pitch DRC | phase ampacity |
+|---|---|---|
+| **4 oz** | **89 gaps, unmanufacturable** — no fab below 0.229, no part replacement exists | **PASS** (6.991 needed, 7.400+ available) |
+| **3 oz** | **0 gaps — fully manufacturable** | **FAIL** (11.963 needed, 9.420 available) |
+
+**At four layers these two requirements cannot both be met.** The fine-pitch MCU and USB-C force ≤3 oz;
+43.5 A on the phase corridor forces ≥4 oz. That is a topology question, not a layout one.
+
+### The parallel shunt has no legal position — measured, not assumed
+
+An exhaustive search (±12 mm, 0.25 mm grid, 4 rotations × 4 mirrors, courtyard and body objects) returned
+**0 candidates in all six cells.** The parent pads are **5.6 mm wide and 8.05 mm apart carrying different
+nets**, so a twin either **collides with its 6.6 mm body** or **strands a pad on the wrong net.**
+
+It was needed only on the **12 bus-shunt pads, not the 24** — the leg shunts and drain exposed pads
+already fit **17/17**. Barrels were rebuilt **492 → 888**, and **36 of 48 sites meet 1.50 A with 12 short
+by 4 (23 required, 27 available count)**.
+
+**Gate exit code: 1.**
+
+| gate | value | verdict |
+|---|---|---|
+| G1 phase corridor | **9.420 / 11.963** (18/18 sites, **−21.3 %**) | **FAIL** |
+| G2 corridor ≥ | **10.490 / 10.656** (3/12, caused by the barrel farm) | **FAIL** |
+| G3 | 20.147 | PASS |
+| G4 | no B.Cu | PASS |
+| G5 | spreader 36/36, 181.2 cm² | PASS |
+| **G6** | **barrels 23/27** (12/48 sites) | **FAIL** |
+| G7 | 101.4 °C | PASS |
+| G8 | 26.2 % | PASS |
+
+**As shipped the gate exits 0 on this same board** — the difference is the corrected k.
+
+**Area: 382.709 cm², +0.000** — the barrel farm cost nothing in area and everything in corridor width.
+
+### drone-mech: ONE SOLID IS IMPOSSIBLE, and the cause is not the bore
+
+The bore was swept and the answer is definitive:
+
+| radius | solids | volume mm³ |
+|---|---|---|
+| 42.6 | 4 | 742,306.36 |
+| 42.5 | 4 | 744,005.63 |
+| 42.45 | 4 | 744,880.62 |
+| **42.4375** | **2** | **745,102.65** |
+| 42.4 | 2 | 745,776.90 |
+| 42.0 | 2 | 753,421.58 |
+
+**The floor is 2 solids, and the bore is not the cause. The cavity cut alone — with no bore at all —
+already makes 2**, because the `ruled=False` loft **overshoots to 211 mm at z −250 and undershoots to
+166 mm at z −160**, leaving **114,150.5 mm³ of cavity outside the skin.** So **1 → 2 is the cavity and
+2 → 4 is the bore.** Fixing the bore cannot get below two.
+
+**Cost of getting to 2:** +2,796.288 mm³ (**+0.377 %**, +4.334 g), Ø85.2 → **84.875 mm**, bore area
+**−0.762 %**, and the **78 mm throat is untouched.** Validity is good: 2 closed shells, 1,566 edges,
+0 free, 0 non-manifold, `BRepCheck` valid.
+
+**But two new interference pairs appear** — **50.171 mm³ each, 100.342 mm³ total**, at **z 250…254**, the
+web between the bores. The 8 existing pairs (1,255.303466 mm³) are unchanged and the body's two elevon
+rows stay bit-identical at 95.304133201.
+
+**And the wall thickness is still wrong: the fore piece is 624,770.5298 mm³ at a 2V/A of 11.34 mm — that
+is 9.45× a 1.2 mm shell, and it is radius-invariant.** So the solid-count defect and the thickness defect
+are separate, and the thickness one is untouched by any bore change.
+
+---
+
 ### **THE ESC ANSWER IS 3 oz, NOT 2 OR 4 — and the 113 gaps cannot be cleared at 4 oz at all**
 
 Both remaining gap families were checked against their own datasheets and **neither has a part-change
