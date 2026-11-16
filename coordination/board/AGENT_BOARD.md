@@ -445,6 +445,66 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### ESC rail re-pour: EXECUTED, and 43.5 A is met
+
+| element | before | after | verdict |
+|---|---|---|---|
+| **BATN** | 1.4139 mm² = **47.40 A** | 1.9166 mm² = **59.09 A** | **×1.358 of the 43.5 A requirement** |
+| `M1_BATP_IN` (pre-shunt) | 1.4280 mm² = **47.74 A** | unchanged to the digit | **×1.098** |
+| **BATP** | 0.5242 mm² = **23.08 A** | **49.67 A** | **×1.142** |
+
+**The rails are no longer the binding element.** The chain is `BATP_IN` **47.74 A** → `BATP` **49.67 A** →
+`BATN` **59.09 A**, all above the **43.5 A** design current.
+
+DRC went **523 → 524**, with a **pair diff of 5 added / 4 gone** and — the number that matters — a
+**site diff of 0 new sites**: the fifth marker is a second marker at a pre-existing site. So the re-pour
+created no new geometry defect.
+
+The instrument was re-validated before any figure was believed: **19 controls PASS**, and it reproduces
+every previously-published number to **≤ 0.07 %** (60 A/20 K width 13.981 mm, 96.991 mm at 0.0525,
+45 barrels 47.39 A, BATP 0.5242 → 23.08 A, BATN 1.4139 → 47.40 A, one barrel 0.03142 mm²). That
+reproduction is what makes the new numbers quotable.
+
+### The 413-vs-523 discrepancy is settled: they were never the same population
+
+**413 ∪ 110 = 523, verified as a row-level set diff** (common 413, gone 110, added 0) — not by
+subtracting totals.
+
+| figure | what it actually is |
+|---|---|
+| **523** | the **total** of the shipped routed board at 4 oz / 0.25 mm |
+| **413** | the **footprint-bound subset** of that 523 — and separately the total of a *different, copper-free placement board* |
+| **110** | the copper-bound remainder |
+
+**The 110 is not "98 pad rings + 12".** It is: **28 via annular + 16 via_diameter + 16 via_dangling +
+24 Track↔Track + 19 Pad↔Track clearance + 4 track_width + 3 zone neck.** The **98 pad rings are a third
+population that KiCad cannot report at all** and they appear in neither total.
+
+**Definitive ESC DRC baseline at 4 oz / 0.25 mm: 523 items** (533 with `--all-track-errors`), of which
+**413 footprint-bound** and **110 copper-bound**, **plus 98 pad rings KiCad cannot report → effective
+footprint-bound 511.**
+
+Two traps confirmed and closed:
+- **A `.kicad_dru` without `(version 1)` is silently ignored** — the result is **byte-identical to having
+  no rule file at all.** Eight controls now prove the file loads.
+- **Neither total is at a tool cap.** The clearance report caps at **499**, proven on a hand-checkable
+  board; the 414 at 0.25 mm sits below it inside a monotone sweep.
+
+### drone-arm: the 15 vias are unfixable by ANY structural patch, and that is now derived
+
+**Zero of 15 cleared**, from six conversion trials placed on real boards and judged by `kicad-cli` DRC.
+
+What makes the zero trustworthy is the **positive controls: three of the six trials came back
+DRC-clean.** A legal 0.600/0.300 through via **does exist on this board** at **(65.550, 50.250)**, fed by
+a legal 0.200 mm stub from `/3V3` pad 50, for **0 added violations and 0 unconnected.** The board simply
+**cannot reach that site from any pad that needs a via.**
+
+So this is no longer "we couldn't do it" — it is **"the board's topology cannot route these nets to a
+legal through via."** drone-arm needs a **schematic-level respin**, not a layout patch, a net swap, or a
+package change. That is the honest end state for rev_b.
+
+---
+
 ### **THE AIRCRAFT DOES ~550 km/h, NOT 720.** And both CdA values were impossible.
 
 **BOARD CORRECTION — supersedes the 60 A error AND the 16.8 A correction.** Both candidate CdA values
