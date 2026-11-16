@@ -445,6 +445,78 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### ESC split: economics PASS, area PASS — **but the stack does not assemble**
+
+**1. COST — PASS, comfortably.** Verified against live quotes, not estimates:
+
+| item | cost |
+|---|---|
+| power board, 4L 1 oz, 169.7 cm² | $142.7 base (48 + 1.36 × 69.7) → **$214–285** at a 1.5–2× heavy-copper multiplier |
+| control board, **2-layer 100 × 100** | **$5** |
+| 2.54 mm header | **$0.41** |
+| mating connectors | **$9.04** |
+| **TOTAL** | **$228–299 — that is 0.26× to 0.66× of the current $450–870** |
+
+Even at a **3× heavy-copper multiplier** it lands at **$442**, still under the **$675** floor of the 1.5×
+cap — **so the PASS does not rest on a guessed multiplier.** PCBWay's live 4-layer 150×100 5 pcs is $116,
+and 2-layer 100×100 is $5. 3 oz is unquoted at every house, which is why the multiplier is modelled rather
+than read.
+
+**2. THE HEATSINK DECIDES THE CAP, and machined breaks it.**
+
+| sink | added cost | total | vs the 1.5× cap (floor $675) |
+|---|---|---|---|
+| **extruded, +$245** | $245 | **$473–544** | **PASS** |
+| **machined, +$635** | $635 | **$863–934** | **1.28× the cap floor — FAIL** |
+
+**So the cap holds only if the heatsink is ≤ about $78 per part, i.e. extruded.** The owner asked for
+*"a custom machined heatsink"* — that choice alone pushes the two-board total over the cost limit he set.
+
+**3. AREA — PASS, but the headline was overstated.** Measured **169.42 cm² = −55.7 %**. However that
+layout file is **173 of 582 footprints**, and two part classes were drawn as stand-in pads:
+
+- **six 820 µF / 100 V cans** drawn as **8 × 8 mm** pads — real footprint **19.1 × 20.2 mm**
+- **18 motor terminals** drawn as **6 × 4 mm** pads — real **6 lugs = 64.85 cm²**
+
+| correction | area | reduction |
+|---|---|---|
+| as filed | 169.42 cm² | −55.7 % |
+| **caps restored** | **188.7 cm²** | **−50.7 %** |
+| **caps + terminals** | **250 cm²** | **−34.6 %** |
+
+**So quote 35–50 %, not 55.7 %.** It is still genuinely and significantly smaller than 382.71 cm² — the
+requirement holds — but the honest number is the corrected one. (The control report's *"118.2 cm² / 69 %"*
+mis-measures the same file: it reads 133.4 or 138.4 mm wide against an actual **122.40 mm**.)
+
+**4. GATE LOOP — no problem, and that is an important result.** **No gate net crosses the header, so the
+added inductance is 0 nH.** The gate driver therefore **stays on the power board**, where it belongs, and
+the 2.54 mm interconnect never carries a fast edge. If a gate signal were forced across, it would be
+**8.29 nH at 10 mm adjacent** (0.829 nH/mm, checked against µ₀/π·ln(2.54/0.32)) rising to **17.5 nH** far
+side, with a quality factor of 0.54–0.65 — bad, and avoidable. Shunt coupling is sound: **73.8 mV into a
+54.5 mV full scale.**
+
+**5. THE STACK FAILS. This is the blocker.**
+
+| problem | measurement |
+|---|---|
+| header length | the **28.55 mm gap needs 31.15 mm of reach**. A TSW-15 gives **15.75 mm — 15.4 mm short.** Only an unspecified **"-26" with a 30.99 mm post** works |
+| header site vs sink | the header sits at **x 131.5–136.6 mm and overlaps the 130 mm sink by 2.7 mm** |
+| capacitors vs the gap | **six 31–35.5 mm cans pierce the gap** |
+
+So the daughterboard **cannot physically be mounted on top of the heatsink** as drawn — the header is too
+short, its site runs into the sink, and the bulk capacitors occupy the space the sink needs. Volume is
+stated as **227.5 cm³ / 166 g**, but the geometry does not close.
+
+**6. Constraint violations found:** the header is **2×15/30** against the agreed **2×20/40**; **B.Cu FETs**
+appear in the control report (both boards are otherwise clean — **0 B.Cu, 0 blind/buried**); and **6 of 7
+MCUs plus all the measurement circuitry stayed on the power board**, which is not the split the owner asked
+for — the control board is meant to hold the measurement, the BEC and the MCU.
+
+**Verdict: the architecture is economically right and the area target is met, but it is UNBUILDABLE until
+the header/sink/capacitor stack and the pin split are fixed.**
+
+---
+
 ### SEVENTH BOARD DISCOVERED: `dev-board` — never assessed until now, and it is HDI
 
 **It lives at `C:\Users\Darsh Gupta\engineering-portfolio-audit\repos\dev-board`, NOT on E:.** Every
