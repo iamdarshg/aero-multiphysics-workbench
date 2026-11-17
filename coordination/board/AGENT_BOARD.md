@@ -2876,6 +2876,106 @@ is a sourcing task, not an engineering one.
 
 ---
 
+### dev-board: assessed. **HDI by design — 201 non-through, and it cannot be removed.**
+
+**Board:** 105.050 × 105.050 mm = **110.4 cm²**, **4 copper layers**, 320 footprints (**18 on B.Cu**),
+9,310 tracks, **1,941 vias**, min via drill **0.100 mm**. A radar/radio board: **IWRL6432** (60 GHz) +
+**CC1352** (sub-GHz) + **AD9609** (ADC) + **RP2350B** + **MM8108** + ICM-42670 + ENS161.
+
+**SPAN CENSUS (by `GetViaType` + layer pair, never drill diameter):**
+
+| class | count | geometry |
+|---|---|---|
+| through | **1,740** | 0.254/0.127 ×688, 0.300/0.150 ×641, 0.25025/0.15015 ×253, 0.500/0.250 ×82, 0.600/0.300 ×75 |
+| **micro** | **186** | **0.200/0.100 ×174**, 0.300/0.150 ×12 |
+| blind | 1 | — |
+| **buried** | **14** | 0.127 ×7, 0.150 ×7 |
+| **NON-THROUGH** | **201 → HDI** | **183 are a single blind span Top → Ground Layer 1** |
+
+**The HDI removal FAILS, measured twice.** The arithmetic decides it: a microvia is **0.200 size /
+0.100 drill = 0.050 mm annular ring**, but a legal through via needs **≥ 0.150 mm**, so every converted via
+must grow **+0.227 mm** of copper diameter.
+
+| attempt | change | DRC | delta |
+|---|---|---|---|
+| **1. convert all 201** | 10 → **555** | **+545** | 174 annular_width, 151 clearance, 124 hole_clearance, **80 shorting_items**, 9 mask_bridge |
+| **2. convert only the 15 blind/buried** | 10 → **48** | **+38** | 13 hole_clearance, 9 mask_bridge, 6 shorting, 6 clearance, 2 via_dangling |
+
+**≈2.5 new violations per converted via, and 80 shorts means the board would be electrically broken.**
+Attempt 1 is not a fix; it is damage.
+
+**The 186 microvias are NOT a QFN fanout.** They sit across **99 grid cells** clustered on the power
+section — **within 0.3 mm of C5, 2.1 mm of RPG1**, on CIN2/COUT2/R1/REN1. **That is power/ground stitching
+around the MIC28516 buck converter**, doing real electrical work in the current loops.
+
+**The drone-arm 4→6-layer trick does NOT transfer:** that worked on **0.300 mm vias with adequate annular
+ring**, where extra layers bought *routing*. Here the blocker is **pad diameter against neighbour spacing**,
+which no layer count changes.
+
+**RECOMMENDATION: accept HDI on dev-board** — one blind span, laser-drilled at 0.100 mm, the cheapest HDI
+class, on a board that already has a release and has plausibly been fabbed this way.
+
+**DRC — and a correction to my own first number.** My first run (**70 violations**) was **wrong**: I ran
+DRC with only the `.kicad_pro`, not the board's **`fp-lib-table` and 27 local `.pretty` dirs**. With the
+full companion set:
+
+| run | violations | unconnected |
+|---|---|---|
+| isolated (my error) | **70** | 0 |
+| **full companions** | **10** | **0** |
+| **+ narrow exclusion** | **8** | **0** |
+
+**All 52 `lib_footprint_issues` were an isolation artefact** — they literally said "the current
+configuration does not include the footprint library", and `RP2350B_minimal_hier.pretty` (7 footprints)
+was in the repo all along.
+
+**The 8 real defects: 5 `copper_sliver`** (2 Top, 2 Bottom, 1 Power Layer 2), **2 `holes_co_located`**,
+**1 `track_dangling`.** All warnings, **0 errors, 0 unconnected** on every run.
+
+**The exclusion is narrow and justified:** only `lib_footprint_mismatch` (set to `ignore`). The schematic
+cross-check gives **320 match / 0 differ / 0 missing / 0 value mismatches**, and the mismatch is a
+**library binding** — the schematic says `RP2350B_minimal_hier:R_0402_1005Metric`, the board resolves to
+`Resistor_SMD`, same name. Those `.pretty` dirs are marked *"generated from board"*; the board's pads are
+**0.54×0.64 mm** (R) / **0.56×0.62 mm** (C) against the generated copy's **1.0×1.0 mm** — the board was
+refined *after* the library was exported. **102 of 320 parts** are these 0402 passives and their values
+live in the **BOM (320 lines, 320 parts)**, so the exclusion cannot hide a wrong part.
+**Caveat: `kicad-cli` ignores `drc_exclusions`** — the CLI honours `rule_severities`; a GUI-written
+9-entry project scored 18 with and without its exclusions.
+
+**Two real package defects:**
+- **`SurfaceFinish` is EMPTY in both `.gbrjob` files** — a fab cannot know ENIG/HASL/bare. **Fab-blocking.**
+- **POS has 292 rows against 320 footprints** — 28 unaccounted. The BOM is 320 lines and consistent, so
+  **the POS is short**, not the BOM.
+
+**Manifest: 48 of 49 verify.** 46 byte-identical + 2 that verify **only after normalising CRLF→LF** (the
+two BOMs — a checkout artefact, proven) + **1 genuinely stale (`RELEASE_NOTES.md`)** + **0 missing.**
+My first pass said *"16 files missing"* — that was **my parser splitting on the spaces in the filenames**,
+since the manifest is `sha256sum` style. Corrected and recorded so it is not repeated.
+
+**The repo's committed netlist is STALE (2026-07-18)**: it still names `L_TODO_SELECT_1uH_15Aplus` for L1
+while commits `ba4443d`/`97ea3d3` later selected the Kyocera part. **Using it manufactures a fake
+"difference".** Also found: **L1 lost its library nickname**, so it is silently exempt from library checks.
+
+### KiCad 9 landmine that cost this session five failed runs
+
+**`PCB_VIA.GetWidth()` HANGS INDEFINITELY.** It wedged my three scans *and* two dispatched agents' census
+scripts — which is why those units "returned nothing". It was **not** budget and **not** a full disk.
+**Never call it.** Read via size by **text-parsing** the `.kicad_pcb` for
+`(via … (size s) (drill d) (layers "A" "B"))`.
+
+**Via type codes are ints: `1 = micro`, `2 = blind/buried`, `3 = through`.** `VIATYPE_BLIND` /
+`VIATYPE_BURIED` **do not exist** in KiCad 9 — a defensive `except` around them hides the real logic.
+
+### Disk: E: was 0.1 % full and killed three units
+
+**E: had 0.67 GB free and hit 0.00 GB.** Three units returned nothing because of it, not because of budget.
+**Fixed:** `evidence/` (10.15 GB, 20,492 files) moved to **`D:\ep-audit-evidence`** and **junctioned** back
+to `E:\engineering-portfolio-audit\evidence`, verified with `robocopy /MIR /L` reporting **0 files to copy
+and 0 extras**. **E: free went 0.67 → 10.86 GB** and every existing E: path still resolves.
+**Lesson: check free space before any large evidence write.**
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed

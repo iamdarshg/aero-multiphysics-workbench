@@ -1,0 +1,23 @@
+dev-real-production.kicad_pcb - INDEPENDENT SPAN CENSUS (GetViaType + layer pair)
+  outline            105.050 x 105.050 mm = 110.4 cm2
+  copper layers      4
+  footprints         320   (on B.Cu: 18)
+  track segments     9310
+  vias total         1941
+    through    1740   drills: {0.127: 689, 0.15: 894, 0.25: 82, 0.3: 75}
+    blind         1   drills: {0.15: 1}
+    buried       14   drills: {0.127: 7, 0.15: 7}
+    micro       186   drills: {0.1: 174, 0.15: 12}
+  *** NON-THROUGH    201 ***
+  => HDI?            YES - sequential lamination required
+
+  non-through by layer pair and drill:
+    Ground Layer 1 -> Power Layer 2  0.100 mm  x3
+    Ground Layer 1 -> Power Layer 2  0.127 mm  x7
+    Ground Layer 1 -> Power Layer 2  0.150 mm  x7
+    Top Layer -> Ground Layer 1  0.100 mm  x171
+    Top Layer -> Ground Layer 1  0.150 mm  x12
+    Top Layer -> Power Layer 2  0.150 mm  x1
+
+  via drill values   [0.1, 0.127, 0.15, 0.25, 0.3] mm
+  min via drill      0.100 mm
