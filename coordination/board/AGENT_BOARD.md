@@ -445,6 +445,78 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### **DEVIATION FOUND: the delivered drone-arm board is 6 COPPER LAYERS, not 4**
+
+**I checked it myself rather than trusting the report:**
+
+| board | copper layers | vias | non-through |
+|---|---|---|---|
+| repo rev_b (original) | **4** | 341 | 36 |
+| `fab-da-fanout3/work` | **4** | 336 | 15 |
+| **`fab-da-route-35/void/deliver`** | **6** | **339** | **0** |
+
+**The board gained two copper layers somewhere between fanout3 and the routable deliverable.** The earlier
+6-layer experiment was reported as *"worth 0.000 mm and 0 clears — an empty layer cannot raise a through
+via's all-layer minimum"*, which is true **for via legality** — but **two extra layers buy ROUTING capacity,
+and that is what made 0 non-through reachable and the 35 connections routable at all.**
+
+**This needs stating plainly because the owner's constraint said 4-layer.** Six layers is **not HDI** and
+does not breach the no-HDI rule, but it **is a different board** from what was scoped, and it changes fab
+cost. **It needs explicit approval.** I should have caught this when the layer count was first mentioned as
+a possibility rather than discovering it in my own census.
+
+**Aside from the layer count, the zero-HDI claim VERIFIES independently:** 339 vias, **all through, 0
+non-through**, drill values only **0.2 / 0.3 / 0.35 mm**, **min drill 0.200 mm**, **165 footprints with 0 on
+B.Cu.** That part is solid.
+
+### drone-mech: **8 genuine clashes remain.** Total 24 pairs / 4,291.527767 mm³
+
+**The elevon root was two classes and only one was an artefact.**
+
+The panel **does** have a root plane (|x| = 55.250, planar, 60.118 mm²) — it is not an unterminated loft —
+and **the relief IS cut** (generator `:321-322` subtracts `ELEVON_CHORD + ELEVON_GAP`), with a 24.929 mm
+full-height wall standing at |x| 204.821, **0.071 mm** outboard of the plate's tip. **At each loft station
+the gap is exactly 0.500 mm.**
+
+**But the `ruled=False` loft spans −130 → −204.75 with no station between, and OVERSHOOTS 11.274 mm at
+x = −170** — turning a 0.500 mm clearance into **−10.774 mm of interference** (measured burial **11.304 mm,
+27.8 % of chord, over 68.7 mm of span**). **That is the artefact**, and it was recut:
+`wing − offset(panel, 0.500)` gives **0.000000000 on both wings, −1,028.762 mm³ per side.**
+
+**The other 8 rows are a GENUINE CLASH at one station** — root r = **11.250 mm** from the duct axis, where
+the **motor R3/R2 envelopes, the nozzle shell and the fuselage wall** all meet.
+
+**Static joints resolve to 4 interfaces, all dispositioned contact (14 pairs / 2,146.042809 mm³):**
+
+| joint | detail |
+|---|---|
+| **collar on duct** | shrink fit **0.500 mm radial = 3.07 × σy** — **yield at 0.163 mm, so the bore needs −0.900 mm.** This is over-stressed and is a real defect wearing a "contact" label |
+| vane root in servo bracket | **320.137 / 196.000, no slot**, and the mounts are not true mirrors |
+| vane through nozzle lip | 20.002 mm³ |
+| bead across blade | 2.400 mm³ |
+
+**The pushrod was WITHDRAWN** — a bare Ø2 × 38 rod whose ends sit in air (2 pairs / 4.929154 mm³).
+
+| class | pairs | volume mm³ |
+|---|---|---|
+| **genuine clash** | **8** | **2,140.555804** |
+| dispositioned contact | 14 | 2,146.042809 |
+| withdrawn (artefact) | 2 | 4.929154 |
+| **TOTAL** | **24** | **4,291.527767** |
+
+Set diff **−2 / −1,123.992063, 0 changed, 0 added.** **Fuselage byte-identical 206,454.319709 mm³ /
+320.0042 g**, walls 1.0921 / 1.1990 / 1.1800, and **ring v2 reads 0.000000 against all 28 parts.**
+
+**So the airframe went 28 pairs / 12,978.79 → 24 pairs / 4,291.53, and the genuine-clash figure is 8 pairs /
+2,140.56 mm³ — one station's worth of envelope and nozzle geometry, not a systemic problem.**
+
+### Two units returned nothing
+
+`fab-da-route-15` and `esc-matefix-clean` produced **no report** — the same failure mode as the earlier wave
+that wrote 500 KB of artefacts and no conclusions. Both are being re-dispatched with tighter scope.
+
+---
+
 ### drone-mech: body↔wing was an ARTEFACT — total now **26 pairs / 5,415.519830 mm³**
 
 **The wing had no root plane at all.** Its only planar x-faces are the two tips at |x| = 260 mm
