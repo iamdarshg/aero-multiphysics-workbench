@@ -2976,6 +2976,88 @@ and 0 extras**. **E: free went 0.67 → 10.86 GB** and every existing E: path st
 
 ---
 
+### drone-mech: **ZERO genuine clashes.** 16 pairs / 1,229.794165 mm³, all contact or withdrawn
+
+**The 8 rows were 4 causes × 2 sides, all at r = 11.250 — and 82 % of the volume was ENVELOPES.**
+
+| population | volume mm³ | share |
+|---|---|---|
+| **`motor_A_R3` envelope** | 628.119864 | |
+| **`motor_A_R2` envelope** | 249.750363 | |
+| **envelope subtotal** | **1,755.740454** | **82.02 %** |
+| nozzle shell (real) | 120.247564 | |
+| fuselage (real) | 72.160111 | |
+| **real-part subtotal** | **384.815350** | **17.98 %** |
+
+**And the envelopes were lying:** the **real rotor R3 is 23.263498 mm clear** (0.000000), the **R2 row is a
+276/276 duplicate of R3** (**499.500726 mm³ double-counted**), and **the envelope stack is repo-BLOCKED**
+(R2∩R3 = 50,033.004601), so the distinct volume is **1,641.055078 mm³**, not 2,140.555804.
+
+**Executed: one straight cut per side at |x| = 93.735** — the plate is a **radial fin**, so one cut removes
+**2,440.874912 mm³ per side**, clears all four causes to **0.000000**, and still leaves **0.499723 mm to the
+fuselage.** Resizing the envelope was tested and **rejected** — the sourced r18 keep-out still leaves
+431.677341 mm³.
+
+**THE COLLAR IS FIXED.** Bore **Ø81.900**, interference **0.500 → 0.050 mm radial**: σ_θ drops
+**3.067 → 0.305 σ_y** on the rigid bound (0.915–1.495 → 0.113–0.173 two-body). Fit class **light press,
+H7/p6-class, 0.122 % diametral, 52 K.** That was the defect hiding behind a "contact" label.
+
+**The vane root needs a slot and does not have one:** three features required, **zero cylindrical faces
+exist**, and **the rib is 14.000 mm off its mirror.**
+
+**NEW TOTAL: 16 pairs / 1,229.794165 mm³ = 0 genuine clash + 14 dispositioned contact / 1,224.865011 +
+2 withdrawn / 4.929154.** Delta **−3,061.733602**, **+0 added.** Fuselage **byte-identical
+206,454.319709 mm³ / 320.0042 g**, 1 solid, walls 1.0921/1.1990/1.1800; **ring v2 0.000000 × 28 parts.**
+
+**Still open: the third knuckle and bracket — a 33.265 mm overhang, unanalysed.**
+
+### drone-arm: package BUILT (ENIG, revision B, 34/35 assertions) — but **not sendable**
+
+**Routing: 5 of 15 closed, 10 open.** `/CAN_MOSI` routed (16.816 mm In1 span, 0.20 mm, raster A* at
+0.04 mm over 6 layers, exact shapely verify, island count re-measured) and U10.62 spoken to the GND pour;
+4 were inherited. **Two rip-and-rejoin experiments kept 15 and 20 breaks but broke more than they closed
+(10 → 11 → 16) and were rolled back** — that is the honest accounting.
+
+**Rule-load proved:** own DRC 42; a deliberately-wrong **3 mm clearance `.kicad_dru` → 550 (508 new
+clearance)**. pcbnew reads clearance 0.125 / via 0.6.
+
+**Final: unconnected 10 on pcbnew AND 10 on kicad-cli.** Span census **343 vias, 0 non-through**, min drill
+**0.200**, RF void **4.1699 mm² / 9.8338 %** bit-identical. **DRC set diff 42 → 37:** +2 `track_width`
+(inherited 0.15 necks), **−7 `track_dangling`**.
+
+**The package exists: 20 files** — 13 Gerbers, 2 Excellon (**361 drills + 4 G85 slots = 371 hits**),
+**161-row pos**, gbrjob with **LayerNumber 6, Size 140.15 × 100.15, BoardThickness 1.6, Finish ENIG,
+SurfaceFinish ENIG, ProjectId `main_rev_b` revision `B`**. **34 of 35 assertions pass.**
+
+**THE BLOCKER: 7 U10 pads at 0.4 mm pitch have only 0.18–0.30 mm of escape against the 0.237 mm needed.
+The fan-out must be redone.** So drone-arm is packaged and revision-stamped but **not sendable**, and the
+blocker is a real geometric one, not paperwork.
+
+### ESC split: corrections applied, **stack down to 49.80 mm**, SurfaceFinish now ENIG
+
+**The post was genuinely wrong and is now right:** Samtec **`TSW-120-07-G-D`** — **5.842 mm post, 10.922 mm
+OAL**, tip at +12.58, **3.33 mm into the socket, 1.62 mm clear.** **Stack 49.80 mm against the 55.80 mm
+envelope — 6.00 mm of headroom.**
+
+**The sink trim was REFUSED, correctly.** Applying the 1.04 mm trim uncovers **6.16 mm² of drain land
+(9.49 mm² of FET copper)** on **Q3CH / Q3CL / Q6CH / Q6CL**. The **+2.54 mm bank shift, already needed for
+DRC, restores 1.500 mm exactly with no cut** — sink stays **125.00 × 74.00**, **Tj 123.15 °C**
+(45.6 K junction-to-sink, 40.8 K Sil-Pad, still pad-limited). A less careful unit would have cut the sink
+and cooked four FETs.
+
+**144 netless pads DELETED** (6 × `Conn_02x12`; **PTH 264 → 120**; **0 inside the sink rectangle**).
+
+**All 11 new DRC items gone** — 3 shorting + 8 mask, on J_H1 vs BAR2/BATN and Q3CL/Q6CL/Q6CH gates.
+Set diff **`+{}` / −{11} + 1 silk**; the ±1 clearance is a cap-boundary swap of the same Q6BL pair present
+on both boards.
+
+**Final DRC: power 527 listed = 499 clearance CAP + 28 silk** (the 499 is **a per-type cap — true count
+≥499**; quoted as a cap, not a measurement), **control 37.** Unconnected 187 / 41.
+**B.Cu components: power 3 (J_H1–H3), control 0.** **`SurfaceFinish: ENIG` on both** (was `None`).
+**Header mates 120/120, residual 0.**
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
