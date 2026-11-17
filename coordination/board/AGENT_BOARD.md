@@ -445,6 +445,80 @@ Gates G1–G21 pass. Refuted inputs `6,359.0` and `31,353.2` appear **zero** tim
 
 ---
 
+### drone-mech: body↔wing was an ARTEFACT — total now **26 pairs / 5,415.519830 mm³**
+
+**The wing had no root plane at all.** Its only planar x-faces are the two tips at |x| = 260 mm
+(6,355.0852 mm²) — **so nothing stopped it passing through the fuselage.** One continuous curved root cap
+sits at |x| 82.57–86.50 against a skin at 85.28–98.59 and **buries itself 12.421 mm past the outer mould
+line** (11.188 mm past the inner surface, into the cavity) at 36 stations, while standing **19.312 mm clear**
+at 27 others. **36 of 36 contact stations go 100 % through the wall — none stop inside it.** The displaced
+row is exactly the skin it removes: **3,094.6 mm² footprint against a 3,175 mm² lattice.**
+
+**That is a modelling artefact, not a design clash.** Fixed with `wing − fuselage` (**Cut**) on both sides,
+dropping a **6,138.525801 mm³** severed slug by a stated rule.
+
+| | before | **after** |
+|---|---|---|
+| body ↔ wing | **2 pairs / 7,563.265475 mm³** | **0.000000** |
+| **airframe total** | **28 pairs / 12,978.785305 mm³** | **26 pairs / 5,415.519830 mm³** |
+| set diff | — | **−2 pairs / −7,563.265475 mm³, nothing else moved** |
+| fuselage | 206,454.319709 mm³ / 320.0042 g | **byte-identical**, 1 solid, walls 1.0921 / 1.1990 / 1.1800 |
+
+**A 58 % reduction from one correct boolean**, and the fuselage is untouched to the byte. This is the same
+test that unmasked the rings — *is this geometrically possible as a real joint?* — and here the answer was
+no, because a wing with no root plane cannot stop at a curved skin.
+
+### drone-arm: 35 → **15 unconnected**, and freerouting is proven unusable
+
+**Zero HDI is preserved: 339 vias, all through, min drill 0.200 mm.** DRC **42** (37 dangling + 5
+via_diameter, **all inherited**), **set diff `+{}` / −16**, RF void bit-identical, pads sha unchanged.
+
+**The 35 broke down as 25 nets:** **18 dangling stubs** (corridor deleted), **9 bare pads** (7 on U10 +
+C40/C41), **5 corridor-deleted spans of 3–27 mm**, and **3 layer-splits needing a via.** The island model
+reproduces KiCad exactly — 35 = Σ(islands−1) across 25 nets.
+
+**freerouting-cli 2.5.0 is not usable, and now we know why:** **436 s of wall time bought 8.4 s of CPU and
+no `.ses` — it idles.** It also **mis-scales the DSN rules by 4×** (its log shows clearance 125 →
+0.03125 mm), so its reported *"116 pre-existing violations"* are not this board's at all. Routing was done
+instead with **raster A* at 0.04 mm, 6 layers, via transitions, exact shapely verification.**
+
+Three batches were **rejected on their own DRC** before the accepted one — including one where **clearance
+loaded as 0 because the working copy had no sibling `.kicad_pro`**, which is the same silent-rule-file trap
+that has bitten this programme twice before.
+
+**15 unconnected remain on both tools and both rulesets. Not yet a fab package.**
+
+### ESC split: the header mates 120/120 — but **the power board cannot be single-sided**
+
+**The connectors were never wrong.** Power is a `TSW` (male), control an `SSW` (female), and both
+footprints match the installed KiCad library **byte-for-byte**, with the socket's numbering **already
+mirrored** in the footprint. All 8 rigid motions give at best **60/120** with a **5.080 mm** residual.
+
+**The real cause is architectural: the power board's ONE component face is the sink face.** Its 36 FETs
+must sit on the heatsink, its 3 headers must face the control board — **opposite faces.** **All 173
+footprints are F.Cu, so the posts point into the sink.**
+
+**The fix is correct and complete:** header to the **power board's B.Cu** (posts up), socket stays on the
+control board's F.Cu, control board mounted **F.Cu-down**; transform is **identity in x/y, z +14.20 mm**.
+The flip mirrors the header's pads (−2.54) which **cancels** the socket's stock mirror.
+**Mapping: 120/120 after the flip, residual 0.000000000 mm.**
+
+**But that means: MATES SINGLE-SIDED = NO. The control board is 100 % single-sided; 120 pins must be on the
+power board's B.Cu.** That is unavoidable given FETs-on-the-sink-face. **The power board must be
+double-sided, and that needs owner approval** — it is a deviation from the blanket single-sided rule, and
+the physical reason is sound.
+
+**Three further corrections from this unit:**
+- **the 13.21 mm post is 10.70 mm TOO LONG** for the 10.00 mm gap — use a **5.05–6.66 mm** post
+- **the sink must be trimmed 1.04 mm** (the bank mirrors 2.54 mm left; moulding goes 1.500 → −1.040 mm)
+- the *"120 pre-existing PTH tails"* are **6 × `Conn_02x12_Pin` — 144 netless inherited pads**; the 120 was
+  an x = 5.5 clip. **Delete them.**
+
+Fixed copy: `esc_power_board_matefixB.kicad_pcb`. DRC set diffs are **`+{} / −{}` on both**, but the fixed
+copy introduces **+3 shorting and +8 mask bridge** that need clearing.
+
+---
+
 ### drone-arm: **NON-THROUGH = 0.** The HDI requirement is met.
 
 **328 vias, ALL through, min drill 0.200 mm.** The 0.100 mm drill is gone.
