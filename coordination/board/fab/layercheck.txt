@@ -1,0 +1,3 @@
+REPO rev_b (original)                                 CU=4  vias= 341  non-through=36
+fab-da-fanout3\work.kicad_pcb                         CU=4  vias= 336  non-through=15
+fab-da-route-35\void\deliver.kicad_pcb                CU=6  vias= 339  non-through=0

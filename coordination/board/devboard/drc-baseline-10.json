@@ -1,0 +1,132 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-17T20:43:43+0530",
+    "kicad_version": "9.0.7",
+    "schematic_parity": [],
+    "source": "dev-real-production.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [/STM32H7/JTDI] on Top Layer, length 1.3494 mm",
+                    "pos": {
+                        "x": 21.542,
+                        "y": 40.3517
+                    },
+                    "uuid": "454d6bb9-4075-4468-8217-1d99a61474a8"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Drilled holes co-located",
+            "items": [
+                {
+                    "description": "Micro Via [/Power/SW] on Top Layer - Ground Layer 1",
+                    "pos": {
+                        "x": 71.5,
+                        "y": 66.3
+                    },
+                    "uuid": "6b94f4f5-84a3-4534-9205-3ce434c29f9d"
+                },
+                {
+                    "description": "Blind/Buried Via [/Power/SW] on Ground Layer 1 - Power Layer 2",
+                    "pos": {
+                        "x": 71.5,
+                        "y": 66.3
+                    },
+                    "uuid": "7c3f990f-574f-4342-9eaa-c394e7ba768a"
+                }
+            ],
+            "severity": "warning",
+            "type": "holes_co_located"
+        },
+        {
+            "description": "Drilled holes co-located",
+            "items": [
+                {
+                    "description": "Micro Via [/Power/SW] on Top Layer - Ground Layer 1",
+                    "pos": {
+                        "x": 71.5,
+                        "y": 66.0
+                    },
+                    "uuid": "2d8539a7-3a7e-48aa-b97b-c090bc99577a"
+                },
+                {
+                    "description": "Blind/Buried Via [/Power/SW] on Ground Layer 1 - Power Layer 2",
+                    "pos": {
+                        "x": 71.5,
+                        "y": 66.0
+                    },
+                    "uuid": "ffdc2afc-dccc-436f-925d-b906015f678b"
+                }
+            ],
+            "severity": "warning",
+            "type": "holes_co_located"
+        },
+        {
+            "description": "Footprint 'R_0402_1005Metric' does not match copy in library 'Resistor_SMD'.",
+            "items": [
+                {
+                    "description": "Footprint RANT1",
+                    "pos": {
+                        "x": 6.8,
+                        "y": 18.0
+                    },
+                    "uuid": "4202d949-c82a-4684-9c3f-566b9df63ec2"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'.",
+            "items": [
+                {
+                    "description": "Footprint CANT1",
+                    "pos": {
+                        "x": 8.8,
+                        "y": 19.2
+                    },
+                    "uuid": "69035877-1965-45cf-89a8-faa89df978f3"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Copper sliver (Top Layer)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        },
+        {
+            "description": "Copper sliver (Top Layer)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        },
+        {
+            "description": "Copper sliver (Bottom Layer)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        },
+        {
+            "description": "Copper sliver (Bottom Layer)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        },
+        {
+            "description": "Copper sliver (Power Layer 2)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        }
+    ]
+}

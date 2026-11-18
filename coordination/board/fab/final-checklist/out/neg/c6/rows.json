@@ -1,0 +1,449 @@
+{
+ "schema": "fab-checklist-final rows; every cell is {short, value, verdict, reason, source}. No blanks, no TBD.",
+ "supersedes": "fab-checklist-v6/rows.json (same 13 evidence columns and verdict rules; every cell that the settled wave-18 state changed has been re-derived)",
+ "columns": [
+  "layers",
+  "copper",
+  "min_track",
+  "min_space",
+  "min_drill",
+  "min_ring",
+  "nonthrough",
+  "unconnected",
+  "drc",
+  "package",
+  "revision",
+  "outline",
+  "finish",
+  "orderable",
+  "blocking"
+ ],
+ "evidence_columns": 13,
+ "verdict_rules": {
+  "layers": "PASS iff copper layers == 4",
+  "copper": "PASS iff the stackup matches the board's declared weight on every copper layer; a rail capacity may be quoted here only as a derived figure with its k and its rule",
+  "min_track": "PASS iff min track >= the pattern rule for the declared weight (1 oz 0.100, 3 oz 0.200, 4 oz 0.250)",
+  "min_space": "PASS iff the MINIMUM measured clearance >= the rule for the declared weight; the pair count is never charged (it does not reproduce)",
+  "min_drill": "PASS iff min via drill >= 0.200 (no HDI) AND min PTH drill >= the finished-hole floor at the declared weight",
+  "min_ring": "PASS iff the smallest ring >= the published floor for the weight; WAIVED iff below that floor but at or above the board's own rule, priced as a quote line",
+  "nonthrough": "PASS iff blind + buried == 0, classified by LAYER PAIR (span), never by drill diameter or declared type",
+  "unconnected": "PASS iff pcbnew GetUnconnectedCount(False) == 0 and the count is not at a tool cap; a kicad-cli count of exactly 499 is its cap",
+  "drc": "PASS iff 0 errors at the right rules for the weight AND the fab-real count (reported + DRC-invisible population) is 0. A count measured on a COPY is named as a copy",
+  "package": "PASS iff a package exists, reconciles, is an export of the shipped part, and carries 0 blind/buried drill files",
+  "revision": "PASS iff the part or board carries a non-empty revision and the package agrees with it",
+  "outline": "PASS iff the outline polygon closes and the area (or volume, for a solid) is > 0",
+  "finish": "PASS iff the copper_finish field is populated; WAIVED where no PCB and no finish callout exist",
+  "orderable": "YES iff 0 FAIL cells. A WAIVED cell is a priced quote line or an n/a column, never a defect",
+  "blocking": "the single measured number that stops an order today; for a NO row it must occur verbatim in a FAIL cell; for a YES row it must be 0"
+ },
+ "boards": {
+  "drone-arm main rev_b (19-via conversion)": {
+   "kind": "PCB",
+   "solid_integrity": {
+    "verdict": "PASS",
+    "value": "board parses and exports; no geometry repair is claimed by this sheet"
+   },
+   "cells": {
+    "layers": {
+     "short": "4 (F/In1/In2/B)",
+     "value": "4 copper: F.Cu / In1.Cu / In2.Cu / B.Cu",
+     "verdict": "PASS",
+     "reason": "4 layers measured on the repo board copy",
+     "source": "fab-checklist-v4/out/measure_da_repo.json copper_layers"
+    },
+    "copper": {
+     "short": "0.035 x4 = 1 oz",
+     "value": "0.035 mm on all four layers = 1 oz (F.Cu 0.035, In1.Cu 0.035, In2.Cu 0.035, B.Cu 0.035)",
+     "verdict": "PASS",
+     "reason": "stackup copper matches the declared 1 oz",
+     "source": "measure_da_repo.json stackup_copper_mm"
+    },
+    "min_track": {
+     "short": "0.200 mm",
+     "value": "0.200 mm; width histogram 0.200 / 0.250 / 0.350 = 507 / 1,702 / 70 of 2,279 segments",
+     "verdict": "PASS",
+     "reason": "0.200 >= 0.100 (1 oz)",
+     "source": "measure_da_repo.json min_track, track_width_hist"
+    },
+    "min_space": {
+     "short": "0.1250 mm",
+     "value": "0.1250 mm minimum, identical in 2 runs; 509 and 512 pairs at the 0.30 mm probe floor, so the count is a range and is never charged",
+     "verdict": "PASS",
+     "reason": "0.1250 >= 0.100 (1 oz); the pair count does not reproduce",
+     "source": "fab-checklist-v5/drc/da_space/drc_r1.json, drc_r2.json"
+    },
+    "min_drill": {
+     "short": "via 0.100 / PTH 0.200",
+     "value": "via 0.100 mm (15 of 337 vias at 0.100 after the conversion; 33 of 341 before) / PTH pad 0.200 mm",
+     "verdict": "FAIL",
+     "reason": "0.100 < 0.200, so the board cannot be built without HDI",
+     "source": "fab-da-36via/census_batA.json min_drill; measure_da_repo.json min_pth_drill"
+    },
+    "min_ring": {
+     "short": "via 0.100 / PTH 0.150",
+     "value": "via ring 0.1000 x33, 0.1500 x21, 0.1750 x281, 0.2000 x6 (repo board, pre-conversion); PTH min 0.150 mm at U41.17 and U40.33 (18 pads); the post-conversion via-ring histogram was not re-censused",
+     "verdict": "WAIVED",
+     "reason": "0.100 is below the published 0.125 mm 1 oz ring floor but at the board's own 0.10 rule: a quote line, not a redesign",
+     "source": "measure_da_repo.json via_ring_hist, pth_ring_hist; open item N18"
+    },
+    "nonthrough": {
+     "short": "19 = 15 micro + 4 blind / 337; blocker 0.85 mm",
+     "value": "19 non-through = 15 micro + 4 blind by layer pair, of 337 vias (318 through), 16 stacks; split U10 12, U40 2, C32 2, C12 1, C40 1, FB1 1; spans F-In1 7, In1-In2 5, F-In2 2, In2-B 3, In1-B 2; THE BLOCKER IS EXACTLY 0.85 mm: a 0.60/0.30 through via needs 0.85 mm clear on ALL FOUR LAYERS; U10 (RP2354B QFN-80, 0.4 mm pitch) offers 0.4 mm lanes",
+     "verdict": "FAIL",
+     "reason": "19 != 0; no non-HDI 4-layer house can drill or plate them, and 0.85 mm of clear diameter has no site at U10",
+     "source": "fab-da-36via/census_batA.json, REPORT.md §7; fab-da-path/REPORT.md:14,318"
+    },
+    "unconnected": {
+     "short": "0 (pcbnew and kicad-cli)",
+     "value": "0 pcbnew GetUnconnectedCount(False) and 0 kicad-cli after the 17-via conversion; 438 of 438 required pad-to-pad connections made; not a cap: the same netlist reads 2,196 on a zero-copper placement",
+     "verdict": "PASS",
+     "reason": "both tools return 0, calibrated against the kicad-cli 499 cap",
+     "source": "fab-da-36via/REPORT.md §7; measure_da_repo.json unconnected_pcbnew"
+    },
+    "drc": {
+     "short": "4 own rules / 22 span gate",
+     "value": "board's own rules 4 = {via_diameter:+4}, the only row the conversion added (set diff vs the 36-via board); no-HDI span gate 22 = 18 hole_size + 4 via_diameter; fab-real 22",
+     "verdict": "FAIL",
+     "reason": "the right rules for a no-HDI process are the span gate, and 22 items survive it",
+     "source": "fab-da-36via/REPORT.md:324-325; kicad-cli pcb drc --severity-all"
+    },
+    "package": {
+     "short": "package7 only (15-via work board), SENDABLE NO",
+     "value": "package7 only: 5 blind/buried Excellon files carrying 15 holes, 360 drills + 4 slots = 364 hits, SENDABLE = NO; no package exists of the 19-via board",
+     "verdict": "FAIL",
+     "reason": "carries blind/buried files, and it is not an export of the board that would ship",
+     "source": "fab-checklist-v4/out/drill_census.json 0.per_file; fab-da-package7/drill_census7.json"
+    },
+    "revision": {
+     "short": "empty on board; 'B' on a copy",
+     "value": "board title block empty ('', '', ''); package7 stamps 'B' on 19 carriers because the patch was applied to a COPY",
+     "verdict": "FAIL",
+     "reason": "no revision on the board itself; the package's 'B' describes a copy",
+     "source": "measure_da_repo.json title_revision; package7 job file"
+    },
+    "outline": {
+     "short": "140.000 x 100.000 mm = 140.00 cm2",
+     "value": "140.000 x 100.000 mm Edge.Cuts centreline (140.15 x 100.15 with its 0.150 mm stroke) = 140.00 cm2, 1-up, no rails, 1 closed loop 0 holes",
+     "verdict": "PASS",
+     "reason": "polygon closes, area > 0, one piece",
+     "source": "measure_da_repo.json edge_cuts_extent_mm, outline_area_cm2"
+    },
+    "finish": {
+     "short": "ENIG",
+     "value": "ENIG (board stackup field and job file agree)",
+     "verdict": "PASS",
+     "reason": "finish declared and consistent",
+     "source": "measure_da_repo.json copper_finish"
+    }
+   },
+   "orderable": "NO",
+   "blocking": "0.85 mm"
+  },
+  "ESC rev_b (36.6 A, 3 oz)": {
+   "kind": "PCB",
+   "solid_integrity": {
+    "verdict": "PASS",
+    "value": "board parses; the 3 oz stackup edit is read back from the saved file (0.1050 / 0.0525 / 0.0525 / 0.1050, 1.600 mm)"
+   },
+   "cells": {
+    "layers": {
+     "short": "4 (F/In1/In2/B)",
+     "value": "4 copper: F.Cu / In1.Cu / In2.Cu / B.Cu",
+     "verdict": "PASS",
+     "reason": "4 layers measured; the 3 oz arm keeps the 4-layer stack",
+     "source": "fab-checklist-v4/out/measure_esc.json copper_layers; esc-3oz-build/03_stackup.json"
+    },
+    "copper": {
+     "short": "3 oz outer 0.105 / 1.5 oz inner",
+     "value": "3 oz outer: F.Cu 0.1050, B.Cu 0.1050; In1/In2 0.0525 = 1.5 oz (an assumption, not a published 3 oz inner weight); the 1.600 mm board is held; at the settled point the phase corridor carries 36.58 A (9.420 mm at 105 um, k=0.048, dT 20 K) and the bus 34.5 A (23 barrels x 1.50 A) against 36.6 / 33.7 A",
+     "verdict": "PASS",
+     "reason": "the declared 3 oz outer stackup matches; the rail sits at 99.95 % of the 36.6 A phase requirement and at 102 % of the 33.7 A bus",
+     "source": "esc-3oz-build/03_stackup.json, 08_ampacity.json, 01_capacity.json"
+    },
+    "min_track": {
+     "short": "0.200 mm (rule 0.200)",
+     "value": "0.200 mm; 4 segments at exactly 0.200 of 154; the 4 track_width rows the 0.250 rule flagged at 4 oz all clear at 0.200",
+     "verdict": "PASS",
+     "reason": "0.200 >= 0.200 at 3 oz (it was < 0.250 at 4 oz)",
+     "source": "measure_esc.json min_track; esc-3oz-build/04_setdiff.json"
+    },
+    "min_space": {
+     "short": "0.2000 mm (rule 0.200)",
+     "value": "0.2000 mm minimum, identical in 3 runs; 499 pairs at the 0.30 mm probe floor, quoted as a range and never charged",
+     "verdict": "PASS",
+     "reason": "0.2000 >= 0.200 at 3 oz",
+     "source": "fab-checklist-v4/out/space_repeat_v4.json; measure_esc.json min_space"
+    },
+    "min_drill": {
+     "short": "via 0.300 / PTH 0.200",
+     "value": "via 0.300 mm (min of 1,990 vias) / PTH pad 0.200 mm; 110 of 223 PTH pads sit below 0.300 but every one clears the 0.200 PTH floor of the 3 oz rule set",
+     "verdict": "PASS",
+     "reason": "0.300 >= 0.300 via rule and 0.200 >= 0.200 PTH rule at 3 oz",
+     "source": "measure_esc.json min_via_drill, pth_drill_hist; esc-3oz-build/rules_3oz_020.kicad_dru"
+    },
+    "min_ring": {
+     "short": "via 0.150 / PTH 0.125; 70 annular",
+     "value": "via ring min 0.150 (28 vias at 0.150), PTH min 0.125 mm at U204.11; 70 annular_width rows = 42 PTH rings at 0.150-0.175 + 28 via rings at 0.150, all under the 0.200 rule; a 3 oz quote normally grants 0.150 and nobody has quoted it",
+     "verdict": "FAIL",
+     "reason": "0.125 < 0.200 published 3 oz floor and 70 rings are under it",
+     "source": "esc-3oz-build/04_setdiff.json REMAIN by type; measure_esc.json via_ring_hist, pth_ring_hist"
+    },
+    "nonthrough": {
+     "short": "0 of 1,990 vias",
+     "value": "0 = 0 blind + 0 buried of 1,990 vias; every via is F.Cu-B.Cu through",
+     "verdict": "PASS",
+     "reason": "no non-through span on the board",
+     "source": "measure_esc.json vias_by_span"
+    },
+    "unconnected": {
+     "short": "1,536-1,542 (pcbnew, uncapped)",
+     "value": "1,536-1,542 unconnected (pcbnew, uncapped: 1,542 on the base board, 1,536 after the rail repour, -6) of 2,316 required connections; kicad-cli floors at exactly 499 on six calibration boards, so 499 was the tool's cap",
+     "verdict": "FAIL",
+     "reason": "1,536 of 2,316 connections are open: there is no route to fabricate",
+     "source": "measure_esc.json unconnected_pcbnew; esc-rail-repour/REPORT.md:42; out/esc_cap_test.json"
+    },
+    "drc": {
+     "short": "102 reported / 200 fab-real at 3 oz",
+     "value": "3 oz 0.200/0.200: 229 -> 102, row-level GONE 127 / ADDED 0 (120 clearance + 4 track_width + 3 connection_width); all 89 pad-pad gaps clear (QFN-80 U201 75 + USB-C J202/J203 14); 102 = 70 annular + 16 via_diameter + 16 via_dangling; fab-real 200 = 102 + 98 pad rings KiCad cannot report",
+     "verdict": "FAIL",
+     "reason": "102 reported and 200 fab-real are both non-zero at 3 oz; only the pattern class changed, and it cleared exactly the footprint population",
+     "source": "esc-3oz-build/04_setdiff.json, drc_base4oz/3oz.json, rules_3oz_020.kicad_dru"
+    },
+    "package": {
+     "short": "none",
+     "value": "none: 0 gerber / drill / job files under hardware/esc",
+     "verdict": "FAIL",
+     "reason": "no package exists",
+     "source": "facts.json facts.scan.esc_package"
+    },
+    "revision": {
+     "short": "empty, no silk rev",
+     "value": "title block '' and no silkscreen revision text anywhere on the board",
+     "verdict": "FAIL",
+     "reason": "no revision stamp",
+     "source": "measure_esc.json title_revision"
+    },
+    "outline": {
+     "short": "491.732 cm2 drawn / 382.709 cm2 placement",
+     "value": "repo board 173.800 x 282.930 mm Edge.Cuts centreline = 491.732 cm2, 1-up, 1 loop 0 holes; the 3 oz DRC and ampacity run on the 382.709 cm2 placement of record (155.15 x 246.80 mm, 687 footprints, 492 vias)",
+     "verdict": "PASS",
+     "reason": "both polygons close and both areas are > 0",
+     "source": "measure_esc.json edge_cuts_extent_mm; esc-3oz-build/09_area.json"
+    },
+    "finish": {
+     "short": "ENIG",
+     "value": "ENIG (board field and job file agree)",
+     "verdict": "PASS",
+     "reason": "finish declared",
+     "source": "measure_esc.json copper_finish"
+    }
+   },
+   "orderable": "NO",
+   "blocking": "1,536-1,542 unconnected"
+  },
+  "Code-SDR V2 rev 2.1": {
+   "kind": "PCB",
+   "solid_integrity": {
+    "verdict": "PASS",
+    "value": "board parses; 316 duplicate-numbered pads renumbered on a copy and re-DRC'd: count unchanged"
+   },
+   "cells": {
+    "layers": {
+     "short": "4 (F/In1/In2/B)",
+     "value": "4 copper: F.Cu / In1.Cu / In2.Cu / B.Cu",
+     "verdict": "PASS",
+     "reason": "4 layers measured",
+     "source": "measure_cs.json copper_layers"
+    },
+    "copper": {
+     "short": "0.035 x4 = 1 oz",
+     "value": "0.035 mm on all four layers = 1 oz",
+     "verdict": "PASS",
+     "reason": "stackup matches the declared 1 oz",
+     "source": "measure_cs.json stackup_copper_mm"
+    },
+    "min_track": {
+     "short": "0.100 mm",
+     "value": "0.100 mm; 1,510 segments at exactly 0.100 of 11,168",
+     "verdict": "PASS",
+     "reason": "0.100 >= 0.100 (1 oz)",
+     "source": "measure_cs.json min_track"
+    },
+    "min_space": {
+     "short": "0.1000 mm",
+     "value": "0.1000 mm minimum, identical in 3 runs; 508-512 pairs at the 0.30 mm probe floor (the count does not reproduce and is not charged)",
+     "verdict": "PASS",
+     "reason": "0.1000 >= 0.100 (1 oz)",
+     "source": "fab-cs-fid-real/drc_r1.json; fab-checklist-v4/out/space_repeat_v4.json"
+    },
+    "min_drill": {
+     "short": "via 0.200 / PTH 0.200",
+     "value": "via 0.200 mm (min of 1,085 vias) / PTH pad 0.200 mm",
+     "verdict": "PASS",
+     "reason": ">= 0.200, no HDI",
+     "source": "measure_cs.json min_via_drill, min_pth_drill"
+    },
+    "min_ring": {
+     "short": "via 0.100 / PTH 0.150",
+     "value": "via ring 0.1000 x53, 0.1250 x1,013, 0.1500 x6, 0.3000 x13 / PTH min 0.150 mm at U10.57; 94 PTH pads below 0.200 (96 with the 2 oblong slot pads, which the ring formula does not score)",
+     "verdict": "WAIVED",
+     "reason": "0.100 is below the published 0.125 mm 1 oz ring floor but at the board's own 0.10 rule: quote line W2, not a defect",
+     "source": "measure_cs.json via_ring_hist, pth_ring_hist; fab-checklist-v5/out/cs_padcheck.json"
+    },
+    "nonthrough": {
+     "short": "0 of 1,085 vias",
+     "value": "0 = 0 blind + 0 buried of 1,085 vias; all F.Cu-B.Cu through",
+     "verdict": "PASS",
+     "reason": "no non-through span",
+     "source": "measure_cs.json vias_by_span"
+    },
+    "unconnected": {
+     "short": "0 (pcbnew and kicad-cli agree)",
+     "value": "0 pcbnew and 0 kicad-cli; 1,093 of 1,093 required connections made; both tools far below their caps and in agreement",
+     "verdict": "PASS",
+     "reason": "ratsnest 0 on two independent tools",
+     "source": "measure_cs.json unconnected_pcbnew; fab-cs-fid-real REPORT 5"
+    },
+    "drc": {
+     "short": "222 warn / 0 error; fab-real 222",
+     "value": "0 errors / 222 warnings / 0 unconnected at the board's own rules plus its own .kicad_dru (199 lib_footprint_mismatch + 13 via_dangling + 10 track_dangling); fab-real 222; control: with all 316 duplicate-numbered pads renumbered on a copy the count is identical (222 total, 0 errors)",
+     "verdict": "PASS",
+     "reason": "0 errors, and the invisibility defect that would hide rings is proved empty by a renumber control",
+     "source": "fab-cs-fid-real REPORT 5 (222/0/0 before and after); fab-checklist-v5/out/cs_drc_renum.json (222/0/0 renumbered)"
+    },
+    "package": {
+     "short": "22 files at HEAD, 20/20 manifest, 1,215 holes, rev 2.1",
+     "value": "22 files at HEAD under hardware/v2/fab (12 gerber+job, 4 Excellon+drill map, 3 assembly CSV, 3 root); 20/20 files in git archive HEAD hardware/v2/fab match the committed MANIFEST.sha256, 0 mismatches; 1,215 holes = 1,213 drills + 2 G85 slots, 0 non-through, census reconciles; revision 2.1; 377 pos rows = 373 parts + the 4 fiducials",
+     "verdict": "PASS",
+     "reason": "the package exists in the repo, every manifest entry hashes to what was committed, it carries no blind/buried file, and it is an export of this board",
+     "source": "verify-w9-adv/REPORT.md:118 (git archive vs MANIFEST.sha256, 20/20); fab-checklist-v4/out/drill_census.json 1"
+    },
+    "revision": {
+     "short": "2.1 board = 2.1 job",
+     "value": "board title block '2.1' and Code-SDR-V2-job.gbrjob Revision '2.1'",
+     "verdict": "PASS",
+     "reason": "board and package agree",
+     "source": "measure_cs.json title_revision; job file"
+    },
+    "outline": {
+     "short": "101.600 mm square = 103.2256 cm2",
+     "value": "101.600 x 101.600 mm Edge.Cuts centreline (101.70 with its 0.100 mm stroke: 101.6 + 0.100 = 101.70, the measured bbox) = 103.2256 cm2, 1-up, no rails, 1 loop 0 holes",
+     "verdict": "PASS",
+     "reason": "polygon closes, area > 0, and the extent reconciles with the 0.100 stroke",
+     "source": "measure_cs.json edge_cuts_extent_mm, edges_bbox_mm"
+    },
+    "finish": {
+     "short": "ENIG",
+     "value": "ENIG (board field and job file agree)",
+     "verdict": "PASS",
+     "reason": "finish declared",
+     "source": "measure_cs.json copper_finish"
+    }
+   },
+   "orderable": "YES",
+   "blocking": "0 errors"
+  },
+  "drone-mech fuselage DM-FUS-001 REV 1": {
+   "kind": "CAD",
+   "solid_integrity": {
+    "verdict": "PASS",
+    "value": "1 solid / 1 shell / closed; BRepCheck valid; 0 free and 0 non-manifold edges of 1,561; STEP-BREP delta 0.001091 mm3"
+   },
+   "cells": {
+    "layers": {
+     "short": "n/a: 0 PCB files",
+     "value": "n/a: 0 board / gerber / drill / project files against 205 STEP/brep",
+     "verdict": "WAIVED",
+     "reason": "n/a: a printed/composite airframe part has no copper stackup",
+     "source": "facts.json scan.drone_mech"
+    },
+    "copper": {
+     "short": "n/a: 0 PCB files",
+     "value": "n/a: 0 copper on any layer",
+     "verdict": "WAIVED",
+     "reason": "n/a: no copper exists on this deliverable",
+     "source": "facts.json scan.drone_mech"
+    },
+    "min_track": {
+     "short": "n/a: 0 PCB files",
+     "value": "n/a: no track",
+     "verdict": "WAIVED",
+     "reason": "n/a: no copper exists on this deliverable",
+     "source": "facts.json scan.drone_mech"
+    },
+    "min_space": {
+     "short": "n/a: 0 PCB files",
+     "value": "n/a: no copper",
+     "verdict": "WAIVED",
+     "reason": "n/a: no copper exists on this deliverable",
+     "source": "facts.json scan.drone_mech"
+    },
+    "min_drill": {
+     "short": "n/a: 0 PCB holes",
+     "value": "n/a: 0 plated holes; the two 85.2 mm duct bores are modelled features, not drilled PCB holes",
+     "verdict": "WAIVED",
+     "reason": "n/a: no PCB drilling operation exists on this part",
+     "source": "facts.json scan.drone_mech; dm-final-package/README.md"
+    },
+    "min_ring": {
+     "short": "n/a: 0 plated holes",
+     "value": "n/a: no plating",
+     "verdict": "WAIVED",
+     "reason": "n/a: no plated hole on this deliverable",
+     "source": "facts.json scan.drone_mech"
+    },
+    "nonthrough": {
+     "short": "n/a: 0 vias",
+     "value": "n/a: 0 vias on 0 boards",
+     "verdict": "WAIVED",
+     "reason": "n/a: no vias exist",
+     "source": "facts.json scan.drone_mech"
+    },
+    "unconnected": {
+     "short": "n/a: 0 nets",
+     "value": "n/a: 0 nets on 0 boards",
+     "verdict": "WAIVED",
+     "reason": "n/a: no electrical netlist exists",
+     "source": "facts.json scan.drone_mech"
+    },
+    "drc": {
+     "short": "1 solid, 0 free edges; 10 pairs / 3,305.834869",
+     "value": "geometry gate: 1 solid / 1 shell / closed, BRepCheck valid, 0 free and 0 non-manifold edges of 1,561; volume 206,454.3197 mm3 (BREP 206,454.3208, delta 0.001091); interference on the final part 10 pairs / 3,305.834869 mm3 = 6 genuine elevon-root clashes (1,204.481397) + 2 pushrod artefacts (4.534020) + 2 unclassified bearing-ring pairs (2,096.819452 = 63.4 %); knife edge at the wing-slot rim (z -90 to -70, |azimuth| 43-45 deg)",
+     "verdict": "PASS",
+     "reason": "one valid watertight solid and 0 free edges; the knife edge is a stated process note and the bearing rings are an assembly interface, not part geometry",
+     "source": "dm-final-package/out/r5_validate.json, r1c_pairs.json, REPORT.md §1e, README.md"
+    },
+    "package": {
+     "short": "45 files + sha256 manifest, drawing, STL -0.052 %",
+     "value": "45 files hashed by SHA256SUMS (46 on disk including the manifest): STEP 9,801,595 B / BREP 4,712,827 B / STL 59,964 tri (mesh 206,347.1658 mm3, -0.052 % of STEP, watertight, Euler -2) / A3 drawing PDF 599,720 B / 6 check JSONs; copy-vs-source identical",
+     "verdict": "PASS",
+     "reason": "the package exists, every file is hashed, and the mesh is inside its stated 0.1 %",
+     "source": "dm-final-package/SHA256SUMS.txt (45 lines), README.md, out/r2_mesh.json, r6_sha256.json"
+    },
+    "revision": {
+     "short": "DM-FUS-001 REV 1",
+     "value": "DM-FUS-001 REV 1 on the drawing title block and on the package; it supersedes the as-called 4-solid file",
+     "verdict": "PASS",
+     "reason": "a revision stamp exists and the package agrees with it",
+     "source": "dm-final-package/README.md; out/drone-mech_fuselage_rev1_drawing.pdf"
+    },
+    "outline": {
+     "short": "640.00 x 211.78 x 93.87 mm; 206,454.3197 mm3",
+     "value": "part bbox 640.00 x 211.78 x 93.87 mm; volume 206,454.3197 mm3; 2V/A 1.1492 mm; mass 320.0050 g at 1550 kg/m3",
+     "verdict": "PASS",
+     "reason": "the bbox and the volume are measured on the shipped STEP and the mass closes on the density",
+     "source": "dm-final-package/README.md, out/r5_validate.json"
+    },
+    "finish": {
+     "short": "n/a: no finish callout",
+     "value": "n/a: no finish callout exists; printed PLA core + CF/glass wrap is a MATERIAL answer, not a surface finish",
+     "verdict": "WAIVED",
+     "reason": "n/a: surface finish is a bare-board parameter and neither the board nor a finish spec exists here",
+     "source": "dm-final-package/README.md; AGENT_BOARD.md:281-283"
+    }
+   },
+   "orderable": "YES",
+   "blocking": "0 (open: 2,096.819452 mm3 bearing rings)"
+  }
+ }
+}

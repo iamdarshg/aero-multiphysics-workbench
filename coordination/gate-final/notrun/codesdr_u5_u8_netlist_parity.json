@@ -1,0 +1,70 @@
+{
+  "schematic": {
+    "U5": {
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "6": "CORE_EN",
+      "1": "FPGA_VCCIO0_3V3",
+      "2": "GND",
+      "5": "unconnected-(U5-CT-Pad5)"
+    },
+    "U6": {
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "6": "CORE_EN",
+      "1": "FPGA_VCCIO1_3V3",
+      "2": "GND",
+      "5": "unconnected-(U6-CT-Pad5)"
+    },
+    "U7": {
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "6": "CORE_EN",
+      "1": "FPGA_VCCIO2_3V3",
+      "2": "GND",
+      "5": "unconnected-(U7-CT-Pad5)"
+    },
+    "U8": {
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "6": "AUX_EN",
+      "1": "FPGA_VCC_1V2",
+      "2": "GND",
+      "5": "unconnected-(U8-CT-Pad5)"
+    }
+  },
+  "board": {
+    "U6": {
+      "1": "FPGA_VCCIO1_3V3",
+      "2": "GND",
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "5": null,
+      "6": "CORE_EN"
+    },
+    "U5": {
+      "1": "FPGA_VCCIO0_3V3",
+      "2": "GND",
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "5": null,
+      "6": "CORE_EN"
+    },
+    "U7": {
+      "1": "FPGA_VCCIO2_3V3",
+      "2": "GND",
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "5": null,
+      "6": "CORE_EN"
+    },
+    "U8": {
+      "1": "FPGA_VCC_1V2",
+      "2": "GND",
+      "3": "+3V3_DIG",
+      "4": "+3V3_DIG",
+      "5": null,
+      "6": "AUX_EN"
+    }
+  }
+}

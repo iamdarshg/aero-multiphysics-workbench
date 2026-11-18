@@ -1,0 +1,165 @@
+
+=================================== ERRORS ====================================
+____________ ERROR collecting tests/core/test_analytical_models.py ____________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_analytical_models.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_analytical_models.py:6: in <module>
+    from aeroworkbench_core.models.battery import SixSBatteryInput, evaluate_six_s_battery
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+___________________ ERROR collecting tests/core/test_api.py ___________________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_api.py:7: in <module>
+    from aeroworkbench_api.main import create_app
+E   ModuleNotFoundError: No module named 'aeroworkbench_api'
+___________ ERROR collecting tests/core/test_contract_hardening.py ____________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_contract_hardening.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_contract_hardening.py:6: in <module>
+    from aeroworkbench_core.convergence import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+_________________ ERROR collecting tests/core/test_domain.py __________________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_domain.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_domain.py:6: in <module>
+    from aeroworkbench_core.dag import ComputationNode
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+________ ERROR collecting tests/core/test_envelope_variants_storage.py ________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_envelope_variants_storage.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_envelope_variants_storage.py:7: in <module>
+    from aeroworkbench_core.design import PhysicalDesignState, compare_variants
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+________________ ERROR collecting tests/core/test_policies.py _________________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_policies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_policies.py:4: in <module>
+    from aeroworkbench_core.convergence import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+____________ ERROR collecting tests/core/test_recursive_system.py _____________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\core\test_recursive_system.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\core\test_recursive_system.py:5: in <module>
+    from aeroworkbench_core import physical
+E   ModuleNotFoundError: No module named 'aeroworkbench_core'
+____________ ERROR collecting tests/fast/test_pytest_hang_guard.py ____________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\fast\test_pytest_hang_guard.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\fast\test_pytest_hang_guard.py:3: in <module>
+    import pytest_hang_guard as hang_guard
+E   ModuleNotFoundError: No module named 'pytest_hang_guard'
+________ ERROR collecting tests/integration/test_cache_persistence.py _________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_cache_persistence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_cache_persistence.py:12: in <module>
+    from aeroworkbench_api.repositories.cache_store import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_api'
+________ ERROR collecting tests/integration/test_perf06_persistence.py ________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_perf06_persistence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_perf06_persistence.py:24: in <module>
+    from participants.lifecycle import NativeJobManager
+E   ModuleNotFoundError: No module named 'participants'
+________ ERROR collecting tests/integration/test_process_supervisor.py ________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_process_supervisor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_process_supervisor.py:11: in <module>
+    from aeroworkbench_api.process_supervisor import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_api'
+_________ ERROR collecting tests/integration/test_recursive_cache.py __________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_recursive_cache.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_recursive_cache.py:7: in <module>
+    from aeroworkbench_api.repositories.cache_store import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_api'
+_________ ERROR collecting tests/integration/test_remote_executor.py __________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_remote_executor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_remote_executor.py:15: in <module>
+    from participants import lifecycle as lifecycle_mod
+E   ModuleNotFoundError: No module named 'participants'
+_________ ERROR collecting tests/integration/test_sqlite_roundtrip.py _________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\integration\test_sqlite_roundtrip.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\integration\test_sqlite_roundtrip.py:8: in <module>
+    from aeroworkbench_api.repositories.sqlite import (
+E   ModuleNotFoundError: No module named 'aeroworkbench_api'
+____________ ERROR collecting tests/physics/test_aircraft_demo.py _____________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\physics\test_aircraft_demo.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\physics\test_aircraft_demo.py:12: in <module>
+    from examples.aircraft.system import run_aircraft_demo
+E   ModuleNotFoundError: No module named 'examples.aircraft'
+___________ ERROR collecting tests/physics/test_gas_turbine_demo.py ___________
+ImportError while importing test module 'E:\engineering-portfolio-audit\repos\aero-multiphysics-workbench\tests\physics\test_gas_turbine_demo.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\physics\test_gas_turbine_demo.py:6: in <module>
+    from examples.gas_turbine.system import run_gas_turbine_demo
+E   ModuleNotFoundError: No module named 'examples.gas_turbine'
+=========================== short test summary info ===========================
+ERROR tests/core/test_analytical_models.py
+ERROR tests/core/test_api.py
+ERROR tests/core/test_contract_hardening.py
+ERROR tests/core/test_domain.py
+ERROR tests/core/test_envelope_variants_storage.py
+ERROR tests/core/test_policies.py
+ERROR tests/core/test_recursive_system.py
+ERROR tests/fast/test_pytest_hang_guard.py
+ERROR tests/integration/test_cache_persistence.py
+ERROR tests/integration/test_perf06_persistence.py
+ERROR tests/integration/test_process_supervisor.py
+ERROR tests/integration/test_recursive_cache.py
+ERROR tests/integration/test_remote_executor.py
+ERROR tests/integration/test_sqlite_roundtrip.py
+ERROR tests/physics/test_aircraft_demo.py
+ERROR tests/physics/test_gas_turbine_demo.py
+!!!!!!!!!!!!!!!!!! Interrupted: 16 errors during collection !!!!!!!!!!!!!!!!!!!
+16 errors in 71.85s (0:01:11)

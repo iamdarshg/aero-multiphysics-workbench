@@ -1,0 +1,33 @@
+{
+  "stackup_source": "main_rev_b.kicad_pcb (stackup block), not assumed",
+  "stackup": {
+    "F_Cu_mm": 0.034999999999999996,
+    "prepreg_F_to_In1_mm": 0.2,
+    "In1_Cu_mm": 0.034999999999999996,
+    "core_In1_to_In2_mm": 1.0399999999999998,
+    "er": 4.2,
+    "loss_tangent": 0.02,
+    "material": "FR4"
+  },
+  "geometry": {
+    "trace_width_mm": 0.35,
+    "freq_hz": 915000000.0
+  },
+  "microstrip_over_reference": {
+    "Z0_hammerstad_jensen_ohm": 48.61,
+    "Z0_wheeler_ohm": 53.98,
+    "eps_eff": 3.2174,
+    "guided_wavelength_mm": 182.8,
+    "spread_ohm": 5.37
+  },
+  "asymmetric_stripline_3v3_to_in2": {
+    "Z0_ohm": 59.9,
+    "note": "a = 0.2 mm to In1 (3V3), b = 1.075 mm to In2; the In2 plane is far"
+  },
+  "verdict_50_ohm": {
+    "width_for_50_ohm_mm": 0.3313,
+    "within_10pct_of_50": true,
+    "note": "0.35 mm gives 48.6 ohm on the declared 0.200 mm prepreg at er 4.2; 50 ohm would need 0.331 mm"
+  },
+  "claim_boundary": "Closed-form transmission-line solve on the board's declared stackup. NOT a field solve. Produces no S-parameters, does not model the 3V3 plane impedance or its decoupling network, and says nothing about the return current path, which is the actual defect on this board."
+}

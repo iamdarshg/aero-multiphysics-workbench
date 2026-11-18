@@ -1,0 +1,45 @@
+==============================================================================
+CORRECTED VERILATOR VERSION MATRIX
+==============================================================================
+5.040 exe    : C:\msys64\mingw64\bin\verilator_bin.exe
+     root   : C:\msys64\mingw64\share\verilator
+     version: Verilator 5.040 2025-08-30 rev UNKNOWN.REV
+     install: msys2 install; direct verilator_bin.exe
+5.48 exe    : C:\vl548_pkg\verilator\bin\verilator_bin.exe
+     root   : C:/vl548_pkg/verilator
+     version: rev vUNKNOWN-built20260516-4e853d8
+     install: PyPI wheel verilator==5.48.0 installed to C:\vl548_pkg; preflight rc=0 + functional trivial lint; direct verilator_bin.exe
+
+------------------------------------------------------------------------------
+CONTROL MODULE  ctrl/mdriven.v  (genuinely double-driven register q)
+------------------------------------------------------------------------------
+module mdriven(input wire clk, input wire a, input wire b, output reg [7:0] q);
+  always @(posedge clk) if (a) q <= q + 8'd1;
+  always @(posedge clk) if (b) q <= q - 8'd1;
+endmodule
+
+  5.040  measured=True  MULTIDRIVENPROC=no  MULTIDRIVEN=no  codes=[]
+  5.48   measured=True  MULTIDRIVENPROC=no  MULTIDRIVEN=no  codes=[]
+
+------------------------------------------------------------------------------
+SUBJECT: v2_top full hierarchy (repo gate args, -Wno-fatal to see all codes)
+------------------------------------------------------------------------------
+  5.040  measured=True  MULTIDRIVENPROC=no  fatal_hits=none
+         codes=['BLKSEQ', 'PINCONNECTEMPTY', 'PROCASSINIT', 'UNUSEDSIGNAL', 'WIDTHEXPAND', 'WIDTHTRUNC']
+  5.48   measured=True  MULTIDRIVENPROC=no  fatal_hits=none
+         codes=['PINCONNECTEMPTY', 'PROCASSINIT', 'UNUSEDSIGNAL', 'WIDTHEXPAND', 'WIDTHTRUNC']
+
+VERDICT
+------------------------------------------------------------------------------
+  Control module raised MULTIDRIVENPROC on at least one version: False
+  => MULTIDRIVENPROC did NOT fire on a blatantly double-driven
+     register in EITHER version tested. It is not enabled by the
+     -Wall set here (the Verilator manual documents it as
+     'Disabled by default as this is a code-style warning').
+     Therefore the claim that v2_fft_packetizer produces
+     MULTIDRIVENPROC under 5.054 is UNVERIFIED on this host:
+     5.054 could not be obtained, and neither available version
+     can see the defect class even in a control design.
+
+  5.040: MULTIDRIVENPROC on control = False; on v2_top = False
+  5.48: MULTIDRIVENPROC on control = False; on v2_top = False

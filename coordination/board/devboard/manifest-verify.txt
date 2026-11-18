@@ -1,0 +1,17 @@
+dev-board release/final - SHA-256 MANIFEST VERIFICATION
+  format detected : sha256sum style (<hash><spaces><filename with spaces>)
+  entries parsed  : 49 of 49 lines
+
+  VERIFY OK, byte-identical          : 46
+  VERIFY OK only after LF normalise  : 2  ['dev-real-bom.csv', 'dev-real-production-bom.csv']
+  GENUINELY STALE (real mismatch)    : 1  ['RELEASE_NOTES.md']
+  FILE NOT FOUND                     : 0  []
+
+VERDICT:
+  48 of 49 manifest entries verify (2 only after normalising CRLF to LF).
+  Stale entries: 1. Missing files: 0.
+  => MANIFEST IS NOT FULLY TRUSTWORTHY - see the lists above.
+
+GRBJSON SURFACE FINISH (a fab-blocking field if empty)
+  dev-real-job.gbrjob                SurfaceFinish=None  105.1 x 105.1 mm  1.6 mm  11 files
+  dev-real-production-job.gbrjob     SurfaceFinish=None  105.05 x 105.05 mm  1.6 mm  11 files

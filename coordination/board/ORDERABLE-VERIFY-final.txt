@@ -1,0 +1,32 @@
+ORDERABLE-BOARD VERIFICATION - my own check, both boards
+==============================================================================
+
+### Code-SDR V2
+  dir: E:\engineering-portfolio-audit\evidence\fab-cs-fid-real
+  gbrjob Code-SDR-V2-job.gbrjob
+    Finish/SurfaceFinish : 'ENIG' / None  *** EMPTY - FAB BLOCKING ***
+    size / thickness     : 101.7 x 101.7 mm / 1.6 mm
+    LayerNumber / copper : 4 / 4
+    revision             : Code-SDR-V2 rev 2.1  OK
+    files listed         : 11
+  drill files: 2  -> drills 1213 + G85 slots 2 = 1215 hits
+      Code-SDR-V2-NPTH.drl                         drills    2  slots  0
+      Code-SDR-V2-PTH.drl                          drills 1211  slots  2
+  pos: Code-SDR-V2-pos.csv -> 377 components
+  *** NO manifest ***
+
+### dev-board
+  dir: E:\engineering-portfolio-audit\evidence\dvb-to-orderable\package
+  gbrjob dev-real-production-job.gbrjob
+    Finish/SurfaceFinish : 'ENIG' / 'ENIG'  OK
+    size / thickness     : 105.05 x 105.05 mm / 1.6 mm
+    LayerNumber / copper : 4 / 4
+    revision             : dev-real-production rev B  OK
+    files listed         : 11
+  drill files: 4  -> drills 2069 + G85 slots 16 = 2085 hits
+      dev-real-production-front-in1.drl            drills  183  slots  0
+      dev-real-production-front-in2.drl            drills    1  slots  0
+      dev-real-production-in1-in2.drl              drills   17  slots  0
+      dev-real-production.drl                      drills 1868  slots 16
+  pos: dev-real-production-positions.csv -> 307 components
+  manifest: 28 verify / 0 bad

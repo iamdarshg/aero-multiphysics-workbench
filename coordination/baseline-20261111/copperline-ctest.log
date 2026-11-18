@@ -1,0 +1,71 @@
+Test project E:/engineering-portfolio-audit/repos/copperline/build
+      Start  1: test_em
+ 1/33 Test  #1: test_em ..........................   Passed    2.49 sec
+      Start  2: test_diptrace_import
+ 2/33 Test  #2: test_diptrace_import .............   Passed    1.40 sec
+      Start  3: test_thermal
+ 3/33 Test  #3: test_thermal .....................   Passed    1.98 sec
+      Start  4: test_relief_research
+ 4/33 Test  #4: test_relief_research .............   Passed    0.99 sec
+      Start  7: test_geometry
+ 5/33 Test  #7: test_geometry ....................   Passed    1.93 sec
+      Start  8: test_hierarchy
+ 6/33 Test  #8: test_hierarchy ...................   Passed    5.27 sec
+      Start  9: test_maturity
+ 7/33 Test  #9: test_maturity ....................   Passed    1.49 sec
+      Start 10: test_simplify
+ 8/33 Test #10: test_simplify ....................   Passed    1.33 sec
+      Start 11: test_current
+ 9/33 Test #11: test_current .....................   Passed    1.31 sec
+      Start 12: test_impedance
+10/33 Test #12: test_impedance ...................   Passed    1.71 sec
+      Start 13: test_via_bundle
+11/33 Test #13: test_via_bundle ..................   Passed    1.40 sec
+      Start 14: test_ampacity
+12/33 Test #14: test_ampacity ....................   Passed    1.87 sec
+      Start 15: test_voltage
+13/33 Test #15: test_voltage .....................   Passed    1.55 sec
+      Start 16: test_density
+14/33 Test #16: test_density .....................   Passed    1.50 sec
+      Start 17: test_engine
+15/33 Test #17: test_engine ......................   Passed  477.71 sec
+      Start 18: test_route_tree_growth
+16/33 Test #18: test_route_tree_growth ...........   Passed    1.48 sec
+      Start 19: test_verifier
+17/33 Test #19: test_verifier ....................   Passed    1.12 sec
+      Start 20: test_escape
+18/33 Test #20: test_escape ......................   Passed    6.60 sec
+      Start 21: test_parallel
+19/33 Test #21: test_parallel ....................   Passed   13.17 sec
+      Start 22: test_portfolio
+20/33 Test #22: test_portfolio ...................   Passed    1.21 sec
+      Start 23: test_impact
+21/33 Test #23: test_impact ......................   Passed    1.16 sec
+      Start 24: test_plane
+22/33 Test #24: test_plane .......................   Passed    1.41 sec
+      Start 25: test_recovery
+23/33 Test #25: test_recovery ....................   Passed    3.15 sec
+      Start 26: test_multiply
+24/33 Test #26: test_multiply ....................   Passed    2.21 sec
+      Start 27: test_perf
+25/33 Test #27: test_perf ........................   Passed    6.87 sec
+      Start 28: test_cli
+26/33 Test #28: test_cli .........................   Passed   42.01 sec
+      Start 29: test_diffpair
+27/33 Test #29: test_diffpair ....................   Passed    1.90 sec
+      Start 30: test_pair_verify
+28/33 Test #30: test_pair_verify .................   Passed    1.36 sec
+      Start 31: test_tuning
+29/33 Test #31: test_tuning ......................   Passed    1.71 sec
+      Start 32: test_golden
+30/33 Test #32: test_golden ......................   Passed    5.11 sec
+      Start 33: test_memory_pass
+31/33 Test #33: test_memory_pass .................   Passed    1.26 sec
+      Start 34: test_formats
+32/33 Test #34: test_formats .....................   Passed    0.71 sec
+      Start 35: test_board_scale
+33/33 Test #35: test_board_scale .................   Passed    1.28 sec
+
+100% tests passed, 0 tests failed out of 33
+
+Total Test time (real) = 598.80 sec

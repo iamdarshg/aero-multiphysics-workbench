@@ -1,0 +1,19 @@
+drone-mech wing loft: ruled=False vs ruled=True
+
+ORIGINAL  (ruled=False, the shipped loft)
+  volume   2766211.057277 mm3
+  bbox     x -260.000..260.000   y -13.719..25.371   z -270.000..266.896
+  solids   3
+  valid    True
+
+PATCHED   (ruled=True, the fix)
+  volume   2466553.198161 mm3
+  bbox     x -260.000..260.000   y -12.651..24.043   z -270.000..156.240
+  solids   3
+  valid    True
+
+elevon/panel interference against each wing
+  (no make_elevon_panel(); panel interference not measured here)
+
+delta volume (patched - original): -299657.859116 mm3
+same bbox: True

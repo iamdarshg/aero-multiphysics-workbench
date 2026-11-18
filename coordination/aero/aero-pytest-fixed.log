@@ -1,0 +1,280 @@
+........................................................................ [  4%]
+.....
+[perf06] 2000 job-status reads over 200 jobs: 151.363 ms
+.
+[perf06] provenance x300: individual=211.728 ms/300 commits, batch=32.775 ms/1 commit
+..
+[perf06] streaming sha256 of 16 MiB: 46.996 ms (340.5 MiB/s), peak alloc 2.009 MiB
+................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+........................................................................ [ 20%]
+........................................................................ [ 24%]
+........................................................................ [ 28%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+........................................................................ [ 40%]
+........................................................................ [ 44%]
+........................................................................ [ 48%]
+........................................................................ [ 52%]
+..........................................sss.F......................... [ 56%]
+........................................................................ [ 60%]
+......................................................................ss [ 64%]
+sss...................................................F..........s.s..ss [ 68%]
+.s........................................................FF............ [ 72%]
+..............................ss.FF..F............................
+[perf02] 4x300ms: serialized=1293.3 ms, concurrent=347.7 ms, peak_active=4
+...... [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+........................................................................ [ 88%]
+............................................................F........... [ 92%]
+........................................................................ [ 96%]
+......................................................................   [100%]
+================================== FAILURES ===================================
+___________________ test_edf_cad_interchange_runs_natively ____________________
+
+tmp_path = WindowsPath('C:/Users/Darsh Gupta/AppData/Local/Temp/pytest-of-Darsh Gupta/pytest-77/test_edf_cad_interchange_runs_0')
+
+    def test_edf_cad_interchange_runs_natively(tmp_path: Path) -> None:
+        from edf_config import EDF80Config
+        from edf_participants import cad_inputs
+        from participants.capabilities import probe_participant
+        from participants.lifecycle import NativeJobManager
+    
+        if probe_participant("cad-interchange").state != "ready":
+            pytest.skip("no CAD backend installed")
+        config = EDF80Config.default()
+        manager = NativeJobManager(tmp_path / "jobs")
+        job_id = manager.submit(
+            "cad-interchange", cad_inputs(config), design_id="edf-80mm", deferred=True
+        )
+>       assert manager.run(job_id) == "COMPLETED"
+E       AssertionError: assert 'FAILED' == 'COMPLETED'
+E         
+E         - COMPLETED
+E         + FAILED
+
+tests\physics\test_edf_80mm_three_stage.py:448: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[native] job 9ffe2cda3a3f4552920804c9f59a2cf2 FAILED PROCESS_EXIT_NONZERO:forward conversion failed:CONVERSION_FAILED
+_____________________ test_interchange_roundtrip_is_real ______________________
+
+tmp_path = WindowsPath('C:/Users/Darsh Gupta/AppData/Local/Temp/pytest-of-Darsh Gupta/pytest-77/test_interchange_roundtrip_is_0')
+
+    def test_interchange_roundtrip_is_real(tmp_path: Path) -> None:
+        built = build_duct_system(n_rotating=1, n_solids=1, **COMPACT).build()
+        records = export_artifacts(
+            live_shapes(built), built.kernel, tmp_path / "cad", basename="duct",
+            export_stl=False,
+        )
+        breps = {a["component"]: Path(a["path"]) for a in records["artifacts"]
+                 if a["format"] == "brep" and a["component"] != "assembly"}
+        steps = {a["component"]: Path(a["path"]) for a in records["artifacts"]
+                 if a["format"] == "step" and a["component"] != "assembly"}
+        converted = convert_cad(breps["duct"], tmp_path / "duct.step")
+>       assert converted.state == "completed"
+E       AssertionError: assert 'failed' == 'completed'
+E         
+E         - completed
+E         + failed
+
+tests\physics\test_generic_multiphysics_substrate.py:252: AssertionError
+_____________ test_native_ross_modal_participates_in_coordinator ______________
+
+tmp_path = WindowsPath('C:/Users/Darsh Gupta/AppData/Local/Temp/pytest-of-Darsh Gupta/pytest-77/test_native_ross_modal_partici0')
+
+    def test_native_ross_modal_participates_in_coordinator(tmp_path: Any) -> None:  # noqa: ANN001
+        pytest.importorskip("ross")
+        from participants.lifecycle import JobState, NativeJobManager
+        from ross.rotor import beam_first_critical_rpm
+    
+        manager = NativeJobManager(tmp_path / "jobs")
+        inputs: dict[str, object] = {
+            "analysis": "modal",
+            "shaft_length_m": 1.5,
+            "shaft_diameter_m": 0.05,
+            "n_elements": 4,
+            "bearing_stiffness_n_m": 1e8,
+            "speed_rpm": 3000.0,
+        }
+        job_id = manager.submit("rotor-modal", inputs, deferred=True)
+>       assert manager.run(job_id) == JobState.COMPLETED.value
+E       AssertionError: assert 'FAILED' == 'COMPLETED'
+E         
+E         - COMPLETED
+E         + FAILED
+
+tests\physics\test_milestone3_orchestration.py:848: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[native] job 66ff80f1676140b1a02765ef4d3515a5 FAILED CAPABILITY_UNAVAILABLE:ross-rotordynamics is not installed
+___________ test_native_pybamm_cht_conservation_at_two_resolutions ____________
+
+tmp_path = WindowsPath('C:/Users/Darsh Gupta/AppData/Local/Temp/pytest-of-Darsh Gupta/pytest-77/test_native_pybamm_cht_conserv0')
+
+    def test_native_pybamm_cht_conservation_at_two_resolutions(tmp_path: Any) -> None:  # noqa: ANN001
+        pytest.importorskip("pybamm")
+        from participants.lifecycle import JobState, NativeJobManager
+    
+        manager = NativeJobManager(tmp_path / "jobs")
+        inputs: dict[str, object] = {
+            "model": "spm",
+            "parameter_set": "Chen2020",
+            "discharge_current_a": 1.0,
+            "duration_s": 10.0,
+            "n_series": 1,
+            "n_parallel": 1,
+        }
+        job_id = manager.submit("cell-spm-discharge", inputs, deferred=True)
+>       assert manager.run(job_id) == JobState.COMPLETED.value
+E       AssertionError: assert 'FAILED' == 'COMPLETED'
+E         
+E         - COMPLETED
+E         + FAILED
+
+tests\physics\test_milestone3_orchestration.py:900: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[native] job 210e7fa42bbf4f7ca4f9941630b9cb38 FAILED CAPABILITY_UNAVAILABLE:pybamm is not installed
+________________ test_cad_interchange_benchmark_runs_natively _________________
+
+tmp_path = WindowsPath('C:/Users/Darsh Gupta/AppData/Local/Temp/pytest-of-Darsh Gupta/pytest-77/test_cad_interchange_benchmark0')
+
+    def test_cad_interchange_benchmark_runs_natively(tmp_path) -> None:  # noqa: ANN001
+        if probe_participant("cad-interchange").state != "ready":
+            pytest.skip("no CAD converter is installed")
+        manager = NativeJobManager(tmp_path / "jobs")
+        job_id = manager.submit(
+            "cad-interchange",
+            {"n_rotating": 1, "source_format": "step", **MESH_DIMS},
+            deferred=True,
+        )
+>       assert manager.run(job_id) == JobState.COMPLETED.value, manager.status(job_id)
+E       AssertionError: {'analysis': None, 'attempt': 1, 'checkpoint_id': None, 'created_at': '2026-11-11T19:15:18.503804+00:00', ...}
+E       assert 'FAILED' == 'COMPLETED'
+E         
+E         - COMPLETED
+E         + FAILED
+
+tests\physics\test_native_execution.py:145: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[native] job 36c3e383002941b79c020b23b4336736 FAILED PROCESS_EXIT_NONZERO:forward conversion failed:CONVERSION_FAILED
+_____________ test_api_capability_report_and_participant_catalog ______________
+
+    def test_api_capability_report_and_participant_catalog() -> None:
+        with TestClient(create_app()) as client:
+            capabilities = client.get("/v1/native/capabilities")
+            catalog = client.get("/v1/native/participants")
+        assert capabilities.status_code == 200
+        capability_payload = capabilities.json()
+        ready = {entry["participant_id"] for entry in capability_payload["ready"]}
+        unavailable = {
+            entry["participant_id"] for entry in capability_payload["unavailable"]
+        }
+>       assert "rotor-campbell" in ready
+E       AssertionError: assert 'rotor-campbell' in {'cad-interchange', 'domain-mesh'}
+
+tests\physics\test_native_execution.py:163: AssertionError
+_____ test_acceptance_fluid_structural_lightweight_share_one_public_path ______
+
+    def test_acceptance_fluid_structural_lightweight_share_one_public_path() -> None:
+        fluid_probe = probe_participant("incompressible-steady-flow")
+        structural_probe = probe_participant("structural-modal")
+        with TestClient(create_app()) as client:
+            fluid = client.post(
+                "/v1/native/analyses",
+                json={
+                    "participant_id": "incompressible-steady-flow",
+                    "inputs": {
+                        "compressibility": "incompressible",
+                        "steady": True,
+                        "rotating_model": "none",
+                        "thermal_model": "isothermal",
+                        "turbulence": "kOmegaSST",
+                        "inlet_velocity_m_s": 10.0,
+                        "outlet_pressure_pa": 0.0,
+                        "density_kg_m3": 1.225,
+                        "viscosity_pa_s": 1.8e-5,
+                    },
+                },
+            ).json()
+            structural = client.post(
+                "/v1/native/analyses",
+                json={
+                    "participant_id": "structural-modal",
+                    "inputs": {
+                        "analysis": "modal",
+                        "prestress": False,
+                        "thermal_load": False,
+                        "contact": False,
+                        "youngs_modulus_pa": 2.1e11,
+                        "poisson_ratio": 0.3,
+                        "density_kg_m3": 7800.0,
+                        "n_modes": 4,
+                        "mesh_file": "mesh.med",
+                    },
+                },
+            ).json()
+            lightweight = client.post(
+                "/v1/native/analyses",
+                json={"participant_id": "cell-spm-discharge", "inputs": _spm_inputs()},
+            ).json()
+    
+            fluid_final = _wait_api(client, fluid["job_id"])
+            structural_final = _wait_api(client, structural["job_id"])
+            light_final = _wait_api(client, lightweight["job_id"])
+    
+            if fluid_probe.state != "ready":
+                assert fluid_final["state"] == "FAILED"
+                assert fluid_final["error_code"] == NativeErrorCode.CAPABILITY_UNAVAILABLE.value
+            else:
+                assert fluid_final["state"] == "COMPLETED"
+            if structural_probe.state != "ready":
+                assert structural_final["state"] == "FAILED"
+                assert structural_final["error_code"] == NativeErrorCode.CAPABILITY_UNAVAILABLE.value
+            else:
+                assert structural_final["state"] == "COMPLETED"
+    
+>           assert light_final["state"] == "COMPLETED"
+E           AssertionError: assert 'FAILED' == 'COMPLETED'
+E             
+E             - COMPLETED
+E             + FAILED
+
+tests\physics\test_native_execution.py:302: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[native] job 271fc79916644a11b0abf1a49a50e934 FAILED CAPABILITY_UNAVAILABLE:no executable or library for openfoam is installed
+[native] job 28d967f9e59a4768943e874e57e0c9fb FAILED CAPABILITY_UNAVAILABLE:pybamm is not installed
+[native] job 7754a780679844629b109dd37bccc2a1 FAILED CAPABILITY_UNAVAILABLE:no executable or library for code-aster is installed
+____________________ test_turbo11_end_to_end_design_proof _____________________
+
+    def test_turbo11_end_to_end_design_proof() -> None:
+        proof = run_design_proof()
+        assert proof.validity.passed, proof.validity.checks
+        assert proof.cycle_converged
+        assert proof.multipoint_passed
+        assert proof.multipoint_ids == ("cruise", "idle", "takeoff")
+        assert proof.triangle_work_j_kg == pytest.approx(8250.0, rel=1e-12)
+        assert proof.cycle_thrust_n == pytest.approx(542.3701802214222, rel=1e-9)
+        assert proof.thrust_std_n > 0.0
+        assert proof.robust_pass
+        assert not proof.escalation
+        assert proof.fidelity == "calibrated-screening"
+        assert "unavailable" in proof.native_status
+        assert proof.result_hash == run_design_proof().result_hash
+>       assert proof.result_hash == "deae9499e74c60b34f3835199713b1e6808919302a8db09320dde5b695fbe507"
+E       AssertionError: assert '8d159c951809...3f9e927e2a583' == 'deae9499e74c...de5b695fbe507'
+E         
+E         - deae9499e74c60b34f3835199713b1e6808919302a8db09320dde5b695fbe507
+E         + 8d159c9518094c37a8d0f2da250173f83e8ca30621e6eebfc7b3f9e927e2a583
+
+tests\physics\test_turbo11_calibration.py:348: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/physics/test_edf_80mm_three_stage.py::test_edf_cad_interchange_runs_natively
+FAILED tests/physics/test_generic_multiphysics_substrate.py::test_interchange_roundtrip_is_real
+FAILED tests/physics/test_milestone3_orchestration.py::test_native_ross_modal_participates_in_coordinator
+FAILED tests/physics/test_milestone3_orchestration.py::test_native_pybamm_cht_conservation_at_two_resolutions
+FAILED tests/physics/test_native_execution.py::test_cad_interchange_benchmark_runs_natively
+FAILED tests/physics/test_native_execution.py::test_api_capability_report_and_participant_catalog
+FAILED tests/physics/test_native_execution.py::test_acceptance_fluid_structural_lightweight_share_one_public_path
+FAILED tests/physics/test_turbo11_calibration.py::test_turbo11_end_to_end_design_proof
+8 failed, 1775 passed, 15 skipped in 279.56s (0:04:39)

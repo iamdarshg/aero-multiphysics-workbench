@@ -1,0 +1,6 @@
+drone-arm main rev_b   cu=4  fp= 165  tracks= 2620  vias=  341  min_drill=0.100  under_0.2= 33
+   widths: [0.2, 0.25, 0.35]
+ESC rev_b              cu=4  fp= 687  tracks= 2144  vias= 1990  min_drill=0.300  under_0.2=  0
+   widths: [0.2, 0.25]
+Code-SDR V2            cu=4  fp= 373  tracks=12253  vias= 1085  min_drill=0.200  under_0.2=  0
+   widths: [0.1, 0.12, 0.13, 0.15, 0.18, 0.2, 0.23, 0.25, 0.3, 0.35]

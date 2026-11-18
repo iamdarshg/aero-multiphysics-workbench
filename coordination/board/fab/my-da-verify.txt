@@ -1,0 +1,8 @@
+MY OWN SPAN CENSUS (GetViaType, never drill diameter)
+  vias total      339
+    through      339
+  NON-THROUGH     0
+  drill values    [0.2, 0.3, 0.35] mm
+  min drill       0.200 mm
+  footprints      165   on B.Cu: 0
+  copper layers   6

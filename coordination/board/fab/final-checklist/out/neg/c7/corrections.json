@@ -1,0 +1,587 @@
+{
+ "note": "35 BOARD CORRECTION rows. BC1-BC26 are carried from fab-checklist-v6 with their OLD/NEW pairs intact; 17 of them are marked superseded by a wave-18 correction because the board they describe moved (36->19 vias, 4 oz->3 oz, 43.5 A->36.6 A, 4 solids->1). BC27-BC35 are new. A 'live' row's OLD tokens must appear nowhere in rows.json and its 'present' tokens must appear in REPORT.md outside section 2; a 'superseded' row's stale_in_rows tokens must appear nowhere either.",
+ "rows": [
+  {
+   "id": "BC1",
+   "board": "ESC",
+   "wrong": "the ESC was designed to 60 A per phase",
+   "old": "60 A per phase",
+   "new": "43.5 A phase / 40 A bus",
+   "source": "verify-w9-adv/REPORT.md:63 (43.5 = 240 A pack / 6 channels / 0.92); esc-flip-current, esc-rail-repour",
+   "absent_in_rows": [
+    "60 A per phase"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC30",
+   "stale_in_rows": [
+    "43.5 A phase",
+    "40 A bus"
+   ]
+  },
+  {
+   "id": "BC2",
+   "board": "ESC / airframe",
+   "wrong": "two whole-aircraft CdA values were used that are below the friction floor, so they are not physical",
+   "old": "CdA 0.000693 and 0.0015 m2",
+   "new": "CdA 0.0034-0.0056 m2, best 0.0042 (friction floor 0.002710)",
+   "source": "esc-cda-bound/REPORT.md:320-336; verify-w9-adv/REPORT.md:12 (floor 0.002710)",
+   "absent_in_rows": [
+    "0.000693",
+    "0.0015"
+   ],
+   "present": [
+    "0.0034",
+    "0.0056",
+    "0.0042",
+    "0.002710"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC3",
+   "board": "airframe / ESC",
+   "wrong": "the 720 km/h design point is not reachable with this power system",
+   "old": "720 km/h",
+   "new": "~545-570 km/h on this power system",
+   "source": "verify-w9-adv/REPORT.md:77-78; esc-cda-bound/REPORT.md:371",
+   "absent_in_rows": [
+    "720 km/h"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC32",
+   "stale_in_rows": [
+    "545",
+    "570 km/h"
+   ]
+  },
+  {
+   "id": "BC4",
+   "board": "ESC",
+   "wrong": "523 was quoted as the DRC total; it omits the pad rings KiCad cannot report",
+   "old": "523 reported as the total",
+   "new": "fab-real = reported + invisible pad rings; as drawn 621 = 523 + 98, footprint-bound 413 (371 pad-pad at 0.200 + 42 PTH rings), 110 copper-bound, effective footprint-bound 511",
+   "source": "esc-drc-resolve/REPORT.md:26,336-346,372",
+   "absent_in_rows": [
+    "523 total"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "621",
+    "413",
+    "511"
+   ]
+  },
+  {
+   "id": "BC5",
+   "board": "ESC",
+   "wrong": "499 was quoted as the unconnected count; it is kicad-cli's cap",
+   "old": "499 unconnected",
+   "new": "1,536-1,542 unconnected (pcbnew, uncapped)",
+   "source": "fab-checklist-v4/out/esc_cap_test.json; esc-rail-repour/REPORT.md:42 (1,542 -> 1,536)",
+   "absent_in_rows": [
+    "499 unconnected"
+   ],
+   "present": [
+    "1,536",
+    "1,542"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC6",
+   "board": "drone-arm",
+   "wrong": "15 non-through vias was a fan-out work-board artefact, not the repo board",
+   "old": "15 non-through vias",
+   "new": "36 non-through on the repo board (26 blind + 10 buried by span, of 341 vias)",
+   "source": "fab-checklist-v4/out/measure_da_repo.json vias_by_span; verify-wave10-adv/final_answer.txt",
+   "absent_in_rows": [
+    "15 non-through vias"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC33",
+   "stale_in_rows": [
+    "36 non-through on the repo board"
+   ]
+  },
+  {
+   "id": "BC7",
+   "board": "Code-SDR",
+   "wrong": "the fiducial was charged as a 1.22 mm FAIL on a board that had no fiducials at all",
+   "old": "1.22 FAIL",
+   "new": "4 fiducials on the committed board (HEAD fbf2eca), min gap 1.5005 mm = +0.2505",
+   "source": "fab-cs-fid-real/REPORT.md:14,132-141,237-249; git show HEAD:hardware/v2/Code-SDR-V2.kicad_pcb",
+   "absent_in_rows": [
+    "1.22 mm"
+   ],
+   "present": [
+    "FIDL_U63_U64",
+    "1.5005"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC8",
+   "board": "ESC",
+   "wrong": "the 4 oz vendor survey over-counted houses",
+   "old": "five different houses",
+   "new": "four houses carry an explicit 4 oz row",
+   "source": "v2v-fab-verify/REPORT.md",
+   "absent_in_rows": [
+    "five different houses"
+   ],
+   "present": [
+    "four houses"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC9",
+   "board": "ESC",
+   "wrong": "the published area floor was 316 cm2",
+   "old": "316 cm2 floor",
+   "new": "370 cm2 for today's BOM (316 needs the M5 lugs replaced)",
+   "source": "esc-compaction-verify/REPORT.md",
+   "absent_in_rows": [
+    "316 cm2"
+   ],
+   "present": [
+    "370"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC10",
+   "board": "drone-mech",
+   "wrong": "26 interference pairs was arithmetic over a subset of the pair set, not a verdict",
+   "old": "26 pairs",
+   "new": "0 genuine pairs (2 residual pairs = 4.010114 mm3, 100 % artefact)",
+   "source": "fab-dm-final/REPORT.md state_changed",
+   "absent_in_rows": [
+    "26 pairs"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC28",
+   "stale_in_rows": [
+    "0 genuine pairs"
+   ]
+  },
+  {
+   "id": "BC11",
+   "board": "drone-mech",
+   "wrong": "'delete 4 of 6 envelopes reaches zero' is short by one step",
+   "old": "delete 4 of 6 envelopes reaches zero",
+   "new": "delete 4 + resize",
+   "source": "fab-dm-envelopes/REPORT.md",
+   "absent_in_rows": [
+    "delete 4 of 6 envelopes"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC27",
+   "stale_in_rows": [
+    "delete 4 + resize"
+   ]
+  },
+  {
+   "id": "BC12",
+   "board": "drone-arm",
+   "wrong": "the In1->In2 vias were labelled blind; by span they are buried (a drill class is not a span class)",
+   "old": "the four In1->In2 vias are blind",
+   "new": "In1.Cu-In2.Cu vias are BURIED (repo board: 10 of them); classify by layer pair",
+   "source": "fab-checklist-v4/out/measure_da_repo.json via_table",
+   "absent_in_rows": [
+    "vias are blind"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC35",
+   "stale_in_rows": [
+    "vias are BURIED"
+   ]
+  },
+  {
+   "id": "BC13",
+   "board": "ESC",
+   "wrong": "'rail PASS' was a single number; it holds only at one barrel-plating convention",
+   "old": "rail PASS",
+   "new": "PASS only at k=0.048 (47.1 A = 1.08x of 43.5 A); 24.8 A and FAIL (0.57x) at k=0.024",
+   "source": "esc-rail-repour/REPORT.md:45,283-285; esc-flip-current/REPORT.md:303",
+   "absent_in_rows": [
+    "rail PASS"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC30",
+   "stale_in_rows": [
+    "47.1 A",
+    "1.08x"
+   ]
+  },
+  {
+   "id": "BC14",
+   "board": "Code-SDR",
+   "wrong": "the Edge_Cuts stroke was stated as 0.15 mm; 101.6 + 0.15 = 101.75, which is not the measured 101.70",
+   "old": "0.15 mm stroke",
+   "new": "0.100 mm stroke (101.6 + 0.100 = 101.70)",
+   "source": "board file: 4 Edge.Cuts shapes at (stroke (width 0.1)); v5/D1 arithmetic",
+   "absent_in_rows": [
+    "101.75"
+   ],
+   "present": [
+    "101.70",
+    "0.100 mm stroke"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC15",
+   "board": "Code-SDR",
+   "wrong": "the fab commit was counted as 16 files",
+   "old": "16 files committed",
+   "new": "22 files committed by 1a20bd6",
+   "source": "git show --name-status 1a20bd6",
+   "absent_in_rows": [
+    "16 files"
+   ],
+   "present": [
+    "22 files"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC16",
+   "board": "ESC",
+   "wrong": "'3 packages' understates the 4 oz work",
+   "old": "3 packages",
+   "new": "one impossible part (U201) + 23 footprint edits",
+   "source": "esc-branch-4oz/REPORT.md",
+   "absent_in_rows": [
+    "3 packages"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "one impossible part",
+    "23 footprint edits"
+   ]
+  },
+  {
+   "id": "BC17",
+   "board": "ESC",
+   "wrong": "the ESC outline was quoted stroke-inclusive",
+   "old": "173.950 x 283.080",
+   "new": "173.800 x 282.930 (Edge.Cuts centreline)",
+   "source": "fab-checklist-v4/out/measure_esc.json edge_cuts_extent_mm",
+   "absent_in_rows": [
+    "173.950"
+   ],
+   "present": [
+    "173.800"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC18",
+   "board": "ESC",
+   "wrong": "the post-shrink DRC was going to be reported as a before/after total, which is what this programme has been burned by twice on this board",
+   "old": "523 -> 253 as a total",
+   "new": "row-level set diff GONE 270, ADDED 0; 253 = 155 footprint-bound + 98 copper-bound; fab-real 351 = 253 + 98 invisible pad rings",
+   "source": "esc-pad-shrink/setdiff.json (gone_rows 270, added_rows 0); runs/SHRINK/drc_shrink.json; v6 derived/ring_census_shrink.json",
+   "absent_in_rows": [
+    "as a total"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "GONE 270",
+    "fab-real 351"
+   ]
+  },
+  {
+   "id": "BC19",
+   "board": "ESC",
+   "wrong": "the footprint-bound population was quoted at its pre-shrink size and never revised",
+   "old": "413 footprint-bound (371 pad-pad at 0.200 + 42 PTH rings)",
+   "new": "155 footprint-bound = 113 pad-gap + 42 PTH rings after the shrink",
+   "source": "esc-pad-shrink/setdiff.json gone by type; runs/SHRINK/drc_shrink.json annular_width rows (70) minus the 28 via rings",
+   "absent_in_rows": [
+    "413"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "155 footprint-bound"
+   ]
+  },
+  {
+   "id": "BC20",
+   "board": "ESC",
+   "wrong": "the footprint gaps were treated as one population and one shrink width, as if all of them could be cleared by editing pads",
+   "old": "all pad-gap rows shrinkable",
+   "new": "113 remain and cannot be shrunk: QFN-80 U201 RP2354B 75 + USB-C J202/J203 GCT USB4105 38, each needing a part change or a documented waiver",
+   "source": "esc-pad-shrink/groups.json (371 = 258 + 75 + 38), required_widths.json, REPORT.md section 3 (land-pattern floor); esc-gaps-113 scope",
+   "absent_in_rows": [
+    "371"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "113 remain"
+   ]
+  },
+  {
+   "id": "BC21",
+   "board": "ESC",
+   "wrong": "the rail capacity was quoted as one as-drawn number and the re-poured geometry had no cell at all",
+   "old": "23.1 A quoted as the rail capacity",
+   "new": "re-poured BATP 49.67 A / BATN 59.09 A / BATP_IN 47.74 A at k=0.048 / 20 K; 24.8 A at k=0.024; the repo board is still 23.1 A as drawn, so this is EVIDENCE ONLY",
+   "source": "esc-rail-repour/22_numbers.json measured[] (before/after per net) with controls C1-C7 all pass",
+   "absent_in_rows": [],
+   "status": "superseded",
+   "superseded_by": "BC31",
+   "stale_in_rows": [
+    "re-poured BATP 49.67"
+   ]
+  },
+  {
+   "id": "BC22",
+   "board": "drone-mech",
+   "wrong": "the body volume was quoted as one number, with no bulk/wall split and no per-solid identity, so '4 solids' was a count and not a measurement",
+   "old": "742,305.526 mm3 as one undifferentiated volume",
+   "new": "742,306.360 mm3 converged, 4 solids at 624,770.530 + 75,919.237 + 20,808.297 + 20,808.297 mm3; 84.2 % is bulk fill (624,770.5) against 117,531.8 mm3 of 1.2 mm wall",
+   "source": "body-source-sync/REPORT.md:60-70 (probe_body_identity.py, converged_split.json, epsilon 1e-12); body-record-final/REPORT.md:275",
+   "absent_in_rows": [
+    "742,305.526"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC27",
+   "stale_in_rows": [
+    "742,306.360 mm3 converged"
+   ]
+  },
+  {
+   "id": "BC23",
+   "board": "drone-mech",
+   "wrong": "the body of record was cited by name only, so no reader could tell which of the five registered candidates the numbers describe",
+   "old": "the 42_6 shell, unnamed file",
+   "new": "fuselage_battery_bay_shell_endpoint_relief_42_6.step, 7,313,057 B, sha256 c4b81dc3...bc8ea4ec, 4 solids 4/4 valid 0 free edges",
+   "source": "body-source-sync/REPORT.md:55-70; body-record-final/REPORT.md:273-283",
+   "absent_in_rows": [
+    "unnamed"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC27",
+   "stale_in_rows": [
+    "42_6 shell, unnamed file"
+   ]
+  },
+  {
+   "id": "BC24",
+   "board": "drone-arm",
+   "wrong": "the declared via type was quoted beside the span as if the two agreed; for 10 of the 36 they do not, so a declared type is not a classification",
+   "old": "declared type 33 microvia + 3 blind/buried taken as the classification",
+   "new": "10 of 36 declared types contradict their layer pair (29 span 2 copper layers, 7 span more); the span is read from the layer pair",
+   "source": "fab-da-census/via_census.json non_through_type_span_disagreements (10), non_through_adjacent_pair (29), non_through_span_gt2 (7); tables.md",
+   "absent_in_rows": [
+    "by declared type"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC33",
+   "stale_in_rows": [
+    "10 of 36 declared"
+   ]
+  },
+  {
+   "id": "BC25",
+   "board": "drone-arm",
+   "wrong": "the 36 non-through vias were assumed to overlap the copper the owed respin already re-lays, i.e. that some were free",
+   "old": "36 vias could ride the respin",
+   "new": "FREE = 0 of 36: this variant has no J60-J66 servo header, the 6 U10 7th-channel pads carry 0 vias, and /CAN_5V reaches 2 pads with 0 vias of any type",
+   "source": "fab-da-census/REPORT.md section 3 (free-rider test, net-family scan 0 matches of 175 nets); via_census.json nt_detail servo_header_pads",
+   "absent_in_rows": [],
+   "status": "superseded",
+   "superseded_by": "BC33",
+   "stale_in_rows": [
+    "FREE = 0 of 36"
+   ]
+  },
+  {
+   "id": "BC26",
+   "board": "Code-SDR",
+   "wrong": "the package integrity control was a byte compare over the files a prior wave happened to export, not over what was committed",
+   "old": "14 compared files byte-identical to an independent export",
+   "new": "20/20 files in git archive HEAD hardware/v2/fab match the committed MANIFEST.sha256, 0 mismatches",
+   "source": "verify-w9-adv/REPORT.md:118 (git archive <tree> | hash every file against MANIFEST.sha256)",
+   "absent_in_rows": [
+    "14 compared"
+   ],
+   "present": [
+    "20/20",
+    "MANIFEST"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC27",
+   "board": "drone-mech",
+   "wrong": "the body of record was four disjoint solids totalling 742,306.360 mm3",
+   "old": "4 disjoint solids, 742,306.360 mm3 (42_6 shell)",
+   "new": "one solid: 206,454.3197 mm3, 320.0042 g at 1550 kg/m3, 1 solid / 1 shell / closed, 0 free and 0 non-manifold edges of 1,561",
+   "source": "dm-final-package/out/r1b_doubles.json (the four solids were disjoint, 0.000000 mm3 pairwise), r5_validate.json; dm-fore-fill/out/part_nose_v2.step",
+   "absent_in_rows": [
+    "742,306.360",
+    "4 disjoint solids"
+   ],
+   "present": [
+    "206,454.3197",
+    "320.0042",
+    "1,561"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC28",
+   "board": "drone-mech",
+   "wrong": "the interference count was published as 6 pairs and as 8 pairs; both are true on one file each and neither is the union",
+   "old": "8 pairs / 6 genuine (1,250.769445 mm3)",
+   "new": "10 pairs / 3,305.834869 mm3 on the final part: 6 genuine (1,204.481397) + 2 pushrod artefacts (4.534020) + 2 unclassified bearing rings (2,096.819452 = 63.4 %)",
+   "source": "dm-final-package/REPORT.md §1a-1e, out/r1c_pairs.json (three bodies, same instrument, eps 1e-12)",
+   "absent_in_rows": [
+    "1,250.769445",
+    "8 pairs"
+   ],
+   "present": [
+    "3,305.834869",
+    "2,096.819452",
+    "63.4"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC29",
+   "board": "drone-mech",
+   "wrong": "the deliverable had no package, no drawing and no revision",
+   "old": "no drawings, 0 ply book, no revision",
+   "new": "DM-FUS-001 REV 1: 45 files hashed by SHA256SUMS (46 on disk), STEP + BREP + STL (59,964 tri, -0.052 % of STEP) + A3 drawing PDF",
+   "source": "dm-final-package/README.md, SHA256SUMS.txt (45 lines), out/r6_sha256.json",
+   "absent_in_rows": [
+    "0 ply book",
+    "no revision carries the fix"
+   ],
+   "present": [
+    "DM-FUS-001 REV 1",
+    "45",
+    "0.052"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC30",
+   "board": "ESC",
+   "wrong": "the ESC's design point was 43.5 A per phase / 40 A bus, a current the 3 oz corridor cannot carry",
+   "old": "43.5 A phase / 40 A bus",
+   "new": "36.6 A per phase / 33.7 A bus, a 35 A-class ESC; 36.6 A gives 497 km/h, 43.5 A would have bought only 527 km/h",
+   "source": "esc-operating-point; esc-3oz-build/08_ampacity.json (36.58 A at 9.420 mm); esc-motor-demand",
+   "absent_in_rows": [
+    "43.5 A",
+    "40 A bus"
+   ],
+   "present": [
+    "36.6 A",
+    "33.7 A",
+    "497"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC31",
+   "board": "ESC",
+   "wrong": "the DRC was quoted on the 4 oz board with its pad-shrink total, which is not the 3 oz arm",
+   "old": "523 -> 253 as the design-point DRC",
+   "new": "3 oz 0.200/0.200: 229 -> 102, row-level GONE 127 / ADDED 0 (120 clearance + 4 track_width + 3 connection_width); all 89 pad-pad gaps clear; fab-real 200 = 102 + 98 invisible rings",
+   "source": "esc-3oz-build/04_setdiff.json, drc_base4oz/3oz.json, rules_3oz_020.kicad_dru",
+   "absent_in_rows": [
+    "523"
+   ],
+   "present": [
+    "229",
+    "102",
+    "127",
+    "200",
+    "89"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC32",
+   "board": "ESC",
+   "wrong": "the aircraft performance numbers were carried from the 43.5 A arm",
+   "old": "~545-570 km/h at 43.5 A",
+   "new": "497 km/h at 36.6 A (CdA 0.004162; band 353-616 km/h); FET 3.33 W/device, Tj 119.6 C = 68 % of 175 C at Rth 22.4",
+   "source": "esc-operating-point; esc-3oz-build §5 (G7); esc-cda-bound",
+   "absent_in_rows": [
+    "545",
+    "570 km/h",
+    "101.4"
+   ],
+   "present": [
+    "497",
+    "119.6",
+    "68"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC33",
+   "board": "drone-arm",
+   "wrong": "the non-through population was 36 after the census; 17 cleared by executed layout work and 19 remain",
+   "old": "36 non-through vias (26 blind + 10 buried)",
+   "new": "19 non-through of 337 vias (318 through): 15 micro + 4 blind by layer pair, 16 stacks; U10 12, U40 2, C32 2, C12 1, C40 1, FB1 1; own-rules DRC 4 = {via_diameter:+4} and span gate 22 = 18 hole_size + 4 via_diameter",
+   "source": "fab-da-36via/REPORT.md §7, census_batA.json; fab-da-u10-ripup/REPORT.md",
+   "absent_in_rows": [
+    "36 non-through",
+    "26 blind"
+   ],
+   "present": [
+    "19 non-through",
+    "337",
+    "22"
+   ],
+   "status": "superseded",
+   "superseded_by": "BC99"
+  },
+  {
+   "id": "BC34",
+   "board": "drone-arm",
+   "wrong": "the 0.100 mm drill was quoted as the blocker; the blocker is the clear diameter a through via needs",
+   "old": "0.100 mm via drill is the blocker",
+   "new": "exactly 0.85 mm: a 0.60/0.30 through via needs 0.85 mm of clear diameter on all four layers; U10 (QFN-80, 0.4 mm pitch) offers 0.4 mm lanes",
+   "source": "fab-da-path/REPORT.md:14,318; fab-da-36via/REPORT.md §2, §7",
+   "absent_in_rows": [
+    "0.100 mm via drill is the blocker"
+   ],
+   "present": [
+    "0.85 mm",
+    "0.60",
+    "0.4 mm"
+   ],
+   "status": "live"
+  },
+  {
+   "id": "BC35",
+   "board": "drone-arm",
+   "wrong": "BC12 called the In1->In2 span buried; those two copper layers are adjacent, so the vias on that pair are microvias",
+   "old": "In1.Cu-In2.Cu vias are BURIED (repo board: 10 of them)",
+   "new": "In1 and In2 are ADJACENT: the 10 vias on that pair (5 after the conversion) are MICROVIAS; of the 19, 15 are micro and 4 are blind (F-In2 2, In1-B 2)",
+   "source": "fab-da-36via/census_base.json (copper_order F, In1, In2, B; by_span_class 29 micro / 7 blind), census_batA.json (15 micro / 4 blind)",
+   "absent_in_rows": [
+    "vias are BURIED",
+    "26 blind + 10 buried"
+   ],
+   "present": [
+    "15 micro + 4 blind",
+    "MICROVIAS",
+    "adjacent"
+   ],
+   "status": "live"
+  }
+ ]
+}
