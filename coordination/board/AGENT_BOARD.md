@@ -3284,6 +3284,94 @@ that verifies 100 %.
 
 ---
 
+### ESC power board: **ROUTED — 0 unconnected on both tools, DRC set diff 0 added / 0 gone**
+
+**The power board is routed.** 187 → **0** on pcbnew **and** kicad-cli.
+
+| batch | kept/attempted | running unconnected |
+|---|---|---|
+| B1 AGND | 1/1 | 42 |
+| B2 DGND | **27/27** | 19 |
+| B3a Kelvins | **18/18** | 19 |
+| B3b sense bus | **19/19** | 2 |
+| B4 BATN | **2/2** | **0** |
+
+**The 187 were classified, not guessed:** **sense/shunt-tap 126** (18 × `M#_SN#`, 8 pads each in 8 islands
+with zero copper), **header grounds 41** (DGND 23 + AGND 18, every pin isolated), **Kelvin 17** (`BATN_K`,
+pads boxed 0.30 mm by the shunt's own force pads), **power 3**.
+
+**Gate loops per phase: M1 54.61 / M2 137.88 / M3 140.10 / M4 69.89 / M5 69.65 / M6 65.52 mm — 89.61 mean,
+158.58 worst, reproducing the carried 89.6 / 54.6 / 158.6 to 0.1 mm.**
+
+**No power path was thinned:** copper set diff gone 0, added 76/18. All 18 phases still **6.00 mm = 26.4 A**,
+BATN **4.00 mm = 19.7 A**, BATP **16.0 A**. Speed limit unchanged. **B.Cu parts: J_H1–J_H3 only.**
+
+**AND THE REMAINING BLOCKER IS A NETLIST DEFECT, NOT ROUTING: ALL 390 DRV8353 PADS ARE NETLESS (756 of
+1,581 pads).** Gate drive shows "0 unconnected" only because **each of 36 nets has a single netted pad** —
+there is no second terminal to route to. **Routed gate etch: 0.00 mm.** The same applies to signals: **131
+nets × 1 pad.** Routing cannot fix that; the nets must exist first.
+
+### drone-arm: a measured DEAD END. Not sendable, and no local change fixes it.
+
+**0 of 5 pads closed, and every route is now closed off by measurement:**
+
+| attempt | result |
+|---|---|
+| move the `/3V3` via (0.700/0.350 at 51.1834/54.3593) | moved **0.020 mm**, 3 tracks followed, opened **0 of 132,800** corner cells. **The true cap is `/ICM_INT2`'s In1 track at 0.4223 against the `/3V3` via's 0.4224 — a 0.0001 mm tie, against 0.425 needed. DELETE THE ENTIRE `/3V3` NET AND IT STILL LEAVES 0.4223 — ZERO GAIN.** Cost DRC 33→36 (+3 clearance). **Rolled back.** |
+| pads 16 / 19 / 30 | legal 0.2 mm F.Cu exit is **0.10 / 0.00 / 0.64 mm**; **the free region containing each pad IS the pad itself** (0.198–0.237 mm²). A* at both via classes: **no path**, lane short **0.105–0.175 mm**. The 31–41 "corridor" objects are never reached |
+| pads 23 / 24 | 1 and 6 reachable 0.4 mm sites, all within 0.12 mm, **all electrically dead** (nearest same-net copper **0.26–0.47 mm** against a 0.200 mm via radius). The **+1 `via_diameter`** trade is real but buys nothing |
+
+**Board byte-identical (`21C000EF…A4223`): 343 vias, 0 non-through, min drill 0.200, unconnected 8/8, DRC
+33 with an identical set diff, RF void bit-identical, pad 5 held closed.**
+
+**VERDICT: drone-arm cannot be made sendable by any local change.** The shortfall is **0.0027 mm on one
+track tie** and **0.00 mm of exit** on three pads. **It needs a U10 placement or package change** — a design
+decision, not a layout fix. That is a hard stop and should stop being retried.
+
+### ESC control: WWDT and EEPROM fixed with real part decisions, pours in, schematic is the gate
+
+**"Dead WWDT" was worse than a missing part:** U8 had **0 of 6 pads netted**, **`WDO` existed as no net at
+all**, `WDI` was a **1-pad net**, and the safety gate **U13 had A/B/Y blank.**
+
+**And my instruction to it was wrong on the facts: the TPS3430 has ONE package only — a 10-pin VSON DRC
+(SBVS366A §5) — so "relink to a 6-pin part" never existed.** Land swapped to `Texas_DRC0010J`, orderable
+**`TPS3430WDRCR`**, **9/11 pads netted**, `WDO`→`NRST`→U13→`DRV_ENABLE` (**U1.28 moved off `DRV_ENABLE` so
+the gate isn't shorted out**), R155/R157. Window **10.35–92.7 ms**, tRST **200 ms**.
+
+**Firmware requirement stated plainly: WDI must be kicked every 30 ms — a 1 kHz loop kicking every 1 ms
+trips the lower boundary.**
+
+**EEPROM:** the CAT24C32 has no 5-lead SOT-23, so the 5-pad land got **24LC32A** (1 SCL, 2 VSS, 3 SDA,
+4 VCC, 5 WP) plus R154/R153 pull-ups. **Single-ended nets 3 → 0.**
+
+**Pours added: 5 zones** (F.Cu AGND/+3V3/DGND, B.Cu AGND/DGND), 0.2 mm clearance, **AGND and DGND joined
+only by a 1.3 mm moat notch at R152**, **280 stitching vias**. **Set diff 0 new, 0 removed; 284 → 249
+unconnected.** **The predicted clearance win did NOT occur** — all 9 items are track/pad, which is worth
+recording as a wrong expectation.
+
+**THE SCHEMATIC IS THE GATE: still absent. 7 sheets, 169 symbols, 725 labels, 12–17 h.** The precedent is
+**Code-SDR V2's orderable 8-sheet / 373-symbol / 0-wire schematic.**
+
+**Routing: 96 of 284 (33.8%) → 195 unconnected, but 97 DRC including a short → REJECTED.** Delivered board
+is **249 unconnected / 35 DRC** — the honest one.
+
+### Scoreboard after round 54
+
+| board | state |
+|---|---|
+| **Code-SDR V2** | **ORDERABLE — package verified** (19/19 manifest, 1215 hits, 377 pos) |
+| **dev-board** | **ORDERABLE — package verified** (28/28 manifest, 2085 hits, 307 pos) |
+| **ESC power** | **ROUTED — 0 unconnected, DRC 0 added.** Blocked only by **756 netless pads** |
+| **ESC control** | 249 unconnected; blocked by **the missing schematic (12–17 h)** |
+| **drone-arm** | **DEAD END** — needs a U10 placement/package change |
+| **drone-mech** | fuselage fab-ready; assembly blocked on unfastenable knuckles + knife edge |
+
+**Both ESC boards and drone-arm share one lesson: the blockers are DATA, not layout.** The power board
+routed to zero the moment its nets existed; the control board needs a schematic before routing means
+anything; drone-arm is short 0.0027 mm on a single track.
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
