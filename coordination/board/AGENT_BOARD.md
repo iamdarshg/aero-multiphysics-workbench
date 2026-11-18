@@ -3058,6 +3058,100 @@ on both boards.
 
 ---
 
+### **dev-board is ORDERABLE.** Verified by me, not taken from the report.
+
+**Two boards now ship: Code-SDR V2 and dev-board.**
+
+**The four fixes, each closed:**
+
+| defect | root cause found | fix | result |
+|---|---|---|---|
+| **SurfaceFinish empty** | **KiCad 9.0.7 emits ONLY `GeneralSpecs.Finish` — there is no `SurfaceFinish` literal in `_pcbnew.dll`**, proven by two exports | set the finish as **design data**: stackup `(copper_finish "Lead-Free")` → **ENIG** (coplanar for 0.400 mm pitch, no meniscus plugging the 0.100 mm microvias), then an idempotent scripted `Finish`→`SurfaceFinish` step | **ENIG / ENIG** |
+| **POS 28 short** | **the export used `--smd-only`, silently dropping 18 through-hole connectors (J1–J23)** — no exclude flag was set | re-export with `--exclude-dnp` | **307 = 320 − 10 (TP1–TP9 bare pads, NT1 net tie) − 3 DNP (CANT1/CANT2/REXTVDD1)**. The old POS also **wrongly listed the DNP parts** |
+| **8 real DRC defects** | 5 shallow same-net sliver merges, 2 stacked buried vias, 1 short track | re-anchored/elbowed/T'd the slivers, moved the stacked vias 71.5,66.0/66.3 → 66.7/67.05 and bridged on In1+In2, moved the JTDI endpoint 0.90 mm | **DRC 10 → 2, ZERO new.** The 2 remaining are `lib_footprint_mismatch` (RANT1/CANT1 library drift, harmless to fab) — **0/0 with that check ignored** |
+| **stale manifest** | board had no title block at all | rewrote RELEASE_NOTES, stamped **rev "B"** | **28 entries, 28/28 verify** |
+
+**My independent verification of the shipped package:**
+`package/final/dev-real-production-gerbers/` — **Finish `ENIG`, SurfaceFinish `ENIG`, Size 105.05 × 105.05, BoardThickness 1.6, LayerNumber 4, ProjectId `dev-real-production` rev `B`, 11 files, 4 copper.**
+
+**Drill census, per file — and the three extra drill files PROVE the HDI:**
+
+| drill file | hits |
+|---|---|
+| `front-in1.drl` | **183** |
+| `front-in2.drl` | **1** |
+| `in1-in2.drl` | **17** |
+| `dev-real-production.drl` | **1884** + **16 G85 slots** |
+| **total** | **2069 drills + 16 slots = 2085 hits** |
+
+**201 non-through = 183 + 1 + 17 = 201 exactly**, matching the span census and confirming **three sequential-lamination pairs.**
+
+**My own count first said 2085 drills** — that double-counted the 16 G85 slot start coordinates as holes. **The report's 2069 + 16 is correct.** Recorded so the same miscount is not repeated.
+
+**Verdict: ORDERABLE — as an HDI sequential-lamination build with via fill**, which requires the owner's HDI acceptance.
+
+### drone-mech: **12 pairs / 197.519831 mm³** — vane slot cut, knuckle refused on measurement
+
+| population | pairs | mm³ |
+|---|---|---|
+| **genuine clash** | **0** | **0.000000** |
+| dispositioned contact | 10 | 192.590677 |
+| withdrawn | 2 | 4.929154 |
+| **total** | **12** | **197.519831** |
+
+**From 16 pairs / 1,229.794165 → 12 / 197.519831** (18 SAME, **4 REMOVED, 0 ADDED**). **Fuselage byte-identical
+(sha256 `d9ba7aeb…`), rings 28/28 at 0.000000.**
+
+**The vane slot is designed and cut on all four brackets, 396.917134 mm³ total = 3.909 %:**
+
+| feature | geometry | volume mm³ |
+|---|---|---|
+| F1 groove | 2.400 wide × 3.400 deep × 29.000, through full height (0.200/side, 0.400 bottom) | 236.640000 |
+| F2 rib through-slot | 2.400 × 2.000 × 33.000 | 158.400000 |
+| F3 hub bore | **Ø3.100** (0.050 radial) | 1.877134 |
+
+Plate keeps **8.600 mm** behind the groove; rib keeps **91.006 %** as two 12.300 straps. **Residual
+interference 0.000000 on both sides**, one linear +y assembly.
+
+**The 14.000 mm mirror asymmetry was corrected BY REBUILDING** — A2/B2 := exact mirror of A1/B1: rib
+**+14.000**, four lugs **+17.000**, post **−16.000**. The corrected pairs reproduce the +y joint's
+**320.137167 mm³** where the drawing had 196.000000.
+
+**The 33.265 mm overhang is safe: 33.13 µm deflection and 9.404 MPa at Vd 720 km/h** (q 18,180 Pa, CN 0.60),
+**Ø3 barrel 45.63 MPa (SF 6.05), f1 1.67 kHz. NO GUSSET NEEDED.**
+
+**But NO THIRD KNUCKLE IS FITTABLE** — the axis sits **inside the plate** (swept annulus r 1.104–27.97 mm)
+and **every bracket, even a bare ear, clashes at 7 of 7 rotations.** And the real finding: **all three
+knuckles are solid UNFASTENABLE pegs with no ears anywhere.** That is a design gap, not a clash.
+
+**The knife edge is UNACCEPTABLE as drawn** — **2.475 µm feather**, **381.4–471.4 cm² of flank absent**.
+**Recommended fix: the fairing, +157.549312 g (+49.23 %, 320.0042 → 477.5535 g)**, which leaves a bounded
+5.1162° aft rim.
+
+### Checklist rebuilt and validated: **12 PASS / 2 WAIVED / 16 OPEN** across 30 cells
+
+**6 boards × 5 conditions, every cell PASS-with-evidence, WAIVED-with-reason, or OPEN.** No UNKNOWN cells.
+
+| board | P / W / O | one line |
+|---|---|---|
+| Code-SDR V2 | **5 / 0 / 0** | orderable, bare board, 373 MPNs missing |
+| dev-board | 2 / 0 / 3 *(now stale — post-fix it is 5/0/0, see above)* | was not orderable |
+| drone-arm | 2 / 0 / 3 | not sendable — 7 U10 pads cannot escape |
+| drone-mech | 1 / 2 / 2 | fuselage part fab-ready, assembly not released |
+| ESC power | 1 / 0 / 4 | not routed |
+| ESC control | 1 / 0 / 4 | no netlist |
+
+**52 corrections carried: 35 carried forward (11 live, 23 superseded with named successors, 1 partly live)
++ 17 new.** Every supersession chain ends live.
+
+**Independently checked:** a second script re-derives **all 30 verdicts** and compares every printed verdict,
+provenance cell and table column count — **exit 0, 0 of 181 checks failed.** It also **fixed a
+self-contradiction in the old sheet**: dev-board's condition 1 read PASS while 8 of its DRC rows were real
+defects — now OPEN. **Every 499 is labelled CAPPED**, and drone-arm's assertion count was corrected to
+**34/36**.
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
