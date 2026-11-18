@@ -3445,6 +3445,49 @@ one.**
 
 ---
 
+### I applied the drone-mech loft fix myself and measured it — and found something that changes the plan
+
+**Patch applied cleanly and provably:** `phase15_generate_geometry.py` **line 335**,
+`outer = cq.Solid.makeLoft([wing_wire(x) for x in xs], ruled=False)` → **`ruled=True`**.
+**Exactly ONE line changed** (verified by full-file diff), the **other five `ruled=False` lofts untouched**
+(body, cavity, elevon panel, fin, tail). 1209 lines before and after.
+
+**Measured effect on the wing solid — the overshoot is real and enormous:**
+
+| | ruled=False (shipped) | **ruled=True (fix)** | delta |
+|---|---|---|---|
+| volume | 2,766,211.057277 mm³ | **2,466,553.198161** | **−299,657.859116** |
+| **bbox z max** | **266.896 mm** | **156.240 mm** | **−110.656 mm** |
+| bbox x | −260.000 … 260.000 | −260.000 … 260.000 | same |
+| solids / validity | 3 / valid | 3 / valid | — |
+
+**A 110.656 mm z-overshoot is removed by one word.** The corrected **z max 156.240** reproduces the earlier
+report's *"z −270…156.24"* exactly, so two independent measurements agree.
+
+**BUT — and this overturns the planned fix — NEITHER variant reproduces the 556.69 mm³.** Building the wing
+both ways and intersecting it with `make_elevon(±1)` from the same module:
+
+| loft | side +1 | side −1 |
+|---|---|---|
+| ruled=False (shipped) | **0.000000000** | **0.000000000** |
+| ruled=True (fix) | **0.000000000** | **0.000000000** |
+
+**The CURRENT GENERATOR PRODUCES ZERO ELEVON/PANEL INTERFERENCE WITH EITHER FLAG.** So the **delivered STEP
+does not match what the generator produces today.** Either the shipped artefact predates the current
+generator, or it was built from a different operand — and **that must be established before "regenerate it"
+can be claimed as the fix.** Regenerating would *probably* clear the 556.69 mm³, but for a reason nobody has
+demonstrated, and a claim built on that is exactly the kind of thing this programme has been burned by.
+
+**So the honest state: the `ruled=True` change is correct and measurably improves the wing** (110.656 mm of
+overshoot gone, and `wing_le_and_chord` is affine so the ruled surface follows the 13-station table exactly).
+**The 556.69 mm³ in the shipped STEP is a SEPARATE defect whose origin is not yet explained.**
+
+**Provenance note: I did this work myself** after two units returned nothing while having written only
+skeletons — that is the sixth and seventh agent failure this session, and the third pattern: they now die
+*before* doing the work, not after.
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed

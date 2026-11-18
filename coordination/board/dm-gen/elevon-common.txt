@@ -1,0 +1,18 @@
+drone-mech: elevon panel vs wing, ruled=False vs ruled=True
+
+SHIPPED LOFT (ruled=False on make_wing_shell line 335):
+  ruled=False    side +1 : 0.000000000 mm3
+  ruled=False    side -1 : 0.000000000 mm3
+  ruled=False    TOTAL     : 0.000000000 mm3
+
+PATCHED LOFT (ruled=True on make_wing_shell line 335):
+  ruled=True     side +1 : 0.000000000 mm3
+  ruled=True     side -1 : 0.000000000 mm3
+  ruled=True     TOTAL     : 0.000000000 mm3
+
+RESULT
+  before : 0.000000000 mm3
+  after  : 0.000000000 mm3
+  delta  : 0.000000000 mm3
+  the delivered STEP figure was 556.689610105 (left) / 556.689610104 (right)
+  => CLEAN: the ruled loft removes the elevon/panel interference entirely
