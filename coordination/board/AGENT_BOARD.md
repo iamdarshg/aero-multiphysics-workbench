@@ -3372,6 +3372,79 @@ anything; drone-arm is short 0.0027 mm on a single track.
 
 ---
 
+### ESC power: the blocker is **wrong design data**, not layout
+
+**756 netless was itself wrong — it is 660 electrical netless, and the composition explains why:**
+
+| component | pad objects | of which |
+|---|---|---|
+| 6 DRV8353 | **390** | **294 copper (48 pins + EP); 96 are F.Paste stencil apertures, NOT pads** |
+| 19 INA296A2 | 152 | |
+| 6 `Conn_02x12` (J1–J6) | 144 | |
+| 36 FET drain tabs | 36 | |
+| 18 MotorLand | 18 | |
+| 2 bus shunts | 8 | |
+| 6 × 820 µF | 6 | |
+| 2 NPTH | 2 | |
+
+**Porting the original board's nets is DEFINITIVELY DEAD.** By **reference 0 of 173** (only H4/H5 share a
+name, and they are different parts). By **part+position**: the best rigid fit on the **36 identical FETs
+leaves 49.0 mm mean residual**, and a free-scale similarity fit gives a **9.99 mm** chamfer. **This board is
+a RE-LAYOUT, not a transformed copy** — 0 matched within 2 mm, 15 at 2–10 mm, 90 beyond 10 mm, **68 have no
+counterpart part at all. No positional net identity is recoverable.**
+
+**Two design-data defects found, and both are blockers in their own right:**
+
+1. **THE DRV8353 IS THE WRONG PACKAGE.** The **land is 48-pin RGZ**; the **BOM says "DRV8353", which is the
+   40-pin RTA the original board used.** Per TI **SLVSDY6A pp. 8–9**. That is a part-number mismatch between
+   the footprint and the BOM, and it must be resolved before anything is ordered.
+2. **THE BOARD HAS NO DRV CHARGE-PUMP/DECOUPLING PASSIVES AND NO GATE RESISTORS.** Netting the pads
+   (`+294`, netted **825 → 1,119**, netless **756 → 462**) produced **unconnected 0 → 258** — the expected
+   jump — but **routing it adds +201 SHORTING (exact) and ≥+385 clearance (capped at 499)**, with the cause
+   measured: **`M2_GCH` at 0.0000 mm from `M3_GAH`.** Without gate resistors and decoupling, gate drive
+   cannot be routed at all.
+
+**Gate loops got WORSE, not better: M1 76.81 / M2 174.13 / M3 162.33 / M4 97.81 / M5 97.75 / M6 88.03 mm**
+(2× measured) against the placement figure of 54.61 / 137.88 / 140.10 / 69.89 / 69.65 / 65.52.
+
+**The already-routed power path survived untouched — 0 of 134 segments and 0 of 30 vias lost; 18 phases
+6.00 mm, BATN 4.00 mm, BATP 3.00 mm intact; only J_H1–J_H3 on B.Cu.** Netting set diff **0 added / 0 gone**.
+**No package produced — precondition unmet.** **Verdict: NO.**
+
+### drone-mech: **the knuckles are now fastenable.** Third knuckle is genuinely not needed.
+
+**What they are:** three **Ø3.000 × 6.000 pegs per side on one axis (y0, z 127.619996) at 30.03 % chord —
+PIANO-HINGE knuckles** per `PHASE15_CONTROL_SURFACES` §3 (*"hinged", Ø3–4 pin*). **All solid, no bore, and
+a population-wide cylinder scan found no ear or eye anywhere** — only the 6 pegs and their 6 saddles.
+**The control surface is located by the wing cove but retained by NOTHING.** That is why it could not be
+assembled.
+
+**Ears designed, 2 per surface:** **Ø5.00 × 6.00 journal** with a **Ø2.60 blind bore 5.00 deep**; an ear
+**2.00 × 2.40 tongue bonded into the existing wing hinge notch**; eye **Ø4.00 OD / Ø2.50 bore** at
+(0, 127.619996); **Ø2.50 × 7.00 17-4PH pin, 0.05 mm running fit.**
+
+**Nothing is strength-limited** — bearing **13.00 mm² journal / 5.00 mm² eye**, tear-out **3.00 mm²**. At
+**15.245 N per knuckle**: **1.17 / 3.05 / 5.08 MPa → SF 171 / 90 / 54**; pin bending **25.84 MPa, SF 45**
+(**23 at 2× load**). **Cost: +0.851 g per surface.**
+
+**THE THIRD KNUCKLE IS NOT NEEDED, and the reason is geometric:** the **pushrod bears at |x| 125** and
+**knuckle 1 starts at |x| 127 — 1.22 mm apart**, so the load path is already carried. **The 33.265 mm root
+overhang is a 9.404 MPa / 33 µm cantilever.** The delivered inboard peg sits **inside the fan passage and
+stays deleted.** A root third knuckle *does* fit (**22 mm tongue, 4.36 mm land**) but **buys nothing.**
+
+**Clash: NONE ADDED** — 325 pairs, 299 bbox-skipped, **2 non-zero, both the withdrawn pushrod rows**
+(2.464577 → 2.267009, the dead horn removed). **Ears read 0.000000 at 10 rotations per surface.**
+
+**Sweep: 12 pairs / 197.124695 mm³ (was 197.519831), 0 genuine clash, 0 added rows.** Fuselage
+**byte-identical** (`d9ba7aeb…`, 206,454.319709 mm³ / 320.0042 g, walls 1.0921 / 1.1990 / 1.1800);
+**ring v2 0.000000 against all 36 parts.**
+
+**CAVEAT THAT MUST NOT BE LOST: the relief is a DERIVED operand — the DELIVERED wing STEP shows 556.69 mm³
+of interference at 0°.** So the assembly is solved *in the derived model* and **not yet in the shipped
+one.**
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
