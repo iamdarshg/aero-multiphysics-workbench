@@ -3152,6 +3152,91 @@ defects — now OPEN. **Every 499 is labelled CAPPED**, and drone-arm's assertio
 
 ---
 
+### Two of MY diagnoses were wrong, and the workers proved it
+
+**Error 1 — "the cap is the pad pitch."** I claimed the U10 lanes were capped by 0.4 mm pitch leaving a
+0.200 mm gap. **Wrong.** A cell-by-cell sweep of the corner (**10 × 8.3 mm**) found **0 of 132,800 cells**
+clear the **0.425 mm** a 0.6/0.3 via needs — best cell **0.3998**, capped by a **`/3V3` via stack 0.415
+away**. Board-wide **64.7 %** of cells pass. **With pads as the only obstacle, each pad has 9,782–40,809
+legal sites.** **The pads were never the cap — the INNER-LAYER VIA FIELD is.**
+
+**Error 2 — "46 − 5 = 41."** I claimed wire-OR-ing six nFAULT lines would close the ESC's 5-GPIO gap.
+**The wire-OR already exists**: H1.26 is `nFAULT_ALL`, *"6 open-drain nFAULT, wired-OR"*. Six separate lines
+make the real demand **51**, and **51 − 5 = 46**, so the OR frees **0**. **The real gap is 7, not 5**,
+because the **ADC bus is 8 pins, not 6.**
+
+### drone-arm: **NOT SENDABLE.** 5 pads remain, and the blocker is the via field
+
+**The two-rank ring was designed to the millimetre** — rank 1: 0.200 track, 90° exit, via at
+**d1 = 0.4 + 0.3 + 0.125 = 0.825 mm**; rank 2 at d2 ≥ d1 + 0.407; rank-1 vias every third pad (**1.200 mm**
+pitch, since a 0.200 track needs 1.050 between two 0.6 vias); **0.600 mm lateral stagger** — **and then
+measured, and it cannot work.**
+
+| pad | why it fails |
+|---|---|
+| **16 / 19 / 30** | **no legal 0.6 mm site anywhere** — nearest is **2.385 / 2.559 / 3.004 mm**, behind **31–41 corridor objects** |
+| **23 / 24** | share one pocket: **156 legal 0.4 mm cells but NO pair ≥ 0.525 apart**; **24 outboard has 0 of 55,440**. Different ranks have nothing to stand on, and a shared via is impossible (different nets) |
+
+**Batch A was rolled back** (one 0.4/0.2 via, exact-clean, but **+1 `via_diameter`**). **Kept 0/5**,
+**re-routed 0 of the 233-track / 47-via collateral.** **Upper bound: deleting 20 of the 44 nets still leaves
+pad 30 at 1.707 mm.**
+
+**Pad 5's fix survives** (verified still closed). Board at **343 vias, 0 non-through, drill 0.200,
+unconnected 8 on both tools, RF void bit-identical, DRC 33.** **No package regenerated — the precondition
+was not met**, which is the right call.
+
+**CORRECTED DRILL CENSUS (final): 367 drills = 361 PTH + 6 NPTH, + 4 G85 slots = 371 hits.** POS **161
+rows = 165 footprints − H1–H4 (position-excluded)**. Re-verified.
+
+### ESC control: the GPIO budget **now closes** — 45 of 48, with 3 spare
+
+**The wire-OR was verified against the datasheet and is legal:** DRV835x **SLVSDY6A p7** types `nFAULT` as
+**"OD"** — *"pulled logic low during a fault condition and requires an external pullup resistor"*; p11 caps
+**VOD 5.5 V, IOD 5 mA**, so six at **10 kΩ = 2.0 mA**. **No diode, no gate.** It simply frees nothing,
+because it was already done.
+
+**What actually closed the gap:**
+
+| change | GPIO saved | cost |
+|---|---|---|
+| **74HC138 chip-select decode** | **−4** | **$0.15** |
+| **MCP3208 NTC offload** | **−7** | **$2.38** |
+| **net** | **→ 45 of 48 GPIO, 3 spare** | |
+
+**And a defect every prior wave missed: `SDO` is open-drain too — MISO needed a pull-up.**
+
+**Low-side of the nFAULT OR, stated honestly:** it is a **wake-up only**. **The MCU cannot tell which driver
+faulted** — the ISR must poll **six SPI status registers** (0x00 bit 10 *"mirrors nFAULT pin"*), which is
+read-only so polling is harmless, but clearing a fault needs **`CLR_FLT` or an 8–40 µs ENABLE pulse.**
+
+**Net coverage improved across the board: 148 fps / 768 pads / 559 netted / 172 nets / 53 single-ended →
+165 / 842 / 700 / 186 / 3.**
+
+**Named gaps closed:** **AGND–DGND tie DONE** (R152, 0 Ω, single point at the ADC cluster); **passives DONE**
+(10 BEC + 2 CC + 2 pull-ups); **3 of 4 footprint defects done** (LM5164 EP ×2, CAN choke, MCP2518FD).
+**TPS3430 is BLOCKED** — an 11-pin symbol against a **SOT-23-6** land, which is a part-number decision, not
+a layout one. Crystals and USB-C were never defects. **Bonus fix: U1 pad 81, the MCU's ground pad, was
+netless — now DGND.**
+
+**Routing: 254 of 270 connections, 525 segments, 22 vias**; the first batch was rejected on **11 shorts**.
+**True unconnected 499 → 261.**
+
+**Verdict: the budget closes, the BOARD does not** — **dead WWDT, unconnected EEPROM, no pours, and no
+schematic.**
+
+### Scoreboard after round 52
+
+| board | state |
+|---|---|
+| **Code-SDR V2** | **ORDERABLE** — 5/0/0 |
+| **dev-board** | **ORDERABLE** (HDI accepted) — 5/0/0 |
+| **drone-mech** | fuselage part **fab-ready**; assembly **NOT released** — knuckles are unfastenable pegs, knife edge needs the +157.5 g fairing |
+| **drone-arm** | **NOT SENDABLE** — 5 pads blocked by the inner-layer via field |
+| **ESC power** | **NOT ROUTED** — 187 unconnected |
+| **ESC control** | **budget closes**, board does not — dead WWDT, unconnected EEPROM, no pours, no schematic |
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
