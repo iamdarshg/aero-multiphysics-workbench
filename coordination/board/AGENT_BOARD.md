@@ -3237,6 +3237,53 @@ schematic.**
 
 ---
 
+### Both orderable packages now verified end-to-end by me
+
+**I checked my own claim and Code-SDR was half wrong — the board was finished, the PACKAGE was not.**
+
+| check | **Code-SDR V2** | **dev-board** |
+|---|---|---|
+| `Finish` / `SurfaceFinish` | **ENIG / ENIG** ✓ | **ENIG / ENIG** ✓ |
+| size / thickness | 101.7 × 101.7 / 1.6 mm ✓ | 105.05 × 105.05 / 1.6 mm ✓ |
+| LayerNumber / copper files | 4 / 4 ✓ | 4 / 4 ✓ |
+| revision | **`Code-SDR-V2` rev 2.1** ✓ | **`dev-real-production` rev B** ✓ |
+| drills + G85 slots | **1213 + 2 = 1215 hits** ✓ | **2069 + 16 = 2085 hits** ✓ |
+| POS components | **377** ✓ | **307** ✓ |
+| **manifest** | **19 verify / 0 bad** ✓ | **28 verify / 0 bad** ✓ |
+| DRC | **0 errors** (222 pre-existing warnings), **0 unconnected both tools** | 8 warnings → 2, **0 errors, 0 unconnected** |
+
+**Code-SDR's two defects were both paperwork, and both were real:**
+1. **`SurfaceFinish` was ABSENT ENTIRELY** — not empty, *no such key*. The gbrjob carried
+   ProjectId/Size/LayerNumber/BoardThickness/Finish/ImpedanceControlled and **nothing else.** Same KiCad
+   9.0.7 root cause as dev-board. Fixed with the proven mechanism: the board of record already carried
+   `(copper_finish "ENIG")` as stackup design data, so it was **re-exported with the recorded flags** and
+   an **idempotent `fix_surface_finish.py` copied `Finish` → `SurfaceFinish`.** Before: `ENIG` / absent.
+   After: **`ENIG` / `ENIG`.**
+2. **NO MANIFEST AT ALL.** A predecessor `fab-cs-ship/package/MANIFEST.sha256` exists, but the shipped
+   package had none. Now **19 of 19 verify**, cross-checked with **own parser AND coreutils 8.32 AND
+   WSL 9.4** — three independent verifications, exit 0.
+
+**Regression check on the Code-SDR re-export — all unchanged:** drills **1213 + 2 = 1215** (per-tool
+identical), POS **377 byte-identical**, outline **101.7000 × 101.7000 mm**, **4 copper**, **rev 2.1**.
+Package diff: **3 byte-identical, 15 timestamp-only, the job file changed solely by the added key.**
+
+**dev-board's package, also re-verified:** 28/28 manifest, 2069 + 16 slots, 307 POS components, rev B,
+`front-in1` 183 + `front-in2` 1 + `in1-in2` 17 = **201 = the non-through count exactly.**
+
+### The pattern worth recording: the last mile has been paperwork, not engineering
+
+**Three boards had their board work essentially finished while the shipped package was not orderable:**
+Code-SDR (no `SurfaceFinish` key, no manifest), dev-board (empty `SurfaceFinish`, POS 28 short,
+`--smd-only` having silently dropped 18 through-hole connectors, stale manifest), and drone-arm (16 hit
+drill arithmetic). **The boards were good; the packaging was careless.**
+
+**Consequence for method: a "complete" claim must verify the PACKAGE against the board, not just the
+board.** The checks that caught all of it: `SurfaceFinish` non-empty, revision present, drills and G85
+slots counted separately, POS reconciled to the footprint count minus named exclusions, and a manifest
+that verifies 100 %.
+
+---
+
 ## FAB READINESS — where the three boards actually stand
 
 **Measured, not asserted.** Definition used throughout: **ORDERABLE = a bare-board order placed
